@@ -87,7 +87,7 @@ export default function DefinitionSwitch() {
                   #4a5058 을 70% 로 깔면 surface 위에서 사실상 #7c8085 가 된다.
                   12.5px 글자는 4.5:1 이 필요하므로 투명도 없이 쓴다. */}
               <span
-                className={`mt-1.5 block text-[12.5px] tracking-[0.02em] transition-colors duration-500 ${
+                className={`mt-1.5 block text-[13.5px] tracking-[0.02em] transition-colors duration-500 ${
                   n === i ? 'text-brand' : 'text-ink-2'
                 }`}
                 style={{ transform: n === i ? 'translateX(6px)' : 'none', transition: 'transform .5s var(--ease-soft), color .5s ease' }}
@@ -114,22 +114,22 @@ export default function DefinitionSwitch() {
               오른쪽만 보고 있어도 "무엇에 대한 답인지" 가 문장 안에서 닫힌다 —
               AI 가 이 덩어리만 떼어 인용해도 말이 된다.
           */}
-          <p className="text-[13px] font-bold tracking-[-0.01em] text-brand">{d.question}</p>
+          <p className="text-[14px] font-bold tracking-[-0.01em] text-brand">{d.question}</p>
           <p className="mt-4 text-[clamp(17px,1.5vw,21px)] font-semibold leading-[1.72] tracking-[-0.025em] text-ink">
             {d.definition}
           </p>
-          <p className="mt-7 text-[14.5px] leading-[1.85] text-ink-2">
+          <p className="mt-7 text-[15.5px] leading-[1.85] text-ink-2">
             <span className="font-bold text-ink">이럴 때 — </span>
             {d.indication}
           </p>
           {/* ⚠️ 주의는 ink-2(7.2:1). 전에 쓰던 ink-3 은 3.72:1 로 기준 미달이었다. */}
-          <p className="mt-7 border-t border-line pt-6 text-[13px] leading-[1.85] text-ink-2">
+          <p className="mt-7 border-t border-line pt-6 text-[14px] leading-[1.85] text-ink-2">
             <span className="font-bold text-ink">주의 — </span>
             {d.caution}
           </p>
           <Link
             href={`/treatment/${SLUG[d.key] ?? ''}`}
-            className="tap mt-8 inline-flex items-center gap-2 text-[13.5px] font-bold text-brand"
+            className="tap mt-8 inline-flex items-center gap-2 text-[14.5px] font-bold text-brand"
           >
             {d.term} 자세히 보기 <span aria-hidden>→</span>
           </Link>
@@ -139,7 +139,7 @@ export default function DefinitionSwitch() {
           어느 쪽인지 모르겠는 사람을 위한 출구.
           ⚠️ 전환 애니메이션 바깥에 둔다 — 항목을 바꿀 때마다 같이 깜빡이면 산만하다.
         */}
-        <p className="mt-10 border-t border-line pt-6 text-[13px] leading-[1.8] text-ink-2">
+        <p className="mt-10 border-t border-line pt-6 text-[14px] leading-[1.8] text-ink-2">
           어느 쪽인지 모르겠다면 먼저 봐 드립니다.{' '}
           <a href={CLINIC.phoneHref} className="font-bold text-ink underline underline-offset-4">
             {CLINIC.phone}

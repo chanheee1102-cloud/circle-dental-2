@@ -52,11 +52,11 @@ export default async function ConditionPage({ params }: { params: Promise<{ slug
 
         <DocSection>
           <Reveal>
-            <p className="t-body text-[15.5px]">{c.detail}</p>
+            <p className="t-body text-[17px]">{c.detail}</p>
           </Reveal>
           {c.aka.length ? (
             <Reveal delay={120}>
-              <p className="mt-7 text-[13px] text-ink-2">
+              <p className="mt-7 text-[14px] text-ink-2">
                 흔히 부르는 이름 — {c.aka.join(' · ')}
               </p>
             </Reveal>
@@ -78,8 +78,8 @@ export default async function ConditionPage({ params }: { params: Promise<{ slug
               {c.stages.map((st, i) => (
                 <Reveal as="li" key={st.step} delay={i * 70}>
                   <div className="grid gap-2 bg-surface p-7 md:grid-cols-[190px_minmax(0,1fr)] md:gap-8 md:p-8">
-                    <p className="text-[14.5px] font-bold tracking-[-0.02em] text-brand">{st.step}</p>
-                    <p className="t-body text-[14.5px]">{st.what}</p>
+                    <p className="text-[15.5px] font-bold tracking-[-0.02em] text-brand">{st.step}</p>
+                    <p className="t-body text-[15.5px]">{st.what}</p>
                   </div>
                 </Reveal>
               ))}
@@ -89,10 +89,10 @@ export default async function ConditionPage({ params }: { params: Promise<{ slug
 
         <DocSection title="일반적인 치료 방향">
           <Reveal>
-            <p className="t-body text-[15.5px]">{c.treatment}</p>
+            <p className="t-body text-[17px]">{c.treatment}</p>
           </Reveal>
           <Reveal delay={120}>
-            <p className="mt-6 text-[13px] leading-[1.85] text-ink-2">
+            <p className="mt-6 text-[14px] leading-[1.85] text-ink-2">
               위 내용은 표준적인 치료 방향이며, 실제 계획은 진단 결과와 개인의 구강 상태에 따라 달라집니다.
             </p>
           </Reveal>

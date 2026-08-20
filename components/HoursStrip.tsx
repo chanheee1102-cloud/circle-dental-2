@@ -53,27 +53,27 @@ export default function HoursStrip() {
             >
               {/* 오늘 표시 — 색만으로 알리지 않는다. 색을 못 보는 사람에게는 글자가 근거다. */}
               {on && (
-                <span className="absolute right-4 top-4 rounded-full bg-brand-2 px-2 py-[3px] text-[10px] font-bold text-[#0d1113]">
+                <span className="absolute right-4 top-4 rounded-full bg-brand-2 px-2 py-[3px] text-[11px] font-bold text-[#0d1113]">
                   오늘
                 </span>
               )}
-              <dt className={`text-[13px] tracking-[0.02em] ${h.closed ? 'text-white/45' : 'text-white/55'}`}>
+              <dt className={`text-[14px] tracking-[0.02em] ${h.closed ? 'text-white/45' : 'text-white/55'}`}>
                 {/* 화면에는 '월', 낭독기에는 '월요일'. */}
                 {h.label.replace('요일', '').replace(' · 공휴일', '')}
                 <span className="sr-only">요일</span>
               </dt>
               <dd>
                 <span
-                  className={`block text-[15px] font-bold leading-[1.5] tracking-[-0.01em] tabular-nums ${
+                  className={`block text-[16px] font-bold leading-[1.5] tracking-[-0.01em] tabular-nums ${
                     h.closed ? 'text-white/55' : 'text-white'
                   }`}
                 >
                   {h.time}
                 </span>
                 {h.note ? (
-                  <span className="mt-2 block text-[12px] leading-[1.5] text-brand-2">{h.note}</span>
+                  <span className="mt-2 block text-[13px] leading-[1.5] text-brand-2">{h.note}</span>
                 ) : h.closed ? (
-                  <span className="mt-2 block text-[12px] leading-[1.5] text-white/65">공휴일 포함</span>
+                  <span className="mt-2 block text-[13px] leading-[1.5] text-white/65">공휴일 포함</span>
                 ) : null}
               </dd>
             </div>
@@ -85,7 +85,7 @@ export default function HoursStrip() {
         점심시간은 요일 칸에 넣지 않는다 — 7칸 전부에 같은 값을 반복하게 되고,
         토요일만 예외라는 사실이 오히려 묻힌다.
       */}
-      <p className="mt-6 text-[13.5px] leading-[1.8] text-white/60">
+      <p className="mt-6 text-[14.5px] leading-[1.8] text-white/60">
         점심시간 <span className="font-bold tabular-nums text-white">{CLINIC.lunch.time}</span>
         <span className="ml-2">({CLINIC.lunch.note})</span>
       </p>

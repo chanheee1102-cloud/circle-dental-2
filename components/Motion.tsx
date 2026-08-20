@@ -198,7 +198,7 @@ export function OnSwitch({ on, onChange, label = 'On' }: { on: boolean; onChange
         style={{ background: on ? 'var(--color-brand)' : 'var(--color-off)', transition: 'background 1.5s ease-in-out' }}
       />
       <span
-        className={`display relative z-10 text-[21px] text-white ${on ? 'ml-[18px]' : 'ml-auto mr-[18px]'}`}
+        className={`display relative z-10 text-[22px] text-white ${on ? 'ml-[18px]' : 'ml-auto mr-[18px]'}`}
         style={{ transition: 'margin 0.3s var(--ease-soft)' }}
       >
         {label}
@@ -381,7 +381,7 @@ export function DragCursor({ hostId, label = 'SCROLL' }: { hostId: string; label
   }, [hostId]);
   return (
     <div ref={ref} className="vcursor grid place-items-center rounded-full bg-brand text-white" style={{ width: 84, height: 84 }}>
-      <span className="text-[11px] font-bold tracking-[0.16em]">{label}</span>
+      <span className="text-[12px] font-bold tracking-[0.16em]">{label}</span>
     </div>
   );
 }

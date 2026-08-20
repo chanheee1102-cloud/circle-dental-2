@@ -63,7 +63,7 @@ export default async function SymptomPage({ params }: { params: Promise<{ slug: 
         {s.selfCare?.length ? (
           <DocSection title="집에서 할 수 있는 것" tone="surface">
             <BulletList items={s.selfCare} />
-            <p className="mt-8 text-[13px] leading-[1.85] text-ink-2">
+            <p className="mt-8 text-[14px] leading-[1.85] text-ink-2">
               아래 방법은 통증을 잠시 줄이는 것이지 원인을 없애지는 못합니다. 증상이 반복되면 원인을 확인하는 검사가
               필요합니다.
             </p>
@@ -93,22 +93,22 @@ export default async function SymptomPage({ params }: { params: Promise<{ slug: 
         <section className="bg-ink py-20 text-white md:py-24">
           <div className="shell flex flex-col gap-7 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="t-h3 text-[22px] font-bold tracking-[-0.03em] text-white md:text-[27px]">
+              <p className="t-h3 text-[23px] font-bold tracking-[-0.03em] text-white md:text-[27px]">
                 증상이 계속되면 원인부터 확인하세요
               </p>
-              <p className="mt-3 text-[14px] text-white/60">
+              <p className="mt-3 text-[15px] text-white/60">
                 {CLINIC.nearestStation} · 화·목 야간진료 20:30까지
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <a href={CLINIC.phoneHref} className="rounded-full bg-brand px-7 py-3.5 text-[14px] font-bold text-white">
+              <a href={CLINIC.phoneHref} className="rounded-full bg-brand px-7 py-3.5 text-[15px] font-bold text-white">
                 {CLINIC.phone}
               </a>
               <a
                 href={CLINIC.booking.naver}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border border-white/35 px-7 py-3.5 text-[14px] font-bold text-white"
+                className="rounded-full border border-white/35 px-7 py-3.5 text-[15px] font-bold text-white"
               >
                 네이버 예약
               </a>

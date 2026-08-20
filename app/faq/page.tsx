@@ -34,9 +34,9 @@ export default function FaqPage() {
               <ul className="space-y-2.5">
                 {topics.map((t) => (
                   <li key={t}>
-                    <a href={`#${encodeURIComponent(t)}`} className="text-[14.5px] font-semibold tracking-[-0.02em] text-ink-2 transition-colors hover:text-brand">
+                    <a href={`#${encodeURIComponent(t)}`} className="text-[15.5px] font-semibold tracking-[-0.02em] text-ink-2 transition-colors hover:text-brand">
                       {t}
-                      <span className="ml-2 text-[12px] text-ink-2">{FAQS.filter((f) => f.topic === t).length}</span>
+                      <span className="ml-2 text-[13px] text-ink-2">{FAQS.filter((f) => f.topic === t).length}</span>
                     </a>
                   </li>
                 ))}
@@ -47,7 +47,7 @@ export default function FaqPage() {
               {topics.map((t) => (
                 <section key={t} id={encodeURIComponent(t)} className="scroll-mt-28">
                   <Reveal>
-                    <h2 className="text-[13px] font-bold tracking-[0.14em] text-brand">{t}</h2>
+                    <h2 className="text-[14px] font-bold tracking-[0.14em] text-brand">{t}</h2>
                   </Reveal>
                   <div className="mt-4">
                     <QaList items={FAQS.filter((f) => f.topic === t)} />
@@ -57,16 +57,16 @@ export default function FaqPage() {
 
               <Reveal>
                 <div className="rounded-[22px] bg-surface p-9 md:p-11">
-                  <h2 className="text-[19px] font-bold tracking-[-0.03em] text-ink">여기에 없는 질문이라면</h2>
-                  <p className="t-body mt-4 max-w-xl text-[14.5px]">
+                  <h2 className="text-[20px] font-bold tracking-[-0.03em] text-ink">여기에 없는 질문이라면</h2>
+                  <p className="t-body mt-4 max-w-xl text-[15.5px]">
                     구강 상태에 따라 답이 달라지는 질문은 진단 후에 정확히 말씀드릴 수 있습니다. 전화나 예약으로 문의해
                     주세요.
                   </p>
                   <div className="mt-8 flex flex-wrap gap-3">
-                    <a href={CLINIC.phoneHref} className="rounded-full bg-brand px-7 py-3.5 text-[14px] font-bold text-white">
+                    <a href={CLINIC.phoneHref} className="rounded-full bg-brand px-7 py-3.5 text-[15px] font-bold text-white">
                       {CLINIC.phone}
                     </a>
-                    <a href={CLINIC.booking.naver} target="_blank" rel="noopener noreferrer" className="rounded-full border border-line px-7 py-3.5 text-[14px] font-bold text-ink-2">
+                    <a href={CLINIC.booking.naver} target="_blank" rel="noopener noreferrer" className="rounded-full border border-line px-7 py-3.5 text-[15px] font-bold text-ink-2">
                       네이버 예약
                     </a>
                   </div>

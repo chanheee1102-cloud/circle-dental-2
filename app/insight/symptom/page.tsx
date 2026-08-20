@@ -34,11 +34,11 @@ export default function SymptomIndex() {
                     <span className="display text-[26px] leading-none text-brand/30">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span className="mt-5 text-[11.5px] tracking-[0.14em] text-brand">{s.short}</span>
-                    <h2 className="mt-2.5 text-[17px] font-bold leading-snug tracking-[-0.025em] text-ink transition-colors group-hover:text-brand">
+                    <span className="mt-5 text-[12.5px] tracking-[0.14em] text-brand">{s.short}</span>
+                    <h2 className="mt-2.5 text-[18px] font-bold leading-snug tracking-[-0.025em] text-ink transition-colors group-hover:text-brand">
                       {s.title}
                     </h2>
-                    <p className="mt-3 line-clamp-3 flex-1 text-[13.5px] leading-[1.8] text-ink-2">{s.answer}</p>
+                    <p className="mt-3 line-clamp-3 flex-1 text-[14.5px] leading-[1.8] text-ink-2">{s.answer}</p>
                   </Link>
                 </Reveal>
               ))}

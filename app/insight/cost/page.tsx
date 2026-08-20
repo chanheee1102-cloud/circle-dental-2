@@ -44,16 +44,16 @@ export default function CostPage() {
                 <Reveal as="li" key={c.slug} delay={i * 70}>
                   <article className="rounded-[22px] bg-surface p-8 md:p-10">
                     <div className="flex flex-wrap items-start justify-between gap-4">
-                      <h2 className="max-w-2xl text-[18px] font-bold leading-snug tracking-[-0.03em] text-ink">{c.title}</h2>
-                      <span className={`shrink-0 rounded-full px-4 py-1.5 text-[12px] font-bold ${TONE[c.covered]}`}>
+                      <h2 className="max-w-2xl text-[19px] font-bold leading-snug tracking-[-0.03em] text-ink">{c.title}</h2>
+                      <span className={`shrink-0 rounded-full px-4 py-1.5 text-[13px] font-bold ${TONE[c.covered]}`}>
                         {COST_LABEL[c.covered]}
                       </span>
                     </div>
-                    <p className="mt-5 border-l-2 border-brand pl-5 text-[15px] leading-[1.9] text-ink">{c.answer}</p>
-                    <p className="t-body mt-5 text-[14px]">{c.detail}</p>
+                    <p className="mt-5 border-l-2 border-brand pl-5 text-[16px] leading-[1.9] text-ink">{c.answer}</p>
+                    <p className="t-body mt-5 text-[15px]">{c.detail}</p>
                     {c.factors?.length ? (
                       <div className="mt-7 border-t border-line pt-6">
-                        <p className="text-[12.5px] font-bold tracking-[0.1em] text-ink-2">비용을 가르는 것</p>
+                        <p className="text-[13.5px] font-bold tracking-[0.1em] text-ink-2">비용을 가르는 것</p>
                         <div className="mt-4">
                           <BulletList items={c.factors} />
                         </div>
@@ -69,13 +69,13 @@ export default function CostPage() {
         <DocSection>
           <Reveal>
             <div className="rounded-[22px] border border-line bg-surface p-8">
-              <p className="text-[12.5px] font-bold tracking-[0.1em] text-ink-2">금액 안내</p>
-              <p className="mt-3 text-[13.5px] leading-[1.9] text-ink-2">
+              <p className="text-[13.5px] font-bold tracking-[0.1em] text-ink-2">금액 안내</p>
+              <p className="mt-3 text-[14.5px] leading-[1.9] text-ink-2">
                 이 페이지는 비용의 <b className="text-ink-2">기준</b>만 다룹니다. 실제 금액은 구강 상태와 필요한 처치에
                 따라 달라져 진단 전에는 말씀드릴 수 없습니다. 비급여 진료비는 원내에 게시되어 있으며, 상담 시 항목별로
                 설명해 드립니다.
               </p>
-              <a href={CLINIC.phoneHref} className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-[13.5px] font-bold text-white">
+              <a href={CLINIC.phoneHref} className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-[14.5px] font-bold text-white">
                 {CLINIC.phone}
               </a>
             </div>

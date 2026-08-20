@@ -31,9 +31,9 @@ export default function JourneyIndex() {
                     <span className="display text-[26px] leading-none text-brand/30">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <h2 className="mt-5 text-[16.5px] font-bold leading-snug tracking-[-0.025em] text-ink transition-colors group-hover:text-brand">{j.question}</h2>
-                    <p className="mt-3.5 line-clamp-2 flex-1 text-[13.5px] leading-[1.8] text-ink-2">{j.answer}</p>
-                    <p className="mt-6 flex gap-5 text-[12.5px] font-bold text-brand">
+                    <h2 className="mt-5 text-[17.5px] font-bold leading-snug tracking-[-0.025em] text-ink transition-colors group-hover:text-brand">{j.question}</h2>
+                    <p className="mt-3.5 line-clamp-2 flex-1 text-[14.5px] leading-[1.8] text-ink-2">{j.answer}</p>
+                    <p className="mt-6 flex gap-5 text-[13.5px] font-bold text-brand">
                       <span>내원 {j.visits}</span><span>기간 {j.duration}</span>
                     </p>
                   </Link>

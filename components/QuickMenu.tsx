@@ -45,7 +45,7 @@ export default function QuickMenu() {
       bg: '#03C75A',
       /* ⚠️ 흰 글자는 이 초록 위에서 2.25:1 — 어두운 글자로. 색은 그대로 둔다. */
       fg: '#0d2b18',
-      icon: <span className="text-[13px] font-bold tracking-[-0.03em]">예약</span>,
+      icon: <span className="text-[14px] font-bold tracking-[-0.03em]">예약</span>,
     },
     {
       key: 'tel',

@@ -43,20 +43,20 @@ export default function SiteFooter() {
         <div className="grid gap-x-10 gap-y-14 lg:grid-cols-[minmax(0,1.15fr)_repeat(3,minmax(0,1fr))]">
           {/* ── 브랜드 칸 ── */}
           <div>
-            <p className="text-[17px] font-bold tracking-[-0.03em] text-white">{CLINIC.name}</p>
+            <p className="text-[18px] font-bold tracking-[-0.03em] text-white">{CLINIC.name}</p>
             {/*
               영문명은 세리프로 — 라틴 문자만 있는 자리라 조건에 맞고,
               푸터에서 한 줄이 결이 다르면 그것만으로 마감이 정돈돼 보인다.
               (지어낸 문구가 아니라 로고 이미지 안에도 들어 있는 정식 표기다.)
             */}
-            <p className="display mt-2 text-[12px] tracking-[0.24em] text-brand-2">{CLINIC.nameEn}</p>
-            <p className="mt-6 max-w-[42ch] text-[13.5px] leading-[1.9] text-white/60">
+            <p className="display mt-2 text-[13px] tracking-[0.24em] text-brand-2">{CLINIC.nameEn}</p>
+            <p className="mt-6 max-w-[42ch] text-[14.5px] leading-[1.9] text-white/60">
               {CLINIC.description}
             </p>
 
             <a
               href={CLINIC.phoneHref}
-              className="mt-7 flex h-12 w-full max-w-[320px] items-center justify-center rounded-full bg-white/10 text-[16px] font-bold tabular-nums text-white transition-colors hover:bg-white/20"
+              className="mt-7 flex h-12 w-full max-w-[320px] items-center justify-center rounded-full bg-white/10 text-[17px] font-bold tabular-nums text-white transition-colors hover:bg-white/20"
             >
               {CLINIC.phone}
             </a>
@@ -67,7 +67,7 @@ export default function SiteFooter() {
                 "링크" 로만 읽히고, 검색엔진도 어디로 가는 링크인지 알 수 없다.
               ★ rel="me" — "이 사이트의 운영자가 저 계정" 이라는 표준 표기다.
             */}
-            <p className="mt-8 text-[11px] font-bold uppercase tracking-[0.18em] text-white/60">
+            <p className="mt-8 text-[12px] font-bold uppercase tracking-[0.18em] text-white/60">
               공식 채널
             </p>
             <ul className="mt-3.5 grid max-w-[320px] grid-cols-2 gap-2.5">
@@ -78,10 +78,10 @@ export default function SiteFooter() {
                     target="_blank"
                     rel="noopener noreferrer me"
                     aria-label={`${CLINIC.name} ${ch.label} (새 창)`}
-                    className="group flex h-11 items-center justify-between gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 text-[12.5px] font-bold text-white/85 transition-all duration-400 hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white"
+                    className="group flex h-11 items-center justify-between gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 text-[13.5px] font-bold text-white/85 transition-all duration-400 hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white"
                   >
                     <span className="min-w-0 truncate">{ch.label}</span>
-                    <span aria-hidden className="shrink-0 text-[11px] text-white/45 transition-transform duration-400 group-hover:translate-x-0.5">
+                    <span aria-hidden className="shrink-0 text-[12px] text-white/45 transition-transform duration-400 group-hover:translate-x-0.5">
                       ↗
                     </span>
                   </a>
@@ -93,13 +93,13 @@ export default function SiteFooter() {
           {/* ── 사이트맵 3칸 ── */}
           {COLUMNS.map((col) => (
             <nav key={col.title} aria-label={`푸터 ${col.title}`}>
-              <p className="text-[12.5px] font-bold tracking-[0.02em] text-white">{col.title}</p>
+              <p className="text-[13.5px] font-bold tracking-[0.02em] text-white">{col.title}</p>
               <ul className="mt-4 space-y-2.5">
                 {col.items.map((it) => (
                   <li key={it.href}>
                     <Link
                       href={it.href}
-                      className="tap text-[13px] leading-snug text-white/60 transition-colors hover:text-white"
+                      className="tap text-[14px] leading-snug text-white/60 transition-colors hover:text-white"
                     >
                       {it.label}
                     </Link>
@@ -116,9 +116,9 @@ export default function SiteFooter() {
             dl 로 쓰면 '주소'·'대표자' 가 장식이 아니라 값의 이름이 되어
             사람도 기계도 짝을 그대로 읽는다.
         */}
-        <dl className="mt-16 grid gap-x-10 gap-y-8 border-t border-white/10 pt-10 text-[12.5px] sm:grid-cols-2 lg:grid-cols-4">
+        <dl className="mt-16 grid gap-x-10 gap-y-8 border-t border-white/10 pt-10 text-[13.5px] sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <dt className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-white/60">주소</dt>
+            <dt className="text-[11.5px] font-bold uppercase tracking-[0.18em] text-white/60">주소</dt>
             <dd className="mt-2.5 space-y-1 leading-[1.85] text-white/70">
               <span className="block">{CLINIC.address.full}</span>
               <span className="block">
@@ -127,21 +127,21 @@ export default function SiteFooter() {
             </dd>
           </div>
           <div>
-            <dt className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-white/60">연락처</dt>
+            <dt className="text-[11.5px] font-bold uppercase tracking-[0.18em] text-white/60">연락처</dt>
             <dd className="mt-2.5 space-y-1 leading-[1.85] text-white/70">
               <span className="block tabular-nums">대표전화 / FAX {CLINIC.phone}</span>
               <span className="block break-all">{CLINIC.email}</span>
             </dd>
           </div>
           <div>
-            <dt className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-white/60">사업자 정보</dt>
+            <dt className="text-[11.5px] font-bold uppercase tracking-[0.18em] text-white/60">사업자 정보</dt>
             <dd className="mt-2.5 space-y-1 leading-[1.85] text-white/70">
               <span className="block">대표자 {CLINIC.director}</span>
               <span className="block tabular-nums">사업자등록번호 {CLINIC.bizNo}</span>
             </dd>
           </div>
           <div>
-            <dt className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-white/60">진료시간</dt>
+            <dt className="text-[11.5px] font-bold uppercase tracking-[0.18em] text-white/60">진료시간</dt>
             {/*
               ⚠️ 요일별로 값이 다르므로 한 줄에 이어 붙이지 않는다.
                  이어 붙이면 어디서 끊어 읽어야 할지 알 수 없다.
@@ -169,7 +169,7 @@ export default function SiteFooter() {
              그어져 화면 중간에서 뚝 끊긴 줄로 보인다.
         */}
         <div className="mt-12 border-t border-white/10 pt-8">
-          <p className="max-w-[86ch] text-[11.5px] leading-[1.9] text-white/60">
+          <p className="max-w-[86ch] text-[12.5px] leading-[1.9] text-white/60">
             본 사이트의 진료 정보는 일반적인 이해를 돕기 위한 것으로 개별 진단을 대신하지 않습니다.
             치료 결과는 개인의 구강 상태와 전신 건강에 따라 다를 수 있으며, 모든 의료 행위에는
             부작용이 따를 수 있습니다. 정확한 진단은 내원 후 검사를 통해 이루어집니다.
@@ -186,7 +186,7 @@ export default function SiteFooter() {
              값이 굳어, 해가 바뀌어도 재배포 전까지 지난해가 박혀 있게 된다.
              연도를 안 쓰면 틀릴 일도 없다.
         */}
-        <div className="mt-8 flex flex-col gap-3 text-[11.5px] sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-3 text-[12.5px] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link href="/privacy" className="tap font-bold text-white/70 transition-colors hover:text-white">
               개인정보처리방침

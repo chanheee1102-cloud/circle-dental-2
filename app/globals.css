@@ -252,7 +252,7 @@ section[id] { scroll-margin-top: 96px; }
   line-height: 0.94;
 }
 .t-h2 {
-  font-size: clamp(1.7rem, 3.4vw, 2.9rem);
+  font-size: clamp(1.85rem, 3.6vw, 3.05rem);
   line-height: 1.24;
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -264,12 +264,13 @@ section[id] { scroll-margin-top: 96px; }
  *   ink-2 로 칠해져 2.21:1 이 됐다. 색은 쓰는 자리에서 정한다 — 여기서는 글꼴만.
  */
 .t-eyebrow {
-  font-size: 0.72rem;
+  font-size: 0.79rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   font-weight: 600;
 }
-.t-body { font-size: 0.97rem; line-height: 1.92; color: var(--color-ink-2); letter-spacing: -0.012em; }
+/* 본문 15.5px → 17px. 한국어 본문에서 16px 미만은 오래 읽기 힘들다. */
+.t-body { font-size: 1.06rem; line-height: 1.92; color: var(--color-ink-2); letter-spacing: -0.012em; }
 
 .img-zoom { overflow: hidden; }
 .img-zoom img { transition: transform 1.2s var(--ease-soft); }

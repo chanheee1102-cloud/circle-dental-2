@@ -34,13 +34,13 @@ export default function GlossaryPage() {
                   <Reveal key={g.term} delay={(i % 8) * 45}>
                     <div className="grid gap-2 bg-surface p-7 md:grid-cols-[200px_minmax(0,1fr)] md:gap-8 md:p-8">
                       <dt>
-                        <span className="text-[16px] font-bold tracking-[-0.025em] text-ink">{g.term}</span>
-                        {g.reading ? <span className="ml-2 text-[13px] text-ink-2">{g.reading}</span> : null}
+                        <span className="text-[17px] font-bold tracking-[-0.025em] text-ink">{g.term}</span>
+                        {g.reading ? <span className="ml-2 text-[14px] text-ink-2">{g.reading}</span> : null}
                       </dt>
                       <dd>
-                        <p className="t-body text-[14.5px]">{g.def}</p>
+                        <p className="t-body text-[15.5px]">{g.def}</p>
                         {t ? (
-                          <Link href={`/treatment/${t.slug}`} className="mt-3 inline-flex text-[12.5px] font-bold text-brand">
+                          <Link href={`/treatment/${t.slug}`} className="mt-3 inline-flex text-[13.5px] font-bold text-brand">
                             {t.name} →
                           </Link>
                         ) : null}

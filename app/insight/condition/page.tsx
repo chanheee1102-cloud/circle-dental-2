@@ -31,9 +31,9 @@ export default function ConditionIndex() {
                     <span className="display text-[26px] leading-none text-brand/30">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <h2 className="mt-5 text-[17.5px] font-bold tracking-[-0.03em] text-ink transition-colors group-hover:text-brand">{c.name}</h2>
-                    {c.aka.length ? <p className="mt-1.5 text-[12.5px] text-brand">{c.aka.join(' · ')}</p> : null}
-                    <p className="mt-3.5 line-clamp-3 flex-1 text-[13.5px] leading-[1.8] text-ink-2">{c.definition}</p>
+                    <h2 className="mt-5 text-[18.5px] font-bold tracking-[-0.03em] text-ink transition-colors group-hover:text-brand">{c.name}</h2>
+                    {c.aka.length ? <p className="mt-1.5 text-[13.5px] text-brand">{c.aka.join(' · ')}</p> : null}
+                    <p className="mt-3.5 line-clamp-3 flex-1 text-[14.5px] leading-[1.8] text-ink-2">{c.definition}</p>
                   </Link>
                 </Reveal>
               ))}

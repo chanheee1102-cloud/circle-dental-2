@@ -139,7 +139,7 @@ export default function Hero() {
              화면 낭독기 사용자에게는 그냥 소음이다. 사진은 배경이지 본문이 아니다.
         */}
         <div className="mt-5 flex h-[34px] items-center gap-4">
-          <p key={on ? 'v' : `p${i}`} className="hero-now text-[12.5px] leading-[1.5] text-white/60">
+          <p key={on ? 'v' : `p${i}`} className="hero-now text-[13.5px] leading-[1.5] text-white/60">
             {on ? VIDEO.title : STILLS[i].alt}
           </p>
         </div>
@@ -179,7 +179,7 @@ export default function Hero() {
 
       {/* 스크롤 지시자 */}
       <div className="pointer-events-none absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2.5 md:flex">
-        <span className="text-[10.5px] tracking-[0.3em] text-white/45">SCROLL</span>
+        <span className="text-[11.5px] tracking-[0.3em] text-white/45">SCROLL</span>
         <span className="bouncy block h-7 w-px bg-white/45" />
       </div>
     </section>

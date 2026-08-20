@@ -28,8 +28,8 @@ export default function TreatmentIndex() {
               {TREATMENTS.map((t, i) => (
                 <Reveal as="li" key={t.slug} delay={(i % 6) * 55}>
                   <Link href={`/treatment/${t.slug}`} className="group grid gap-4 bg-surface p-8 transition-colors duration-500 hover:bg-paper md:grid-cols-[minmax(0,260px)_minmax(0,1fr)] md:gap-10 md:p-10">
-                    <h2 className="text-[19px] font-bold tracking-[-0.03em] text-ink transition-colors group-hover:text-brand">{t.name}</h2>
-                    <p className="t-body text-[14.5px]">{t.summary}</p>
+                    <h2 className="text-[20px] font-bold tracking-[-0.03em] text-ink transition-colors group-hover:text-brand">{t.name}</h2>
+                    <p className="t-body text-[15.5px]">{t.summary}</p>
                   </Link>
                 </Reveal>
               ))}

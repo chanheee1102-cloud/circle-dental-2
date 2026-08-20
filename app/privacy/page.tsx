@@ -47,7 +47,7 @@ export default function PrivacyPage() {
         <section className="bg-paper py-20 md:py-28">
           <div className="shell max-w-[74ch]">
             <Reveal>
-              <p className="text-[12.5px] text-ink-2">
+              <p className="text-[13.5px] text-ink-2">
                 최종 확인{' '}
                 <time dateTime={SITE_MODIFIED} className="font-bold text-ink">
                   {formatKoreanDate(SITE_MODIFIED)}

@@ -43,7 +43,7 @@ export function DocHero({
     <section className="relative overflow-hidden bg-ink pb-20 pt-[124px] text-white md:pb-28 md:pt-[150px]">
       <div className="shell">
         <Reveal>
-          <nav aria-label="현재 위치" className="mb-9 flex flex-wrap items-center gap-2 text-[12px] text-white/50">
+          <nav aria-label="현재 위치" className="mb-9 flex flex-wrap items-center gap-2 text-[13px] text-white/50">
             {crumbs.map((c, i) => (
               <span key={c.href} className="flex items-center gap-2">
                 {i > 0 ? <span aria-hidden="true">/</span> : null}
@@ -52,7 +52,7 @@ export function DocHero({
             ))}
           </nav>
           {/* 영문 라벨은 세리프로 — 홈 히어로의 결과 같은 자리를 만든다. */}
-          <p className="display text-[13px] uppercase tracking-[0.3em] text-brand-2">{eyebrow}</p>
+          <p className="display text-[14px] uppercase tracking-[0.3em] text-brand-2">{eyebrow}</p>
         </Reveal>
 
         {/* h1 은 질문 그대로 — 검색어와 같은 모양이어야 인용된다. */}
@@ -64,7 +64,7 @@ export function DocHero({
             {/* 절 단위로 끊는다 — 직답은 인용되는 자리라 줄이 어색하면 눈에 띈다. */}
             <Lede
               text={answer}
-              className="mt-8 max-w-3xl border-l-2 border-brand-2 pl-6 text-[16.5px] leading-[1.92] text-white/85 md:text-[18px]"
+              className="mt-8 max-w-3xl border-l-2 border-brand-2 pl-6 text-[17.5px] leading-[1.92] text-white/85 md:text-[19px]"
             />
           </Reveal>
         ) : null}
@@ -87,7 +87,7 @@ export function DocSection({
       <div className="shell max-w-4xl">
         {title ? (
           <Reveal>
-            <h2 className="t-h3 mb-9 text-[20px] font-bold tracking-[-0.03em] text-ink md:text-[25px]">{title}</h2>
+            <h2 className="t-h3 mb-9 text-[21px] font-bold tracking-[-0.03em] text-ink md:text-[25px]">{title}</h2>
           </Reveal>
         ) : null}
         {children}
@@ -103,8 +103,8 @@ export function NamedList({ items }: { items: { name: string; detail: string }[]
       {items.map((it, i) => (
         <Reveal as="li" key={it.name} delay={i * 60}>
           <div className="bg-surface p-7 md:p-8">
-            <p className="text-[16px] font-bold tracking-[-0.025em] text-ink">{it.name}</p>
-            <p className="t-body mt-2.5 text-[14.5px]">{it.detail}</p>
+            <p className="text-[17px] font-bold tracking-[-0.025em] text-ink">{it.name}</p>
+            <p className="t-body mt-2.5 text-[15.5px]">{it.detail}</p>
           </div>
         </Reveal>
       ))}
@@ -118,7 +118,7 @@ export function BulletList({ items, tone = 'plain' }: { items: readonly string[]
     <ul className={`space-y-3 ${urgent ? 'rounded-[22px] bg-[#fdf3f1] p-8' : ''}`}>
       {items.map((s, i) => (
         <Reveal as="li" key={s} delay={i * 50}>
-          <span className="flex gap-3.5 text-[15px] leading-[1.85] text-ink-2">
+          <span className="flex gap-3.5 text-[16px] leading-[1.85] text-ink-2">
             <span className={`mt-[10px] h-[5px] w-[5px] shrink-0 rounded-full ${urgent ? 'bg-[#b03e28]' : 'bg-brand'}`} />
             {s}
           </span>
@@ -136,10 +136,10 @@ export function RedFlags({ items }: { items: readonly string[] }) {
   if (!items?.length) return null;
   return (
     <div className="rounded-[26px] border border-[#e8c9c1] bg-[#fdf3f1] p-8 md:p-10">
-      <p className="text-[13px] font-bold tracking-[0.1em] text-[#b03e28]">이럴 때는 바로 오세요</p>
+      <p className="text-[14px] font-bold tracking-[0.1em] text-[#b03e28]">이럴 때는 바로 오세요</p>
       <ul className="mt-6 space-y-3">
         {items.map((s) => (
-          <li key={s} className="flex gap-3.5 text-[15px] leading-[1.85] text-ink">
+          <li key={s} className="flex gap-3.5 text-[16px] leading-[1.85] text-ink">
             <span className="mt-[10px] h-[5px] w-[5px] shrink-0 rounded-full bg-[#b03e28]" />
             {s}
           </li>
@@ -147,7 +147,7 @@ export function RedFlags({ items }: { items: readonly string[] }) {
       </ul>
       <a
         href={CLINIC.phoneHref}
-        className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#b03e28] px-6 py-3 text-[14px] font-bold text-white"
+        className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#b03e28] px-6 py-3 text-[15px] font-bold text-white"
       >
         {CLINIC.phone}
       </a>
@@ -162,14 +162,14 @@ export function QaList({ items }: { items: readonly { q: string; a: string }[] }
         <Reveal key={f.q} delay={i * 50}>
           <details className="group py-6">
             <summary className="flex cursor-pointer list-none items-start justify-between gap-6">
-              <span className="text-[15.5px] font-bold leading-snug tracking-[-0.024em] text-ink">{f.q}</span>
+              <span className="text-[17px] font-bold leading-snug tracking-[-0.024em] text-ink">{f.q}</span>
               <span className="mt-1 grid h-6 w-6 shrink-0 place-items-center rounded-full border border-line text-ink-2 transition-transform duration-400 group-open:rotate-45">
                 <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" fill="none" aria-hidden="true">
                   <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
                 </svg>
               </span>
             </summary>
-            <p className="t-body mt-4 pr-10 text-[14.5px]">{f.a}</p>
+            <p className="t-body mt-4 pr-10 text-[15.5px]">{f.a}</p>
           </details>
         </Reveal>
       ))}
@@ -188,10 +188,10 @@ export function NextLinks({ items }: { items: { label: string; href: string; not
             href={l.href}
             className={`group block h-full ${CARD} p-7 transition-transform duration-500 hover:-translate-y-1`}
           >
-            <span className="text-[15.5px] font-bold tracking-[-0.025em] text-ink transition-colors group-hover:text-brand">
+            <span className="text-[17px] font-bold tracking-[-0.025em] text-ink transition-colors group-hover:text-brand">
               {l.label}
             </span>
-            {l.note ? <span className="mt-2 block text-[13.5px] leading-relaxed text-ink-2">{l.note}</span> : null}
+            {l.note ? <span className="mt-2 block text-[14.5px] leading-relaxed text-ink-2">{l.note}</span> : null}
           </Link>
         </Reveal>
       ))}
@@ -227,7 +227,7 @@ export function IndexHero({
       <section className="relative overflow-hidden bg-ink pb-20 pt-[124px] text-white md:pb-24 md:pt-[150px]">
         <div className="shell">
           <Reveal>
-            <nav aria-label="현재 위치" className="mb-9 flex flex-wrap items-center gap-2 text-[12px] text-white/50">
+            <nav aria-label="현재 위치" className="mb-9 flex flex-wrap items-center gap-2 text-[13px] text-white/50">
               {crumbs.map((c, i) => (
                 <span key={c.href} className="flex items-center gap-2">
                   {i > 0 ? <span aria-hidden="true">/</span> : null}
@@ -235,7 +235,7 @@ export function IndexHero({
                 </span>
               ))}
             </nav>
-            <p className="display text-[13px] uppercase tracking-[0.3em] text-brand-2">{eyebrow}</p>
+            <p className="display text-[14px] uppercase tracking-[0.3em] text-brand-2">{eyebrow}</p>
           </Reveal>
           <h1 className="t-h2 mt-5 text-white">
             {/* ⚠️ 화면은 두 줄이지만 크롤러·읽어주기에는 한 문장으로 이어져야 한다.
@@ -246,7 +246,7 @@ export function IndexHero({
             <span className="text-brand-2"><BlurText text={lines[1]} step={45} /></span>
           </h1>
           <Reveal delay={240}>
-            <Lede text={lede} className="mt-8 max-w-2xl text-[15.5px] leading-[1.92] text-white/70" />
+            <Lede text={lede} className="mt-8 max-w-2xl text-[17px] leading-[1.92] text-white/70" />
           </Reveal>
 
           {/*
@@ -258,7 +258,7 @@ export function IndexHero({
               <p className="mt-12 flex items-baseline gap-3">
                 {/* ⚠️ /50 은 ink 위에서 2.14:1 로 떨어진다(54px 은 큰 글자라 3:1 기준). /70 = 3.19:1. */}
                 <span className="display text-[54px] leading-none text-brand-2/70">{count}</span>
-                <span className="text-[13px] tracking-[0.02em] text-white/70">개의 문서</span>
+                <span className="text-[14px] tracking-[0.02em] text-white/70">개의 문서</span>
               </p>
             </Reveal>
           ) : null}
@@ -309,15 +309,15 @@ export function DocCard({
         </span>
       ) : null}
       {eyebrow ? (
-        <span className="mt-4 text-[11.5px] tracking-[0.14em] text-ink-2">{eyebrow}</span>
+        <span className="mt-4 text-[12.5px] tracking-[0.14em] text-ink-2">{eyebrow}</span>
       ) : null}
-      <h3 className="mt-2.5 text-[17px] font-bold leading-[1.5] tracking-[-0.03em] text-ink transition-colors group-hover:text-brand">
+      <h3 className="mt-2.5 text-[18px] font-bold leading-[1.5] tracking-[-0.03em] text-ink transition-colors group-hover:text-brand">
         {title}
       </h3>
-      <p className="mt-4 line-clamp-4 flex-1 text-[13.5px] leading-[1.85] text-ink-2">{body}</p>
+      <p className="mt-4 line-clamp-4 flex-1 text-[14.5px] leading-[1.85] text-ink-2">{body}</p>
       <span
         aria-hidden
-        className="mt-6 inline-flex items-center gap-1.5 text-[12.5px] font-bold text-brand transition-transform duration-500 group-hover:translate-x-1"
+        className="mt-6 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-brand transition-transform duration-500 group-hover:translate-x-1"
       >
         자세히 <span>→</span>
       </span>

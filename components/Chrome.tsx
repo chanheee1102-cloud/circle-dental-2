@@ -68,12 +68,12 @@ export default function Chrome() {
               type="button"
               onClick={() => setPickOpen((v) => !v)}
               aria-expanded={pickOpen}
-              className="flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.02em] text-ink"
+              className="flex items-center gap-2.5 text-[16px] font-semibold tracking-[-0.02em] text-ink"
             >
-              <span className="display text-[19px] italic text-brand">On</span>
+              <span className="display text-[20px] italic text-brand">On</span>
               {PILLARS[pick].name}
               <span
-                className="text-[9px] text-brand"
+                className="text-[10px] text-brand"
                 style={{ transform: pickOpen ? 'rotate(180deg)' : 'none', transition: 'transform .3s var(--ease-soft)' }}
               >
                 ▼
@@ -93,9 +93,9 @@ export default function Chrome() {
                   <button
                     type="button"
                     onClick={() => { setPick(i); setPickOpen(false); }}
-                    className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-[14.5px] text-ink-2 transition-colors hover:text-brand"
+                    className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-[15.5px] text-ink-2 transition-colors hover:text-brand"
                   >
-                    <span className="display text-[16px] italic text-brand">On</span>
+                    <span className="display text-[17px] italic text-brand">On</span>
                     {p.name}
                   </button>
                 </li>
@@ -119,7 +119,7 @@ export default function Chrome() {
 
           {/* 우 — 전화 + 햄버거 */}
           <div className="ml-auto flex shrink-0 items-center gap-4">
-            <a href={CLINIC.phoneHref} className="hidden text-[15px] font-bold tabular-nums text-ink lg:block">
+            <a href={CLINIC.phoneHref} className="hidden text-[16px] font-bold tabular-nums text-ink lg:block">
               {CLINIC.phone}
             </a>
             <button
@@ -171,20 +171,20 @@ export default function Chrome() {
               {NAV.map((n, i) => (
                 <li key={n.href}>
                   <a href={n.href} onClick={() => setOpen(false)} className="gnb-item group flex items-baseline gap-5 text-white">
-                    <span className="w-8 shrink-0 text-[12px] tabular-nums text-white/35">
+                    <span className="w-8 shrink-0 text-[13px] tabular-nums text-white/35">
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <span className="relative inline-block text-[clamp(30px,5.4vw,66px)] font-bold leading-tight tracking-[-0.035em]">
                       {n.label}
                     </span>
-                    <span className="display hidden text-[18px] text-white/30 md:inline">{n.en}</span>
+                    <span className="display hidden text-[19px] text-white/30 md:inline">{n.en}</span>
                   </a>
                 </li>
               ))}
             </ul>
 
-            <div className="mt-16 flex flex-wrap items-center gap-x-8 gap-y-3 text-[13.5px] text-white/55">
-              <a href={CLINIC.phoneHref} className="text-[19px] font-bold tabular-nums text-white">
+            <div className="mt-16 flex flex-wrap items-center gap-x-8 gap-y-3 text-[14.5px] text-white/55">
+              <a href={CLINIC.phoneHref} className="text-[20px] font-bold tabular-nums text-white">
                 {CLINIC.phone}
               </a>
               <span>{CLINIC.address.full}</span>

@@ -50,7 +50,7 @@ export default function ClinicMap({ height = 380 }: { height?: number }) {
             href={l.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-full px-6 py-3 text-[13.5px] font-bold transition-transform duration-400 hover:-translate-y-0.5"
+            className="rounded-full px-6 py-3 text-[14.5px] font-bold transition-transform duration-400 hover:-translate-y-0.5"
             style={{ background: l.bg, color: l.fg }}
           >
             {l.label}에서 길찾기

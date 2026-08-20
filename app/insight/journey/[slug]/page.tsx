@@ -48,11 +48,11 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
           <Reveal>
             <div className="flex flex-wrap gap-x-14 gap-y-5 border-b border-line pb-9">
               <div>
-                <p className="text-[12px] tracking-[0.14em] text-ink-2">내원 횟수</p>
+                <p className="text-[13px] tracking-[0.14em] text-ink-2">내원 횟수</p>
                 <p className="stat mt-2 text-[30px] text-brand">{j.visits}</p>
               </div>
               <div>
-                <p className="text-[12px] tracking-[0.14em] text-ink-2">전체 기간</p>
+                <p className="text-[13px] tracking-[0.14em] text-ink-2">전체 기간</p>
                 <p className="stat mt-2 text-[30px] text-brand">{j.duration}</p>
               </div>
             </div>
@@ -67,8 +67,8 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
                   <span className="display text-[24px] leading-none text-brand/35">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <p className="text-[15px] font-bold tracking-[-0.025em] text-ink">{st.label}</p>
-                  <p className="t-body text-[14.5px]">{st.what}</p>
+                  <p className="text-[16px] font-bold tracking-[-0.025em] text-ink">{st.label}</p>
+                  <p className="t-body text-[15.5px]">{st.what}</p>
                 </div>
               </Reveal>
             ))}
@@ -79,7 +79,7 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
         {j.variables?.length ? (
           <DocSection title="기간이 늘어나는 경우">
             <BulletList items={j.variables} />
-            <p className="mt-8 text-[13px] leading-[1.85] text-ink-2">
+            <p className="mt-8 text-[14px] leading-[1.85] text-ink-2">
               위 횟수와 기간은 일반적인 경우이며, 구강 상태에 따라 달라집니다. 정확한 계획은 진단 후에 안내드립니다.
             </p>
           </DocSection>

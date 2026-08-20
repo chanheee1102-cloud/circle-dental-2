@@ -48,7 +48,7 @@ export default async function TreatmentPage({ params }: { params: Promise<{ slug
 
         <DocSection>
           <Reveal>
-            <p className="t-body text-[15.5px]">{t.intro}</p>
+            <p className="t-body text-[17px]">{t.intro}</p>
           </Reveal>
         </DocSection>
 
@@ -70,18 +70,18 @@ export default async function TreatmentPage({ params }: { params: Promise<{ slug
               <div className="rounded-[22px] bg-surface p-8 md:p-10">
                 <div className="flex flex-wrap gap-x-12 gap-y-4">
                   <div>
-                    <p className="text-[12px] tracking-[0.14em] text-ink-2">내원 횟수</p>
+                    <p className="text-[13px] tracking-[0.14em] text-ink-2">내원 횟수</p>
                     <p className="stat mt-2 text-[25px] text-brand">{journey.visits}</p>
                   </div>
                   <div>
-                    <p className="text-[12px] tracking-[0.14em] text-ink-2">전체 기간</p>
+                    <p className="text-[13px] tracking-[0.14em] text-ink-2">전체 기간</p>
                     <p className="stat mt-2 text-[25px] text-brand">{journey.duration}</p>
                   </div>
                 </div>
-                <p className="t-body mt-7 text-[14.5px]">{journey.answer}</p>
+                <p className="t-body mt-7 text-[15.5px]">{journey.answer}</p>
                 <a
                   href={`/insight/journey/${journey.slug}`}
-                  className="mt-7 inline-flex text-[13px] font-bold text-brand"
+                  className="mt-7 inline-flex text-[14px] font-bold text-brand"
                 >
                   단계별로 자세히 보기 →
                 </a>
@@ -102,8 +102,8 @@ export default async function TreatmentPage({ params }: { params: Promise<{ slug
         <DocSection tone="surface">
           <Reveal>
             <div className="rounded-[22px] border border-line bg-paper p-8">
-              <p className="text-[12.5px] font-bold tracking-[0.1em] text-ink-2">치료 전 확인해 주세요</p>
-              <p className="mt-3 text-[13.5px] leading-[1.9] text-ink-2">
+              <p className="text-[13.5px] font-bold tracking-[0.1em] text-ink-2">치료 전 확인해 주세요</p>
+              <p className="mt-3 text-[14.5px] leading-[1.9] text-ink-2">
                 위 내용은 일반적인 안내이며, 실제 치료 방법·기간·예후는 개인의 구강 상태와 전신 건강에 따라 달라집니다.
                 모든 의료 행위에는 부작용이 발생할 수 있으므로 반드시 의료진의 진단과 상담을 거쳐 결정하시기 바랍니다.
               </p>

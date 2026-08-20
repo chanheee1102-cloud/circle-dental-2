@@ -48,7 +48,7 @@ export default function Home() {
                 <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-line pt-10">
                   {FACTS.map((s) => (
                     <div key={s.label}>
-                      <dt className="text-[11.5px] tracking-[0.16em] text-ink-2">{s.label}</dt>
+                      <dt className="text-[12.5px] tracking-[0.16em] text-ink-2">{s.label}</dt>
                       {/*
                         숫자로 시작하는 값만 세어 올린다 (실측: countUp / odometer 동봉).
                         ⚠️ "14:00까지" 는 제외된다 — 시각을 0 부터 세면 뜻이 달라진다.
@@ -60,7 +60,7 @@ export default function Home() {
                           return m ? <Counter to={Number(m[1])} suffix={m[2]} /> : s.value;
                         })()}
                       </dd>
-                      <dd className="mt-2 text-[12.5px] text-ink-2">{s.note}</dd>
+                      <dd className="mt-2 text-[13.5px] text-ink-2">{s.note}</dd>
                     </div>
                   ))}
                 </dl>
@@ -131,9 +131,9 @@ export default function Home() {
                   </div>
                   <div className="flex flex-1 flex-col p-9">
                     <span className="display text-[30px] text-brand/35">{p.no}</span>
-                    <h3 className="mt-4 text-[22px] font-bold tracking-[-0.03em]">{p.name}</h3>
-                    <p className="display mt-1 text-[15px] text-ink-2">{p.en}</p>
-                    <Lede className="t-body mt-5 flex-1 text-[14px]" text={p.copy} />
+                    <h3 className="mt-4 text-[23px] font-bold tracking-[-0.03em]">{p.name}</h3>
+                    <p className="display mt-1 text-[16px] text-ink-2">{p.en}</p>
+                    <Lede className="t-body mt-5 flex-1 text-[15px]" text={p.copy} />
                   </div>
                 </article>
               ))}
@@ -142,10 +142,10 @@ export default function Home() {
                   <p className="display text-[46px] leading-none">
                     <LetterReveal text="Ask us" step={80} />
                   </p>
-                  <p className="mt-5 text-[14px] leading-[1.9] text-white/90">
+                  <p className="mt-5 text-[15px] leading-[1.9] text-white/90">
                     어떤 치료가 필요한지 모르겠다면 먼저 봐 드립니다.
                   </p>
-                  <a href={CLINIC.phoneHref} className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-[14px] font-bold text-brand">
+                  <a href={CLINIC.phoneHref} className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-[15px] font-bold text-brand">
                     {CLINIC.phone}
                   </a>
                 </div>
@@ -205,12 +205,12 @@ export default function Home() {
                   />
                   {/* 실측 gs_reveal fromRight — x:30 으로 아주 살짝만 붙는다. */}
                   <Reveal delay={i * 120 + 200} from="right">
-                    <p className="mt-6 text-[12px] tracking-[0.16em] text-ink-2">{d.role}</p>
+                    <p className="mt-6 text-[13px] tracking-[0.16em] text-ink-2">{d.role}</p>
                     <h3 className="mt-2 text-[24px] font-bold tracking-[-0.03em]">{d.name}</h3>
-                    <p className="mt-3 text-[13px] leading-relaxed text-ink-2">{d.focus.join(' · ')}</p>
+                    <p className="mt-3 text-[14px] leading-relaxed text-ink-2">{d.focus.join(' · ')}</p>
                     <ul className="mt-5 space-y-1.5 border-t border-line pt-5">
                       {d.career.slice(0, 4).map((c) => (
-                        <li key={c} className="text-[13px] leading-[1.7] text-ink-2">{c}</li>
+                        <li key={c} className="text-[14px] leading-[1.7] text-ink-2">{c}</li>
                       ))}
                     </ul>
                   </Reveal>
@@ -287,25 +287,25 @@ export default function Home() {
             <Reveal>
               <p className="t-eyebrow mb-7 mt-6 text-white/60">Visit</p>
             </Reveal>
-            <LineReveal className="t-h2 text-white" lines={['화정역에서', '가까운 3층']} delay={80} />
+            <LineReveal className="t-h2 text-white" lines={['오시는 길']} delay={80} />
 
             <div className="mt-14 grid gap-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-20">
               <div>
                 <Reveal delay={200}>
                   <dl className="divide-y divide-white/10 border-y border-white/10">
                     <div className="grid gap-2 py-6 sm:grid-cols-[92px_minmax(0,1fr)]">
-                      <dt className="text-[12.5px] tracking-[0.1em] text-white/50">주소</dt>
-                      <dd className="text-[15px] leading-[1.8] text-white/90">{CLINIC.address.full}</dd>
+                      <dt className="text-[13.5px] tracking-[0.1em] text-white/50">주소</dt>
+                      <dd className="text-[16px] leading-[1.8] text-white/90">{CLINIC.address.full}</dd>
                     </div>
                     <div className="grid gap-2 py-6 sm:grid-cols-[92px_minmax(0,1fr)]">
-                      <dt className="text-[12.5px] tracking-[0.1em] text-white/50">주차</dt>
-                      <dd className="text-[15px] leading-[1.8] text-white/90">
+                      <dt className="text-[13.5px] tracking-[0.1em] text-white/50">주차</dt>
+                      <dd className="text-[16px] leading-[1.8] text-white/90">
                         {CLINIC.parking}
-                        <span className="mt-1.5 block text-[13px] leading-[1.8] text-white/60">{CLINIC.parkingNote}</span>
+                        <span className="mt-1.5 block text-[14px] leading-[1.8] text-white/60">{CLINIC.parkingNote}</span>
                       </dd>
                     </div>
                     <div className="grid gap-2 py-6 sm:grid-cols-[92px_minmax(0,1fr)]">
-                      <dt className="text-[12.5px] tracking-[0.1em] text-white/50">전화</dt>
+                      <dt className="text-[13.5px] tracking-[0.1em] text-white/50">전화</dt>
                       <dd>
                         <a href={CLINIC.phoneHref} className="display text-[30px] text-brand-2">{CLINIC.phone}</a>
                       </dd>
@@ -315,10 +315,10 @@ export default function Home() {
 
                 <Reveal delay={280}>
                   <div className="mt-9 flex flex-wrap gap-3">
-                    <a href={CLINIC.booking.naver} target="_blank" rel="noopener noreferrer" className="rounded-full bg-brand px-7 py-3.5 text-[14px] font-bold text-white transition-transform hover:-translate-y-0.5">
+                    <a href={CLINIC.booking.naver} target="_blank" rel="noopener noreferrer" className="rounded-full bg-brand px-7 py-3.5 text-[15px] font-bold text-white transition-transform hover:-translate-y-0.5">
                       네이버 예약
                     </a>
-                    <a href={CLINIC.booking.kakao} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/35 px-7 py-3.5 text-[14px] font-bold text-white transition-colors hover:bg-white/10">
+                    <a href={CLINIC.booking.kakao} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/35 px-7 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10">
                       카카오톡 문의
                     </a>
                   </div>

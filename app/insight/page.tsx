@@ -41,9 +41,9 @@ export default function InsightHub() {
                 <Reveal as="li" key={s.href} delay={i * 70}>
                   <Link href={s.href} className="group flex h-full flex-col rounded-[26px] bg-surface p-9 transition-transform duration-500 hover:-translate-y-1.5">
                     <span className="display text-[30px] leading-none text-brand/30">{String(s.n).padStart(2, '0')}</span>
-                    <h2 className="mt-6 text-[20px] font-bold tracking-[-0.03em] text-ink transition-colors group-hover:text-brand">{s.label}</h2>
-                    <p className="t-body mt-3.5 flex-1 text-[13.5px]">{s.note}</p>
-                    <span className="mt-7 text-[12.5px] font-bold text-brand">{s.n}건 보기 →</span>
+                    <h2 className="mt-6 text-[21px] font-bold tracking-[-0.03em] text-ink transition-colors group-hover:text-brand">{s.label}</h2>
+                    <p className="t-body mt-3.5 flex-1 text-[14.5px]">{s.note}</p>
+                    <span className="mt-7 text-[13.5px] font-bold text-brand">{s.n}건 보기 →</span>
                   </Link>
                 </Reveal>
               ))}
