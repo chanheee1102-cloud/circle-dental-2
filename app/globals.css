@@ -1,0 +1,565 @@
+@import 'tailwindcss';
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+/* ══════════════════════════════════════════════════════════════════
+   동그라미치과 v2 — bom-on.com 에서 뜯어온 움직임을 전부 옮긴 판.
+
+   ★ 원본 스택: GSAP + ScrollTrigger + ScrollSmoother(유료) + Swiper + jQuery
+     여기서는 **의존성 0** 이다. 눈에 보이는 것은 전부 CSS 키프레임과
+     IntersectionObserver 로 되는 것이었고, 실제로 그렇게 다시 짰다.
+
+   ★ 타이밍·이징·색은 전부 개발자도구 실측값이다. 각 블록에 원본 값을 적어 뒀다.
+     ⚠️ 숫자를 '대충 비슷하게' 바꾸면 인상이 통째로 달라진다. 특히
+        · 히어로 줌인의 **1초 지연**
+        · 헤더의 **오버슛 이징**(0.75, 1.27, …) — 1.27 이 튀어오르는 값이다
+        · 토글 배경의 **1.5초** — 빠르게 하면 '스위치' 가 되고 느려야 '켜지는' 느낌이 난다
+
+   ⚠️ 색만 동그라미치과 것으로 바꿨다. bom-on 의 주황(#ff7048)을 그대로 쓰면
+      남의 브랜드가 된다.
+   ══════════════════════════════════════════════════════════════════ */
+
+@theme {
+  --color-ink: #14171c;
+  --color-ink-2: #4a5058;
+  --color-ink-3: #767c85;
+  --color-ink-4: #9aa0a8;
+
+  /* 동그라미치과 — 차분한 청록. bom-on 주황 자리에 들어간다. */
+  --color-brand: #1f7a6e;
+  --color-brand-2: #2a9b8c;
+  --color-brand-soft: #e8f3f1;
+  --color-off: #b4b4b4; /* 실측 rgb(180,180,180) — 토글 OFF */
+
+  --color-paper: #fbfaf8;
+  --color-surface: #f2f1ee;
+  --color-line: #e4e2de;
+
+  --font-sans: 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+  --font-display: 'Playfair Display', 'Times New Roman', serif;
+
+  /* 실측 이징 — 원본 CSS 에서 그대로 옮겼다. */
+  --ease-overshoot: cubic-bezier(0.75, 1.27, 0.17, 0.92); /* header-inner */
+  --ease-expo: cubic-bezier(0.23, 1, 0.32, 1); /* gnb-outer */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  word-break: keep-all;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+::selection {
+  background: var(--color-brand);
+  color: #fff;
+}
+
+/* ══ ① 히어로 줌인 ═══════════════════════════════════════════════
+   실측 .con_wrap_mv { animation: 4.5s ease-out 1s forwards fadeInZoom }
+   ⚠️ 1초 지연이 핵심 — 바로 시작하면 로딩과 섞여 아무도 못 알아챈다. */
+@keyframes fadeInZoom {
+  0% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+/* 실측 .con_wrap_mv-bg { transition: opacity 1s, transform 5.2s }
+   줌인 위에 5.2초짜리 두 번째 층을 겹쳐 '멈추지 않는' 느낌을 만든다.
+   rotate(0.001deg) 는 GSAP 의 계단현상 방지 트릭 — 원본에도 그대로 있다. */
+@keyframes re04_bg_ani {
+  0% { transform: perspective(500px) scale(1.07) rotate(0.001deg) translateZ(0); }
+  100% { transform: perspective(500px) scale(1) rotate(0.001deg) translateZ(0); }
+}
+
+/* ══ ② 글자 마퀴 ═════════════════════════════════════════════════
+   실측: 글자마다 <span class="letter"> 분해 · 206.7px · 부모 overflow:hidden
+         .js-marquee-wrapper { animation: 5s infinite 1s marqueeAnimation-* }
+   ⚠️ 같은 덩어리를 두 벌 이어 붙이고 -50% 로 흘려야 이음매가 안 보인다.
+      한 벌만 두고 -100% 로 흘리면 한 바퀴마다 화면이 빈다. */
+@keyframes marqueeSlide {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes letterBreathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.018em); }
+}
+
+/* ══ ③ 토글 손잡이 ═══════════════════════════════════════════════
+   실측 @keyframes wobbleMe 1.2s infinite + .knob { transition: .3s }
+   ⚠️⚠️ 이동(translateX)과 흔들림을 **같은 요소에 걸면 안 된다.**
+        animation 이 transform 을 계속 덮어써서 손잡이가 영영 왼쪽에 머문다.
+        바깥은 이동, 안쪽(i)은 흔들림. */
+@keyframes wobbleMe {
+  0%, 100% { transform: translateX(0); }
+  30% { transform: translateX(-2px); }
+  60% { transform: translateX(3px); }
+  80% { transform: translateX(-1px); }
+}
+
+/* ══ ④ 부유 ══════════════════════════════════════════════════════
+   실측 @keyframes plus 1.2s infinite */
+@keyframes plus {
+  0%, 100% { transform: translate(0, -3px); }
+  50% { transform: translate(0, 0); }
+  75% { transform: translate(0, 3px); }
+  80% { transform: translate(0, 0); }
+}
+.floaty { animation: plus 1.2s ease-in-out infinite; }
+
+/* ══ ⑤ 스크롤 지시자 ═════════════════════════════════════════════
+   실측 @keyframes bounce 0.8s infinite */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+.bouncy { animation: bounce 0.8s ease-in-out infinite; }
+
+/* ══ ⑥ 3점 로더 ══════════════════════════════════════════════════
+   실측 @keyframes sk-bouncedelay 1.4s infinite, delay -0.32s 씩 어긋남 */
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+.sk-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--color-brand);
+  display: inline-block;
+  animation: sk-bouncedelay 1.4s ease-in-out infinite both;
+}
+.sk-dot:nth-child(1) { animation-delay: -0.32s; }
+.sk-dot:nth-child(2) { animation-delay: -0.16s; }
+
+/* ══ ⑦ 등장 ══════════════════════════════════════════════════════
+   실측 @keyframes fade-and-move { 0%{op:0} 50%{op:.5} 100%{op:1} }
+   원본은 ScrollTrigger 가 붙이지만 IntersectionObserver 로 같은 결과가 난다. */
+.reveal {
+  opacity: 0;
+  transform: translateY(34px);
+  transition:
+    opacity 0.9s var(--ease-soft),
+    transform 0.9s var(--ease-soft);
+  transition-delay: var(--d, 0ms);
+}
+.reveal.in { opacity: 1; transform: none; }
+
+/* 글자 한 줄씩 올라오는 등장 — 대형 제목용 */
+.line-mask { overflow: hidden; display: block; }
+.line-mask > span {
+  display: block;
+  transform: translateY(105%);
+  transition: transform 1.05s var(--ease-soft);
+  transition-delay: var(--d, 0ms);
+}
+.in .line-mask > span,
+.line-mask.in > span { transform: none; }
+
+/* ══ ⑧ 헤더 ══════════════════════════════════════════════════════
+   실측 .main-header { transition: 0.7s }
+        .header-inner { transition: width 0.5s cubic-bezier(0.75,1.27,0.17,0.92) 0.2s, opacity 0.7s }
+   ⚠️ 1.27 이 오버슛 값이다 — 폭이 줄었다가 살짝 되튄다. 이게 이 사이트의 '손맛'. */
+.site-header { transition: all 0.7s var(--ease-soft); }
+.header-inner {
+  transition:
+    width 0.5s var(--ease-overshoot) 0.2s,
+    background 0.7s var(--ease-soft),
+    box-shadow 0.7s var(--ease-soft);
+}
+
+/* ══ ⑨ 전체화면 메뉴(GNB) ════════════════════════════════════════
+   실측 .gnb-outer { transition: opacity 0.8s cubic-bezier(0.23,1,0.32,1) }
+        .gnb-inner { transition: 1.2s 0.2s }
+        .gnb_logo_bg { transition: 0.5s 0.5s }
+   = 바깥이 먼저 열리고(0.8s) 안쪽이 뒤따라오고(1.2s, 0.2s 지연)
+     로고 배경이 마지막에 뜬다(0.5s, 0.5s 지연). 세 겹의 시차가 전부다. */
+.gnb-outer {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s var(--ease-expo), visibility 0.8s;
+}
+.gnb-outer.open { opacity: 1; visibility: visible; }
+.gnb-inner {
+  transform: translateY(40px);
+  opacity: 0;
+  transition: transform 1.2s var(--ease-expo) 0.2s, opacity 1.2s var(--ease-expo) 0.2s;
+}
+.gnb-outer.open .gnb-inner { transform: none; opacity: 1; }
+.gnb-logo-bg {
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 0.5s var(--ease-soft) 0.5s, transform 0.5s var(--ease-soft) 0.5s;
+}
+.gnb-outer.open .gnb-logo-bg { opacity: 1; transform: none; }
+
+/* 메뉴 항목 — 밑줄이 좌→우로 그어진다 (실측 .line { transition: transform .2s, width .2s }) */
+.gnb-item span::after {
+  content: '';
+  position: absolute; left: 0; bottom: -6px;
+  height: 2px; width: 0;
+  background: currentColor;
+  transition: width 0.34s var(--ease-soft);
+}
+.gnb-item:hover span::after { width: 100%; }
+
+/* ══ ⑩ 가로 스크롤 섹션 ══════════════════════════════════════════
+   원본 .horizontal-scroll — 세로로 스크롤하면 안에서 가로로 밀린다.
+   원본은 ScrollTrigger pin 을 쓰지만, position:sticky + 스크롤 진행률로
+   같은 결과가 난다(라이브러리 0).
+   ⚠️ 트랙 폭만큼 세로 높이를 확보해야 한다 — 안 그러면 끝까지 못 밀고 튕긴다. */
+.hscroll-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hscroll-track {
+  display: flex;
+  gap: 28px;
+  padding-inline: 6vw;
+  will-change: transform;
+}
+
+/* ══ 드래그 힌트 커서 ════════════════════════════════════════════
+   실측 .cursor_slide_lr02 { transition: transform .5s cubic-bezier(0.75,1.27,0.3,1.35) .2s, opacity .2s }
+   ⚠️ 1.35 는 1.27 보다 더 튄다 — 커서라서 과장해도 되는 자리다. */
+.drag-cursor {
+  position: fixed;
+  z-index: 60;
+  pointer-events: none;
+  transform: scale(0);
+  opacity: 0;
+  transition:
+    transform 0.5s cubic-bezier(0.75, 1.27, 0.3, 1.35),
+    opacity 0.2s ease;
+}
+.drag-cursor.show { transform: scale(1); opacity: 1; }
+
+/* ══ 유틸 ════════════════════════════════════════════════════════ */
+section[id] { scroll-margin-top: 96px; }
+.shell { width: min(1280px, 100%); margin-inline: auto; padding-inline: 24px; }
+@media (min-width: 768px) { .shell { padding-inline: 44px; } }
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 0.94;
+}
+.t-h2 {
+  font-size: clamp(1.7rem, 3.4vw, 2.9rem);
+  line-height: 1.24;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+/*
+ * ⚠️⚠️ 여기서 color 를 선언하면 Tailwind 유틸리티를 이긴다 ⚠️⚠️
+ *   이 파일의 규칙은 레이어 밖이라 @layer utilities 의 text-white/60 보다 우선한다.
+ *   실제로 그래서 어두운 섹션의 'Hours'·'Visit' 이 text-white/60 을 붙였는데도
+ *   ink-2 로 칠해져 2.21:1 이 됐다. 색은 쓰는 자리에서 정한다 — 여기서는 글꼴만.
+ */
+.t-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.t-body { font-size: 0.97rem; line-height: 1.92; color: var(--color-ink-2); letter-spacing: -0.012em; }
+
+.img-zoom { overflow: hidden; }
+.img-zoom img { transition: transform 1.2s var(--ease-soft); }
+.group:hover .img-zoom img { transform: scale(1.07); }
+
+.rail { scrollbar-width: none; -ms-overflow-style: none; }
+.rail::-webkit-scrollbar { display: none; }
+
+/* ══ 접근성 ══════════════════════════════════════════════════════
+   ⚠️ 여기 있는 것이 이 페이지의 전부다. 하나라도 빠지면 어지럼증을 유발한다. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .floaty, .bouncy, .sk-dot,
+  [class*='marquee'] *, .hero-zoom, .hero-zoom img { animation: none !important; }
+  .hero-zoom, .hero-zoom img { transform: none !important; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .line-mask > span { transform: none; transition: none; }
+  .drag-cursor { display: none; }
+}
+
+/* ══ ⑪ 글자 초점 인 (blur-in) ═══════════════════════════════════
+   ★★ 첫 판에서 통째로 놓쳤던 효과다 (2026-08-20 재감사에서 발견) ★★
+   실측: .avenue .letter 에 filter: blur(8.6px) → 0 이 걸리고, 글자마다 시차가 있다.
+         opacity 는 1 그대로다 — 흐릿하게 '이미 거기 있다가' 초점이 맞는 그림이다.
+   ⚠️ opacity 로 대신하면 완전히 다른 인상이 된다. blur 여야 한다.
+   ⚠️ blur 는 비싸다. will-change 를 걸고, 끝나면 filter:none 으로 떨궈야
+      스크롤 내내 GPU 를 잡아먹지 않는다(.in 상태에서 0px = 브라우저가 합성 해제).
+   ══════════════════════════════════════════════════════════════ */
+.blur-letter {
+  display: inline-block;
+  filter: blur(8.6px);
+  opacity: 0.55;
+  transition:
+    filter 1.15s var(--ease-soft),
+    opacity 1.15s var(--ease-soft);
+  transition-delay: var(--d, 0ms);
+  will-change: filter;
+}
+.blur-letter.in {
+  filter: blur(0px);
+  opacity: 1;
+}
+
+/* ══ ⑫ 커튼 와이프 이미지 리빌 ═══════════════════════════════════
+   실측: .figure-reveal { background:#eee; transform: matrix(...,0.0524,...) }
+         = 회색 판이 scaleY(1) → scaleY(0.05) 로 **세로로 걷힌다.**
+         그 아래 .figure-inner 는 scale(1.0262) 로 살짝 확대됐다가 제자리로.
+         .styled-image transition 0.735s.
+   ⚠️ 판이 위로 걷히려면 transform-origin 이 top 이어야 한다. 안 잡으면
+      가운데서 오므라들어 셔터처럼 보인다(원본과 다른 그림).
+   ══════════════════════════════════════════════════════════════ */
+.figure-reveal { position: relative; overflow: hidden; }
+.figure-reveal::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-surface);
+  transform-origin: top;
+  transform: scaleY(1);
+  transition: transform 0.9s var(--ease-expo);
+  transition-delay: var(--d, 0ms);
+  z-index: 2;
+}
+.figure-reveal.in::after { transform: scaleY(0); }
+.figure-reveal img {
+  transform: scale(1.0262);
+  transition: transform 0.735s var(--ease-soft) 0.25s;
+}
+.figure-reveal.in img { transform: scale(1); }
+
+/* ══ ⑬ sticky 이미지 구간 ════════════════════════════════════════
+   실측: .img_wrap { position: sticky; top: 0; height: 100vh }
+   글이 옆에서 흐르는 동안 사진이 화면에 붙어 있는다.
+   ══════════════════════════════════════════════════════════════ */
+.sticky-media { position: sticky; top: 0; height: 100svh; }
+
+@media (prefers-reduced-motion: reduce) {
+  .blur-letter { filter: none; opacity: 1; transition: none; }
+  .figure-reveal::after { display: none; }
+  .figure-reveal img { transform: none; transition: none; }
+  .sticky-media { position: static; height: auto; }
+}
+
+/* ══ 숫자·한글 혼합 표기 ═══════════════════════════════════════
+   ★★ 2026-08-20 실측에서 잡은 것 ★★
+     "3인" 을 .display 로 찍었더니 글자마다 폰트가 갈렸다 —
+       3  → 13.5px 폭 (Playfair Display)
+       인 → 30.0px 폭 (한글이 없어 Pretendard 로 폴백)
+     두 폰트는 베이스라인도 굵기도 다르다. 그래서 줄이 안 맞아 보인다.
+     "14:00까지" 는 여기에 더해 Playfair 기본 숫자가 **비례폭**이라
+     1(11.1px) 과 0(18.0px) 의 폭이 달라 자릿수가 흔들린다.
+
+   ⚠️ 규칙: **.display 는 라틴·숫자 전용이다.** 한글이 섞이면 쓰지 않는다.
+      큰 크기에서 세리프 라틴 + 산세리프 한글을 한 줄에 두면 어떻게 조정해도
+      어색하다. 섞이는 자리는 전부 Pretendard 로 통일한다.
+   ══════════════════════════════════════════════════════════════ */
+
+/* .display 안의 숫자는 자릿수를 고정한다 — 1 만 좁아 보이는 것을 막는다. */
+.display {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/**
+ * 숫자와 한글이 섞인 지표 값. Pretendard 로 통일하고 자릿수를 고정한다.
+ * ⚠️ .display 로 되돌리지 말 것 — 위 실측 참조.
+ */
+.stat {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+/* ══ 정의 전환 — 초점이 맞으며 들어오는 글 ═══════════════════════
+   bom-on 의 letter blur(8.6px→0) 문법을 문단 단위로 옮긴 것.
+   ⚠️ opacity 만으로는 '나타난다' 가 되고, blur 가 있어야 '초점이 맞는다' 가 된다.
+      두 인상은 완전히 다르다.
+   ⚠️ blur 는 비싸다 — 전환 때 한 번만 돌고 끝난다(both). 무한 반복 금지.
+   ══════════════════════════════════════════════════════════════ */
+@keyframes defFocus {
+  0% {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [style*='defFocus'] {
+    animation: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   봄온 재감사 2026-08-20 — 놓쳤던 모션들
+   실측 근거는 각 블록 주석에 남긴다.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── 스크롤 관성 그릇 (components/Smooth.tsx) ──────────────────────────
+   ⚠️ 관성이 꺼져 있을 때는 두 상자 모두 아무 일도 하지 않아야 한다.
+      그래야 네이티브 스크롤·sticky 가 원래대로 돈다. */
+html.is-smooth .smooth-wrapper {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+html.is-smooth .smooth-content { will-change: transform; }
+
+/* ── ① 글자 단위 등장 (실측 .header-1~4) ───────────────────────────────
+   gsap.set(letters, {autoAlpha:0, y:200}) → to({y:0, autoAlpha:1,
+   ease:"expo.out", duration:1.01, stagger:0.07})
+   ⚠️ blur 만으로 대신했던 자리다. 200px 은 글자 높이보다 크다 —
+      "아래에서 올라온다"가 아니라 "멀리서 날아든다"에 가깝다. */
+.ltr {
+  display: inline-block;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(200px);
+}
+.ltr.in {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    transform 1.01s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms),
+    opacity 1.01s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms);
+}
+
+/* ── ② 방향이 있는 등장 (실측 gs_reveal 변형) ──────────────────────────
+   fromLeft x:-300 / fromRight x:30 z:10 / fromUp y:12 / fromDown y:-12
+   기본 y:60 z:-100, duration .8, Power2.easeOut
+   ⚠️ 좌우 값이 비대칭인 건 원본 그대로다(-300 vs 30). 왼쪽에서 오는 건
+      크게 휘둘러 들어오고 오른쪽은 살짝 붙는 정도 — 일부러 다르게 뒀다. */
+.rv { opacity: 0; transition: transform .8s var(--ease-out2, cubic-bezier(.25,.46,.45,.94)) var(--d,0ms), opacity .8s ease var(--d,0ms); }
+.rv-up    { transform: translate3d(0, 60px, 0); }
+.rv-down  { transform: translate3d(0, -12px, 0); }
+.rv-left  { transform: translate3d(-300px, 0, 0); }
+.rv-right { transform: translate3d(30px, 0, 0); }
+.rv.in { opacity: 1; transform: none; }
+
+/* ── ③ 지연 등장 배경 오브젝트 (실측 .re03_bg_n / .re06_bg) ────────────
+   onEnter 후 **setTimeout 1000ms** 뒤에 scale .5→1, opacity 0→1, 1.2s power2.out.
+   ⚠️ 1초를 그냥 기다린다. 화면이 멈춘 뒤 뒤늦게 배경이 떠오르는 게 핵심이다 —
+      다른 것과 동시에 나오면 그냥 배경일 뿐이다. */
+.popin { transform: scale(.5); opacity: 0; transform-origin: center; }
+.popin.in {
+  transform: scale(1);
+  opacity: 1;
+  transition: transform 1.2s cubic-bezier(.25,.46,.45,.94), opacity 1.2s cubic-bezier(.25,.46,.45,.94);
+}
+
+/* ── ④ 가로 스크롤 진행 바 (실측 .scrollbar-progress) ──────────────────
+   onUpdate 에서 width = self.progress * 100 + '%'.
+   ⚠️ 얇은 회색 레일 위 브랜드색 막대. 이게 없으면 가로 구간이 얼마나
+      남았는지 알 수 없어 사용자가 중간에 포기한다. */
+.hprog-rail {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(28px, 5vh, 56px);
+  transform: translateX(-50%);
+  width: min(200px, 24vw);
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-ink) 12%, transparent);
+  overflow: hidden;
+}
+.hprog-bar { height: 100%; width: 0%; border-radius: 999px; background: var(--color-brand); }
+
+/* ── ⑤ 속도에 반응하는 커서 (실측 .cursor_slide_lr02) ──────────────────
+   posX += (mouseX - posX) / 4  @16ms  ← 지연 추종
+   scale    = 1 + min(dist/200, 0.3)   ← 빨리 움직일수록 커진다
+   rotation = (mouseX - posX) * 0.2    ← 진행 방향으로 기운다
+   CSS transition: transform .5s cubic-bezier(.75,1.27,.3,1.35) .2s
+   ⚠️ 전에는 마우스에 딱 붙어 따라다녔다. 그건 커서가 하나 더 있는 것일 뿐,
+      "덩어리가 끌려온다"는 인상이 안 난다. 지연·과속·기울기 셋이 세트다. */
+.vcursor {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .25s ease;
+  will-change: transform;
+}
+.vcursor.show { opacity: 1; }
+
+/* ── ⑥ 한 번 더 보여 주는 등장 (실측 toggleActions "play none none reset") ─
+   위로 되돌아가면 처음 상태로 리셋되고, 다시 내려오면 또 재생된다.
+   ⚠️ 우리는 지금까지 전부 unobserve(1회 재생)였다. 스크롤을 오르내리는
+      사용자에게는 "아무 일도 안 일어나는 페이지"로 보인다. */
+
+/* ── ⑦ 열리는 아코디언 목록 (실측 .rection03 li:hover) ─────────────────
+   height 81.7 → 137.6px, background #f8f7f4 → #f8e9df, em 색 → 강조색.
+   ⚠️ 높이를 transition 하려면 고정 px 이 필요하다. grid-template-rows 0fr→1fr
+      로 하면 내용 높이에 상관없이 열린다 — 이쪽이 안전하다. */
+.acc-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .55s cubic-bezier(.25,1,.3,1); }
+.acc-body > div { overflow: hidden; }
+.acc.open .acc-body { grid-template-rows: 1fr; }
+
+/* ── ⑧ 스크롤로 펼쳐지는 부채꼴 (실측 .slide0) ──────────────────────────
+   from { x:0, scale:.8, opacity:.5, filter:blur(3px) }
+   to   { x:(i - n/2)*420px, scale:1, opacity:1, blur:0 }  scrub:2
+   ⚠️ blur 가 핵심이다. scale·opacity 만으로는 '겹쳐 있다가 흩어진다'가 아니라
+      그냥 커지는 것으로 보인다. */
+.fan-item { will-change: transform, filter, opacity; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ltr, .rv, .popin { opacity: 1; visibility: visible; transform: none; transition: none; }
+  .vcursor { display: none; }
+  .fan-item { transform: none !important; filter: none !important; opacity: 1 !important; }
+}
+
+/* ── ⑨ 히어로 고정 (실측 .main_top_cont pin + pinSpacing:false) ─────────
+   히어로는 제자리에 붙어 있고 다음 섹션이 그 위를 덮으며 올라온다.
+   ⚠️ 덮는 쪽에 반드시 배경색 + z-index 가 있어야 한다. 투명하면 두 화면이
+      겹쳐 보이고, 글씨 위에 글씨가 얹힌다. */
+.pin-host { height: 100svh; }
+.pin-box { height: 100svh; overflow: hidden; }
+html:not(.is-smooth) .pin-box { position: sticky; top: 0; }
+
+/* ⚠️ 방향 있는 등장(.rv-right 는 +30px)이 오른쪽으로 삐져나가면 가로 스크롤바가
+   생긴다. 관성 ON 이면 .smooth-wrapper 가 잘라 주지만, 꺼진 경우(모바일·모션
+   감소)를 위해 여기서도 막는다. clip 은 hidden 과 달리 position:sticky 를 안 깬다. */
+html, body { overflow-x: clip; }
+
+/* ── ⑩ 히어로 사진 — 아주 느린 확대 (켄번즈) ───────────────────────────
+   껐을 때만 돈다. 정지 사진이 아니라 '보고 있는 화면'으로 만든다.
+   ⚠️ 1.00 에서 시작하면 첫 프레임에 가장자리가 비칠 수 있다 — 1.04 부터. */
+@keyframes heroDrift {
+  from { transform: scale(1.04); }
+  to   { transform: scale(1.13); }
+}
+
+/* 캡션이 바뀔 때 살짝 올라오며 초점이 맞는다 (실측 .header-5 의 축소판). */
+.hero-now { animation: heroNow .7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes heroNow {
+  from { opacity: 0; transform: translateY(6px); filter: blur(3px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-now { animation: none; }
+}
