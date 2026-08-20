@@ -24,7 +24,11 @@ export const metadata: Metadata = {
     description: CLINIC.description,
   },
   twitter: { card: 'summary_large_image' },
-  icons: { icon: '/img/logo.png' },
+  /*
+   * 파비콘은 app/icon.png · app/apple-icon.png 파일 규약을 쓴다.
+   * ⚠️ 예전에는 453×106 **가로형 로고**를 그대로 지정했다. 탭의 16px 자리에서는
+   *    높이 4px 짜리 실선이 되어 아무것도 안 보인다. 동그란 심볼만 잘라 정사각으로 만들었다.
+   */
 };
 
 export const viewport: Viewport = { themeColor: '#1f7a6e', width: 'device-width', initialScale: 1 };

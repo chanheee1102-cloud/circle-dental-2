@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CLINIC, NAV, PILLARS } from '@/lib/clinic';
+import { CLINIC, NAV, PILLARS, INTERIOR } from '@/lib/clinic';
 
 /**
  * 헤더 + 전체화면 메뉴. (퀵메뉴는 components/QuickMenu.tsx 로 분리)
@@ -164,35 +164,132 @@ export default function Chrome() {
           </span>
         </button>
 
-        <div className="gnb-inner relative flex h-full flex-col justify-center">
-          <div className="shell">
-            <p className="t-eyebrow mb-10 text-white/60">Menu</p>
-            <ul className="space-y-3 md:space-y-5">
-              {NAV.map((n, i) => (
-                <li key={n.href}>
-                  <a href={n.href} onClick={() => setOpen(false)} className="gnb-item group flex items-baseline gap-5 text-white">
-                    <span className="w-8 shrink-0 text-[13px] tabular-nums text-white/35">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <span className="relative inline-block text-[clamp(30px,5.4vw,66px)] font-bold leading-tight tracking-[-0.035em]">
-                      {n.label}
-                    </span>
-                    <span className="display hidden text-[19px] text-white/30 md:inline">{n.en}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+        {/*
+          ══ 메뉴 (2026-08-20 운영자: "메뉴도 좀 깔끔하게") ══
 
-            <div className="mt-16 flex flex-wrap items-center gap-x-8 gap-y-3 text-[14.5px] text-white/55">
-              <a href={CLINIC.phoneHref} className="text-[20px] font-bold tabular-nums text-white">
+          ★★ 6개를 큰 글씨로 세로로 쌓던 것을 **묶음 격자**로 바꿨다 ★★
+            전에는 목록이 화면 한가운데를 세로로 가로지르고, 각 항목은 그 아래
+            무엇이 있는지 알려 주지 않았다. 방문자가 '증상으로 찾기' 를 눌러
+            목록 페이지로 들어간 다음에야 뭐가 있는지 알 수 있었다.
+            묶어서 펼치면 **메뉴 한 화면에서 사이트 전체가 보인다.**
+          ★ 왼쪽 사진은 봄온과 같은 장치다 — 글자만 가득한 화면에 숨 쉴 곳을 만든다.
+          ⚠️ 여기 있는 경로는 전부 실제 라우트여야 한다. 메뉴의 죽은 링크는
+             사이트가 관리되지 않는다는 신호다.
+          ⚠️ 좁은 화면에서는 사진을 감춘다(hidden lg:block). 사진 때문에 메뉴가
+             스크롤돼야 한다면 그 사진은 방해물이다.
+        */}
+        {/*
+          ⚠️⚠️ 스크롤 상자에 justify-center 를 걸면 안 된다 ⚠️⚠️
+            내용이 화면보다 길어지면 가운데 정렬이 **위쪽을 음수 방향으로 밀어내고**,
+            그 부분은 스크롤로도 닿을 수 없다. 실제로 모바일에서 첫 묶음이 통째로 잘렸다.
+            바깥은 스크롤만, 안쪽은 min-h-full 로 두고 세로 가운데를 잡는다 —
+            짧으면 가운데, 길면 위에서부터 자연스럽게 흐른다.
+        */}
+        <div className="gnb-inner relative h-full overflow-y-auto overscroll-contain">
+          <div className="flex min-h-full items-center py-24">
+          <div className="shell grid w-full gap-12 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-20">
+            {/* ── 왼쪽: 사진 + 연락 ── */}
+            <div className="hidden lg:flex lg:flex-col">
+              <p className="t-eyebrow text-white/60">Menu</p>
+              <figure className="mt-8 aspect-[3/4] overflow-hidden rounded-[26px] bg-white/5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={INTERIOR[2].src} alt="" className="h-full w-full object-cover" loading="lazy" />
+              </figure>
+              <a href={CLINIC.phoneHref} className="mt-8 text-[24px] font-bold tabular-nums text-white">
+                {CLINIC.phone}
+              </a>
+              <p className="mt-3 text-[13px] leading-[1.8] text-white/60">
+                {CLINIC.address.full}
+              </p>
+            </div>
+
+            {/* ── 오른쪽: 묶음 격자 ── */}
+            <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
+              {MENU.map((g) => (
+                <nav key={g.title} aria-label={g.title}>
+                  <p className="flex items-baseline gap-2.5 border-b border-white/15 pb-4 text-[17px] font-bold tracking-[-0.03em] text-white">
+                    {g.title}
+                    <span className="display text-[13px] font-normal text-brand-2">{g.en}</span>
+                  </p>
+                  <ul className="mt-5 space-y-1">
+                    {g.items.map((it) => (
+                      <li key={it.href}>
+                        <a
+                          href={it.href}
+                          onClick={() => setOpen(false)}
+                          className="gnb-link block py-2 text-[15px] leading-snug text-white/70 transition-colors hover:text-white"
+                        >
+                          {it.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              ))}
+            </div>
+
+            {/* 좁은 화면용 연락 줄 — 사진 칸이 숨겨진 자리를 대신한다 */}
+            <div className="flex flex-wrap items-center gap-x-7 gap-y-2 border-t border-white/15 pt-8 text-[14px] text-white/60 lg:hidden">
+              <a href={CLINIC.phoneHref} className="text-[21px] font-bold tabular-nums text-white">
                 {CLINIC.phone}
               </a>
               <span>{CLINIC.address.full}</span>
-              <span>{CLINIC.nearestStation}</span>
             </div>
+          </div>
           </div>
         </div>
       </div>
     </>
   );
 }
+
+/**
+ * 메뉴 묶음.
+ * ⚠️ 경로는 전부 app/ 아래 실제 라우트와 대조해 적었다.
+ *    메뉴의 죽은 링크는 사용자에게도 크롤러에게도 관리되지 않는 사이트라는 신호다.
+ * ★ 순서는 '환자가 자기 상태를 말하는 순서' 다 — 증상 → 진료 → 알아두기 → 병원.
+ *   병원 소개를 맨 앞에 두는 배치는 병원 편의지 방문자 편의가 아니다.
+ */
+const MENU = [
+  {
+    title: '증상·질환',
+    en: 'Symptom',
+    items: [
+      { label: '증상으로 찾기', href: '/insight/symptom' },
+      { label: '질환으로 찾기', href: '/insight/condition' },
+      { label: '치료 과정 미리보기', href: '/insight/journey' },
+      { label: '자주 묻는 질문', href: '/faq' },
+    ],
+  },
+  {
+    title: '진료',
+    en: 'Treatment',
+    items: [
+      { label: '전체 진료', href: '/treatment' },
+      { label: '자연치아살리기', href: '/treatment/save-natural-tooth' },
+      { label: '임플란트', href: '/treatment/implant' },
+      { label: '잇몸치료', href: '/treatment/periodontal' },
+      { label: '사랑니치료', href: '/treatment/wisdom-tooth' },
+      { label: '어린이 진료', href: '/treatment/pediatric' },
+    ],
+  },
+  {
+    title: '미리 알아두기',
+    en: 'Insight',
+    items: [
+      { label: '알아두면 좋은 것', href: '/insight' },
+      { label: '비용 기준', href: '/insight/cost' },
+      { label: '용어 사전', href: '/insight/glossary' },
+    ],
+  },
+  {
+    title: '병원 안내',
+    en: 'Clinic',
+    items: [
+      { label: '진료시간', href: '/#hours' },
+      { label: '오시는 길', href: '/#visit' },
+      { label: '의료진', href: '/#doctors' },
+      { label: '진료 공간', href: '/#interior' },
+    ],
+  },
+] as const;
