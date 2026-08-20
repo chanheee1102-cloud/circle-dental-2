@@ -29,51 +29,64 @@ export default function Home() {
         </Pin>
 
         {/* ── 소개 ─────────────────────────────────────────────── */}
-        <section id="about" className="relative z-10 bg-paper py-28 md:py-40">
-          <div className="shell grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-24">
-            <div>
-              <Reveal>
-                <p className="t-eyebrow mb-7 text-ink-2">About</p>
-              </Reveal>
-              <LineReveal className="t-h2" lines={['자연치아를 왜', '먼저 살리나요?']} delay={80} />
-              <Reveal delay={260}>
-                <Lede
-                  className="t-body mt-9 max-w-xl"
-                  text={`자연 그대로의 치아를 최대한 살리는 것이 ${CLINIC.shortName}의 진료 철학입니다. 임플란트는 마지막 선택이 될 수 있도록 노력하고, 남길 수 있는 치아는 남기는 쪽을 먼저 검토합니다.`}
-                />
-              </Reveal>
+        {/*
+          ── 첫 내용 (2026-08-20 운영자: "치과 메인 첫 내용으로 별로") ──
 
-              {/* AEO — 병원이 실제로 증명할 수 있는 사실만 */}
-              <Reveal delay={340}>
-                <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-line pt-10">
-                  {FACTS.map((s) => (
-                    <div key={s.label}>
-                      <dt className="text-[12.5px] tracking-[0.16em] text-ink-2">{s.label}</dt>
-                      {/*
-                        숫자로 시작하는 값만 세어 올린다 (실측: countUp / odometer 동봉).
-                        ⚠️ "14:00까지" 는 제외된다 — 시각을 0 부터 세면 뜻이 달라진다.
-                        ⚠️ 근거 있는 실제 값만 센다. 지어낸 지표를 세면 의료광고다.
-                      */}
-                      <dd className="stat mt-2 text-[30px] text-brand">
-                        {(() => {
-                          const m = /^([0-9]+)([^0-9:]*)$/.exec(s.value);
-                          return m ? <Counter to={Number(m[1])} suffix={m[2]} /> : s.value;
-                        })()}
-                      </dd>
-                      <dd className="mt-2 text-[13.5px] text-ink-2">{s.note}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </Reveal>
-            </div>
+          ★★ 철학 문장 대신 **확인된 사실**로 시작한다 ★★
+            전에는 "자연치아를 왜 먼저 살리나요?" 라는 물음과 철학 문단이 먼저 나왔다.
+            철학은 어느 치과나 비슷하게 말할 수 있어서 첫 화면에서 변별이 안 된다.
+            의료진 3인 · 화·목 야간진료 · 토요일 14시 · 주차 무료는 **다른 치과와
+            바로 비교되는 값**이고, 전부 확인된 사실이라 의료법에도 안전하다.
+          ⚠️ 여기 숫자는 전부 lib/aeo.ts 의 FACTS 다. 지어낸 지표를 크게 띄우면
+             그건 그냥 의료광고다 — "만족도 98%" 같은 건 절대 넣지 않는다.
+          ★ 사진은 한 장만 크게. 여러 장을 늘어놓으면 사실이 묻힌다.
+        */}
+        <section id="about" className="relative z-10 bg-paper py-28 md:py-40">
+          <div className="shell">
+            <Reveal>
+              <p className="t-eyebrow mb-7 text-ink-2">About</p>
+            </Reveal>
+            <LineReveal className="t-h2" lines={['화정동에서', '어떻게 진료하나요?']} delay={80} />
 
             {/* 커튼 와이프 — 회색 판이 위에서 걷히며 사진이 드러난다 */}
             <FigureReveal
-              src={INTERIOR[0].src}
-              alt={INTERIOR[0].alt}
-              delay={140}
-              className="aspect-[4/5] overflow-hidden rounded-[26px] bg-surface"
+              src={INTERIOR[4].src}
+              alt={INTERIOR[4].alt}
+              delay={200}
+              className="mt-14 aspect-[16/8] overflow-hidden rounded-[26px] bg-surface md:aspect-[16/7]"
             />
+
+            {/* 확인된 사실 넷 */}
+            <dl className="mt-16 grid grid-cols-2 gap-x-8 gap-y-12 border-t border-line pt-14 lg:grid-cols-4">
+              {FACTS.map((s, i) => (
+                <Reveal as="div" key={s.label} delay={i * 90}>
+                  <dt className="t-eyebrow text-ink-2">{s.label}</dt>
+                  {/*
+                    숫자로 시작하는 값만 세어 올린다 (실측: countUp / odometer 동봉).
+                    ⚠️ "14:00까지" 는 제외된다 — 시각을 0 부터 세면 뜻이 달라진다.
+                  */}
+                  <dd className="stat mt-4 text-[clamp(34px,3.6vw,46px)] text-brand">
+                    {(() => {
+                      const m = /^([0-9]+)([^0-9:]*)$/.exec(s.value);
+                      return m ? <Counter to={Number(m[1])} suffix={m[2]} /> : s.value;
+                    })()}
+                  </dd>
+                  <dd className="mt-3 text-[14.5px] leading-[1.7] text-ink-2">{s.note}</dd>
+                </Reveal>
+              ))}
+            </dl>
+
+            {/*
+              ⚠️ 구분선은 **바깥 칸**에 건다. 문단에 직접 걸면 선이 글줄 폭(3xl)까지만
+                 그어져 화면 중간에서 뚝 끊긴 줄로 보인다. 글줄 길이는 문단이,
+                 선은 칸이 각각 맡는다. (푸터에서 이미 같은 것을 고쳤다.)
+            */}
+            <Reveal delay={200} className="mt-14 border-t border-line pt-10">
+              <Lede
+                className="t-body max-w-3xl"
+                text={`자연 그대로의 치아를 최대한 살리는 것이 ${CLINIC.shortName}의 진료 철학입니다. 임플란트는 마지막 선택이 될 수 있도록 노력하고, 남길 수 있는 치아는 남기는 쪽을 먼저 검토합니다.`}
+              />
+            </Reveal>
           </div>
         </section>
 
@@ -123,13 +136,18 @@ export default function Home() {
           <div id="hscroll" className="relative mt-16">
             <DragCursor hostId="hscroll" />
             <HorizontalScroll ariaLabel="진료 안내">
+              {/*
+                ⚠️⚠️ 사진을 뺐다 (2026-08-20 운영자: "내용에 맞는 사진이 아니야") ⚠️⚠️
+                  가진 사진은 공간 사진 8장뿐이다 — 복도·진료실·대기실·상담실·소독실·
+                  엑스레이실. **진료 장면 사진은 한 장도 없다.**
+                  그래서 임플란트 카드에 상담실 사진이, 심미치료 카드에 상담 부스 사진이
+                  붙어 있었다. 내용과 무관한 사진은 없느니만 못하다 — 방문자가
+                  "이게 그 치료인가" 하고 잘못 읽는다.
+                  진짜 진료 사진이 생기면 그때 넣는다.
+              */}
               {PILLARS.map((p) => (
-                <article key={p.key} className="group flex w-[78vw] flex-none flex-col overflow-hidden rounded-[26px] bg-surface md:w-[440px]">
-                  <div className="img-zoom aspect-[4/3] overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.photo} alt="" className="h-full w-full object-cover" loading="lazy" />
-                  </div>
-                  <div className="flex flex-1 flex-col p-9">
+                <article key={p.key} className="group flex w-[78vw] flex-none flex-col justify-between overflow-hidden rounded-[26px] bg-surface p-9 md:w-[400px] md:p-10">
+                  <div className="flex flex-1 flex-col">
                     <span className="display text-[30px] text-brand/35">{p.no}</span>
                     <h3 className="mt-4 text-[23px] font-bold tracking-[-0.03em]">{p.name}</h3>
                     <p className="display mt-1 text-[16px] text-ink-2">{p.en}</p>

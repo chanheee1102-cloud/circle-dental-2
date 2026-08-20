@@ -150,8 +150,13 @@ export default function Chrome() {
 
       {/* ══ 전체화면 메뉴 — 3겹 시차 ══ */}
       <div className={`gnb-outer fixed inset-0 z-[70] bg-ink ${open ? 'open' : ''}`}>
-        <div className="gnb-logo-bg pointer-events-none absolute inset-0 grid place-items-center">
-          <span className="display text-[38vw] leading-none text-white/[0.04]">C</span>
+        {/*
+          배경 심볼.
+          ⚠️ 화면 한가운데에 38vw 로 두니 3단 메뉴 글자 뒤로 정확히 겹쳐
+             읽는 데 방해가 됐다. 오른쪽 아래로 밀어 여백을 채우는 역할만 시킨다.
+        */}
+        <div className="gnb-logo-bg pointer-events-none absolute -bottom-[12vw] -right-[6vw] hidden lg:block">
+          <span className="display text-[34vw] leading-[0.8] text-white/[0.028]">C</span>
         </div>
 
         <button
@@ -205,9 +210,14 @@ export default function Chrome() {
         */}
         <div className="gnb-inner relative h-full overflow-y-auto overscroll-contain">
           <div className="flex min-h-full items-center py-24">
-            <div className="shell w-full">
+            {/*
+              ⚠️ 메뉴는 shell(1280px) 에 가두지 않는다. 본문은 읽기 폭이 중요하지만
+                 메뉴는 **화면을 채워야** 3단이 3단으로 보인다. 1280 에 가뒀더니
+                 넓은 화면에서 오른쪽 600px 이 통째로 비어 배치가 무너져 보였다.
+            */}
+            <div className="w-full px-[max(24px,4.5vw)]">
               {/* ── 넓은 화면: 3단 ── */}
-              <div className="hidden lg:grid lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)_minmax(0,1fr)]">
+              <div className="hidden lg:grid lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-x-4">
                 {/* ① 브랜드 */}
                 <div className="pr-10">
                   <p className="text-[21px] font-bold tracking-[-0.03em] text-white">{CLINIC.name}</p>
@@ -269,7 +279,7 @@ export default function Chrome() {
               </div>
 
               {/* ── 좁은 화면: 네 묶음을 다 펼친다 ── */}
-              <div className="lg:hidden">
+              <div className="mx-auto w-full max-w-[720px] lg:hidden">
                 <p className="t-eyebrow text-white/60">Menu</p>
                 <div className="mt-8 grid gap-x-8 gap-y-11 sm:grid-cols-2">
                   {MENU.map((g) => (

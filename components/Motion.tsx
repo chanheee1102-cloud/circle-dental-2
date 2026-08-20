@@ -815,8 +815,16 @@ export function Lede({
   return (
     <Tag className={className}>
       {parts.map((s, i) => (
-        <span key={i} className="clause">
-          {s}
+        /*
+         * ⚠️⚠️ 절 사이의 공백은 span **바깥**에 둬야 한다 ⚠️⚠️
+         *   안에 넣으면 inline-block 상자의 **끝 공백이라 브라우저가 지워 버린다.**
+         *   그 결과 "…살리는 것이동그라미치과의", "노력합니다.장기적인" 처럼
+         *   두 절이 붙어 버렸다 (운영자 지적, 실제로 사이트 전체에서 그랬다).
+         *   바깥에 두면 상자와 상자 사이의 평범한 공백이 되어 살아남고,
+         *   동시에 줄바꿈 기회도 그 자리에 생긴다 — 원래 노리던 동작이다.
+         */
+        <span key={i}>
+          <span className="clause">{s}</span>
           {i < parts.length - 1 ? ' ' : ''}
         </span>
       ))}
