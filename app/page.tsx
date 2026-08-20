@@ -30,42 +30,24 @@ export default function Home() {
 
         {/* ── 소개 ─────────────────────────────────────────────── */}
         {/*
-          ── 첫 내용 (2026-08-20 운영자: "치과 메인 첫 내용으로 별로") ──
+          ── 히어로 바로 아래: 확인된 사실 띠 ──
 
-          ★★ 철학 문장 대신 **확인된 사실**로 시작한다 ★★
-            전에는 "자연치아를 왜 먼저 살리나요?" 라는 물음과 철학 문단이 먼저 나왔다.
-            철학은 어느 치과나 비슷하게 말할 수 있어서 첫 화면에서 변별이 안 된다.
-            의료진 3인 · 화·목 야간진료 · 토요일 14시 · 주차 무료는 **다른 치과와
-            바로 비교되는 값**이고, 전부 확인된 사실이라 의료법에도 안전하다.
+          ★★ 제목도 사진도 없다 (2026-08-20 운영자: "제목이랑 사진이랑 왤케 이상해") ★★
+            직전 판은 "화정동에서 어떻게 진료하나요?" 라고 **묻고 답 대신 사진**을 뒀다.
+            질문형 제목은 바로 뒤에 답이 와야 성립한다 — 사진은 답이 아니다.
+            그래서 이 자리는 제목 없는 띠로 만들고, 답이 필요한 질문은 각자
+            자기 섹션에서 답하게 나눴다 (v1 의 구성 방식).
           ⚠️ 여기 숫자는 전부 lib/aeo.ts 의 FACTS 다. 지어낸 지표를 크게 띄우면
-             그건 그냥 의료광고다 — "만족도 98%" 같은 건 절대 넣지 않는다.
-          ★ 사진은 한 장만 크게. 여러 장을 늘어놓으면 사실이 묻힌다.
+             그건 의료광고다 — "만족도 98%" 같은 건 절대 넣지 않는다.
         */}
-        <section id="about" className="relative z-10 bg-paper py-28 md:py-40">
+        <section id="about" className="relative z-10 bg-paper py-20 md:py-24">
           <div className="shell">
-            <Reveal>
-              <p className="t-eyebrow mb-7 text-ink-2">About</p>
-            </Reveal>
-            <LineReveal className="t-h2" lines={['화정동에서', '어떻게 진료하나요?']} delay={80} />
-
-            {/* 커튼 와이프 — 회색 판이 위에서 걷히며 사진이 드러난다 */}
-            <FigureReveal
-              src={INTERIOR[4].src}
-              alt={INTERIOR[4].alt}
-              delay={200}
-              className="mt-14 aspect-[16/8] overflow-hidden rounded-[26px] bg-surface md:aspect-[16/7]"
-            />
-
-            {/* 확인된 사실 넷 */}
-            <dl className="mt-16 grid grid-cols-2 gap-x-8 gap-y-12 border-t border-line pt-14 lg:grid-cols-4">
+            <dl className="grid grid-cols-2 gap-x-8 gap-y-11 lg:grid-cols-4">
               {FACTS.map((s, i) => (
-                <Reveal as="div" key={s.label} delay={i * 90}>
+                <Reveal as="div" key={s.label} delay={i * 80}>
                   <dt className="t-eyebrow text-ink-2">{s.label}</dt>
-                  {/*
-                    숫자로 시작하는 값만 세어 올린다 (실측: countUp / odometer 동봉).
-                    ⚠️ "14:00까지" 는 제외된다 — 시각을 0 부터 세면 뜻이 달라진다.
-                  */}
-                  <dd className="stat mt-4 text-[clamp(34px,3.6vw,46px)] text-brand">
+                  {/* ⚠️ "14:00까지" 는 세지 않는다 — 시각을 0 부터 세면 뜻이 달라진다. */}
+                  <dd className="stat mt-4 text-[clamp(30px,3.2vw,42px)] text-brand">
                     {(() => {
                       const m = /^([0-9]+)([^0-9:]*)$/.exec(s.value);
                       return m ? <Counter to={Number(m[1])} suffix={m[2]} /> : s.value;
@@ -75,18 +57,6 @@ export default function Home() {
                 </Reveal>
               ))}
             </dl>
-
-            {/*
-              ⚠️ 구분선은 **바깥 칸**에 건다. 문단에 직접 걸면 선이 글줄 폭(3xl)까지만
-                 그어져 화면 중간에서 뚝 끊긴 줄로 보인다. 글줄 길이는 문단이,
-                 선은 칸이 각각 맡는다. (푸터에서 이미 같은 것을 고쳤다.)
-            */}
-            <Reveal delay={200} className="mt-14 border-t border-line pt-10">
-              <Lede
-                className="t-body max-w-3xl"
-                text={`자연 그대로의 치아를 최대한 살리는 것이 ${CLINIC.shortName}의 진료 철학입니다. 임플란트는 마지막 선택이 될 수 있도록 노력하고, 남길 수 있는 치아는 남기는 쪽을 먼저 검토합니다.`}
-              />
-            </Reveal>
           </div>
         </section>
 
@@ -120,15 +90,20 @@ export default function Home() {
             <Reveal>
               <p className="t-eyebrow mb-7 text-ink-2">Treatment</p>
             </Reveal>
-            <LineReveal className="t-h2" lines={['네 가지 진료,', '하나의 기준']} delay={80} />
+            <LineReveal as="h2" className="t-h2" lines={['어떤 진료를', '받을 수 있나요?']} delay={80} />
             <Reveal delay={240}>
               {/*
                 ⚠️ 운영자 지적 — "한 문장으로 / 정리했습니다." 처럼 말이 끊기는 자리에서
                    줄이 바뀌고 있었다. Lede 가 마침표·쉼표 뒤로 줄바꿈을 몰아 준다.
               */}
+              {/*
+                ★ 질문형 제목은 **바로 뒤에 답**이 와야 성립한다.
+                  답변형 AI 도 '질문 제목 + 다음 문단' 을 한 덩어리로 인용한다.
+                  (v1 의 같은 자리에 있던 문장을 그대로 옮겼다.)
+              */}
               <Lede
                 className="t-body mt-8 max-w-2xl"
-                text="스크롤하면 옆으로 넘어갑니다. 각 진료가 어떤 상태에 쓰이는지 한 문장으로 정리했습니다."
+                text={`자연치아를 살리는 치료를 중심에 두고 임플란트, 심미치료, 사랑니 발치까지 진료합니다. 충치·신경·잇몸 치료와 스케일링 같은 기본 진료도 함께 보고 있습니다.`}
               />
             </Reveal>
           </div>
@@ -209,7 +184,7 @@ export default function Home() {
             <Reveal>
               <p className="t-eyebrow mb-7 text-ink-2">Doctors</p>
             </Reveal>
-            <LineReveal className="t-h2" lines={['처음부터 끝까지', '같은 의료진']} delay={80} />
+            <LineReveal as="h2" className="t-h2" lines={['누가', '진료하나요?']} delay={80} />
 
             <ul className="mt-16 grid gap-6 md:grid-cols-3">
               {DOCTORS.map((d, i) => (
@@ -258,9 +233,12 @@ export default function Home() {
                 원본도 두 방식을 섞어 쓴다 — .single-line-inner(줄)와 .header-1~4(글자).
               */}
               <h2 className="t-h2">
-                <LetterReveal text="들어서는 순간부터" />
+                <LetterReveal text="어떤 공간에서" />
+                {/* ⚠️ 화면은 두 줄이지만 크롤러·읽어주기에는 한 문장이어야 한다.
+                    공백이 없으면 textContent 가 "어떤 공간에서진료하나요?" 로 붙는다. */}
+                <span className="sr-only"> </span>
                 <br />
-                <LetterReveal text="시작되는 진료" delay={420} />
+                <LetterReveal text="진료하나요?" delay={420} />
               </h2>
               {/* 실측 gs_reveal fromLeft 는 x:-300 이다 — 오른쪽(30)보다 훨씬 크다. */}
               <div className="mt-14 space-y-6">
@@ -292,7 +270,7 @@ export default function Home() {
             <Reveal>
               <p className="t-eyebrow mb-7 text-white/60">Hours</p>
             </Reveal>
-            <LineReveal className="t-h2 text-white" lines={['진료시간이', '어떻게 되나요?']} delay={80} />
+            <LineReveal as="h2" className="t-h2 text-white" lines={['진료시간이', '어떻게 되나요?']} delay={80} />
             <Reveal delay={200}>
               <HoursStrip />
             </Reveal>
@@ -305,7 +283,7 @@ export default function Home() {
             <Reveal>
               <p className="t-eyebrow mb-7 mt-6 text-white/60">Visit</p>
             </Reveal>
-            <LineReveal className="t-h2 text-white" lines={['오시는 길']} delay={80} />
+            <LineReveal as="h2" className="t-h2 text-white" lines={['어디에 있고', '주차는 되나요?']} delay={80} />
 
             <div className="mt-14 grid gap-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-20">
               <div>

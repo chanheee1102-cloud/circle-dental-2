@@ -74,7 +74,24 @@ export function Reveal({
  * ★ 원본의 SplitType + GSAP 타임라인을 CSS 로 옮긴 것 — 줄 단위라 글자 분해가 필요 없다.
  * ⚠️ 부모에 overflow:hidden 이 있어야 '밖에서 들어오는' 그림이 된다(.line-mask 가 그 역할).
  */
-export function LineReveal({ lines, delay = 0, className = '' }: { lines: string[]; delay?: number; className?: string }) {
+export function LineReveal({
+  lines,
+  delay = 0,
+  className = '',
+  as: Tag = 'div',
+}: {
+  lines: string[];
+  delay?: number;
+  className?: string;
+  /**
+   * ⚠️⚠️ 섹션 제목에는 반드시 as="h2" 를 준다 ⚠️⚠️
+   *   기본값이 div 라서, 홈의 섹션 제목이 **heading 이 하나도 아니었다**(실측: h2 2개뿐).
+   *   화면에는 크게 보이지만 문서 구조상으로는 그냥 글자 덩어리다 —
+   *   화면 낭독기는 목차를 못 만들고, 답변형 AI 는 '질문 제목 + 다음 문단' 이라는
+   *   인용 단위를 못 잡는다. 이 사이트의 전략이 통째로 걸린 자리다.
+   */
+  as?: ElementType;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
@@ -96,13 +113,21 @@ export function LineReveal({ lines, delay = 0, className = '' }: { lines: string
     return () => io.disconnect();
   }, []);
   return (
-    <div ref={ref} className={className}>
+    <Tag ref={ref} className={className}>
       {lines.map((l, i) => (
         <span key={l + i} className="line-mask" style={{ '--d': `${delay + i * 120}ms` } as React.CSSProperties}>
           <span>{l}</span>
+          {/*
+            ⚠️⚠️ 줄 사이에 공백을 넣어야 한다 ⚠️⚠️
+              두 줄은 각각 block 이라 화면에서는 줄이 나뉘지만, textContent 는
+              그냥 이어 붙는다 — "어떤 진료를받을 수 있나요?" (실측).
+              크롤러와 답변형 AI 는 그 문자열을 읽으므로 검색어와 매칭이 깨진다.
+              화면에는 안 보이고 읽기에만 잡히는 공백을 끼운다.
+          */}
+          {i < lines.length - 1 ? <span className="sr-only"> </span> : null}
         </span>
       ))}
-    </div>
+    </Tag>
   );
 }
 
