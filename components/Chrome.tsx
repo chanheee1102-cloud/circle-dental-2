@@ -27,6 +27,8 @@ export default function Chrome() {
   const [open, setOpen] = useState(false);
   const [pick, setPick] = useState(0);
   const [pickOpen, setPickOpen] = useState(false);
+  /* 전체화면 메뉴에서 지금 펼쳐 보고 있는 묶음 */
+  const [menuAt, setMenuAt] = useState(0);
 
   useEffect(() => {
     let on = false;
@@ -185,57 +187,121 @@ export default function Chrome() {
             바깥은 스크롤만, 안쪽은 min-h-full 로 두고 세로 가운데를 잡는다 —
             짧으면 가운데, 길면 위에서부터 자연스럽게 흐른다.
         */}
+        {/*
+          ══ 메뉴 — 3단 (2026-08-20 운영자, SPACE DERMATOLOGY 참고) ══
+            [ 브랜드 | 대분류 | 선택한 분류의 상세 ]
+
+          ★ 오른쪽 칸은 가운데에서 고른 것에 따라 **아래에서 올라오며** 바뀐다.
+            홈의 'Ask us' 카드가 올라오는 것과 같은 결이다(y 이동 + 시차).
+          ★ 대분류에 마우스를 올리면 바뀐다 — 누르지 않아도 그 아래에 뭐가 있는지 보인다.
+            누르면 그 분류의 대표 페이지로 간다.
+          ⚠️ 마우스가 없는 기기에는 3단이 성립하지 않는다. 좁은 화면(lg 미만)에서는
+             네 묶음을 그냥 다 펼친다 — 고르는 단계 없이 바로 보이는 게 낫다.
+          ⚠️ hover 뿐 아니라 focus 에도 반응해야 한다. 키보드로 훑는 사람에게
+             hover 만 걸면 오른쪽 칸이 영영 안 바뀐다.
+          ⚠️⚠️ 스크롤 상자에 justify-center 를 걸지 말 것 ⚠️⚠️
+             내용이 화면보다 길면 가운데 정렬이 위쪽을 스크롤 범위 밖으로 밀어낸다.
+             (실제로 모바일에서 첫 묶음이 통째로 잘렸다.) min-h-full 로 잡는다.
+        */}
         <div className="gnb-inner relative h-full overflow-y-auto overscroll-contain">
           <div className="flex min-h-full items-center py-24">
-          <div className="shell grid w-full gap-12 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-20">
-            {/* ── 왼쪽: 사진 + 연락 ── */}
-            <div className="hidden lg:flex lg:flex-col">
-              <p className="t-eyebrow text-white/60">Menu</p>
-              <figure className="mt-8 aspect-[3/4] overflow-hidden rounded-[26px] bg-white/5">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={INTERIOR[2].src} alt="" className="h-full w-full object-cover" loading="lazy" />
-              </figure>
-              <a href={CLINIC.phoneHref} className="mt-8 text-[24px] font-bold tabular-nums text-white">
-                {CLINIC.phone}
-              </a>
-              <p className="mt-3 text-[13px] leading-[1.8] text-white/60">
-                {CLINIC.address.full}
-              </p>
-            </div>
+            <div className="shell w-full">
+              {/* ── 넓은 화면: 3단 ── */}
+              <div className="hidden lg:grid lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)_minmax(0,1fr)]">
+                {/* ① 브랜드 */}
+                <div className="pr-10">
+                  <p className="text-[21px] font-bold tracking-[-0.03em] text-white">{CLINIC.name}</p>
+                  <p className="display mt-2.5 text-[12px] tracking-[0.24em] text-brand-2">{CLINIC.nameEn}</p>
+                  <a href={CLINIC.phoneHref} className="mt-9 block text-[25px] font-bold tabular-nums text-white">
+                    {CLINIC.phone}
+                  </a>
+                  <p className="mt-3 text-[13px] leading-[1.8] text-white/60">{CLINIC.address.full}</p>
+                </div>
 
-            {/* ── 오른쪽: 묶음 격자 ── */}
-            <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
-              {MENU.map((g) => (
-                <nav key={g.title} aria-label={g.title}>
-                  <p className="flex items-baseline gap-2.5 border-b border-white/15 pb-4 text-[17px] font-bold tracking-[-0.03em] text-white">
-                    {g.title}
-                    <span className="display text-[13px] font-normal text-brand-2">{g.en}</span>
-                  </p>
-                  <ul className="mt-5 space-y-1">
-                    {g.items.map((it) => (
-                      <li key={it.href}>
-                        <a
-                          href={it.href}
-                          onClick={() => setOpen(false)}
-                          className="gnb-link block py-2 text-[15px] leading-snug text-white/70 transition-colors hover:text-white"
+                {/* ② 대분류 */}
+                <ul className="border-l border-white/15 pl-12">
+                  {MENU.map((g, i) => (
+                    <li key={g.title}>
+                      <a
+                        href={g.items[0].href}
+                        onClick={() => setOpen(false)}
+                        onMouseEnter={() => setMenuAt(i)}
+                        onFocus={() => setMenuAt(i)}
+                        aria-current={menuAt === i}
+                        className="group flex items-center gap-3 py-3.5"
+                      >
+                        {/* 지금 보고 있는 자리 표시 — 화살표는 색맹과 무관하게 읽힌다 */}
+                        <span
+                          aria-hidden
+                          className="display w-4 shrink-0 text-[15px] text-brand-2 transition-all duration-500"
+                          style={{ opacity: menuAt === i ? 1 : 0, transform: menuAt === i ? 'none' : 'translateX(-6px)' }}
                         >
-                          {it.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              ))}
-            </div>
+                          ›
+                        </span>
+                        <span
+                          className={`text-[clamp(21px,2vw,29px)] font-bold leading-tight tracking-[-0.035em] transition-colors duration-400 ${
+                            menuAt === i ? 'text-white' : 'text-white/55 group-hover:text-white'
+                          }`}
+                        >
+                          {g.title}
+                        </span>
+                        {/* ⚠️ /40 은 ink 위에서 3.86:1 — 13px 은 4.5:1 이 필요하다. */}
+                        <span className="display text-[13px] text-white/65">{g.en}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
 
-            {/* 좁은 화면용 연락 줄 — 사진 칸이 숨겨진 자리를 대신한다 */}
-            <div className="flex flex-wrap items-center gap-x-7 gap-y-2 border-t border-white/15 pt-8 text-[14px] text-white/60 lg:hidden">
-              <a href={CLINIC.phoneHref} className="text-[21px] font-bold tabular-nums text-white">
-                {CLINIC.phone}
-              </a>
-              <span>{CLINIC.address.full}</span>
+                {/* ③ 상세 — 아래에서 올라온다 */}
+                <ul key={menuAt} className="border-l border-white/15 pl-12">
+                  {MENU[menuAt].items.map((it, n) => (
+                    <li key={it.href} className="menu-rise" style={{ '--d': `${n * 55}ms` } as React.CSSProperties}>
+                      <a
+                        href={it.href}
+                        onClick={() => setOpen(false)}
+                        className="block py-3 text-[17px] leading-snug text-white/70 transition-colors duration-300 hover:text-white"
+                      >
+                        {it.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* ── 좁은 화면: 네 묶음을 다 펼친다 ── */}
+              <div className="lg:hidden">
+                <p className="t-eyebrow text-white/60">Menu</p>
+                <div className="mt-8 grid gap-x-8 gap-y-11 sm:grid-cols-2">
+                  {MENU.map((g) => (
+                    <nav key={g.title} aria-label={g.title}>
+                      <p className="flex items-baseline gap-2.5 border-b border-white/15 pb-4 text-[18px] font-bold tracking-[-0.03em] text-white">
+                        {g.title}
+                        <span className="display text-[13px] font-normal text-brand-2">{g.en}</span>
+                      </p>
+                      <ul className="mt-4 space-y-1">
+                        {g.items.map((it) => (
+                          <li key={it.href}>
+                            <a
+                              href={it.href}
+                              onClick={() => setOpen(false)}
+                              className="block py-2 text-[16px] leading-snug text-white/70 transition-colors hover:text-white"
+                            >
+                              {it.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </nav>
+                  ))}
+                </div>
+                <div className="mt-12 flex flex-wrap items-center gap-x-7 gap-y-2 border-t border-white/15 pt-8 text-[14px] text-white/60">
+                  <a href={CLINIC.phoneHref} className="text-[22px] font-bold tabular-nums text-white">
+                    {CLINIC.phone}
+                  </a>
+                  <span>{CLINIC.address.full}</span>
+                </div>
+              </div>
             </div>
-          </div>
           </div>
         </div>
       </div>
