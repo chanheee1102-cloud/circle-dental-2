@@ -6,7 +6,7 @@ import QuickMenu from '@/components/QuickMenu';
 import Chrome from '@/components/Chrome';
 import SiteFooter from '@/components/SiteFooter';
 import Smooth from '@/components/Smooth';
-import { Preloader } from '@/components/Motion';
+import { Preloader, ScrollProgress } from '@/components/Motion';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -56,6 +56,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Chrome / Preloader 를 각 페이지에서 layout 으로 올린 이유도 이것이다
           (2026-08-20). 예전에는 13개 page.tsx 가 각자 <Chrome /> 을 그렸다.
         */}
+        {/*
+          진행 바는 Smooth 바깥이다 — 화면에 고정돼야 하니까.
+          (헤더·퀵메뉴와 같은 이유. Smooth 안에 넣으면 같이 스크롤된다.)
+        */}
+        <ScrollProgress />
         <Preloader />
         <Chrome />
         {/*

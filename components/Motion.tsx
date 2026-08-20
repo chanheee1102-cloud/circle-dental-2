@@ -856,3 +856,179 @@ export function Lede({
     </Tag>
   );
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   봄온 3차 (2026-08-20 운영자: "스크롤이벤트·커서 임팩트 더 가져와")
+   ══════════════════════════════════════════════════════════════════════ */
+
+/**
+ * 페이지 스크롤 진행 바 — 화면 맨 위 얇은 띠.
+ *
+ * ★ 봄온은 가로 스크롤 구간에만 진행 바(.scrollbar-progress)를 뒀는데,
+ *   같은 장치를 문서 전체에 쓰면 "얼마나 남았나" 를 늘 알 수 있다.
+ *   이 사이트는 홈이 12,000px 이 넘어서 특히 필요하다.
+ * ⚠️ 높이 2px, 브랜드색. 이보다 두꺼우면 내용이 아니라 UI 가 주인공이 된다.
+ * ⚠️ 관성 스크롤이 켜져 있으면 window.scrollY 가 아니라 onTick 이 주는
+ *    **보간된 값**을 써야 한다. 안 그러면 바만 먼저 가고 화면이 뒤따라온다.
+ */
+export function ScrollProgress() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const frame = (y: number) => {
+      const total = document.body.scrollHeight - window.innerHeight;
+      el.style.transform = `scaleX(${total <= 0 ? 0 : Math.min(1, Math.max(0, y / total))})`;
+    };
+    frame(0);
+    return onTick(frame);
+  }, []);
+  return (
+    <div aria-hidden className="scroll-progress">
+      <div ref={ref} className="scroll-progress-bar" />
+    </div>
+  );
+}
+
+/**
+ * 패럴랙스 — 사진이 스크롤보다 느리게 움직인다.
+ *
+ * ★ 봄온은 ScrollSmoother 를 effects:true 로 켜 둔다. 그 기능이 하는 일이
+ *   정확히 이것이다(data-speed). 사진이 배경처럼 뒤로 물러나 깊이가 생긴다.
+ * ⚠️ 컨테이너에 overflow:hidden 이 있어야 한다. 안 그러면 밀린 사진이
+ *    옆 섹션으로 삐져나온다.
+ * ⚠️ 사진을 컨테이너보다 크게(scale) 잡아야 위아래가 빈다. 그래서 기본 1.16.
+ */
+export function Parallax({
+  src,
+  alt,
+  className = '',
+  amount = 0.12,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  /** 0.12 = 스크롤의 12% 만큼 반대로 움직인다. 0.2 를 넘기면 멀미가 난다. */
+  amount?: number;
+}) {
+  const box = useRef<HTMLDivElement>(null);
+  const img = useRef<HTMLImageElement>(null);
+  useEffect(() => {
+    const b = box.current;
+    const m = img.current;
+    if (!b || !m) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const frame = () => {
+      const r = b.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > window.innerHeight + 200) return;
+      /* 화면 가운데를 지날 때 0 — 위아래로 갈수록 반대로 밀린다. */
+      const mid = r.top + r.height / 2 - window.innerHeight / 2;
+      m.style.transform = `translate3d(0, ${-mid * amount}px, 0) scale(1.16)`;
+    };
+    frame();
+    return onTick(frame);
+  }, [amount]);
+  return (
+    <div ref={box} className={`overflow-hidden ${className}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        ref={img}
+        src={src}
+        alt={alt}
+        loading="lazy"
+        className="h-full w-full object-cover will-change-transform"
+        style={{ transform: 'scale(1.16)' }}
+      />
+    </div>
+  );
+}
+
+/**
+ * 자석 버튼 — 커서가 다가오면 버튼이 끌려온다.
+ *
+ * ★ 봄온의 initMagnetic 이 하려던 것이다(원본에서는 호출되지 않아 죽어 있었다).
+ *   누르기 전에 이미 반응하니 "눌리는 물건" 이라는 느낌이 강해진다.
+ * ⚠️ 손가락 입력에는 걸지 않는다 — 커서가 없으니 아무 일도 안 일어나고,
+ *    transform 만 매 프레임 계산하게 된다.
+ * ⚠️ 당겨지는 양을 크게 잡으면 버튼이 손끝에서 도망간다. 0.28 이 한계치다.
+ */
+export function Magnetic({
+  children,
+  strength = 0.28,
+  className = '',
+}: {
+  children: ReactNode;
+  strength?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const move = (e: MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      const x = e.clientX - (r.left + r.width / 2);
+      const y = e.clientY - (r.top + r.height / 2);
+      el.style.transform = `translate3d(${x * strength}px, ${y * strength}px, 0)`;
+    };
+    const leave = () => { el.style.transform = ''; };
+    el.addEventListener('mousemove', move);
+    el.addEventListener('mouseleave', leave);
+    return () => {
+      el.removeEventListener('mousemove', move);
+      el.removeEventListener('mouseleave', leave);
+    };
+  }, [strength]);
+  return (
+    <span ref={ref} className={`magnetic ${className}`}>
+      {children}
+    </span>
+  );
+}
+
+/**
+ * 카드 기울기 — 커서 위치를 따라 살짝 기운다.
+ *
+ * ★ 커서가 닿은 쪽이 가라앉는다. 사진 없는 타이포 카드에 깊이를 주는 값싼 방법이다.
+ * ⚠️ 각도를 6도 넘게 주면 글자가 읽기 어려워진다 — 카드는 장식이 아니라 읽는 것이다.
+ * ⚠️ perspective 는 **부모**에 있어야 한다. 자식에 걸면 기울기가 평면 왜곡이 된다.
+ */
+export function Tilt({
+  children,
+  className = '',
+  deg = 5,
+}: {
+  children: ReactNode;
+  className?: string;
+  deg?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const move = (e: MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      el.style.transform = `rotateX(${-py * deg}deg) rotateY(${px * deg}deg) translateZ(0)`;
+    };
+    const leave = () => { el.style.transform = ''; };
+    el.addEventListener('mousemove', move);
+    el.addEventListener('mouseleave', leave);
+    return () => {
+      el.removeEventListener('mousemove', move);
+      el.removeEventListener('mouseleave', leave);
+    };
+  }, [deg]);
+  return (
+    <div className={`tilt-host ${className}`}>
+      <div ref={ref} className="tilt">
+        {children}
+      </div>
+    </div>
+  );
+}

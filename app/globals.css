@@ -272,9 +272,10 @@ section[id] { scroll-margin-top: 96px; }
 /* 본문 15.5px → 17px. 한국어 본문에서 16px 미만은 오래 읽기 힘들다. */
 .t-body { font-size: 1.06rem; line-height: 1.92; color: var(--color-ink-2); letter-spacing: -0.012em; }
 
-.img-zoom { overflow: hidden; }
-.img-zoom img { transition: transform 1.2s var(--ease-soft); }
-.group:hover .img-zoom img { transform: scale(1.07); }
+/*
+ * (제거) .img-zoom — 진료 카드의 사진이 빠지면서 쓰는 곳이 없어졌다.
+ *   호버 확대가 다시 필요해지면 이 자리에 되살린다. 죽은 규칙은 남기지 않는다.
+ */
 
 .rail { scrollbar-width: none; -ms-overflow-style: none; }
 .rail::-webkit-scrollbar { display: none; }
@@ -617,4 +618,42 @@ p, li, dd, h1, h2, h3, .t-body { text-wrap: pretty; }
 }
 @media (prefers-reduced-motion: reduce) {
   .menu-rise { animation: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   봄온 3차 — 스크롤·커서 (2026-08-20)
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── 페이지 스크롤 진행 바 ──────────────────────────────────────────────
+   ⚠️ 헤더(z-50)보다 위에 둔다. 아래에 두면 흰 헤더에 가려 안 보인다.
+   ⚠️ scaleX 로 늘린다 — width 를 바꾸면 매 프레임 레이아웃을 다시 잡는다. */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  height: 2px;
+  pointer-events: none;
+}
+.scroll-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: var(--color-brand);
+}
+
+/* ── 자석 버튼 ──────────────────────────────────────────────────────────
+   ⚠️ 놓았을 때 제자리로 돌아오는 건 transition 이 한다. 따라오는 동안에는
+      transition 이 걸리면 안 되므로 duration 을 짧게 — 0.35s 가 '끌려온다'와
+      '달라붙는다' 사이의 경계다. */
+.magnetic { display: inline-block; transition: transform .35s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* ── 카드 기울기 ────────────────────────────────────────────────────────
+   ⚠️ perspective 는 부모에. 자식에 걸면 기울기가 아니라 평면 왜곡이 된다. */
+.tilt-host { perspective: 900px; }
+.tilt { transition: transform .5s cubic-bezier(0.22, 1, 0.36, 1); transform-style: preserve-3d; }
+
+@media (prefers-reduced-motion: reduce) {
+  .magnetic, .tilt { transition: none; transform: none !important; }
+  .scroll-progress { display: none; }
 }

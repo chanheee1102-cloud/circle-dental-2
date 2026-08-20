@@ -5,6 +5,7 @@ import HoursStrip from '@/components/HoursStrip';
 import ClinicMap from '@/components/ClinicMap';
 import {
   Reveal, LineReveal, LetterMarquee, HorizontalScroll, Lede,
+  Parallax, Magnetic, Tilt,
   DragCursor, BlurText, FigureReveal,
   LetterReveal, PopIn, FanRow, Counter, StickyMedia, Pin,
 } from '@/components/Motion';
@@ -120,8 +121,15 @@ export default function Home() {
                   "이게 그 치료인가" 하고 잘못 읽는다.
                   진짜 진료 사진이 생기면 그때 넣는다.
               */}
+              {/*
+                ★ 사진을 뺀 자리를 **기울기**로 대신한다. 커서가 닿은 쪽이 가라앉아
+                  평평한 타이포 카드에 깊이가 생긴다. 손가락 입력에서는 안 걸린다.
+                ⚠️ JSX 에서 map 반환부 맨 앞에 주석만 두면 그게 반환값이 된다 —
+                   주석은 map 바깥에.
+              */}
               {PILLARS.map((p) => (
-                <article key={p.key} className="group flex w-[78vw] flex-none flex-col justify-between overflow-hidden rounded-[26px] bg-surface p-9 md:w-[400px] md:p-10">
+                <Tilt key={p.key} className="w-[78vw] flex-none md:w-[400px]">
+                <article className="group flex h-full flex-col justify-between overflow-hidden rounded-[26px] bg-surface p-9 md:p-10">
                   <div className="flex flex-1 flex-col">
                     <span className="display text-[30px] text-brand/35">{p.no}</span>
                     <h3 className="mt-4 text-[23px] font-bold tracking-[-0.03em]">{p.name}</h3>
@@ -129,6 +137,7 @@ export default function Home() {
                     <Lede className="t-body mt-5 flex-1 text-[15px]" text={p.copy} />
                   </div>
                 </article>
+                </Tilt>
               ))}
               <div className="flex w-[78vw] flex-none items-center justify-center rounded-[26px] bg-brand p-9 text-white md:w-[400px]">
                 <div>
@@ -138,14 +147,30 @@ export default function Home() {
                   <p className="mt-5 text-[15px] leading-[1.9] text-white/90">
                     어떤 치료가 필요한지 모르겠다면 먼저 봐 드립니다.
                   </p>
-                  <a href={CLINIC.phoneHref} className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-[15px] font-bold text-brand">
-                    {CLINIC.phone}
-                  </a>
+                  <Magnetic className="mt-8">
+                    <a href={CLINIC.phoneHref} className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-[15px] font-bold text-brand">
+                      {CLINIC.phone}
+                    </a>
+                  </Magnetic>
                 </div>
               </div>
             </HorizontalScroll>
           </div>
         </section>
+
+        {/*
+          ── 패럴랙스 띠 ──
+          ★ 봄온은 ScrollSmoother 를 effects:true 로 켜 둔다. 그 기능이 하는 일이
+            이것이다 — 사진이 스크롤보다 느리게 움직여 뒤로 물러난다.
+          ⚠️ 진료 사진이 아니라 **공간 사진**이다. 치료를 설명하는 자리가 아니라
+             섹션 사이의 숨 고르는 자리라 그래도 된다. alt 에 무엇을 찍었는지 그대로 적는다.
+        */}
+        <Parallax
+          src={INTERIOR[3].src}
+          alt={INTERIOR[3].alt}
+          className="h-[clamp(280px,42vw,560px)] w-full"
+          amount={0.14}
+        />
 
         {/* ── AEO: 한 문장 정의 ─────────────────────────────────
              ★ 답변형 AI 는 페이지를 통째로 읽지 않고 **그대로 인용할 한 문장**을 찾는다.
@@ -311,12 +336,16 @@ export default function Home() {
 
                 <Reveal delay={280}>
                   <div className="mt-9 flex flex-wrap gap-3">
-                    <a href={CLINIC.booking.naver} target="_blank" rel="noopener noreferrer" className="rounded-full bg-brand px-7 py-3.5 text-[15px] font-bold text-white transition-transform hover:-translate-y-0.5">
-                      네이버 예약
-                    </a>
-                    <a href={CLINIC.booking.kakao} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/35 px-7 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10">
-                      카카오톡 문의
-                    </a>
+                    <Magnetic>
+                      <a href={CLINIC.booking.naver} target="_blank" rel="noopener noreferrer" className="block rounded-full bg-brand px-7 py-3.5 text-[15px] font-bold text-white">
+                        네이버 예약
+                      </a>
+                    </Magnetic>
+                    <Magnetic>
+                      <a href={CLINIC.booking.kakao} target="_blank" rel="noopener noreferrer" className="block rounded-full border border-white/35 px-7 py-3.5 text-[15px] font-bold text-white transition-colors hover:bg-white/10">
+                        카카오톡 문의
+                      </a>
+                    </Magnetic>
                   </div>
                 </Reveal>
               </div>
