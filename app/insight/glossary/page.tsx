@@ -20,7 +20,7 @@ export default function GlossaryPage() {
       <main>
         <IndexHero
           eyebrow="Glossary"
-          lines={['진료실에서 들은 말이', '무슨 뜻이었는지']}
+          lines={['진료실에서 들은 말이', '무슨 뜻인가요?']}
           lede={`설명은 들었는데 나와서 생각하니 잘 모르겠는 말들이 있습니다. ${GLOSSARY.length}개를 쉬운 말로 풀었습니다.`}
           count={GLOSSARY.length}
           crumbs={[{ label: '홈', href: '/' }, { label: '미리 알아두기', href: '/insight' }, { label: '용어집', href: '/insight/glossary' }]}

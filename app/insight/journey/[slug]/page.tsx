@@ -59,7 +59,7 @@ export default async function JourneyPage({ params }: { params: Promise<{ slug: 
           </Reveal>
         </DocSection>
 
-        <DocSection title="단계별로 보면" tone="surface">
+        <DocSection title="진행 단계" tone="surface">
           <ol className="space-y-px overflow-hidden rounded-[22px] bg-line">
             {j.steps.map((st, i) => (
               <Reveal as="li" key={st.label} delay={i * 70}>

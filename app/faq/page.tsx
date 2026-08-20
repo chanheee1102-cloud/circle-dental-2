@@ -21,7 +21,7 @@ export default function FaqPage() {
       <main>
         <IndexHero
           eyebrow="FAQ"
-          lines={['전화로 가장 많이', '받는 질문입니다']}
+          lines={['전화로 가장 많이', '받는 질문']}
           lede="개인의 구강 상태에 따라 답이 달라질 수 있어, 정확한 판단은 진단 후에 가능합니다. 여기에 없는 질문은 전화로 물어봐 주세요."
           crumbs={[{ label: '홈', href: '/' }, { label: '자주 묻는 질문', href: '/faq' }]}
         />

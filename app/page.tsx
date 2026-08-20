@@ -4,7 +4,7 @@ import DefinitionSwitch from '@/components/DefinitionSwitch';
 import HoursStrip from '@/components/HoursStrip';
 import ClinicMap from '@/components/ClinicMap';
 import {
-  Reveal, LineReveal, LetterMarquee, HorizontalScroll,
+  Reveal, LineReveal, LetterMarquee, HorizontalScroll, Lede,
   DragCursor, BlurText, FigureReveal,
   LetterReveal, PopIn, FanRow, Counter, StickyMedia, Pin,
 } from '@/components/Motion';
@@ -35,12 +35,12 @@ export default function Home() {
               <Reveal>
                 <p className="t-eyebrow mb-7 text-ink-2">About</p>
               </Reveal>
-              <LineReveal className="t-h2" lines={['뽑지 않아도 되는 이유를', '먼저 찾습니다.']} delay={80} />
+              <LineReveal className="t-h2" lines={['자연치아를 왜', '먼저 살리나요?']} delay={80} />
               <Reveal delay={260}>
-                <p className="t-body mt-9 max-w-md">
-                  자연 그대로의 치아를 최대한 살리는 것이 {CLINIC.shortName}의 진료 철학입니다. 임플란트는 마지막 선택이
-                  될 수 있도록 노력하고, 남길 수 있는 치아는 남기는 쪽을 먼저 검토합니다.
-                </p>
+                <Lede
+                  className="t-body mt-9 max-w-xl"
+                  text={`자연 그대로의 치아를 최대한 살리는 것이 ${CLINIC.shortName}의 진료 철학입니다. 임플란트는 마지막 선택이 될 수 있도록 노력하고, 남길 수 있는 치아는 남기는 쪽을 먼저 검토합니다.`}
+                />
               </Reveal>
 
               {/* AEO — 병원이 실제로 증명할 수 있는 사실만 */}
@@ -107,11 +107,16 @@ export default function Home() {
             <Reveal>
               <p className="t-eyebrow mb-7 text-ink-2">Treatment</p>
             </Reveal>
-            <LineReveal className="t-h2" lines={['네 가지 진료,', '하나의 기준.']} delay={80} />
+            <LineReveal className="t-h2" lines={['네 가지 진료,', '하나의 기준']} delay={80} />
             <Reveal delay={240}>
-              <p className="t-body mt-8 max-w-lg">
-                스크롤하면 옆으로 넘어갑니다. 각 진료가 어떤 상태에 쓰이는지 한 문장으로 정리했습니다.
-              </p>
+              {/*
+                ⚠️ 운영자 지적 — "한 문장으로 / 정리했습니다." 처럼 말이 끊기는 자리에서
+                   줄이 바뀌고 있었다. Lede 가 마침표·쉼표 뒤로 줄바꿈을 몰아 준다.
+              */}
+              <Lede
+                className="t-body mt-8 max-w-2xl"
+                text="스크롤하면 옆으로 넘어갑니다. 각 진료가 어떤 상태에 쓰이는지 한 문장으로 정리했습니다."
+              />
             </Reveal>
           </div>
 
@@ -128,7 +133,7 @@ export default function Home() {
                     <span className="display text-[30px] text-brand/35">{p.no}</span>
                     <h3 className="mt-4 text-[22px] font-bold tracking-[-0.03em]">{p.name}</h3>
                     <p className="display mt-1 text-[15px] text-ink-2">{p.en}</p>
-                    <p className="t-body mt-5 flex-1 text-[14px]">{p.copy}</p>
+                    <Lede className="t-body mt-5 flex-1 text-[14px]" text={p.copy} />
                   </div>
                 </article>
               ))}
@@ -170,9 +175,10 @@ export default function Home() {
               <BlurText text="이건 무슨 치료인가요?" />
             </h2>
             <Reveal delay={200}>
-              <p className="t-body mt-8 max-w-xl">
-                검색하다 들어오신 분이 가장 먼저 궁금해하는 것부터 한 문장으로 적었습니다.
-              </p>
+              <Lede
+                className="t-body mt-8 max-w-xl"
+                text="검색하다 들어오신 분이 가장 먼저 궁금해하는 것부터 한 문장으로 적었습니다."
+              />
             </Reveal>
 
             <DefinitionSwitch />
@@ -185,7 +191,7 @@ export default function Home() {
             <Reveal>
               <p className="t-eyebrow mb-7 text-ink-2">Doctors</p>
             </Reveal>
-            <LineReveal className="t-h2" lines={['처음부터 끝까지', '같은 사람이 봅니다.']} delay={80} />
+            <LineReveal className="t-h2" lines={['처음부터 끝까지', '같은 의료진']} delay={80} />
 
             <ul className="mt-16 grid gap-6 md:grid-cols-3">
               {DOCTORS.map((d, i) => (
@@ -236,7 +242,7 @@ export default function Home() {
               <h2 className="t-h2">
                 <LetterReveal text="들어서는 순간부터" />
                 <br />
-                <LetterReveal text="진료는 시작됩니다." delay={420} />
+                <LetterReveal text="시작되는 진료" delay={420} />
               </h2>
               {/* 실측 gs_reveal fromLeft 는 x:-300 이다 — 오른쪽(30)보다 훨씬 크다. */}
               <div className="mt-14 space-y-6">
@@ -268,7 +274,7 @@ export default function Home() {
             <Reveal>
               <p className="t-eyebrow mb-7 text-white/60">Hours</p>
             </Reveal>
-            <LineReveal className="t-h2 text-white" lines={['언제 문을 여는지', '한 줄로 적었습니다.']} delay={80} />
+            <LineReveal className="t-h2 text-white" lines={['진료시간이', '어떻게 되나요?']} delay={80} />
             <Reveal delay={200}>
               <HoursStrip />
             </Reveal>
@@ -281,7 +287,7 @@ export default function Home() {
             <Reveal>
               <p className="t-eyebrow mb-7 mt-6 text-white/60">Visit</p>
             </Reveal>
-            <LineReveal className="t-h2 text-white" lines={['화정역에서', '가까운 3층.']} delay={80} />
+            <LineReveal className="t-h2 text-white" lines={['화정역에서', '가까운 3층']} delay={80} />
 
             <div className="mt-14 grid gap-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-20">
               <div>

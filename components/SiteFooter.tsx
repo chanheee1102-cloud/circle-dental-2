@@ -99,7 +99,7 @@ export default function SiteFooter() {
                   <li key={it.href}>
                     <Link
                       href={it.href}
-                      className="text-[13px] leading-snug text-white/60 transition-colors hover:text-white"
+                      className="tap text-[13px] leading-snug text-white/60 transition-colors hover:text-white"
                     >
                       {it.label}
                     </Link>
@@ -188,7 +188,7 @@ export default function SiteFooter() {
         */}
         <div className="mt-8 flex flex-col gap-3 text-[11.5px] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            <Link href="/privacy" className="font-bold text-white/70 transition-colors hover:text-white">
+            <Link href="/privacy" className="tap font-bold text-white/70 transition-colors hover:text-white">
               개인정보처리방침
             </Link>
             <span className="text-white/45">

@@ -17,7 +17,7 @@ export default function ConditionIndex() {
       <main>
         <IndexHero
           eyebrow="Condition"
-          lines={['진단명을 들었는데', '그게 뭔지 모르겠다면']}
+          lines={['들으신 진단명이', '무슨 뜻인가요?']}
           lede={`${CONDITIONS.length}가지 구강 질환을 정의 한 문장에서 시작해 진행 단계까지 정리했습니다. 방치하면 어떻게 되는지를 알면 언제 가야 할지 스스로 판단할 수 있습니다.`}
           count={CONDITIONS.length}
           crumbs={[{ label: '홈', href: '/' }, { label: '미리 알아두기', href: '/insight' }, { label: '질환 알아보기', href: '/insight/condition' }]}

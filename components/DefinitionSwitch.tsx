@@ -129,7 +129,7 @@ export default function DefinitionSwitch() {
           </p>
           <Link
             href={`/treatment/${SLUG[d.key] ?? ''}`}
-            className="mt-8 inline-flex items-center gap-2 text-[13.5px] font-bold text-brand"
+            className="tap mt-8 inline-flex items-center gap-2 text-[13.5px] font-bold text-brand"
           >
             {d.term} 자세히 보기 <span aria-hidden>→</span>
           </Link>

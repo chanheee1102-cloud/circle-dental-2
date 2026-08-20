@@ -17,7 +17,7 @@ export default function TreatmentIndex() {
       <main>
         <IndexHero
           eyebrow="Treatment"
-          lines={['무슨 치료인지', '먼저 알고 오세요']}
+          lines={['어떤 치료를', '받게 되나요?']}
           lede={`${TREATMENTS.length}가지 진료를 어떤 치료인지, 누구에게 하는지, 무엇을 주의해야 하는지 순서로 정리했습니다.`}
           count={TREATMENTS.length}
           crumbs={[{ label: '홈', href: '/' }, { label: '치료 알아보기', href: '/treatment' }]}

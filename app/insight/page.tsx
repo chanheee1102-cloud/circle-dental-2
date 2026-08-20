@@ -30,7 +30,7 @@ export default function InsightHub() {
       <main>
         <IndexHero
           eyebrow="Insight"
-          lines={['치과에 오기 전에', '먼저 알아두면 좋은 것']}
+          lines={['치과에 오기 전에', '알아두면 좋은 것']}
           lede="진료실에서 자주 받는 질문을 미리 정리했습니다. 검색하다 들어오셨다면 여기서 시작하세요."
           crumbs={[{ label: '홈', href: '/' }, { label: '미리 알아두기', href: '/insight' }]}
         />

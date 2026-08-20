@@ -61,7 +61,7 @@ export default async function SymptomPage({ params }: { params: Promise<{ slug: 
         ) : null}
 
         {s.selfCare?.length ? (
-          <DocSection title="지금 집에서 할 수 있는 것" tone="surface">
+          <DocSection title="집에서 할 수 있는 것" tone="surface">
             <BulletList items={s.selfCare} />
             <p className="mt-8 text-[13px] leading-[1.85] text-ink-2">
               아래 방법은 통증을 잠시 줄이는 것이지 원인을 없애지는 못합니다. 증상이 반복되면 원인을 확인하는 검사가

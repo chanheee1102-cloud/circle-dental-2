@@ -25,7 +25,7 @@ export default function CostPage() {
       <main>
         <IndexHero
           eyebrow="Cost"
-          lines={['금액보다 먼저', '기준을 알려드립니다']}
+          lines={['비용은 무엇으로', '정해지나요?']}
           lede="같은 치료라도 사람마다 견적이 다른 이유가 있습니다. 보험이 되는 조건과 비용을 가르는 요인을 정리했습니다."
           crumbs={[{ label: '홈', href: '/' }, { label: '미리 알아두기', href: '/insight' }, { label: '비용 기준', href: '/insight/cost' }]}
         />

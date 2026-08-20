@@ -63,7 +63,7 @@ export default async function ConditionPage({ params }: { params: Promise<{ slug
           ) : null}
         </DocSection>
 
-        <DocSection title="이런 증상이 나타납니다" tone="surface">
+        <DocSection title="나타나는 증상" tone="surface">
           <BulletList items={c.signs} />
         </DocSection>
 
@@ -73,7 +73,7 @@ export default async function ConditionPage({ params }: { params: Promise<{ slug
 
         {/* ★ 진행 단계 — '언제 가야 하나' 를 스스로 판단하게 해 주는 자리다. */}
         {c.stages?.length ? (
-          <DocSection title="방치하면 이렇게 진행합니다" tone="surface">
+          <DocSection title="방치하면 어떻게 되나요?" tone="surface">
             <ol className="space-y-px overflow-hidden rounded-[22px] bg-line">
               {c.stages.map((st, i) => (
                 <Reveal as="li" key={st.step} delay={i * 70}>

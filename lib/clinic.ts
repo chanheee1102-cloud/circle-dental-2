@@ -115,7 +115,7 @@ export const PILLARS = [
     no: '01',
     name: '자연치아살리기',
     en: 'Save Natural Tooth',
-    copy: '자연 그대로의 치아를 최대한 살리는 것이 동그라미 치과의 진료 철학입니다.',
+    copy: '뽑기 전에 남길 수 있는지 먼저 봅니다. 자연치아가 가장 좋은 치아입니다.',
     photo: '/img/20210923_43d85ec16a0eb.jpg',
   },
   {
@@ -123,7 +123,7 @@ export const PILLARS = [
     no: '02',
     name: '임플란트',
     en: 'Implant',
-    copy: '임플란트는 마지막 선택이 될 수 있도록 노력합니다. 장기적인 예후까지 생각한 꼼꼼한 임플란트',
+    copy: '마지막 선택이 되도록 노력합니다. 장기적인 예후까지 함께 봅니다.',
     photo: '/img/20210923_6b7e0b66df9e0.jpg',
   },
   {

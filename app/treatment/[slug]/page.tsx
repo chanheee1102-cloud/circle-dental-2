@@ -53,7 +53,7 @@ export default async function TreatmentPage({ params }: { params: Promise<{ slug
         </DocSection>
 
         {t.whoFor?.length ? (
-          <DocSection title="이런 경우에 해당합니다" tone="surface">
+          <DocSection title="이런 경우에 해당" tone="surface">
             <BulletList items={t.whoFor} />
           </DocSection>
         ) : null}

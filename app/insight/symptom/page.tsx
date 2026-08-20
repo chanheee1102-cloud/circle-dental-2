@@ -19,8 +19,8 @@ export default function SymptomIndex() {
       <main>
         <IndexHero
           eyebrow="Symptom"
-          lines={['병명은 몰라도 됩니다', '지금 느끼는 것에서 시작하세요']}
-          lede={`${SYMPTOMS.length}가지 증상을 모았습니다. 각 문서는 왜 그런지, 지금 할 수 있는 것은 무엇인지, 어떤 신호일 때 바로 와야 하는지 순서로 되어 있습니다.`}
+          lines={['지금 어떤 증상이', '있으신가요?']}
+          lede={`${SYMPTOMS.length}가지 증상을 모았습니다. 각 문서는 왜 그런지, 지금 무엇을 할 수 있는지, 언제 바로 와야 하는지를 순서로 적었습니다.`}
           count={SYMPTOMS.length}
           crumbs={[{ label: '홈', href: '/' }, { label: '미리 알아두기', href: '/insight' }, { label: '증상으로 찾기', href: '/insight/symptom' }]}
         />

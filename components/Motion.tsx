@@ -518,18 +518,29 @@ export function LetterReveal({
     return () => io.disconnect();
   }, [replay]);
 
+  /*
+   * ⚠️⚠️ 어절 단위로 묶어야 한다 ⚠️⚠️
+   *   글자마다 inline-block 을 주면 브라우저는 **글자 사이 어디서나** 줄을 바꿔도 된다고 본다.
+   *   실제로 "시작되는 진료" 가 "시작되는 / 진료" 로 끊겨 마지막 줄에 한 어절만 남았다.
+   *   word-break: keep-all 도 여기서는 소용없다 — 이미 글자마다 독립된 상자라서다.
+   *   → 어절을 nowrap 상자로 감싸면 줄바꿈이 띄어쓰기 자리로만 몰린다.
+   * ⚠️ 어절 하나가 화면보다 넓을 일은 제목에서 사실상 없다(한국어 어절은 짧다).
+   *    그래서 이 자리에서는 nowrap 이 안전하다.
+   */
   let n = 0;
+  const words = text.split(' ');
   return (
     <span ref={ref} className={className} aria-label={text}>
-      {[...text].map((ch, i) =>
-        ch === ' ' ? (
-          <span key={i} aria-hidden> </span>
-        ) : (
-          <span key={i} aria-hidden className="ltr" style={{ '--d': `${delay + n++ * step}ms` } as React.CSSProperties}>
-            {ch}
-          </span>
-        ),
-      )}
+      {words.map((word, wi) => (
+        <span key={wi} aria-hidden className="inline-block whitespace-nowrap">
+          {[...word].map((ch, i) => (
+            <span key={i} className="ltr" style={{ '--d': `${delay + n++ * step}ms` } as React.CSSProperties}>
+              {ch}
+            </span>
+          ))}
+          {wi < words.length - 1 ? ' ' : ''}
+        </span>
+      ))}
     </span>
   );
 }
@@ -762,5 +773,53 @@ export function Pin({ children, className = '' }: { children: ReactNode; classNa
     <div className="pin-host">
       <div ref={box} className={`pin-box ${className}`}>{children}</div>
     </div>
+  );
+}
+
+/**
+ * 절 단위로 줄이 바뀌는 문단.
+ *
+ * ★★ 왜 필요한가 (2026-08-20 운영자) ★★
+ *   "…한 문장으로 / 정리했습니다." 처럼 **말이 끊기는 자리**에서 줄이 바뀌고 있었다.
+ *   브라우저는 그저 '남은 폭에 들어가는 만큼' 채울 뿐 의미를 모른다.
+ *   → 마침표·쉼표 뒤에서 잘라 각 절을 inline-block 으로 둔다.
+ *     inline-block 은 가능하면 통째로 놓이므로 줄바꿈이 그 경계로 몰린다.
+ *
+ * ★ 마침표·쉼표가 없으면 **연결어미**(-하고 · -지만 · -면서 · -며 · -거나 · -어서)
+ *   뒤에서 끊는다. 운영자 말대로 "말 쉬는 타이밍" 이다.
+ * ⚠️ 절 안에서 다시 접히는 것은 막지 않는다. white-space:nowrap 을 걸면
+ *    좁은 화면에서 한 절이 통째로 삐져나가 글자가 잘린다 — 그게 더 나쁘다.
+ * ⚠️ 절 사이의 공백은 **평범한 공백**이어야 한다. &nbsp; 로 붙이면 그 자리에서
+ *    줄을 못 바꿔 정반대 결과가 된다.
+ */
+/*
+ * 끊어도 되는 자리.
+ *   1순위 — 마침표·쉼표·물음표 뒤
+ *   2순위 — 연결어미 뒤 ("…하고 / …지만 / …는지") = 말이 쉬는 자리
+ * ⚠️ 정규식은 모든 자리를 같은 무게로 끊는다. 실제로 어디서 줄이 바뀌는지는 폭이 정한다 —
+ *    그래서 **문단 폭도 함께 맞춰야** 마침표에서 끊긴다. 규칙만으로는 안 된다.
+ */
+const CLAUSE_END =
+  /(?<=[.,;:!?])\s+|(?<=(?:하고|되고|있고|없고|지만|면서|으며|이며|거나|어서|아서|해서|되어|이고|는지|으면|하면|되면|어도|아도|해도|처럼|보다|까지|부터|대로|것이|것은|것을|때문에|위해|통해|대해))\s+/g;
+
+export function Lede({
+  text,
+  className = '',
+  as: Tag = 'p',
+}: {
+  text: string;
+  className?: string;
+  as?: ElementType;
+}) {
+  const parts = text.split(CLAUSE_END).filter(Boolean);
+  return (
+    <Tag className={className}>
+      {parts.map((s, i) => (
+        <span key={i} className="clause">
+          {s}
+          {i < parts.length - 1 ? ' ' : ''}
+        </span>
+      ))}
+    </Tag>
   );
 }

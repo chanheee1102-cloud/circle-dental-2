@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Reveal, LineReveal, BlurText, LetterMarquee } from './Motion';
+import { Reveal, LineReveal, BlurText, LetterMarquee, Lede } from './Motion';
 import { CLINIC } from '@/lib/clinic';
 
 /**
@@ -47,7 +47,7 @@ export function DocHero({
             {crumbs.map((c, i) => (
               <span key={c.href} className="flex items-center gap-2">
                 {i > 0 ? <span aria-hidden="true">/</span> : null}
-                <Link href={c.href} className="transition-colors hover:text-white">{c.label}</Link>
+                <Link href={c.href} className="tap transition-colors hover:text-white">{c.label}</Link>
               </span>
             ))}
           </nav>
@@ -61,9 +61,11 @@ export function DocHero({
         {/* ★ 직답 — h1 바로 다음 문단. 여기가 인용되는 자리다. */}
         {answer ? (
           <Reveal delay={140}>
-            <p className="mt-8 max-w-3xl border-l-2 border-brand-2 pl-6 text-[16.5px] leading-[1.92] text-white/85 md:text-[18px]">
-              {answer}
-            </p>
+            {/* 절 단위로 끊는다 — 직답은 인용되는 자리라 줄이 어색하면 눈에 띈다. */}
+            <Lede
+              text={answer}
+              className="mt-8 max-w-3xl border-l-2 border-brand-2 pl-6 text-[16.5px] leading-[1.92] text-white/85 md:text-[18px]"
+            />
           </Reveal>
         ) : null}
       </div>
@@ -229,7 +231,7 @@ export function IndexHero({
               {crumbs.map((c, i) => (
                 <span key={c.href} className="flex items-center gap-2">
                   {i > 0 ? <span aria-hidden="true">/</span> : null}
-                  <Link href={c.href} className="transition-colors hover:text-white">{c.label}</Link>
+                  <Link href={c.href} className="tap transition-colors hover:text-white">{c.label}</Link>
                 </span>
               ))}
             </nav>
@@ -244,7 +246,7 @@ export function IndexHero({
             <span className="text-brand-2"><BlurText text={lines[1]} step={45} /></span>
           </h1>
           <Reveal delay={240}>
-            <p className="mt-8 max-w-2xl text-[15.5px] leading-[1.92] text-white/70">{lede}</p>
+            <Lede text={lede} className="mt-8 max-w-2xl text-[15.5px] leading-[1.92] text-white/70" />
           </Reveal>
 
           {/*
