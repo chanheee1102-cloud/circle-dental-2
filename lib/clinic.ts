@@ -206,6 +206,17 @@ export const DOCTORS = [
   },
 ] as const;
 
+/**
+ * 의료진 단체 사진 — 기존 assets.ts 의 doctors 그대로(가운데가 대표원장 변석호).
+ * 진료 카드 다음 패럴랙스 띠에 쓴다(2026-08-21, 운영자: 상담실 사인 사진이
+ * "별로다" — 빈 공간 사진 대신 사람이 보이는 사진으로 교체) — INTERIOR 후보들도
+ * 전부 빈 방/장비 사진이라 같은 문제가 반복될 뿐이라, 카테고리 자체를 바꿨다.
+ */
+export const DOCTORS_GROUP_PHOTO = {
+  src: '/img/20211123_bbf2515cc8c8e.jpg',
+  alt: '가운을 입은 동그라미치과의원 의료진 여러 명이 나란히 서 있다',
+};
+
 /** 내부 사진 — 기존 assets.ts 의 interior 목록. */
 export const INTERIOR = [
   { src: '/img/20210923_5e82b10a99850.jpg', alt: '유리 파티션으로 나뉜 개별 상담 부스' },

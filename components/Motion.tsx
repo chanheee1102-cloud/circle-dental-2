@@ -951,12 +951,19 @@ export function Parallax({
   alt,
   className = '',
   amount = 0.12,
+  objectPosition,
 }: {
   src: string;
   alt: string;
   className?: string;
   /** 0.12 = 스크롤의 12% 만큼 반대로 움직인다. 0.2 를 넘기면 멀미가 난다. */
   amount?: number;
+  /**
+   * object-position 오버라이드(2026-08-21) — 세로가 긴 원본(예: 의료진 단체 사진,
+   * 위쪽 절반이 로고 여백)을 가로로 짧은 띠에 채우면 기본 center 는 얼굴이 아니라
+   * 빈 공간을 보여준다. 얼굴이 몰린 위치로 직접 지정한다.
+   */
+  objectPosition?: string;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const img = useRef<HTMLImageElement>(null);
@@ -984,7 +991,7 @@ export function Parallax({
         alt={alt}
         loading="lazy"
         className="h-full w-full object-cover will-change-transform"
-        style={{ transform: 'scale(1.16)' }}
+        style={{ transform: 'scale(1.16)', objectPosition: objectPosition || undefined }}
       />
     </div>
   );
