@@ -96,11 +96,23 @@ export default function Hero() {
                태그라인 / 환자의 질문문 / 오래 쓰는 쪽) 중 태그라인을 골랐다.
             ⚠️ CLINIC.tagline 을 그대로 읽는다 — 여기에 문자열을 직접 적으면
                lib/clinic.ts 와 어긋난다. 문구를 바꾸려면 저기를 고칠 것.
-            ⚠️ 두 줄로 고정하려고 <br> 를 넣지 않는다 — 창 폭에 따라 줄 수가
-               달라지는데 억지로 끊으면 좁은 창에서 한 어절만 남는 줄이 생긴다.
-               폭(max-w)으로만 조절한다.
+            ★★ 한 줄로 쭉 (2026-08-21, 운영자: "한줄로 쭉 나오게") ★★
+               폭(max-w 11ch)으로 두 줄에 앉히던 것을 없애고, 글자 크기를 화면
+               폭에 매어(7vw) 어떤 폭에서도 한 줄에 들어가게 했다. 좌우 여백
+               (EDGE)도 7.24vw 라 같은 비율로 움직이므로 여유가 유지된다.
+               실측: 이 문구의 폭은 글자 크기의 11배(44px 일 때 484px)이고
+               쓸 수 있는 폭은 화면의 85.5% 라, 7vw 면 320~1920px 전 구간에서
+               10% 이상 여유를 두고 한 줄에 앉는다.
+            ⚠️ vw 값을 올리거나 EDGE 를 키우면 좁은 화면에서 두 줄이 된다.
+               둘 중 하나만 만지지 말 것.
+            ⚠️⚠️ 여기에 whitespace-nowrap 을 쓰지 않는다 ⚠️⚠️
+               '한 줄'을 nowrap 으로 강제하면, 슬로건이 지금보다 길어지는 날
+               문장이 화면 밖으로 나가고 섹션의 overflow-hidden 에 **소리 없이
+               잘린다.** 지금처럼 두면 그런 경우 두 줄로 접힐 뿐이다 —
+               보기엔 아쉬워도 글자가 사라지는 것보다 낫다.
+               (슬로건은 lib/clinic.ts 에서 언제든 바뀔 수 있는 값이다.)
           */}
-          <h1 className="mt-3 max-w-[11ch] text-[clamp(28px,3.4vw,44px)] font-extrabold leading-[1.34] tracking-[-0.03em] text-white">
+          <h1 className="mt-3 text-[clamp(18px,7vw,44px)] font-extrabold leading-[1.34] tracking-[-0.03em] text-white">
             {CLINIC.tagline}
           </h1>
 
