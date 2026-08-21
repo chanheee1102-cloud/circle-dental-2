@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CLINIC, NAV, PILLARS, INTERIOR } from '@/lib/clinic';
+import { CLINIC, NAV, INTERIOR } from '@/lib/clinic';
 
 /**
  * 헤더 + 전체화면 메뉴. (퀵메뉴는 components/QuickMenu.tsx 로 분리)
@@ -25,8 +25,6 @@ import { CLINIC, NAV, PILLARS, INTERIOR } from '@/lib/clinic';
 export default function Chrome() {
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
-  const [pick, setPick] = useState(0);
-  const [pickOpen, setPickOpen] = useState(false);
   /* 전체화면 메뉴에서 지금 펼쳐 보고 있는 묶음 */
   const [menuAt, setMenuAt] = useState(0);
 
@@ -48,7 +46,7 @@ export default function Chrome() {
   }, [open]);
 
   useEffect(() => {
-    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') { setOpen(false); setPickOpen(false); } };
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
     window.addEventListener('keydown', esc);
     return () => window.removeEventListener('keydown', esc);
   }, []);
@@ -64,46 +62,17 @@ export default function Chrome() {
               : 'h-[76px] w-[min(1740px,calc(100%-32px))] rounded-[14px] px-6 md:px-9'
           }`}
         >
-          {/* 좌 — 시술 셀렉터 (원본 'On 미니 아이리프팅' 자리) */}
-          <div className="relative hidden shrink-0 md:block">
-            <button
-              type="button"
-              onClick={() => setPickOpen((v) => !v)}
-              aria-expanded={pickOpen}
-              className="flex items-center gap-2.5 text-[16px] font-semibold tracking-[-0.02em] text-ink"
-            >
-              <span className="display text-[20px] italic text-brand">On</span>
-              {PILLARS[pick].name}
-              <span
-                className="text-[10px] text-brand"
-                style={{ transform: pickOpen ? 'rotate(180deg)' : 'none', transition: 'transform .3s var(--ease-soft)' }}
-              >
-                ▼
-              </span>
-            </button>
-            <ul
-              className="absolute left-[-14px] top-[calc(100%+16px)] w-[248px] overflow-hidden rounded-[10px] bg-white py-2.5 shadow-[0_18px_50px_-24px_rgba(20,23,28,.5)]"
-              style={{
-                opacity: pickOpen ? 1 : 0,
-                visibility: pickOpen ? 'visible' : 'hidden',
-                transform: pickOpen ? 'none' : 'translateY(-8px)',
-                transition: 'opacity .34s var(--ease-soft), transform .34s var(--ease-soft), visibility .34s',
-              }}
-            >
-              {PILLARS.map((p, i) => (
-                <li key={p.key}>
-                  <button
-                    type="button"
-                    onClick={() => { setPick(i); setPickOpen(false); }}
-                    className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-[15.5px] text-ink-2 transition-colors hover:text-brand"
-                  >
-                    <span className="display text-[17px] italic text-brand">On</span>
-                    {p.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/*
+            ★★ 좌측 'On [진료]' 셀렉터 제거 (2026-08-21, 운영자: "왼쪽위 저거
+               별로네 ... 이 메뉴 자체가 필요없다") ★★
+               bom-on 원본의 'On 미니 아이리프팅'(선택한 시술을 테마처럼 보여주는
+               알약 셀렉터)을 그대로 옮긴 자리였다. 그런데 여기서 고른 값은
+               헤더 글자를 바꾸는 것 말고 실제로 아무 것도 하지 않았다(필터·이동
+               없음) — 메드스파의 '지금 진행 중인 시술' 테마 장치를, 4개 진료를
+               항상 동시에 안내하는 치과에 그대로 옮겨 온 것이라 애초에 이 사이트
+               구조와는 안 맞았다. 전체 메뉴(햄버거)가 모든 진료를 이미 안내하므로
+               지운다.
+          */}
 
           {/* 중앙 — 원본 로고 */}
           <a

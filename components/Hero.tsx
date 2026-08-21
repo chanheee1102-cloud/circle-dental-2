@@ -14,9 +14,10 @@ import HeroVideo from './HeroVideo';
  * ★★ On/Off 토글 제거 (2026-08-21, 운영자: "on 버튼 없애고 문구 가운데에다가
  *    예약하기 버튼이랑 같이 넣어 전문적으로") ★★
  *    bom-on 의 서명이던 토글을 걷어내고, 영상은 항상 재생을 시도한다(꺼지지
- *    않는다). 문구+예약 버튼을 화면 가운데로 옮겨 더 정돈된 인상으로 갔다.
- *    STILLS 순환·진행 점(예전 '꺼짐' 상태 전용 UI)도 함께 걷어냈다 —
+ *    않는다). STILLS 순환·진행 점(예전 '꺼짐' 상태 전용 UI)도 함께 걷어냈다 —
  *    다시 쓸 일이 생기면 git 이력(이 커밋 직전)에서 되살릴 수 있다.
+ *    (문구+예약 버튼은 가운데 정렬을 한 번 시도했다가 "안 어울린다"는 피드백으로
+ *    다시 왼쪽 정렬로 되돌렸다 — 아래 Lede 블록 주석 참조.)
  *
  * ⚠️ 영상 뒤에 사진을 항상 깐다 — 사내망·백신이 Vimeo 를 막는 환경이 있다.
  *    이 안전장치는 토글 제거와 무관하게 그대로 유지한다(HeroVideo.tsx 참조).
@@ -50,33 +51,35 @@ export default function Hero() {
       </div>
 
       {/*
-        소개 문구 + 예약 버튼 — 화면 가운데.
+        소개 문구 + 예약 버튼.
         ⚠️⚠️ 세로 위치를 **뷰포트 비율(svh)로 잡으면 안 된다** ⚠️⚠️
           마퀴 글자 크기는 화면 **폭**(13.9vw)을 따르는데 svh 로 잡으면 폭이 넓고
           세로가 짧은 창에서 마퀴와 겹친다(실측 1879×940, 회귀 이력 있음).
           → 마퀴의 실제 아래끝(헤더 76 + 4vh + 글자높이)에서 44px 띄운다.
-        ★ 좌우는 50% + translateX(-50%) 로 가운데 정렬, 안의 글도 text-center.
+        ★★ 가운데 정렬 → 다시 왼쪽 정렬 (2026-08-21, 운영자: "가운데 문구도
+           별로야 ... 가운데 정렬 자체가 안 어울린다") ★★ 원래(bom-on 실측)
+           좌표로 되돌렸다 — left: max(24px, 7.24vw).
       */}
       <div
-        className="absolute inset-x-0 z-10 flex flex-col items-center px-6 text-center"
-        style={{ top: 'calc(76px + 4vh + clamp(56px, 13.9vw, 268px) * 1.2 + 44px)' }}
+        className="absolute z-10 max-w-[560px] px-6"
+        style={{ top: 'calc(76px + 4vh + clamp(56px, 13.9vw, 268px) * 1.2 + 44px)', left: 'max(24px, 7.24vw)' }}
       >
         {/*
           ★★ 짧은 태그라인 → 원래 소개 문구 (2026-08-21, 운영자: "여기를 원래
              동그라미치과 설명문구랑 예약하기 버튼으로 하자") ★★
              CLINIC.description 은 기존 홈페이지 문구를 그대로 옮긴 VERIFIED 값
              (lib/clinic.ts) — 여기서 새로 쓴 문구가 아니다.
-          ★★ 줄바꿈 · 색 조정 (2026-08-21, 운영자: "마침표에서 줄바꿈해, 문구
-             흰색이 나을것 같아") ★★ 일반 텍스트는 폭에 맞춰 아무 데서나 잘려
-             "…입니다. 자연치아를" 처럼 문장 중간에서 줄이 갈렸다. Lede 로 바꿔
-             마침표·쉼표 뒤(문장이 쉬는 자리)에서만 줄이 갈리게 했다 — 이
-             사이트 다른 본문 문단이 전부 쓰는 것과 같은 컴포넌트다. 색은
-             brand-2(청록) → 흰색으로, 스포트라이트를 걷어낸 자리를 대신한다.
+          ★★ 줄바꿈 · 색 · 크기 조정 (2026-08-21, 운영자: "마침표에서 줄바꿈해,
+             문구 흰색이 나을것 같아" 이후 "글자 크기·굵기가 어중간하다") ★★
+             Lede 로 마침표·쉼표 뒤에서만 줄이 갈리게 했고(이 사이트 다른 본문이
+             전부 쓰는 컴포넌트), 색은 흰색을 유지하되 크기·굵기를 캡션 수준
+             (15~19px)에서 **소제목 수준**(clamp 22~32px, extrabold)으로 키워
+             히어로의 실제 헤드라인으로 확실히 읽히게 했다.
         */}
         <Lede
           as="h1"
           text={CLINIC.description}
-          className="max-w-[440px] text-[clamp(15px,1.25vw,19px)] font-semibold leading-[1.7] tracking-[-0.01em] text-white"
+          className="text-[clamp(22px,2.6vw,32px)] font-extrabold leading-[1.42] tracking-[-0.02em] text-white"
         />
 
         {/* 예약하기 — 기존 '오시는 길' 섹션과 같은 스타일(네이버 예약, 브랜드색 버튼). */}
@@ -86,7 +89,7 @@ export default function Hero() {
               href={CLINIC.booking.naver}
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-full bg-brand px-8 py-3.5 text-[15px] font-bold text-white"
+              className="inline-block rounded-full bg-brand px-8 py-3.5 text-[15px] font-bold text-white"
             >
               예약하기
             </a>
