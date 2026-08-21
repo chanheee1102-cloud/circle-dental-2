@@ -194,8 +194,17 @@ export function LetterMarquee({
       {[0, 1, 2, 3].map((i) => chunk(`${key}-${i}`))}
     </span>
   );
+  /*
+   * ⚠️⚠️ y 축은 overflow-hidden 을 걸지 않는다 (2026-08-21 운영자: "y가 밑에 잘림") ⚠️⚠️
+   *   line-height:1 은 글자 상자를 정확히 1×font-size 로 맞출 뿐, 세리프체(Playfair Display)
+   *   의 y·g 같은 디센더(밑으로 내려가는 획)는 그 상자 밖으로 실제 잉크가 삐져나온다.
+   *   overflow-hidden(양축)이면 그 삐져나온 부분이 그대로 잘린다.
+   *   마퀴가 필요로 하는 건 **가로만** 숨기는 것(두 번째 트랙·좌우 넘침)이라, 세로는
+   *   overflow-y-visible 로 열어 둔다 — 다른 요소 배치에 쓰는 높이 계산(Hero.tsx 의
+   *   clamp() 기반 top 좌표)은 박스의 **레이아웃 높이**만 보므로 그대로 안 흔들린다.
+   */
   return (
-    <div className={`relative flex overflow-hidden whitespace-nowrap select-none pointer-events-none ${className}`}>
+    <div className={`relative flex overflow-x-hidden overflow-y-visible whitespace-nowrap select-none pointer-events-none ${className}`}>
       {track('a')}
       {track('b', true)}
     </div>
@@ -203,39 +212,61 @@ export function LetterMarquee({
 }
 
 /**
- * On 토글 — bom-on 의 서명.
- * 실측: checked 면 배경 #ff7048, 풀면 #b4b4b4 로 **1.5초**에 걸쳐 바뀌고 히어로가 꺼진다.
- * "Turn on Bom on" 이라는 카피를 화면이 그대로 실행하는 구조다.
- * ⚠️ 손잡이는 바깥(이동) / 안쪽(흔들림) 두 겹이다 — 한 요소에 겹치면 이동이 안 먹는다.
+ * On/Off 원형 버튼 — 영상 켜기/끄기.
+ *
+ * ★★ bom-on 의 알약 토글(가로 pill + 미끄러지는 흰 손잡이)을 그대로 베끼지 않는다
+ *    (2026-08-21 운영자: "저 on버튼 너무 따라한거 같다") ★★
+ *    같은 기능을 병원 이름('동그라미')에 맞는 **원** 모티프로 다시 풀었다.
+ *    미끄러지는 손잡이 대신, 상태 전환은 ① 채움(테두리만 ↔ 배경 꽉 참)
+ *    ② 라벨 크로스페이드(On ↔ Off) ③ 켜졌을 때만 도는 펄스 링(CCTV 라이브
+ *    표시등처럼 "지금 재생 중"을 알린다) 세 가지로 표현한다 — 이동 애니메이션이 없다.
  */
-export function OnSwitch({ on, onChange, label = 'On' }: { on: boolean; onChange: (v: boolean) => void; label?: string }) {
+export function OnSwitch({
+  on,
+  onChange,
+  label = 'On',
+  offLabel = 'Off',
+}: {
+  on: boolean;
+  onChange: (v: boolean) => void;
+  label?: string;
+  offLabel?: string;
+}) {
   return (
     <button
       type="button"
       aria-pressed={on}
       aria-label="배경 켜기 / 끄기"
       onClick={() => onChange(!on)}
-      className="relative inline-flex h-[46px] w-[111px] items-center rounded-full border-0 p-0"
+      className="relative inline-flex h-16 w-16 items-center justify-center rounded-full border-0 p-0"
       style={{ cursor: 'pointer' }}
     >
+      {/* 펄스 링 — 켜졌을 때만, 매 2.4s 마다 한 번씩 바깥으로 번지고 사라진다. */}
       <span
+        aria-hidden
         className="absolute inset-0 rounded-full"
-        style={{ background: on ? 'var(--color-brand)' : 'var(--color-off)', transition: 'background 1.5s ease-in-out' }}
+        style={{
+          border: '1.5px solid var(--color-brand-2)',
+          opacity: on ? 1 : 0,
+          animation: on ? 'circlePulse 2.4s ease-out infinite' : 'none',
+          transition: 'opacity .4s ease',
+        }}
+      />
+      {/* 본체 — 꽉 찬 원(on) ↔ 테두리만 남은 원(off). */}
+      <span
+        aria-hidden
+        className="absolute inset-0 rounded-full"
+        style={{
+          background: on ? 'var(--color-brand)' : 'transparent',
+          border: `1.5px solid ${on ? 'var(--color-brand)' : 'rgba(255,255,255,.5)'}`,
+          transition: 'background .5s ease-in-out, border-color .5s ease-in-out',
+        }}
       />
       <span
-        className={`display relative z-10 text-[22px] text-white ${on ? 'ml-[18px]' : 'ml-auto mr-[18px]'}`}
-        style={{ transition: 'margin 0.3s var(--ease-soft)' }}
+        className="display relative z-10 text-[15px]"
+        style={{ color: on ? '#fff' : 'rgba(255,255,255,.8)', transition: 'color .3s ease' }}
       >
-        {label}
-      </span>
-      <span
-        className="absolute left-[5px] top-[5px] z-10 h-9 w-9"
-        style={{ transform: on ? 'translateX(65px)' : 'none', transition: 'transform 0.3s var(--ease-soft)' }}
-      >
-        <i
-          className="block h-full w-full rounded-full bg-white"
-          style={{ boxShadow: '0 4px 14px rgba(0,0,0,.28)', animation: 'wobbleMe 1.2s ease-in-out infinite' }}
-        />
+        {on ? label : offLabel}
       </span>
     </button>
   );
