@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { CLINIC, INTERIOR, VIDEO } from '@/lib/clinic';
-import { LetterMarquee, OnSwitch } from './Motion';
+import { LetterMarquee, OnSwitch, Magnetic } from './Motion';
 import HeroVideo from './HeroVideo';
 
 /**
@@ -128,11 +128,32 @@ export default function Hero() {
           left: 'max(24px, 7.24vw)',
         }}
       >
-        <h1 className="text-[clamp(14px,1.05vw,17px)] font-bold leading-[1.6] tracking-[-0.02em] text-brand-2">
-          {CLINIC.tagline} : {CLINIC.shortName}
+        {/*
+          ★★ 짧은 태그라인 → 원래 소개 문구 (2026-08-21, 운영자: "여기를 원래
+             동그라미치과 설명문구랑 예약하기 버튼으로 하자") ★★
+             CLINIC.description 은 기존 홈페이지 문구를 그대로 옮긴 VERIFIED 값
+             (lib/clinic.ts) — 여기서 새로 쓴 문구가 아니다. 태그라인 한 줄보다
+             길어서 max-width 를 줘 좁은 폭으로 접히게 했다(영상 위 가독성).
+        */}
+        <h1 className="max-w-[380px] text-[clamp(14px,1.15vw,18px)] font-semibold leading-[1.7] tracking-[-0.01em] text-brand-2">
+          {CLINIC.description}
         </h1>
         <div className="mt-7">
           <OnSwitch on={on} onChange={setOn} />
+        </div>
+
+        {/* 예약하기 — 기존 '오시는 길' 섹션과 같은 스타일(네이버 예약, 브랜드색 버튼). */}
+        <div className="mt-6">
+          <Magnetic>
+            <a
+              href={CLINIC.booking.naver}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-full bg-brand px-7 py-3.5 text-[15px] font-bold text-white"
+            >
+              예약하기
+            </a>
+          </Magnetic>
         </div>
 
         {/*
