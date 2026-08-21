@@ -59,7 +59,21 @@ export default function Home() {
                 실제 병원이 취득한 인증·수료 실물이지 지어낸 이미지가 아니다.
              ★ 236×242(1장은 236×178) 스캔본이라 인테리어 사진과 비율이 다르다 — object-cover
                 로 잘라내면 인증서 테두리 글자가 잘린다. aspect-square + object-contain +
-                라벨(figcaption)로 무슨 인증인지 바로 읽히게 한다. */}
+                라벨(figcaption)로 무슨 인증인지 바로 읽히게 한다.
+             ★★ 흰 카드 → 입체 (2026-08-21, 운영자: "여기 하얀 사각형 배경 없이 3D
+                느낌나게 나오게 하자") ★★ 인증패를 흰 사각형 안에 넣어 두니 실물이
+                아니라 '카드에 넣은 그림'으로 보였다. 흰 판·테두리·상자 그림자를
+                걷어내고 세 가지로 입체를 만든다:
+                  · Tilt — 커서를 따라 판이 기운다(원근 900px)
+                  · translateZ — 인증패는 52px, 라벨은 20px 띄운다. 기울 때 둘이
+                    서로 다른 속도로 움직이는 것이 3D 로 읽히는 핵심이다.
+                    (같은 평면에 두면 아무리 회전해도 '기운 사진'일 뿐이다.)
+                  · 바닥 그림자 — 판은 떠 있고 그림자는 바닥(Z 0)에 남는다.
+                    상자 그림자가 아니라 타원이라 종이가 떠 있는 것처럼 보인다.
+                또 상자가 사라졌으므로 그림자를 drop-shadow 로 바꿨다 — 인증패의
+                실제 윤곽을 따라간다(box-shadow 는 네모난 상자만 따라간다).
+             ⚠️ 손가락 입력·모션 감소 환경에서는 Tilt 가 스스로 꺼진다(Motion.tsx).
+                그 경우에도 바닥 그림자와 띄운 간격은 남아 평면으로 무너지지 않는다. */}
         <div className="overflow-hidden bg-paper pt-24 md:pt-32">
           <div className="shell">
             <Reveal>
@@ -67,15 +81,46 @@ export default function Home() {
             </Reveal>
           </div>
           <FanRow
-            items={CREDENTIALS.map((c) => (
-              <figure
-                key={c.src}
-                className="flex aspect-square flex-col items-center justify-center gap-3 overflow-hidden rounded-[22px] border border-line bg-white p-6 shadow-[0_30px_70px_-40px_rgba(20,23,28,.5)]"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={c.src} alt={c.label} className="max-h-[65%] w-auto object-contain" loading="lazy" />
-                <figcaption className="text-center text-[12px] leading-snug text-ink-2">{c.label}</figcaption>
-              </figure>
+            items={CREDENTIALS.map((c, i, arr) => (
+              <Tilt key={c.src} deg={14}>
+                {/*
+                  ⚠️ 커서 기울기만으로는 부족하다 — 손가락 입력(모바일)에는 커서가
+                     없고, 데스크톱에서도 네 장을 다 훑지는 않는다. 그래서 가만히
+                     있을 때도 부채처럼 각자 조금씩 다른 각도로 서 있게 한다.
+                     가운데를 0 으로 두고 바깥으로 갈수록 4도씩 더 돌린다.
+                  ⚠️ 이 회전은 <figure> 에 건다. Tilt 는 바깥 .tilt 의 transform 을
+                     직접 쓰고 커서가 빠지면 그 값을 지우므로, 여기에 기본 각도를
+                     두면 지워진다.
+                */}
+                <figure
+                  className="relative flex aspect-square flex-col items-center justify-center gap-5 px-3"
+                  style={{ transform: `rotateY(${(i - (arr.length - 1) / 2) * 4}deg)` }}
+                >
+                  {/* 바닥 그림자 — 판만 뜨고 이건 바닥에 남는다(translateZ 없음). */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute left-1/2 top-[70%] h-[22px] w-[56%] -translate-x-1/2 rounded-[50%] bg-ink/25 blur-[13px]"
+                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={c.src}
+                    alt={c.label}
+                    className="relative max-h-[74%] w-auto object-contain"
+                    style={{
+                      transform: 'translateZ(52px)',
+                      filter:
+                        'drop-shadow(0 22px 26px rgba(20,23,28,.28)) drop-shadow(0 3px 6px rgba(20,23,28,.16))',
+                    }}
+                    loading="lazy"
+                  />
+                  <figcaption
+                    className="relative text-center text-[12.5px] font-medium leading-snug text-ink-2"
+                    style={{ transform: 'translateZ(20px)' }}
+                  >
+                    {c.label}
+                  </figcaption>
+                </figure>
+              </Tilt>
             ))}
           />
         </div>
