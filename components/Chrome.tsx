@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { CLINIC, NAV, INTERIOR } from '@/lib/clinic';
 
 /**
@@ -28,6 +29,17 @@ export default function Chrome() {
   /* 전체화면 메뉴에서 지금 펼쳐 보고 있는 묶음 */
   const [menuAt, setMenuAt] = useState(0);
 
+  /*
+    ⚠️⚠️ 투명 헤더는 **어두운 히어로가 깔린 홈에서만** 성립한다 ⚠️⚠️
+      헤더를 투명하게 만들면 로고·전화·햄버거를 전부 흰색으로 뒤집어야 하는데,
+      하위 페이지(진료·증상·병원 안내)는 맨 위가 밝은 배경이라 흰 글자가 그대로
+      사라진다. 그래서 스크롤 위치만으로 판단하지 않고 '홈이면서 아직 안 내렸을
+      때' 만 투명으로 둔다. 이 조건에서 pathname 을 빼면 하위 페이지 헤더가
+      통째로 안 보인다.
+  */
+  const pathname = usePathname();
+  const overHero = pathname === '/' && !solid;
+
   useEffect(() => {
     let on = false;
     const onScroll = () => {
@@ -53,28 +65,27 @@ export default function Chrome() {
 
   return (
     <>
-      {/* ══ 헤더 — 흰 바, 로고 가운데 ══ */}
+      {/*
+        ══ 헤더 — 히어로 위에서는 투명, 스크롤하면 흰 바 ══
+        ★★ 투명 헤더 (2026-08-21, 운영자: "헤더에 하얀배경 없애고 투명하게
+           하고 그런 느낌으로") ★★ 참고 화면(서울이고운치과)처럼 맨 위에서는
+           히어로 사진/영상 위에 바로 얹혀 배경이 없고, 스크롤하면(solid) 지금
+           있던 흰 알약 헤더로 바뀐다. 로고가 짙은 회색 단색이라 투명 상태에서는
+           안 보이므로 filter(brightness-0 invert)로 흰색으로 뒤집는다 — 로고
+           파일을 새로 만들지 않고 기존 자산 그대로 쓴다.
+      */}
       <header className={`site-header fixed inset-x-0 top-0 z-50 ${solid ? 'pt-0' : 'pt-4'}`}>
+        {/* ⚠️ 모양(높이·폭·둥근 모서리)은 예전 그대로 solid 로만 정한다. 여기에
+            overHero 를 섞으면 하위 페이지 헤더 배치까지 같이 흔들린다.
+            투명화는 **색만** 바꾸는 것이다. */}
         <div
-          className={`header-inner relative mx-auto flex items-center bg-white ${
+          className={`header-inner relative mx-auto flex items-center transition-colors duration-500 ${
             solid
               ? 'h-[68px] w-full rounded-none px-6 shadow-[0_8px_30px_-22px_rgba(20,23,28,.45)] md:px-10'
               : 'h-[76px] w-[min(1740px,calc(100%-32px))] rounded-[14px] px-6 md:px-9'
-          }`}
+          } ${overHero ? 'bg-transparent' : 'bg-white'}`}
         >
-          {/*
-            ★★ 좌측 'On [진료]' 셀렉터 제거 (2026-08-21, 운영자: "왼쪽위 저거
-               별로네 ... 이 메뉴 자체가 필요없다") ★★
-               bom-on 원본의 'On 미니 아이리프팅'(선택한 시술을 테마처럼 보여주는
-               알약 셀렉터)을 그대로 옮긴 자리였다. 그런데 여기서 고른 값은
-               헤더 글자를 바꾸는 것 말고 실제로 아무 것도 하지 않았다(필터·이동
-               없음) — 메드스파의 '지금 진행 중인 시술' 테마 장치를, 4개 진료를
-               항상 동시에 안내하는 치과에 그대로 옮겨 온 것이라 애초에 이 사이트
-               구조와는 안 맞았다. 전체 메뉴(햄버거)가 모든 진료를 이미 안내하므로
-               지운다.
-          */}
-
-          {/* 중앙 — 원본 로고 */}
+          {/* 중앙 — 원본 로고. 투명 상태에서는 흰색으로 뒤집는다. */}
           <a
             href="#top"
             aria-label={`${CLINIC.name} 홈`}
@@ -84,25 +95,33 @@ export default function Chrome() {
             <img
               src="/img/logo.png"
               alt={CLINIC.name}
-              className={`w-auto transition-all duration-700 ${solid ? 'h-[34px]' : 'h-[40px]'}`}
+              className={`w-auto transition-all duration-500 ${solid ? 'h-[34px]' : 'h-[40px]'}`}
+              style={{ filter: overHero ? 'brightness(0) invert(1)' : 'none' }}
             />
           </a>
 
-          {/* 우 — 전화 + 햄버거 */}
+          {/* 우 — 전화 + 햄버거. 투명 상태에서는 흰색. */}
           <div className="ml-auto flex shrink-0 items-center gap-4">
-            <a href={CLINIC.phoneHref} className="hidden text-[16px] font-bold tabular-nums text-ink lg:block">
+            <a
+              href={CLINIC.phoneHref}
+              className={`hidden text-[16px] font-bold tabular-nums transition-colors duration-500 lg:block ${
+                overHero ? 'text-white' : 'text-ink'
+              }`}
+            >
               {CLINIC.phone}
             </a>
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-label="메뉴 열기"
-              className="grid h-10 w-10 place-items-center rounded-full text-ink transition-colors hover:bg-surface"
+              className={`grid h-10 w-10 place-items-center rounded-full transition-colors duration-500 ${
+                overHero ? 'text-white hover:bg-white/10' : 'text-ink hover:bg-surface'
+              }`}
             >
               <span className="flex flex-col gap-[6px]">
-                <span className="block h-[2px] w-[22px] bg-brand" />
-                <span className="block h-[2px] w-[22px] bg-brand" />
-                <span className="block h-[2px] w-[22px] bg-brand" />
+                <span className={`block h-[2px] w-[22px] transition-colors duration-500 ${overHero ? 'bg-white' : 'bg-brand'}`} />
+                <span className={`block h-[2px] w-[22px] transition-colors duration-500 ${overHero ? 'bg-white' : 'bg-brand'}`} />
+                <span className={`block h-[2px] w-[22px] transition-colors duration-500 ${overHero ? 'bg-white' : 'bg-brand'}`} />
               </span>
             </button>
           </div>

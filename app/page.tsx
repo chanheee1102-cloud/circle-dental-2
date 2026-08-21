@@ -7,10 +7,9 @@ import {
   Reveal, LineReveal, LetterMarquee, HorizontalScroll, Lede,
   Parallax, Magnetic, Tilt,
   DragCursor, BlurText, FigureReveal,
-  LetterReveal, PopIn, FanRow, Counter, StickyMedia,
+  LetterReveal, PopIn, FanRow, StickyMedia,
 } from '@/components/Motion';
 import { CLINIC, PILLARS, DOCTORS, INTERIOR, CREDENTIALS } from '@/lib/clinic';
-import { FACTS } from '@/lib/aeo';
 import {
   clinicSchema, websiteSchema, procedureSchemas,
   physicianSchemas, faqSchema, videoSchema,
@@ -35,37 +34,15 @@ export default function Home() {
         */}
         <Hero />
 
-        {/* ── 소개 ─────────────────────────────────────────────── */}
         {/*
-          ── 히어로 바로 아래: 확인된 사실 띠 ──
-
-          ★★ 제목도 사진도 없다 (2026-08-20 운영자: "제목이랑 사진이랑 왤케 이상해") ★★
-            직전 판은 "화정동에서 어떻게 진료하나요?" 라고 **묻고 답 대신 사진**을 뒀다.
-            질문형 제목은 바로 뒤에 답이 와야 성립한다 — 사진은 답이 아니다.
-            그래서 이 자리는 제목 없는 띠로 만들고, 답이 필요한 질문은 각자
-            자기 섹션에서 답하게 나눴다 (v1 의 구성 방식).
-          ⚠️ 여기 숫자는 전부 lib/aeo.ts 의 FACTS 다. 지어낸 지표를 크게 띄우면
-             그건 의료광고다 — "만족도 98%" 같은 건 절대 넣지 않는다.
+          ★★ 확인된 사실 띠(FACTS) → 히어로 하단 밴드로 이동 (2026-08-21,
+             운영자: "의료진3명 야간진료 뭐 저런거 저렇게 넣고" — 참고 화면
+             서울이고운치과의 히어로 하단 스펙 띠) ★★
+             예전엔 히어로 바로 아래 별도 섹션(#about)으로 큼직한 카운터
+             숫자와 함께 보여줬다. 참고 화면처럼 히어로 사진 위 하단 밴드로
+             옮겨 압축된 형태(Hero.tsx 참조)로 보여주므로, 바로 아래서 같은
+             값을 또 한 번 큼직하게 반복하지 않는다(중복 방지).
         */}
-        <section id="about" className="relative z-10 bg-paper py-20 md:py-24">
-          <div className="shell">
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-11 lg:grid-cols-4">
-              {FACTS.map((s, i) => (
-                <Reveal as="div" key={s.label} delay={i * 80}>
-                  <dt className="t-eyebrow text-ink-2">{s.label}</dt>
-                  {/* ⚠️ "14:00까지" 는 세지 않는다 — 시각을 0 부터 세면 뜻이 달라진다. */}
-                  <dd className="stat mt-4 text-[clamp(30px,3.2vw,42px)] text-brand">
-                    {(() => {
-                      const m = /^([0-9]+)([^0-9:]*)$/.exec(s.value);
-                      return m ? <Counter to={Number(m[1])} suffix={m[2]} /> : s.value;
-                    })()}
-                  </dd>
-                  <dd className="mt-3 text-[14.5px] leading-[1.7] text-ink-2">{s.note}</dd>
-                </Reveal>
-              ))}
-            </dl>
-          </div>
-        </section>
 
         {/* ── 마퀴 띠 ──────────────────────────────────────────── */}
         <div className="border-y border-line bg-surface py-6">
