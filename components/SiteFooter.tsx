@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { CLINIC } from '@/lib/clinic';
-import { LetterMarquee } from './Motion';
 import { SITE_MODIFIED, formatKoreanDate } from '@/lib/contentMeta';
 
 /**
@@ -36,10 +35,16 @@ export default function SiteFooter() {
    */
   return (
     <footer className="bg-ink pb-28 pt-20 text-white md:pb-32">
-      {/* 마퀴 — bom-on 히어로와 짝을 이루는 마감. */}
-      <LetterMarquee text={`${CLINIC.shortName} ·`} seconds={30} colorClass="text-white/[0.07]" />
+      {/*
+        ★★ 푸터 마퀴 제거 (2026-08-21, 운영자: "이거 동그라미치과 움직이는건
+           빼자 아예") ★★ 히어로 마퀴와 짝을 맞추려고 병원 이름을 크게 흘려
+           보냈는데, 길찾기 버튼 바로 아래에서 거대한 글자가 계속 움직여
+           마감이 어수선했다. 히어로 마퀴 하나면 충분하다.
+        ⚠️ 되살릴 생각이면 여기가 아니라 다른 자리를 먼저 찾을 것 — 운영자가
+           "아예" 빼라고 한 건 이 위치의 문제였다.
+      */}
 
-      <div className="shell mt-16">
+      <div className="shell">
         <div className="grid gap-x-10 gap-y-14 lg:grid-cols-[minmax(0,1.15fr)_repeat(3,minmax(0,1fr))]">
           {/* ── 브랜드 칸 ── */}
           <div>
