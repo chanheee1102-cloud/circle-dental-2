@@ -14,6 +14,22 @@ import {
   physicianSchemas, faqSchema, videoSchema,
 } from '@/lib/schema';
 
+/**
+ * 둘러보기 사진 줄의 리듬 — 비율과 폭·정렬을 번갈아 둔다.
+ *
+ * ⚠️ 전부 같은 크기로 쌓으면 스크롤이 '목록 넘기기'가 된다. 여섯 칸이 한 바퀴다.
+ * ⚠️ 폭을 줄인 칸은 반드시 ml-auto / mr-auto 로 어느 쪽에 붙일지 정한다.
+ *    안 정하면 기본값(왼쪽)으로 몰려 들여쓰기 리듬이 사라진다.
+ */
+const TOUR_SHAPE = [
+  'aspect-[4/3] w-full',
+  'aspect-[3/4] ml-auto w-[74%]',
+  'aspect-[4/3] mr-auto w-[90%]',
+  'aspect-[1/1] ml-auto w-[66%]',
+  'aspect-[4/3] w-full',
+  'aspect-[3/4] mr-auto w-[80%]',
+];
+
 export default function Home() {
   return (
     <>
@@ -292,42 +308,68 @@ export default function Home() {
         </section>
 
         {/* ── 둘러보기 — sticky 사진 + 흐르는 글 (원본 .img_wrap) ── */}
+        {/*
+          ★★ 좌우를 맞바꿨다 (2026-08-21, 운영자: "여긴 중복되는데 왼쪽에 저 사진
+             고정해두는것보다 문구를 왼쪽에 두고 오른쪽에 더 임팩트 있게 스크롤
+             이벤트 넣는거 어때, 오른쪽에만 사진 넣고") ★★
+             왼쪽에 내부 사진 한 장을 붙여 두고 오른쪽에도 내부 사진을 줄줄이
+             흘리고 있었다 — 같은 종류의 사진이 양쪽에서 경쟁했다. 이제 왼쪽은
+             제목이 붙어 있고(무엇을 보고 있는지 계속 남는다) 사진은 오른쪽에만
+             흐른다. 왼쪽에 있던 사진(INTERIOR[1])은 버리지 않고 오른쪽 줄에
+             합류시켰다 — 좋은 사진이고, 이제 짝이 없으니 겹치지 않는다.
+          ⚠️ 사진 줄에 리듬을 준다 — 전부 같은 폭·같은 비율로 쌓으면 스크롤이
+             '목록 넘기기'가 된다. 크기와 좌우 들여쓰기를 번갈아 둔다.
+          ⚠️ 여기서는 FigureReveal(가림막이 걷히는 연출) 대신 Parallax 를 쓴다.
+             둘을 겹치면 안 된다 — FigureReveal 은 img 의 transform 을 CSS 로
+             제어하고 Parallax 는 같은 img 의 transform 을 매 프레임 인라인으로
+             덮어써서, 함께 쓰면 걷히는 연출이 통째로 사라진다.
+             등장은 Reveal(from="right")이 맡고, 스크롤 시차는 Parallax 가 맡는다.
+        */}
         <section id="interior" className="bg-surface">
-          <div className="shell grid gap-10 lg:grid-cols-2 lg:gap-20">
-            <StickyMedia className="hidden lg:block">
-                <FigureReveal
-                  src={INTERIOR[1].src}
-                  alt={INTERIOR[1].alt}
-                  className="aspect-[3/4] w-full overflow-hidden rounded-[26px] bg-white"
-                />
+          <div className="shell grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
+            {/* ── 왼쪽: 붙어 있는 문구 (좁은 화면에서는 사진 위에 그냥 놓인다) ──
+                ⚠️ 예전엔 이 블록을 hidden lg:block 으로 감추고 좁은 화면용 제목을
+                   따로 하나 더 뒀다. 그러면 같은 h2 가 문서에 두 번 들어간다.
+                   지금은 블록 하나로 두고 '붙는 것'만 화면 폭에 따라 끈다
+                   (globals.css .sticky-media + Motion.tsx StickyMedia, 문턱 1024px). */}
+            <StickyMedia className="pt-16 lg:pt-0">
+              <div>
+                <Reveal>
+                  <p className="t-eyebrow mb-7 text-ink-2">Interior</p>
+                </Reveal>
+                {/*
+                  여기만 줄 단위(LineReveal) 대신 글자 단위로 간다.
+                  원본도 두 방식을 섞어 쓴다 — .single-line-inner(줄)와 .header-1~4(글자).
+                */}
+                <h2 className="t-h2">
+                  <LetterReveal text="어떤 공간에서" />
+                  {/* ⚠️ 화면은 두 줄이지만 크롤러·읽어주기에는 한 문장이어야 한다.
+                      공백이 없으면 textContent 가 "어떤 공간에서진료하나요?" 로 붙는다. */}
+                  <span className="sr-only"> </span>
+                  <br />
+                  <LetterReveal text="진료하나요?" delay={420} />
+                </h2>
+                <Reveal delay={260}>
+                  <Lede
+                    className="t-body mt-8 max-w-sm"
+                    text="상담실과 진료실을 나누고, 쓰는 기구는 소독실에서 따로 관리합니다. 오시기 전에 미리 둘러보세요."
+                  />
+                </Reveal>
+              </div>
             </StickyMedia>
 
-            <div className="py-28 md:py-40">
-              <Reveal>
-                <p className="t-eyebrow mb-7 text-ink-2">Interior</p>
-              </Reveal>
-              {/*
-                여기만 줄 단위(LineReveal) 대신 글자 단위로 간다.
-                원본도 두 방식을 섞어 쓴다 — .single-line-inner(줄)와 .header-1~4(글자).
-              */}
-              <h2 className="t-h2">
-                <LetterReveal text="어떤 공간에서" />
-                {/* ⚠️ 화면은 두 줄이지만 크롤러·읽어주기에는 한 문장이어야 한다.
-                    공백이 없으면 textContent 가 "어떤 공간에서진료하나요?" 로 붙는다. */}
-                <span className="sr-only"> </span>
-                <br />
-                <LetterReveal text="진료하나요?" delay={420} />
-              </h2>
-              {/* 실측 gs_reveal fromLeft 는 x:-300 이다 — 오른쪽(30)보다 훨씬 크다. */}
-              <div className="mt-14 space-y-6">
-                {INTERIOR.slice(2, 7).map((p, i) => (
-                  <FigureReveal
-                    key={p.src}
-                    src={p.src}
-                    alt={p.alt}
-                    delay={i * 60}
-                    className={`aspect-[3/2] overflow-hidden rounded-[20px] bg-white ${i % 2 === 1 ? 'floaty' : ''}`}
-                  />
+            {/* ── 오른쪽: 사진만. 크기·들여쓰기를 번갈아 두고 스크롤에 맞춰 시차를 준다 ── */}
+            <div className="pb-16 md:pb-28 lg:py-40">
+              <div className="space-y-10 md:space-y-16">
+                {INTERIOR.slice(1, 7).map((p, i) => (
+                  <Reveal key={p.src} from="right" delay={(i % 2) * 90}>
+                    <Parallax
+                      src={p.src}
+                      alt={p.alt}
+                      amount={0.1 + (i % 3) * 0.03}
+                      className={`rounded-[20px] bg-white ${TOUR_SHAPE[i % TOUR_SHAPE.length]}`}
+                    />
+                  </Reveal>
                 ))}
               </div>
             </div>

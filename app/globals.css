@@ -348,6 +348,14 @@ section[id] { scroll-margin-top: 96px; }
    ══════════════════════════════════════════════════════════════ */
 .sticky-media { position: sticky; top: 0; height: 100svh; }
 
+/* ⚠️ 한 칸짜리(좁은) 화면에서는 붙이지 않는다 (2026-08-21) — 옆에 흐를 것이
+   없는데 붙여 두면 글이 화면 한 칸을 통째로 차지한 채 멈춰 있는다.
+   Motion.tsx 의 StickyMedia 안에도 같은 문턱(1024px)이 있다. 한쪽만 고치면
+   JS 가 붙인 인라인 transform 이 남아 위치가 어긋난다. */
+@media (max-width: 1023px) {
+  .sticky-media { position: static; height: auto; padding-top: 0; padding-bottom: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .blur-letter { filter: none; opacity: 1; transition: none; }
   .figure-reveal::after { display: none; }

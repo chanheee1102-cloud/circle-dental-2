@@ -787,6 +787,17 @@ export function StickyMedia({ children, className = '' }: { children: ReactNode;
     if (!o || !k || !isSmooth()) return;
     k.style.position = 'relative';
     const frame = () => {
+      /*
+        ⚠️ 한 칸짜리(좁은) 화면에서는 붙이지 않는다 (2026-08-21).
+           옆에 흐를 것이 없는데 붙여 두면 글이 화면 한 칸을 통째로 차지한 채
+           멈춰 있고, 그 아래 내용이 그만큼 밀린다. 붙는 연출은 '옆에서 뭔가
+           지나갈 때'만 뜻이 있다.
+        ⚠️ 여기서 매 프레임 다시 재는 이유 — 창 크기가 바뀌면 조건도 바뀐다.
+           마운트 시 한 번만 보면 창을 줄였을 때 붙은 채로 남는다.
+           (CSS 쪽 짝은 globals.css 의 .sticky-media 미디어쿼리다. 한쪽만
+            고치면 위치와 높이가 어긋난다.)
+      */
+      if (window.innerWidth < 1024) { k.style.transform = ''; return; }
       const r = o.getBoundingClientRect();
       const total = Math.max(0, o.offsetHeight - window.innerHeight);
       k.style.transform = `translate3d(0, ${Math.min(Math.max(-r.top, 0), total)}px, 0)`;
