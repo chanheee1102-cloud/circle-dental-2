@@ -55,24 +55,23 @@ export default function DefinitionSwitch() {
 
   return (
     <div ref={ref} className="mt-16 grid gap-12 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-20">
-      {/* ── 고르는 쪽 — 환자의 말 ── */}
-      <ul className="relative">
-        {/* 미끄러지는 막대 — 지금 어디를 보고 있는지 */}
-        <span
-          aria-hidden
-          className="absolute left-0 w-[2px] rounded-full bg-brand"
-          style={{
-            height: `calc(100% / ${DEFINITIONS.length})`,
-            transform: `translateY(${i * 100}%)`,
-            transition: 'transform 0.62s var(--ease-expo)',
-          }}
-        />
+      {/* ── 고르는 쪽 — 환자의 말 ──
+        ★★ 리스트 → 카드 (2026-08-21, 운영자: "카드 형식으로 할까 한개씩?") ★★
+          한 번에 하나만 보여주는 카드 슬라이드는 추천하지 않았다 — 6개를 한눈에
+          훑어보는 지금 방식(질문+답을 한 덩어리로 인용하는 AEO 의도와도 맞물림)이
+          더 낫다고 판단해서, 대신 "항목을 카드처럼" 만드는 절충안으로 갔다
+          (운영자 동의: "추천하는대로 해봐").
+          카드마다 테두리·배경으로 선택 상태를 표시하므로, 예전의 미끄러지는
+          왼쪽 막대(퍼센트 높이 계산이 카드 사이 gap 과는 안 맞는다)는 없앴다 —
+          카드 자체의 테두리·그림자가 그 역할을 대신한다.
+      */}
+      <ul className="flex flex-col gap-3">
         {/*
           ★★ 목록 항목 등장 모션 추가 (2026-08-21, 운영자 지적) ★★
-            오른쪽 답변 패널(defFocus)·슬라이딩 막대는 이미 움직이는데 왼쪽 질문
-            목록 6개는 아무 모션 없이 한꺼번에 나타났다. 다른 목록들(FACTS 통계,
-            의료진 카드)과 같은 어휘로 맞춘다 — 항목마다 살짝 시차를 두고 아래에서
-            떠오른다. Reveal as="li" 로 감싸 추가 div 없이 li 자체에 모션을 건다.
+            오른쪽 답변 패널(defFocus)은 이미 움직이는데 왼쪽 질문 목록 6개는
+            아무 모션 없이 한꺼번에 나타났다. 다른 목록들(FACTS 통계, 의료진 카드)
+            과 같은 어휘로 맞춘다 — 항목마다 살짝 시차를 두고 아래에서 떠오른다.
+            Reveal as="li" 로 감싸 추가 div 없이 li 자체에 모션을 건다.
         */}
         {DEFINITIONS.map((x, n) => (
           <Reveal as="li" key={x.key} delay={n * 70}>
@@ -80,14 +79,18 @@ export default function DefinitionSwitch() {
               type="button"
               onClick={() => setI(n)}
               aria-current={n === i}
-              className="block w-full py-5 pl-7 text-left"
+              className={`block w-full rounded-2xl border p-6 text-left transition-all duration-500 ${
+                n === i
+                  ? 'border-brand/70 bg-white shadow-[0_18px_40px_-28px_rgba(20,23,28,.4)]'
+                  : 'border-line bg-transparent hover:border-brand/30 hover:bg-white/60'
+              }`}
               style={{ cursor: 'pointer' }}
             >
               <span
                 className={`block text-[clamp(17px,1.75vw,22px)] font-bold leading-[1.45] tracking-[-0.03em] transition-all duration-500 ${
                   n === i ? 'text-ink' : 'text-ink-2'
                 }`}
-                style={{ transform: n === i ? 'translateX(6px)' : 'none' }}
+                style={{ transform: n === i ? 'translateX(4px)' : 'none' }}
               >
                 {x.question}
               </span>
@@ -98,7 +101,7 @@ export default function DefinitionSwitch() {
                 className={`mt-1.5 block text-[13.5px] tracking-[0.02em] transition-colors duration-500 ${
                   n === i ? 'text-brand' : 'text-ink-2'
                 }`}
-                style={{ transform: n === i ? 'translateX(6px)' : 'none', transition: 'transform .5s var(--ease-soft), color .5s ease' }}
+                style={{ transform: n === i ? 'translateX(4px)' : 'none', transition: 'transform .5s var(--ease-soft), color .5s ease' }}
               >
                 {x.term}
               </span>
