@@ -9,7 +9,7 @@ import {
   DragCursor, BlurText, FigureReveal,
   LetterReveal, PopIn, FanRow, Counter, StickyMedia, Pin,
 } from '@/components/Motion';
-import { CLINIC, PILLARS, DOCTORS, INTERIOR, CREDENTIALS, DOCTORS_GROUP_PHOTO } from '@/lib/clinic';
+import { CLINIC, PILLARS, DOCTORS, INTERIOR, CREDENTIALS } from '@/lib/clinic';
 import { FACTS } from '@/lib/aeo';
 import {
   clinicSchema, websiteSchema, procedureSchemas,
@@ -196,21 +196,22 @@ export default function Home() {
           ── 패럴랙스 띠 ──
           ★ 봄온은 ScrollSmoother 를 effects:true 로 켜 둔다. 그 기능이 하는 일이
             이것이다 — 사진이 스크롤보다 느리게 움직여 뒤로 물러난다.
-          ★★ 빈 공간 사진 → 의료진 단체 사진 (2026-08-21, 운영자: "상담실 사인 사진은
-             별로다") ★★ INTERIOR 후보들도 전부 빈 방·장비 사진이라 바꿔도 같은
-             인상이 반복될 뿐이다. 진료 카드(사람이 시술하는 장면) 바로 다음 자리라,
-             사람이 나오는 사진으로 카테고리를 바꿔 숨 고르는 자리에 온기를 더했다.
-          ⚠️⚠️ 세로형(1284×1800) 원본은 **위쪽 절반이 로고 여백**이고 의료진은
-             아래쪽에 몰려 있다(실측: 얼굴이 53~83% 지점) ⚠️⚠️ object-position 기본값
-             (center=50%)으로 잘랐더니 여백만 보이고 얼굴이 하나도 안 잡혔다.
-             center 78% 로 얼굴 쪽을 직접 지정한다.
+          ★★ 의료진 사진 되돌림 (2026-08-21, 운영자: "무섭다") ★★
+             화면 전체 폭에 걸친 좁고 긴 띠에 정면 클로즈업 얼굴 3명을 꽉 채웠더니
+             '분리된 거대한 얼굴들이 늘어선' 인상이 됐다 — object-position 을 아무리
+             조정해도 이 사진은 애초에 세로형 인물 사진이라 이 가로 전면(full-bleed)
+             포맷 자체와 안 맞았다. 원래 의도(공간 사진·숨 고르는 자리)로 되돌리되,
+             INTERIOR[4](진료실 내부 — 창가 자연광·화분·CIRCLE DENTAL CLINIC 로고
+             파티션)로 바꿨다. 기존 INTERIOR[3](상담실 사인)보다 더 밝고 안정적이다.
+             의료진 사진은 다른 자리(작게, 여백 있는 카드형)로 옮기는 게 맞을지
+             운영자 확인 대기 — DOCTORS_GROUP_PHOTO 는 지우지 않고 lib/clinic.ts 에
+             남겨 둔다.
         */}
         <Parallax
-          src={DOCTORS_GROUP_PHOTO.src}
-          alt={DOCTORS_GROUP_PHOTO.alt}
+          src={INTERIOR[4].src}
+          alt={INTERIOR[4].alt}
           className="h-[clamp(280px,42vw,560px)] w-full"
           amount={0.14}
-          objectPosition="center 78%"
         />
 
         {/* ── AEO: 한 문장 정의 ─────────────────────────────────
