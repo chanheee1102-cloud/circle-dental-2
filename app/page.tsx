@@ -7,7 +7,7 @@ import {
   Reveal, LineReveal, LetterMarquee, HorizontalScroll, Lede,
   Parallax, Magnetic, Tilt,
   DragCursor, BlurText, FigureReveal,
-  LetterReveal, PopIn, FanRow, Counter, StickyMedia, Pin,
+  LetterReveal, PopIn, FanRow, Counter, StickyMedia,
 } from '@/components/Motion';
 import { CLINIC, PILLARS, DOCTORS, INTERIOR, CREDENTIALS } from '@/lib/clinic';
 import { FACTS } from '@/lib/aeo';
@@ -21,13 +21,19 @@ export default function Home() {
     <>
       <main>
         {/*
-          히어로는 제자리에 고정되고 아래 섹션이 그 위를 덮으며 올라온다.
-          실측 (.main_top_cont): pin + pinSpacing:false + scrub 3.
-          ⚠️ 덮는 쪽(#about)에 배경색과 z-index 가 있어야 겹쳐 보이지 않는다.
+          ★★ Pin 제거 (2026-08-21, 운영자: "두번째 이미지 효과 별로야") ★★
+            원래는 히어로가 제자리에 고정되고 아래 섹션(#about)이 그 위를
+            덮으며 올라오는 연출이었다(.main_top_cont pin + pinSpacing:false).
+            그런데 Pin 은 정확히 **한 화면 높이(100svh)** 만큼 고정을 유지하는데,
+            그 다음에 오는 #about(FACTS 통계 4개짜리 줄)은 실측 312px 밖에
+            안 된다 — 덮는 섹션이 훨씬 짧아서 #about 이 지나간 뒤에도 히어로가
+            남은 pin 구간(약 588px) 동안 다시 드러났다(실측 스크린샷으로 확인:
+            #about 위·아래 양쪽에서 히어로가 비쳐 "샌드위치"로 보였다).
+            pin 구간을 #about 실제 높이에 맞춰 동적으로 재는 것도 가능하지만,
+            히어로를 이미 더 차분하게 다듬은 방향(토글 제거 등)과도 맞지 않아
+            효과 자체를 뺐다 — 히어로도 그냥 평범하게 스크롤되어 나간다.
         */}
-        <Pin>
-          <Hero />
-        </Pin>
+        <Hero />
 
         {/* ── 소개 ─────────────────────────────────────────────── */}
         {/*

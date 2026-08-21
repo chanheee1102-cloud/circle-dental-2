@@ -1,7 +1,7 @@
 'use client';
 
 import { CLINIC, INTERIOR, VIDEO } from '@/lib/clinic';
-import { LetterMarquee, Magnetic } from './Motion';
+import { LetterMarquee, Magnetic, Lede } from './Motion';
 import HeroVideo from './HeroVideo';
 
 /**
@@ -39,21 +39,10 @@ export default function Hero() {
       />
 
       {/*
-        글 자리 대비용 중앙 스포트라이트.
-        ⚠️ 좌표식은 아래 글 블록의 top 과 **같은 식**이다. 하나만 고치면 어긋난다.
-        ⚠️ `clamp(...) * 1.2` 의 1.2 — 마퀴 실제 렌더 높이는 폰트 크기 그대로가 아니라
-           디센더 여백(20%, Motion.tsx LetterMarquee 참조)만큼 더 크다.
-        ★ 문구가 가운데로 오면서(2026-08-21) x 좌표도 50%(화면 중앙)로 맞췄다 —
-          예전엔 왼쪽 정렬 문구 위치(7.24vw + 11rem)에 맞춰 비대칭이었다.
+        ★★ 중앙 스포트라이트(어두운 타원) 제거 (2026-08-21, 운영자: "거무스름한
+           효과 없애") ★★ 글이 흰색으로 바뀌면서(아래) 세로 스크림만으로도
+           대비가 충분해 별도 어두운 얼룩이 필요 없어졌다.
       */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(42rem 16rem at 50% calc(76px + 4vh + clamp(56px, 13.9vw, 268px) * 1.2 + 44px + 4rem), rgba(6,10,12,.95) 0%, rgba(6,10,12,.9) 44%, rgba(6,10,12,.52) 72%, rgba(6,10,12,0) 100%)',
-        }}
-      />
 
       {/* 마퀴 — 화면 맨 위. */}
       <div className="absolute inset-x-0 top-[calc(76px+4vh)] z-10">
@@ -77,10 +66,18 @@ export default function Hero() {
              동그라미치과 설명문구랑 예약하기 버튼으로 하자") ★★
              CLINIC.description 은 기존 홈페이지 문구를 그대로 옮긴 VERIFIED 값
              (lib/clinic.ts) — 여기서 새로 쓴 문구가 아니다.
+          ★★ 줄바꿈 · 색 조정 (2026-08-21, 운영자: "마침표에서 줄바꿈해, 문구
+             흰색이 나을것 같아") ★★ 일반 텍스트는 폭에 맞춰 아무 데서나 잘려
+             "…입니다. 자연치아를" 처럼 문장 중간에서 줄이 갈렸다. Lede 로 바꿔
+             마침표·쉼표 뒤(문장이 쉬는 자리)에서만 줄이 갈리게 했다 — 이
+             사이트 다른 본문 문단이 전부 쓰는 것과 같은 컴포넌트다. 색은
+             brand-2(청록) → 흰색으로, 스포트라이트를 걷어낸 자리를 대신한다.
         */}
-        <h1 className="max-w-[440px] text-[clamp(15px,1.25vw,19px)] font-semibold leading-[1.7] tracking-[-0.01em] text-brand-2">
-          {CLINIC.description}
-        </h1>
+        <Lede
+          as="h1"
+          text={CLINIC.description}
+          className="max-w-[440px] text-[clamp(15px,1.25vw,19px)] font-semibold leading-[1.7] tracking-[-0.01em] text-white"
+        />
 
         {/* 예약하기 — 기존 '오시는 길' 섹션과 같은 스타일(네이버 예약, 브랜드색 버튼). */}
         <div className="mt-8">
