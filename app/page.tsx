@@ -125,35 +125,45 @@ export default function Home() {
             <DragCursor hostId="hscroll" />
             <HorizontalScroll ariaLabel="진료 안내">
               {/*
-                ⚠️⚠️ 사진을 뺐다 (2026-08-20 운영자: "내용에 맞는 사진이 아니야") ⚠️⚠️
-                  가진 사진은 공간 사진 8장뿐이다 — 복도·진료실·대기실·상담실·소독실·
-                  엑스레이실. **진료 장면 사진은 한 장도 없다.**
-                  그래서 임플란트 카드에 상담실 사진이, 심미치료 카드에 상담 부스 사진이
-                  붙어 있었다. 내용과 무관한 사진은 없느니만 못하다 — 방문자가
-                  "이게 그 치료인가" 하고 잘못 읽는다.
-                  진짜 진료 사진이 생기면 그때 넣는다.
-              */}
-              {/*
-                ★ 사진을 뺀 자리를 **기울기**로 대신한다. 커서가 닿은 쪽이 가라앉아
-                  평평한 타이포 카드에 깊이가 생긴다. 손가락 입력에서는 안 걸린다.
-                ⚠️ JSX 에서 map 반환부 맨 앞에 주석만 두면 그게 반환값이 된다 —
-                   주석은 map 바깥에.
-              */}
-              {/*
+                ★★ 진짜 진료 사진을 되살렸다 (2026-08-21, 운영자: "원래 홈페이지에 있는
+                   저기에 맞는 사진 가져와서 갈라지는 모션 나오게 해줘") ★★
+                   2026-08-20 엔 사진을 통째로 뺐다 — 그때 가진 건 공간 사진(복도·상담실)
+                   뿐이라 임플란트 카드에 상담실 사진이 붙는 식으로 내용과 안 맞았다.
+                   이제 lib/clinic.ts 의 PILLARS.photo 가 진짜 시술 사진(원본 IMG.treatment)
+                   으로 채워져 있다 — 그때 남긴 "진짜 사진이 생기면 그때 넣는다"를 지킨다.
+                ⚠️⚠️ 카드마다 --tilt 로 기울기가 다르다 ⚠️⚠️
+                   참고 화면(청담봄온의원)은 사진 두 장을 서로 다른 각도로 겹쳐 놓는데,
+                   그대로 베끼지 않고 카드 하나당 사진 한 장을 각자 다른 각도로 기울여
+                   "흩어져 있던 사진이 스크롤에 맞춰 제자리를 찾아 앉는" 인상으로 바꿨다
+                   (globals.css .pillar-photo 참조 — Reveal 의 .in 이 붙는 순간 0deg 에서
+                   --tilt 값으로 회전하며 자리 잡는다).
                 ★ 카드마다 Reveal(운영자 지적, 2026-08-21) — 가로 스크롤로 넘길 때마다
                   그 카드가 화면에 들어오는 순간 등장해야 하는데, 예전엔 카드에 아무 모션도
                   없어서 섹션에 진입하자마자 4장이 전부 처음부터 보여 버렸다.
-                  Reveal 은 IntersectionObserver 로 뷰포트 교차를 보는데, 가로 스크롤 중에는
-                  transform 으로 카드가 화면 오른쪽 밖에 있다가 왼쪽으로 밀려 들어오므로
-                  "화면 안에 들어온 카드만 그 순간 켜진다" — 정확히 원하는 동작이다.
                   replay 를 켜서 되돌아가면 다시 꺼졌다 스크롤로 다시 넘기면 또 켜진다.
                   Reveal as="article" 로 감싸 추가 div 없이 article 자체에 모션 클래스를 건다
                   (article 이 h-full 이라 감싸는 div 를 새로 넣으면 높이가 안 이어진다).
+                ⚠️ JSX 에서 map 반환부 맨 앞에 주석만 두면 그게 반환값이 된다 —
+                   주석은 map 바깥에.
               */}
-              {PILLARS.map((p) => (
+              {PILLARS.map((p, i) => {
+                const tilt = [-3, 2.5, -2, 3][i % 4];
+                return (
                 <Tilt key={p.key} className="w-[78vw] flex-none md:w-[400px]">
-                <Reveal as="article" from="right" replay className="group flex h-full flex-col justify-between overflow-hidden rounded-[26px] bg-surface p-9 md:p-10">
-                  <div className="flex flex-1 flex-col">
+                <Reveal
+                  as="article"
+                  from="right"
+                  replay
+                  className="pillar-card group flex h-full flex-col justify-between overflow-hidden rounded-[26px] bg-surface p-7 md:p-8"
+                >
+                  <div
+                    className="pillar-photo aspect-[4/5] w-full overflow-hidden rounded-[16px] bg-white shadow-[0_20px_36px_-22px_rgba(20,23,28,.5)]"
+                    style={{ '--tilt': `${tilt}deg` } as React.CSSProperties}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.photo} alt={p.photoAlt} className="h-full w-full object-cover" loading="lazy" />
+                  </div>
+                  <div className="mt-6 flex flex-1 flex-col">
                     <span className="display text-[30px] text-brand/35">{p.no}</span>
                     <h3 className="mt-4 text-[23px] font-bold tracking-[-0.03em]">{p.name}</h3>
                     <p className="display mt-1 text-[16px] text-ink-2">{p.en}</p>
@@ -161,7 +171,8 @@ export default function Home() {
                   </div>
                 </Reveal>
                 </Tilt>
-              ))}
+                );
+              })}
               <div className="flex w-[78vw] flex-none items-center justify-center rounded-[26px] bg-brand p-9 text-white md:w-[400px]">
                 <div>
                   <p className="display text-[46px] leading-none">

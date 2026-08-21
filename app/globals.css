@@ -462,6 +462,24 @@ html.is-smooth .smooth-content { will-change: transform; }
 .rv-right { transform: translate3d(30px, 0, 0); }
 .rv.in { opacity: 1; transform: none; }
 
+/* ── ②-b 진료 카드 사진 — 흩어져 놓인 사진처럼 기울어 자리 잡는다 (2026-08-21) ──
+   운영자: "저 원래 홈페이지에 있는 사진 가져와서 갈라지는 모션 나오게 해줘"
+   (참고 화면: 청담봄온의원 사진 두 장이 서로 다른 각도로 겹쳐 있는 구성).
+   ★ 그 화면을 그대로 베끼지 않는다 — 여긴 카드 하나에 사진 한 장이라, 오버랩
+     대신 카드마다 --tilt(교대로 반대 방향) 만큼 기울어진 채로 자리 잡는다.
+     시작은 똑바로 눕고(0deg) + 작게(.94) + 투명, Reveal 의 .in 이 붙는 순간
+     그 카드의 최종 기울기로 회전하며 커진다 — "흩어져 있던 사진이 각자 자리를
+     찾아 앉는다"는 인상. .pillar-card 로 스코프해 다른 .rv 사용처와 안 섞인다. */
+.pillar-photo {
+  transform: rotate(0deg) scale(.94);
+  opacity: 0;
+  transition: transform 1.1s var(--ease-soft), opacity .8s ease;
+}
+.pillar-card.in .pillar-photo {
+  transform: rotate(var(--tilt, 0deg)) scale(1);
+  opacity: 1;
+}
+
 /* ── ③ 지연 등장 배경 오브젝트 (실측 .re03_bg_n / .re06_bg) ────────────
    onEnter 후 **setTimeout 1000ms** 뒤에 scale .5→1, opacity 0→1, 1.2s power2.out.
    ⚠️ 1초를 그냥 기다린다. 화면이 멈춘 뒤 뒤늦게 배경이 떠오르는 게 핵심이다 —
@@ -530,6 +548,7 @@ html.is-smooth .smooth-content { will-change: transform; }
 
 @media (prefers-reduced-motion: reduce) {
   .ltr, .rv, .popin { opacity: 1; visibility: visible; transform: none; transition: none; }
+  .pillar-photo { opacity: 1; transform: rotate(var(--tilt, 0deg)); transition: none; }
   .vcursor { display: none; }
   .fan-item { transform: none !important; filter: none !important; opacity: 1 !important; }
 }

@@ -108,7 +108,17 @@ export const VIDEO = {
   mobile: { src: vimeoBg('640233415', '53c2ec8b24'), ratio: 0.8, id: '640233415' },
 } as const;
 
-/** 진료 기둥 — 기존 TREATMENT_PILLARS 원문 그대로. */
+/**
+ * 진료 기둥 — 기존 TREATMENT_PILLARS 원문 그대로.
+ *
+ * ★★ photo 를 진짜 진료 사진으로 교체 (2026-08-21) ★★
+ *   2026-08-20 에는 이 카드들에서 사진을 통째로 뺐다 — 가진 사진이 공간(복도·상담실)
+ *   뿐이라 임플란트 카드에 상담실 사진이 붙는 식으로 내용과 안 맞았기 때문이다
+ *   (그때 주석: "진짜 진료 사진이 생기면 그때 넣는다"). 원본 assets.ts 의
+ *   IMG.treatment.* 4장이 바로 그 사진이다 — 카드마다 정확히 맞는 시술 사진/그래픽
+ *   (자연치아=진료 장면, 임플란트=픽스처 모형, 심미=구강경 근접, 사랑니=치열 그래픽).
+ *   photoAlt 도 실제로 사진에 뭐가 찍혔는지 그대로 옮겼다(assets.ts 원본 문구).
+ */
 export const PILLARS = [
   {
     key: 'natural',
@@ -116,7 +126,8 @@ export const PILLARS = [
     name: '자연치아살리기',
     en: 'Save Natural Tooth',
     copy: '뽑기 전에 남길 수 있는지 먼저 봅니다. 자연치아가 가장 좋은 치아입니다.',
-    photo: '/img/20210923_43d85ec16a0eb.jpg',
+    photo: '/img/20210901_29b044c2d4b92.png',
+    photoAlt: '어두운 진료실에서 마스크와 장갑을 착용한 치과의사가 무영등 불빛 아래 환자의 치아를 기구로 치료하고 있다',
   },
   {
     key: 'implant',
@@ -124,7 +135,8 @@ export const PILLARS = [
     name: '임플란트',
     en: 'Implant',
     copy: '마지막 선택이 되도록 노력합니다. 장기적인 예후까지 함께 봅니다.',
-    photo: '/img/20210923_6b7e0b66df9e0.jpg',
+    photo: '/img/20210901_a15ee499c06d8.png',
+    photoAlt: '푸른 배경 위에서 핀셋이 나사 모양 임플란트 픽스처와 보철물이 결합된 모형을 집어 올리고 있고 주변에 치아 모형이 놓여 있다',
   },
   {
     key: 'aesthetic',
@@ -132,7 +144,8 @@ export const PILLARS = [
     name: '심미치료',
     en: 'Aesthetic',
     copy: '배열, 색상, 모양까지 바꿔 아름다운 미소를 디자인합니다.',
-    photo: '/img/20210923_5e82b10a99850.jpg',
+    photo: '/img/20210901_b57681799e6ab.png',
+    photoAlt: '잇몸까지 재현된 치아 모형에 치과용 구강경을 대어 안쪽 면을 비춰 보는 근접 사진',
   },
   {
     key: 'wisdom',
@@ -140,7 +153,8 @@ export const PILLARS = [
     name: '사랑니치료',
     en: 'Wisdom Tooth',
     copy: '빠르고 정확한 시술로 붓기와 통증을 완화시켜줍니다.',
-    photo: '/img/20210902_37dca2d5f1170.jpg',
+    photo: '/img/20210901_27c6b2623d6b5.png',
+    photoAlt: '짙은 남색 배경에 위아래 치열 전체를 푸른 선으로 그린 입체 그래픽',
   },
 ] as const;
 
