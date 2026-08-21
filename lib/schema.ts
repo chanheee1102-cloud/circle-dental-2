@@ -97,11 +97,20 @@ export function websiteSchema() {
   };
 }
 
+/**
+ * 각 진료의 '한 문장 정의' 구조화 데이터.
+ *
+ * ⚠️ @id 의 앞부분은 이 내용이 **실제로 실려 있는 페이지**여야 한다.
+ *    2026-08-21 에 정의 본문이 홈 → /treatment 로 옮겨 가면서 여기도 같이
+ *    바꿨다(전에는 SITE_URL/#procedure-...). 본문이 없는 주소를 가리키면
+ *    "저 페이지에 이 설명이 있다"는 잘못된 선언이 된다.
+ *    본문을 또 옮기면 이 줄도 같이 옮길 것.
+ */
 export function procedureSchemas() {
   return DEFINITIONS.map((d) => ({
     '@context': 'https://schema.org',
     '@type': 'MedicalProcedure',
-    '@id': `${SITE_URL}/#procedure-${d.key}`,
+    '@id': `${SITE_URL}/treatment#procedure-${d.key}`,
     name: d.term,
     /* ★ 환자가 쓰는 말도 같이 싣는다 — 검색·답변이 이 문장으로 들어온다. */
     alternateName: d.question,

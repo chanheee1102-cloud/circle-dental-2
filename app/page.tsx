@@ -1,17 +1,16 @@
 import Hero from '@/components/Hero';
 import JsonLd from '@/components/JsonLd';
-import DefinitionSwitch from '@/components/DefinitionSwitch';
 import HoursStrip from '@/components/HoursStrip';
 import ClinicMap from '@/components/ClinicMap';
 import {
   Reveal, LineReveal, LetterMarquee, HorizontalScroll, Lede,
   Parallax, Magnetic, Tilt,
-  DragCursor, BlurText, FigureReveal,
-  LetterReveal, PopIn, FanRow, StickyMedia,
+  DragCursor, FigureReveal,
+  LetterReveal, FanRow, StickyMedia,
 } from '@/components/Motion';
 import { CLINIC, PILLARS, DOCTORS, INTERIOR, CREDENTIALS } from '@/lib/clinic';
 import {
-  clinicSchema, websiteSchema, procedureSchemas,
+  clinicSchema, websiteSchema,
   physicianSchemas, faqSchema, videoSchema,
 } from '@/lib/schema';
 
@@ -242,36 +241,20 @@ export default function Home() {
           amount={0.14}
         />
 
-        {/* ── AEO: 한 문장 정의 ─────────────────────────────────
-             ★ 답변형 AI 는 페이지를 통째로 읽지 않고 **그대로 인용할 한 문장**을 찾는다.
-               "아름다운 미소를 디자인합니다" 는 그 자리에 못 들어간다 — 질문에 답하지 않는다.
-             ★ 효과와 주의를 **같은 카드 안에** 둔다. 떨어뜨려 놓으면 효과만 인용된다. */}
-        <section id="definitions" className="relative overflow-hidden bg-surface py-28 md:py-40">
-          {/*
-            화면이 멈추고 **1초 뒤에** 혼자 떠오르는 배경 (실측 .re03_bg_n / .re06_bg:
-            onEnter → setTimeout 1000 → scale .5→1, opacity 0→1, 1.2s power2.out).
-            같이 나오면 그냥 배경이지만, 늦게 나오면 시선이 그리로 간다.
-          */}
-          <PopIn className="pointer-events-none absolute -right-40 top-24 h-[520px] w-[520px] rounded-full" aria-hidden>
-            <div className="h-full w-full rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--color-brand)_16%,transparent)_0%,transparent_62%)]" />
-          </PopIn>
-          <div className="relative shell">
-            <Reveal>
-              <p className="t-eyebrow mb-7 text-ink-2">In one sentence</p>
-            </Reveal>
-            <h2 className="t-h2">
-              <BlurText text="이건 무슨 치료인가요?" />
-            </h2>
-            <Reveal delay={200}>
-              <Lede
-                className="t-body mt-8 max-w-xl"
-                text="검색하다 들어오신 분이 가장 먼저 궁금해하는 것부터 한 문장으로 적었습니다."
-              />
-            </Reveal>
-
-            <DefinitionSwitch />
-          </div>
-        </section>
+        {/*
+          ★★ "이건 무슨 치료인가요?"(한 문장 정의 6개) → /treatment 로 이동
+             (2026-08-21, 운영자: "이건 그냥 서브페이지에 넣을까?") ★★
+             홈이 진료를 두 번 연속으로 설명하고 있었다 — 바로 위의 '어떤 진료를
+             받을 수 있나요?'(가로 스크롤 4개)와 이 정의 6개가 결국 같은
+             /treatment/[slug] 로 보냈다. 정의는 '치료 알아보기' 페이지 위쪽으로
+             옮겨, 환자가 쓰는 말로 들어가 전체 목록으로 넘어가는 흐름을 만들었다.
+          ⚠️ 화면과 함께 procedureSchemas()(각 진료의 정의문 구조화 데이터)도
+             /treatment 로 옮겼다. 구조화 데이터는 **그 페이지에 실제로 있는
+             내용**을 설명해야 한다 — 본문을 옮기고 스키마만 홈에 남기면
+             홈이 화면에 없는 내용을 주장하는 셈이 된다.
+             (clinicSchema 의 availableService 는 병원이 제공하는 진료 목록이라
+              홈에 남는 게 맞다 — 그건 페이지 내용이 아니라 병원 자체의 속성이다.)
+        */}
 
         {/* ── 의료진 ───────────────────────────────────────────── */}
         <section id="doctors" className="bg-paper py-28 md:py-40">
@@ -429,11 +412,13 @@ export default function Home() {
 
       </main>
 
+      {/* ⚠️ procedureSchemas() 는 /treatment 로 옮겼다 — 정의 본문이 거기 있다.
+          여기 다시 넣지 말 것(같은 @id 가 두 페이지에 실리면 어느 쪽이 정본인지
+          모호해진다). */}
       <JsonLd
         data={[
           clinicSchema(),
           websiteSchema(),
-          ...procedureSchemas(),
           ...physicianSchemas(),
           faqSchema(),
           videoSchema(),
