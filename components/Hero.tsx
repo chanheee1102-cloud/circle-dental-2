@@ -89,15 +89,19 @@ export default function Hero() {
           </p>
 
           {/*
-            핵심 한 문장 — 이 병원이 무엇을 먼저 하는 곳인지.
-            ⚠️ description 원문 "자연치아를 최대한 살리는 방향을 먼저 검토하고" 를
-               문장으로 닫은 것이다. 새 주장을 만든 게 아니다.
+            핵심 한 줄.
+            ★★ 병원 태그라인으로 확정 (2026-08-21, 운영자 선택) ★★
+               직전에는 "자연치아를 최대한 살리는 방향을 먼저 검토합니다"(소개문
+               발췌)를 썼는데 운영자가 다른 문구를 원했다. 후보 넷(발치 전 검토 /
+               태그라인 / 환자의 질문문 / 오래 쓰는 쪽) 중 태그라인을 골랐다.
+            ⚠️ CLINIC.tagline 을 그대로 읽는다 — 여기에 문자열을 직접 적으면
+               lib/clinic.ts 와 어긋난다. 문구를 바꾸려면 저기를 고칠 것.
             ⚠️ 두 줄로 고정하려고 <br> 를 넣지 않는다 — 창 폭에 따라 줄 수가
                달라지는데 억지로 끊으면 좁은 창에서 한 어절만 남는 줄이 생긴다.
                폭(max-w)으로만 조절한다.
           */}
-          <h1 className="mt-3 max-w-[16ch] text-[clamp(28px,3.4vw,44px)] font-extrabold leading-[1.34] tracking-[-0.03em] text-white">
-            자연치아를 최대한 살리는 방향을 먼저 검토합니다
+          <h1 className="mt-3 max-w-[11ch] text-[clamp(28px,3.4vw,44px)] font-extrabold leading-[1.34] tracking-[-0.03em] text-white">
+            {CLINIC.tagline}
           </h1>
 
           {/* 무엇을 보는지 — 항목만. 문장으로 늘리지 않는다. */}
