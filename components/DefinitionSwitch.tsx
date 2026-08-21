@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { DEFINITIONS } from '@/lib/aeo';
 import { CLINIC } from '@/lib/clinic';
+import { Reveal } from '@/components/Motion';
 
 /**
  * "이건 무슨 치료인가요?" — 환자가 쓰는 말로 들어가 한 문장으로 답한다.
@@ -66,8 +67,15 @@ export default function DefinitionSwitch() {
             transition: 'transform 0.62s var(--ease-expo)',
           }}
         />
+        {/*
+          ★★ 목록 항목 등장 모션 추가 (2026-08-21, 운영자 지적) ★★
+            오른쪽 답변 패널(defFocus)·슬라이딩 막대는 이미 움직이는데 왼쪽 질문
+            목록 6개는 아무 모션 없이 한꺼번에 나타났다. 다른 목록들(FACTS 통계,
+            의료진 카드)과 같은 어휘로 맞춘다 — 항목마다 살짝 시차를 두고 아래에서
+            떠오른다. Reveal as="li" 로 감싸 추가 div 없이 li 자체에 모션을 건다.
+        */}
         {DEFINITIONS.map((x, n) => (
-          <li key={x.key}>
+          <Reveal as="li" key={x.key} delay={n * 70}>
             <button
               type="button"
               onClick={() => setI(n)}
@@ -95,7 +103,7 @@ export default function DefinitionSwitch() {
                 {x.term}
               </span>
             </button>
-          </li>
+          </Reveal>
         ))}
       </ul>
 
