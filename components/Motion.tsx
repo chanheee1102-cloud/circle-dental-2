@@ -195,16 +195,32 @@ export function LetterMarquee({
     </span>
   );
   /*
-   * ⚠️⚠️ y 축은 overflow-hidden 을 걸지 않는다 (2026-08-21 운영자: "y가 밑에 잘림") ⚠️⚠️
-   *   line-height:1 은 글자 상자를 정확히 1×font-size 로 맞출 뿐, 세리프체(Playfair Display)
-   *   의 y·g 같은 디센더(밑으로 내려가는 획)는 그 상자 밖으로 실제 잉크가 삐져나온다.
-   *   overflow-hidden(양축)이면 그 삐져나온 부분이 그대로 잘린다.
-   *   마퀴가 필요로 하는 건 **가로만** 숨기는 것(두 번째 트랙·좌우 넘침)이라, 세로는
-   *   overflow-y-visible 로 열어 둔다 — 다른 요소 배치에 쓰는 높이 계산(Hero.tsx 의
-   *   clamp() 기반 top 좌표)은 박스의 **레이아웃 높이**만 보므로 그대로 안 흔들린다.
+   * ⚠️⚠️ y 디센더 잘림 — 재수정 (2026-08-21, 1차 수정으로 안 고쳐졌다) ⚠️⚠️
+   *   1차 시도: overflow-x-hidden + overflow-y-visible 로 세로만 열었는데 안 먹혔다.
+   *   원인(CSS Overflow 스펙): overflow-x/overflow-y 를 따로 줄 때 **한쪽만 visible**
+   *   이면 그 visible 은 **auto 로 강제 계산**된다(둘 다 hidden 이거나 둘 다 visible
+   *   이어야 실제로 다르게 동작). auto 도 hidden 과 똑같이 넘친 잉크를 잘라내므로
+   *   화면상 아무것도 안 바뀐 것처럼 보였다(실측: getComputedStyle 로 overflowY 가
+   *   'visible' 을 준 그대로 'auto' 로 나오는 것을 확인).
+   *
+   *   진짜 원인은 line-height:1 자체다 — CSS 줄 상자 높이는 **폰트가 선언한** 어센트
+   *   /디센트 비율로 계산되는데, Playfair Display 는 그 선언값이 실제 글자 잉크보다
+   *   얕다. 캔버스로 'y' 잉크를 직접 재 보면 디센트가 font-size 의 **18.75%**
+   *   (268px 기준 50.25px) — line-height:1 상자가 거기까지 못 미친다.
+   *   → 상자를 **아래로만** 20% 더 키워(paddingBottom) 잉크가 상자 안에 완전히
+   *     들어오게 한다. overflow 는 다시 양축 hidden 으로 되돌린다(위 스펙 함정을
+   *     피하고, 가로 두 번째 트랙도 여전히 숨겨야 하므로).
+   *   ⚠️ Hero.tsx 의 top 좌표 계산이 이 마퀴의 **실제 렌더 높이**(= clamp(...) +
+   *      이 padding)를 참조한다 — padding 을 고치면 그쪽도 같이 고쳐야 한다.
    */
+  const descentBuffer = size === 'band'
+    ? 'calc(clamp(26px, 4.4vw, 62px) * 0.2)'
+    : 'calc(clamp(56px, 13.9vw, 268px) * 0.2)';
   return (
-    <div className={`relative flex overflow-x-hidden overflow-y-visible whitespace-nowrap select-none pointer-events-none ${className}`}>
+    <div
+      className={`relative flex overflow-hidden whitespace-nowrap select-none pointer-events-none ${className}`}
+      style={{ paddingBottom: descentBuffer }}
+    >
       {track('a')}
       {track('b', true)}
     </div>

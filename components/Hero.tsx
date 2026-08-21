@@ -93,17 +93,20 @@ export default function Hero() {
           아니라서 WCAG AA 4.5:1 이 필요하다. 화면 전체를 더 누르면 사진이 죽으므로
           글이 놓인 자리만 누른다. 지금 5.5:1 이상.
         ⚠️ 좌표식은 아래 글 블록의 top/left 와 **같은 식**이다. 하나만 고치면 어긋난다.
+        ⚠️ `clamp(...) * 1.2` 의 1.2 — 마퀴 실제 렌더 높이는 폰트 크기 그대로가 아니라
+           디센더 여백(20%, Motion.tsx LetterMarquee 참조)만큼 더 크다. 마퀴 쪽 padding
+           값을 고치면 이 배수도 같이 고쳐야 두 계산이 어긋나지 않는다.
       */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'radial-gradient(38rem 15rem at calc(max(24px, 7.24vw) + 11rem) calc(76px + 4vh + clamp(56px, 13.9vw, 268px) + 44px + 4rem), rgba(6,10,12,.95) 0%, rgba(6,10,12,.9) 44%, rgba(6,10,12,.52) 72%, rgba(6,10,12,0) 100%)',
+            'radial-gradient(38rem 15rem at calc(max(24px, 7.24vw) + 11rem) calc(76px + 4vh + clamp(56px, 13.9vw, 268px) * 1.2 + 44px + 4rem), rgba(6,10,12,.95) 0%, rgba(6,10,12,.9) 44%, rgba(6,10,12,.52) 72%, rgba(6,10,12,0) 100%)',
         }}
       />
 
-      {/* 마퀴 — 화면 맨 위. line-height 1.0 이라 글자 위아래가 안 잘린다. */}
+      {/* 마퀴 — 화면 맨 위. */}
       <div className="absolute inset-x-0 top-[calc(76px+4vh)] z-10">
         <LetterMarquee text={CLINIC.marquee} seconds={30} colorClass={on ? 'text-brand-2' : 'text-white/22'} />
       </div>
@@ -121,7 +124,7 @@ export default function Hero() {
       <div
         className="absolute z-10"
         style={{
-          top: 'calc(76px + 4vh + clamp(56px, 13.9vw, 268px) + 44px)',
+          top: 'calc(76px + 4vh + clamp(56px, 13.9vw, 268px) * 1.2 + 44px)',
           left: 'max(24px, 7.24vw)',
         }}
       >
