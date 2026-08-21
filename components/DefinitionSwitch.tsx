@@ -75,19 +75,54 @@ export default function DefinitionSwitch() {
         */}
         {DEFINITIONS.map((x, n) => (
           <Reveal as="li" key={x.key} delay={n * 70}>
+            {/*
+              ★★ 카드에 움직임을 넣었다 (2026-08-21, 운영자: "여기만 애니메이션이나
+                 효과 넣어서 ai티 없애면 되겠는데") ★★
+                 색만 바뀌던 카드에 세 가지를 더했다 — 고른 카드 왼쪽에서 세로로
+                 자라는 강조 막대, 손을 올리면 살짝 떠오르는 반응, 고른 카드에서
+                 미끄러져 들어오는 화살표. 전부 이 사이트가 이미 쓰는 어휘
+                 (--ease-soft, 0.5s 전환)로 맞췄다.
+              ⚠️ 강조 막대는 **카드 안에** 둔다. 예전에 목록 전체를 훑는 하나짜리
+                 막대를 뒀다가, 카드 사이 gap 때문에 퍼센트 높이 계산이 안 맞아
+                 걷어냈다. 카드마다 자기 막대를 갖는 지금 방식은 그 계산이 없다.
+            */}
             <button
               type="button"
               onClick={() => setI(n)}
               aria-current={n === i}
-              className={`block w-full rounded-2xl border p-6 text-left transition-all duration-500 ${
+              className={`group relative block w-full overflow-hidden rounded-2xl border p-6 pl-7 text-left transition-all duration-500 ${
                 n === i
                   ? 'border-brand/70 bg-white shadow-[0_18px_40px_-28px_rgba(20,23,28,.4)]'
-                  : 'border-line bg-transparent hover:border-brand/30 hover:bg-white/60'
+                  : 'border-line bg-transparent hover:-translate-y-[2px] hover:border-brand/30 hover:bg-white/60 hover:shadow-[0_14px_30px_-26px_rgba(20,23,28,.45)]'
               }`}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: 'pointer', transitionTimingFunction: 'var(--ease-soft)' }}
             >
+              {/* 고른 카드 왼쪽에서 세로로 자라는 막대. 위에서 아래로 자란다. */}
               <span
-                className={`block text-[clamp(17px,1.75vw,22px)] font-bold leading-[1.45] tracking-[-0.03em] transition-all duration-500 ${
+                aria-hidden
+                className="absolute inset-y-5 left-0 w-[3px] rounded-r-full bg-brand transition-transform duration-500"
+                style={{
+                  transformOrigin: 'top',
+                  transform: n === i ? 'scaleY(1)' : 'scaleY(0)',
+                  transitionTimingFunction: 'var(--ease-soft)',
+                }}
+              />
+
+              {/* 고른 카드에만 미끄러져 들어오는 화살표. */}
+              <span
+                aria-hidden
+                className="absolute right-6 top-1/2 -translate-y-1/2 text-[18px] text-brand transition-all duration-500"
+                style={{
+                  opacity: n === i ? 1 : 0,
+                  transform: `translateY(-50%) translateX(${n === i ? '0' : '-8px'})`,
+                  transitionTimingFunction: 'var(--ease-soft)',
+                }}
+              >
+                →
+              </span>
+
+              <span
+                className={`block pr-8 text-[clamp(17px,1.75vw,22px)] font-bold leading-[1.45] tracking-[-0.03em] transition-all duration-500 ${
                   n === i ? 'text-ink' : 'text-ink-2'
                 }`}
                 style={{ transform: n === i ? 'translateX(4px)' : 'none' }}
@@ -112,38 +147,53 @@ export default function DefinitionSwitch() {
 
       {/* ── 답하는 쪽 — 한 자리에서 바뀐다 ── */}
       <div className="lg:pt-3">
-        {/* 초점이 맞으며 들어온다 — key 를 바꿔 전환마다 다시 재생 */}
-        <div
-          key={d.key}
-          style={{
-            animation: shown ? 'defFocus 0.72s cubic-bezier(0.22,1,0.36,1) both' : undefined,
-            opacity: shown ? undefined : 0,
-          }}
-        >
+        {/*
+          초점이 맞으며 들어온다 — key 를 바꿔 전환마다 다시 재생.
+          ★★ 한 덩어리 → 줄줄이 (2026-08-21, 운영자: "애니메이션이나 효과 넣어서
+             ai티 없애면") ★★ 예전에는 이 블록 전체가 한 번에 떠올랐다. 지금은
+             질문 → 정의 → 이럴 때 → 주의 → 링크가 70ms 씩 어긋나 들어온다.
+             같은 0.72s 라도 순서가 보이면 '누가 배치한 화면'으로 읽힌다.
+          ⚠️ 지연은 rise() 한 곳에서만 만든다 — 각 줄에 숫자를 직접 적으면 항목을
+             넣고 뺄 때 반드시 순서가 엉킨다.
+          ⚠️ blur 는 비싸다. 전환마다 한 번 돌고 끝나야 한다(both, 무한 반복 금지).
+        */}
+        <div key={d.key}>
           {/*
             ★ 질문을 한 번 더 적고 그 아래 답을 둔다.
               오른쪽만 보고 있어도 "무엇에 대한 답인지" 가 문장 안에서 닫힌다 —
               AI 가 이 덩어리만 떼어 인용해도 말이 된다.
           */}
-          <p className="text-[14px] font-bold tracking-[-0.01em] text-brand">{d.question}</p>
-          <p className="mt-4 text-[clamp(17px,1.5vw,21px)] font-semibold leading-[1.72] tracking-[-0.025em] text-ink">
+          <p className="flex items-center gap-3 text-[14px] font-bold tracking-[-0.01em] text-brand" style={rise(shown, 0)}>
+            {/* 질문 앞에서 가로로 자라는 짧은 선 — 답이 시작되는 지점을 만든다. */}
+            <span aria-hidden className="def-rule block h-px bg-brand/50" />
+            {d.question}
+          </p>
+          <p
+            className="mt-4 text-[clamp(17px,1.5vw,21px)] font-semibold leading-[1.72] tracking-[-0.025em] text-ink"
+            style={rise(shown, 1)}
+          >
             {d.definition}
           </p>
-          <p className="mt-7 text-[15.5px] leading-[1.85] text-ink-2">
+          <p className="mt-7 text-[15.5px] leading-[1.85] text-ink-2" style={rise(shown, 2)}>
             <span className="font-bold text-ink">이럴 때 — </span>
             {d.indication}
           </p>
           {/* ⚠️ 주의는 ink-2(7.2:1). 전에 쓰던 ink-3 은 3.72:1 로 기준 미달이었다. */}
-          <p className="mt-7 border-t border-line pt-6 text-[14px] leading-[1.85] text-ink-2">
+          <p className="mt-7 border-t border-line pt-6 text-[14px] leading-[1.85] text-ink-2" style={rise(shown, 3)}>
             <span className="font-bold text-ink">주의 — </span>
             {d.caution}
           </p>
-          <Link
-            href={`/treatment/${SLUG[d.key] ?? ''}`}
-            className="tap mt-8 inline-flex items-center gap-2 text-[14.5px] font-bold text-brand"
-          >
-            {d.term} 자세히 보기 <span aria-hidden>→</span>
-          </Link>
+          <div style={rise(shown, 4)}>
+            <Link
+              href={`/treatment/${SLUG[d.key] ?? ''}`}
+              className="tap group mt-8 inline-flex items-center gap-2 text-[14.5px] font-bold text-brand"
+            >
+              {d.term} 자세히 보기{' '}
+              <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
+                →
+              </span>
+            </Link>
+          </div>
         </div>
 
         {/*
@@ -159,6 +209,22 @@ export default function DefinitionSwitch() {
       </div>
     </div>
   );
+}
+
+/**
+ * 오른쪽 답변 패널의 줄들이 순서대로 들어오게 하는 지연 계산.
+ *
+ * ⚠️ 화면에 들어오기 전(shown=false)에는 **투명하게 숨긴다.** 애니메이션만 걸어
+ *    두면 스크롤해서 도달하기 한참 전에 이미 다 재생되고 끝나 있다.
+ * ⚠️ 지연 상한을 둔다 — 항목이 늘어도 마지막 줄이 0.3초 넘게 기다리면
+ *    '느리다' 로 읽힌다.
+ */
+function rise(shown: boolean, n: number): React.CSSProperties {
+  if (!shown) return { opacity: 0 };
+  return {
+    animation: 'defFocus 0.72s cubic-bezier(0.22,1,0.36,1) both',
+    animationDelay: `${Math.min(n * 70, 300)}ms`,
+  };
 }
 
 /**

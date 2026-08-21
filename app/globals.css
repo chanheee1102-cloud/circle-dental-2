@@ -415,6 +415,23 @@ section[id] { scroll-margin-top: 96px; }
   }
 }
 
+/* 답변 앞에서 가로로 자라는 짧은 선 — 답이 시작되는 지점을 만든다.
+   ⚠️ width 를 애니메이션한다. 여기서는 요소가 한 줄 안의 짧은 장식이라
+      매 프레임 다시 잡아도 값이 싸고, transform:scaleX 로 하면 부모 flex 의
+      gap 이 줄어들지 않아 글자가 왼쪽으로 붙어 버린다(이 자리는 폭이 실제로
+      벌어져야 한다). 목록처럼 큰 요소에는 이 방식을 쓰지 말 것. */
+.def-rule {
+  animation: defRule 0.66s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.1s;
+}
+@keyframes defRule {
+  from { width: 0; }
+  to   { width: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .def-rule { animation: none; width: 26px; }
+}
+
 /* ══════════════════════════════════════════════════════════════════════
    봄온 재감사 2026-08-20 — 놓쳤던 모션들
    실측 근거는 각 블록 주석에 남긴다.
