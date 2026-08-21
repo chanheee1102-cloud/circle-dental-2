@@ -127,16 +127,27 @@ export default function Home() {
                 ⚠️ JSX 에서 map 반환부 맨 앞에 주석만 두면 그게 반환값이 된다 —
                    주석은 map 바깥에.
               */}
+              {/*
+                ★ 카드마다 Reveal(운영자 지적, 2026-08-21) — 가로 스크롤로 넘길 때마다
+                  그 카드가 화면에 들어오는 순간 등장해야 하는데, 예전엔 카드에 아무 모션도
+                  없어서 섹션에 진입하자마자 4장이 전부 처음부터 보여 버렸다.
+                  Reveal 은 IntersectionObserver 로 뷰포트 교차를 보는데, 가로 스크롤 중에는
+                  transform 으로 카드가 화면 오른쪽 밖에 있다가 왼쪽으로 밀려 들어오므로
+                  "화면 안에 들어온 카드만 그 순간 켜진다" — 정확히 원하는 동작이다.
+                  replay 를 켜서 되돌아가면 다시 꺼졌다 스크롤로 다시 넘기면 또 켜진다.
+                  Reveal as="article" 로 감싸 추가 div 없이 article 자체에 모션 클래스를 건다
+                  (article 이 h-full 이라 감싸는 div 를 새로 넣으면 높이가 안 이어진다).
+              */}
               {PILLARS.map((p) => (
                 <Tilt key={p.key} className="w-[78vw] flex-none md:w-[400px]">
-                <article className="group flex h-full flex-col justify-between overflow-hidden rounded-[26px] bg-surface p-9 md:p-10">
+                <Reveal as="article" from="right" replay className="group flex h-full flex-col justify-between overflow-hidden rounded-[26px] bg-surface p-9 md:p-10">
                   <div className="flex flex-1 flex-col">
                     <span className="display text-[30px] text-brand/35">{p.no}</span>
                     <h3 className="mt-4 text-[23px] font-bold tracking-[-0.03em]">{p.name}</h3>
                     <p className="display mt-1 text-[16px] text-ink-2">{p.en}</p>
                     <Lede className="t-body mt-5 flex-1 text-[15px]" text={p.copy} />
                   </div>
-                </article>
+                </Reveal>
                 </Tilt>
               ))}
               <div className="flex w-[78vw] flex-none items-center justify-center rounded-[26px] bg-brand p-9 text-white md:w-[400px]">
