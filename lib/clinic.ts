@@ -205,6 +205,22 @@ export const INTERIOR = [
 ];
 
 /**
+ * 대표원장 인증·수료 실물 이미지 4장 — 기존 assets.ts 의 credentials 그대로.
+ *
+ * ★ label 을 src 옆에 짝지어 둔다(assets.ts 원본 주석 인용) — 배열을 따로 두면
+ *   한쪽만 순서가 바뀌어도 화면은 멀쩡해 보이면서 라벨이 엉뚱한 사진에 붙는다.
+ *   실제로 원본에서 그 사고가 났다(x 좌표 실측으로 짝을 다시 맞췄다).
+ * ★ 전부 236×242(1장은 236×178) 스캔본 — 세로형 인테리어 사진과 비율이 다르다.
+ *   그래서 화면에서는 object-cover 로 잘라내지 않고 object-contain 으로 온전히 보여준다.
+ */
+export const CREDENTIALS = [
+  { src: '/img/20211103_75f9aab13211a.png', label: '오스템임플란트 연구자문치과 위촉패' },
+  { src: '/img/20211103_f8dc531367c4e.png', label: 'Professional implant Training course 수료패' },
+  { src: '/img/20211103_f00cdb3987872.png', label: '세계근관치료학회 수료증' },
+  { src: '/img/20211103_0cf836e0f0288.png', label: '대한치과보존학회 회원증' },
+];
+
+/**
  * 전역 메뉴.
  * ⚠️ 인사이트 계열은 **실제 페이지**라 해시가 아니라 경로여야 한다.
  *    해시로 두면 다른 페이지에서 눌렀을 때 아무 데도 안 간다.

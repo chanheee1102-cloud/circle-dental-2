@@ -9,7 +9,7 @@ import {
   DragCursor, BlurText, FigureReveal,
   LetterReveal, PopIn, FanRow, Counter, StickyMedia, Pin,
 } from '@/components/Motion';
-import { CLINIC, PILLARS, DOCTORS, INTERIOR } from '@/lib/clinic';
+import { CLINIC, PILLARS, DOCTORS, INTERIOR, CREDENTIALS } from '@/lib/clinic';
 import { FACTS } from '@/lib/aeo';
 import {
   clinicSchema, websiteSchema, procedureSchemas,
@@ -66,20 +66,32 @@ export default function Home() {
           <LetterMarquee text="Circle Dental Clinic ·" seconds={34} colorClass="text-ink/10" />
         </div>
 
-        {/* ── 부채꼴로 펼쳐지는 사진 띠 (실측 .slide0) ──────────────
+        {/* ── 부채꼴로 펼쳐지는 인증패 띠 (실측 .slide0) ──────────────
              from { x:0, scale:.8, opacity:.5, blur:3px } → 펼쳐지며 선명해진다.
-             ★ blur 가 핵심이다 — scale·opacity 만으로는 그냥 커지는 것으로 보인다. */}
+             ★ blur 가 핵심이다 — scale·opacity 만으로는 그냥 커지는 것으로 보인다.
+             ★★ 인테리어 사진 → 인증패로 교체(2026-08-21 운영자: "의미없는 병원 사진보다
+                인증패 4개 있던거 넣는게 낫겠다") ★★ 답변 엔진은 "인증 4건"처럼 셀 수 있는
+                근거를 인용하지, 복도·대기실 같은 흩어진 인상 사진을 인용하지 않는다
+                (TrustSection.tsx 의 같은 원칙). 기존 assets.ts credentials 를 그대로 옮겼다 —
+                실제 병원이 취득한 인증·수료 실물이지 지어낸 이미지가 아니다.
+             ★ 236×242(1장은 236×178) 스캔본이라 인테리어 사진과 비율이 다르다 — object-cover
+                로 잘라내면 인증서 테두리 글자가 잘린다. aspect-square + object-contain +
+                라벨(figcaption)로 무슨 인증인지 바로 읽히게 한다. */}
         <div className="overflow-hidden bg-paper pt-24 md:pt-32">
           <div className="shell">
             <Reveal>
-              <p className="t-eyebrow mb-10 text-center text-ink-2">Inside</p>
+              <p className="t-eyebrow mb-10 text-center text-ink-2">Credentials</p>
             </Reveal>
           </div>
           <FanRow
-            items={INTERIOR.slice(0, 4).map((p) => (
-              <figure key={p.src} className="aspect-[3/4] overflow-hidden rounded-[22px] bg-surface shadow-[0_30px_70px_-40px_rgba(20,23,28,.5)]">
+            items={CREDENTIALS.map((c) => (
+              <figure
+                key={c.src}
+                className="flex aspect-square flex-col items-center justify-center gap-3 overflow-hidden rounded-[22px] border border-line bg-white p-6 shadow-[0_30px_70px_-40px_rgba(20,23,28,.5)]"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.src} alt={p.alt} className="h-full w-full object-cover" loading="lazy" />
+                <img src={c.src} alt={c.label} className="max-h-[65%] w-auto object-contain" loading="lazy" />
+                <figcaption className="text-center text-[12px] leading-snug text-ink-2">{c.label}</figcaption>
               </figure>
             ))}
           />
