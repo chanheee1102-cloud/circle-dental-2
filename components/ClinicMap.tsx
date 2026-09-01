@@ -2,6 +2,72 @@ import { CLINIC, UNVERIFIED } from '@/lib/clinic';
 import { Sentences } from '@/components/ui';
 
 /**
+ * 지도 앱 표식 — **각 회사의 마크**다.
+ *
+ * ★★ 왜 (2026-09-01 운영자: "여기에 로고 넣어야되지 않을까? 저렇게 색만 넣지 말고") ★★
+ *   전에는 브랜드 색만 칠한 네모였다. 초록·노랑·파랑 네모 셋이 나란히 있으면 색을 이미
+ *   아는 사람에게만 뜻이 통하고, 그렇지 않으면 그냥 장식이다. 마크가 있어야 **누르기 전에**
+ *   어느 앱으로 가는지 알 수 있다.
+ *
+ * ★ 그려 넣는다(이미지 파일을 받아 두지 않는다) — 세 마크가 각자 다른 해상도·여백으로
+ *   들어오면 한 줄에서 크기가 어긋난다. 같은 24 격자에 그리면 셋이 저절로 맞는다.
+ * ⚠️ 색을 바꾸지 말 것. 브랜드 색이 곧 식별이라, 사이트 색조에 맞춘다고 물들이면
+ *    마크를 넣은 이유가 사라진다.
+ * ⚠️ aria-hidden 이다. 어느 앱인지는 바로 옆 글자가 이미 말한다 — 두 번 읽히면 방해다.
+ */
+function MapMark({ brand }: { brand: 'naver' | 'kakao' | 'google' }) {
+  const box = 'grid h-8 w-8 shrink-0 place-items-center rounded-[8px]';
+  if (brand === 'naver') {
+    return (
+      <span aria-hidden className={box} style={{ backgroundColor: '#03C75A' }}>
+        {/* 네이버 N — 왼쪽 기둥, 대각선, 오른쪽 기둥이 한 획으로 이어진 형태다. */}
+        {/* ⚠️ 기둥을 얇게 만들지 말 것 — 옆의 카카오 말풍선보다 가늘어 한 줄에서 혼자 흐려진다. */}
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="#fff">
+          <path d="M5 4.8h5.2l4.6 7V4.8H19v14.4h-5.2l-4.6-7v7H5z" />
+        </svg>
+      </span>
+    );
+  }
+  if (brand === 'kakao') {
+    return (
+      <span aria-hidden className={box} style={{ backgroundColor: '#FEE500' }}>
+        {/* 카카오 말풍선 — 아래 왼쪽으로 꼬리가 흐른다. */}
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="#181600">
+          <path d="M12 4.3c-4.6 0-8.3 2.9-8.3 6.5 0 2.3 1.5 4.3 3.8 5.4l-.9 3.4c-.1.4.3.7.6.5l4-2.6c.3 0 .6.1.8.1 4.6 0 8.3-2.9 8.3-6.8S16.6 4.3 12 4.3z" />
+        </svg>
+      </span>
+    );
+  }
+  return (
+    <span
+      aria-hidden
+      className={`${box} border border-brand-200`}
+      style={{ backgroundColor: '#fff' }}
+    >
+      {/* 구글 G — 네 색이 곧 표식이라 한 색으로 줄이지 말 것. */}
+      <svg width="16" height="16" viewBox="0 0 24 24">
+        <path
+          fill="#4285F4"
+          d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"
+        />
+        <path
+          fill="#34A853"
+          d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"
+        />
+        <path
+          fill="#FBBC05"
+          d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"
+        />
+        <path
+          fill="#EA4335"
+          d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"
+        />
+      </svg>
+    </span>
+  );
+}
+
+/**
  * 병원 위치 지도.
  *
  * ★ 왜 Google 임베드인가
@@ -54,19 +120,19 @@ export function ClinicMap({
       href: `https://map.naver.com/p/search/${q}`,
       label: '네이버 지도',
       sub: '길찾기 · 대중교통',
-      dot: '#03C75A',
+      brand: 'naver' as const,
     },
     {
       href: `https://map.kakao.com/?q=${q}`,
       label: '카카오맵',
       sub: '길찾기 · 로드뷰',
-      dot: '#FEE500',
+      brand: 'kakao' as const,
     },
     {
       href: `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
       label: 'Google 지도',
       sub: '새 창에서 크게',
-      dot: '#4285F4',
+      brand: 'google' as const,
     },
   ];
 
@@ -110,12 +176,8 @@ export function ClinicMap({
             rel="noopener noreferrer"
             className="flex items-center gap-3.5 rounded-[12px] border border-brand-200/70 card-glass px-4 py-3.5 transition-colors hover:border-brand-300"
           >
-            {/* 브랜드 조각 — 이게 '어느 앱인지' 를 말한다. 색을 바꾸지 말 것. */}
-            <span
-              aria-hidden
-              className="h-8 w-8 shrink-0 rounded-[8px]"
-              style={{ backgroundColor: l.dot }}
-            />
+            {/* 브랜드 마크 — 이게 '어느 앱인지' 를 말한다. 색을 바꾸지 말 것(MapMark 주석). */}
+            <MapMark brand={l.brand} />
             <span className="min-w-0 flex-1">
               <span className="block text-[15.5px] font-semibold text-ink">{l.label}</span>
               <span className="mt-0.5 block text-[13.5px] text-ink-soft"><Sentences text={l.sub} /></span>
