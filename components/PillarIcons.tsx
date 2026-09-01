@@ -30,12 +30,12 @@ import type { ReactNode } from 'react';
  *   아이콘마다 자기 그림에 맞춘 상자를 주면 같은 64px 안에서 그림이 꽉 찬다.
  * ⚠️ 상자는 **정사각**으로 둘 것. 가로세로 비가 다르면 선 굵기가 한쪽으로 늘어난다.
  */
-function Svg({ children, box }: { children: ReactNode; box: string }) {
+function Svg({ children, box, size = 64 }: { children: ReactNode; box: string; size?: number }) {
   return (
     <svg
       className="icon-draw"
-      width="64"
-      height="64"
+      width={size}
+      height={size}
       viewBox={box}
       fill="none"
       stroke="currentColor"
@@ -51,9 +51,9 @@ function Svg({ children, box }: { children: ReactNode; box: string }) {
 }
 
 /** 자연치아 살리기 — 어금니 한 개와 그 아래를 받치는 잎. '살린다' 를 형태로 말한다. */
-export function ToothLeafIcon() {
+export function ToothLeafIcon({ size }: { size?: number } = {}) {
   return (
-    <Svg box="4 2.9 16.5 16.5">
+    <Svg size={size} box="4 2.9 16.5 16.5">
       <path pathLength={1} d="M8.2 3.4c-2.2 0-3.7 1.6-3.7 3.9 0 1.7.5 2.8.9 4 .4 1.2.5 2.5.7 3.5.2 1 .5 2.6 1.5 2.6s1.1-1.2 1.3-2.3c.2-1 .4-2 1.1-2s.9 1 1.1 2c.2 1.1.3 2.3 1.3 2.3s1.3-1.6 1.5-2.6c.2-1 .3-2.3.7-3.5.4-1.2.9-2.3.9-4 0-2.3-1.5-3.9-3.7-3.9-1 0-1.7.4-2.3.4s-1.3-.4-2.3-.4Z" />
       <path pathLength={1} d="M15.6 18.9c2.4-.2 4.2-2 4.4-4.4-2.4.2-4.2 2-4.4 4.4Z" />
     </Svg>
@@ -61,9 +61,9 @@ export function ToothLeafIcon() {
 }
 
 /** 임플란트 — 잇몸선 아래로 들어가는 나사 기둥과 그 위의 보철. */
-export function ImplantIcon() {
+export function ImplantIcon({ size }: { size?: number } = {}) {
   return (
-    <Svg box="6.4 5.2 11.2 16.4">
+    <Svg size={size} box="6.4 5.2 11.2 16.4">
       <path pathLength={1} d="M7.2 6.2h9.6" />
       <path pathLength={1} d="M8.9 6.2c0 1.7-.7 2.5-.7 3.7 0 .8.5 1.2 1.1 1.2h5.4c.6 0 1.1-.4 1.1-1.2 0-1.2-.7-2-.7-3.7" />
       {/*
@@ -82,9 +82,9 @@ export function ImplantIcon() {
 }
 
 /** 심미치료 — 앞니 두 개와 그 위의 반짝임. */
-export function SmileIcon() {
+export function SmileIcon({ size }: { size?: number } = {}) {
   return (
-    <Svg box="4.1 -0.3 18.05 18.05">
+    <Svg size={size} box="4.1 -0.3 18.05 18.05">
       {/*
         심미치료 — **앞니 두 개**와 반짝임.
 
@@ -107,9 +107,9 @@ export function SmileIcon() {
 }
 
 /** 사랑니 — 비스듬히 누운 맨 안쪽 어금니와 그 앞을 미는 방향. */
-export function WisdomIcon() {
+export function WisdomIcon({ size }: { size?: number } = {}) {
   return (
-    <Svg box="3.6 2.4 19.2 19.2">
+    <Svg size={size} box="3.6 2.4 19.2 19.2">
       <path pathLength={1} d="M6.3 6.1c-1.8.7-2.6 2.5-1.9 4.3.5 1.3 1.3 2 1.9 2.9.6.9 1 2 1.4 2.8.4.8 1 2 1.9 1.7.9-.4.6-1.6.4-2.6-.2-1-.5-1.8.1-2.1.6-.3 1.1.4 1.7 1.1.6.7 1.3 1.5 2.1 1.2.9-.4.6-1.9.3-2.9-.3-1-.7-2.1-.8-3.3-.1-1.2 0-2.4-.5-3.6-.7-1.8-2.6-2.6-4.4-1.9-.8.3-1.2.9-1.7 1.1-.5.2-1.1 0-2 .3Z" />
       {/* ⚠️ 화살표를 다시 작게 만들지 말 것 — 작으면 어금니 옆의 얼룩으로만 보인다. */}
       <path pathLength={1} d="M16.6 16.4h5.2" />

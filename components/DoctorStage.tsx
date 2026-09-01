@@ -79,6 +79,20 @@ function Stand({ d, big }: { d: Doc; big?: boolean }) {
            어긋나고, 그만큼 이름 줄이 위아래로 흩어진다(2026-08-31 오너 지적).
         ⚠️ 가운데의 -mt 는 두 높이의 **차이와 같다**(460-380=80). 한쪽만 바꾸면 줄이 깨진다.
       */}
+      {/*
+        ★ 대표원장 뒤에만 옅은 금빛을 깐다 (2026-08-31 운영자: "대표 원장이라는게
+          조금 티가 나야돼"). 사진이 크고 높은 것만으로는 훑을 때 티가 안 났다.
+        ⚠️ **자리를 차지하지 않는 방식**이어야 한다(absolute). 셋의 사진 아랫변과
+           이름 줄이 한 선에 서 있는데, 자리를 차지하는 것을 넣으면 그 줄이 깨진다.
+        ⚠️ 진하게 하지 말 것 — 인물 뒤에서 배경이 떠 보이면 사진이 오려 붙인 것처럼 된다.
+      */}
+      <div className="relative w-full">
+        {big && (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -inset-x-8 -top-10 bottom-0 -z-10 rounded-[999px] bg-[radial-gradient(60%_55%_at_50%_45%,rgba(217,164,65,0.16)_0%,transparent_70%)]"
+          />
+        )}
       <div
         className={`relative w-full ${
           big
@@ -96,8 +110,31 @@ function Stand({ d, big }: { d: Doc; big?: boolean }) {
           priority={big}
         />
       </div>
+      </div>
 
-      <p className={`font-bold text-signal ${big ? 'text-[15px]' : 'text-[14.5px]'}`}>
+      {/*
+        ★★ 직함 — 대표원장만 **금색 알약**으로 채운다 ★★
+          (2026-08-31 운영자: "대표 원장이라는게 조금 티가 나야돼")
+        ⚠️⚠️ 셋의 **상자 크기를 같게 유지할 것** ⚠️⚠️
+           안쪽 여백과 테두리를 대표원장에게만 주면 그 줄만 아래로 내려앉아, 사진 아랫변을
+           맞춰 세운 이름 줄이 어긋난다(실측: 셋 다 사진 바닥 184px 한 선).
+           그래서 원장 두 분도 같은 여백과 **투명한 테두리**를 갖는다.
+        ⚠️ 큰 면을 골드로 채우지 말라는 규칙과 어긋나지 않는다 — 알약 하나는 작고
+           구조적인 자리다. 이보다 큰 면에 골드를 칠하지 말 것.
+      */}
+      {/*
+        ⚠️ mt-6 을 빼지 말 것 — 사진 아랫변과 직함 줄이 **정확히 같은 자리**에서 만나
+           흐려지는 가운 자락 위에 글이 얹혀 보였다(2026-08-31 운영자: "사진이랑 문구랑
+           좀 겹치는거 아니야?"). 사진 아래는 마스크로 흐려지므로 눈에는 겹쳐 보인다.
+        ⚠️ 셋에 **같은 값**을 줄 것. 한 사람만 띄우면 사진 아랫변에 맞춰 세운 줄이 어긋난다.
+      */}
+      <p
+        className={`mt-6 inline-flex items-center rounded-full border px-3.5 py-1 font-bold ${
+          big
+            ? 'border-signal bg-signal text-[15px] text-wine-deep'
+            : 'border-transparent text-[14.5px] text-signal'
+        }`}
+      >
         {d.role}
       </p>
       <p
