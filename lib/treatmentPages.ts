@@ -125,8 +125,9 @@ export const TREATMENT_PAGES: Record<string, TreatmentPage> = {
           { title: '크라운 보강', body: '신경치료를 마친 치아는 잘 부서져서 씌워 보강합니다. 남은 부분이 적을수록 이 단계가 중요합니다.' },
         ],
         figure: {
-          src: '/img/scene/save-microscope.webp',
-          alt: '확대경을 쓴 원장이 무영등 아래에서 기구와 거울을 들고 치아 안쪽을 들여다보는 모습.',
+          // ⚠️ AI 진료 장면(얼굴)에서 도해로 바꿨다 — 실제 원장이 아닌 사람이었다.
+          src: '/img/ai/save-cross-section.webp',
+          alt: '어금니 단면 도해 — 법랑질·상아질·치수 층과 뿌리 속 신경관이 보이도록 잘라 그린 그림.',
           ratio: '3 / 2',
           ai: true,
         },
@@ -144,8 +145,9 @@ export const TREATMENT_PAGES: Record<string, TreatmentPage> = {
     headline: '신경을 살릴 수 있는 충치인지\n먼저 봅니다',
     lead: '충치는 깊이에 따라 치료가 갈립니다. 신경까지 닿았는지가 가장 큰 분기점이고, 닿기 직전이라면 신경을 살려 두는 방법을 먼저 검토합니다.',
     hero: {
-      src: '/img/scene/cavity-resin-work.webp',
-      alt: '장갑 낀 두 손이 무영등 아래에서 충전 기구와 광중합기를 들고 치아를 수복하는 모습.',
+      // ⚠️ AI 진료 장면(얼굴)에서 도해로 바꿨다 — 실제 원장이 아닌 사람이었다.
+      src: '/img/ai/cavity-resin.webp',
+      alt: '충치를 제거한 자리에 치아색 재료를 채우고 광중합기로 굳히는 과정을 모형으로 보여 주는 그림.',
       ratio: '3 / 2',
       ai: true,
     },
@@ -299,8 +301,9 @@ export const TREATMENT_PAGES: Record<string, TreatmentPage> = {
           { title: '치아가 흔들립니다', body: '치아를 잡아 주는 뼈가 이미 상당히 녹았을 때 나타납니다. 가장 늦은 신호입니다.' },
         ],
         figure: {
-          src: '/img/scene/perio-checkup.webp',
-          alt: '원장이 진료 의자 옆에서 가는 탐침을 들고 잇몸 상태를 확인하고, 진료 보조 인력이 반대쪽에서 흡인기를 잡고 있는 모습.',
+          // ⚠️ AI 진료 장면(얼굴)에서 도해로 바꿨다 — 실제 원장이 아닌 사람이었다.
+          src: '/img/ai/perio-probe.webp',
+          alt: '잇몸 모형에 가는 탐침을 넣어 잇몸과 치아 사이의 깊이를 재는 모습을 그린 그림.',
           ratio: '3 / 2',
           ai: true,
         },
@@ -513,8 +516,9 @@ export const TREATMENT_PAGES: Record<string, TreatmentPage> = {
           { title: '다음 주기 안내', body: '잇몸 상태와 치석이 쌓이는 속도에 따라 다음 방문 시기를 정합니다. 모든 사람이 같은 주기는 아닙니다.' },
         ],
         figure: {
-          src: '/img/scene/consult-desk.webp',
-          alt: '밝은 상담 공간에서 원장이 치아 스캔 화면을 가리키며 환자에게 설명하는 모습.',
+          // ⚠️ AI 진료 장면(얼굴)에서 **병원 실제 사진**으로 바꿨다.
+          src: '/img/20210923_956b5d44b57ef.jpg',
+          alt: '동그라미치과의원 상담실에서 파노라마 엑스레이 화면과 치아 모형을 놓고 설명하는 모습.',
           ratio: '3 / 2',
           ai: true,
         },

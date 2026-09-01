@@ -521,7 +521,9 @@ export function TreatmentLanding({
       */}
       {usesAi ? (
         <Container className="pb-6">
-          <p className="max-w-[52em] text-[12.5px] leading-[1.7] text-ink-muted/70">
+          {/* ⚠️ 투명도를 다시 낮추지 말 것 — /70 에서 3.47:1 로 미달이었다(실측 2026-09-01).
+              고지 문구는 작아도 읽혀야 한다. 안 읽히면 고지한 것이 아니다. */}
+          <p className="max-w-[52em] text-[13.5px] leading-[1.7] text-ink-muted">
             <Sentences text="일부 이미지는 진료 과정을 설명하기 위해 만든 것으로 실제 진료 사진이 아닙니다." />
           </p>
         </Container>

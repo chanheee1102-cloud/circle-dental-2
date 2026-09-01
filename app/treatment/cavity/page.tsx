@@ -280,15 +280,16 @@ export default function CavityPage() {
             ⚠️ 밝은 판에 얹는 이유 — 어두운 면 위의 흰 도해는 잘린 종이처럼 뜬다.
             ⚠️ 좁은 화면에서 줄이지 말고 가로로 밀어 보게 한다. 줄이면 그림 속 글자가 뭉갠다.
           */}
-          <figure className="reveal mt-16">
-            <div className="overflow-x-auto rounded-[20px] border border-white/10 bg-parchment p-3 sm:p-4">
+          <figure className="reveal mt-14">
+            {/* ⚠️ 폭을 화면 끝까지 늘리지 말 것 — 도해가 본문보다 커지면 이 구획의 주인공이 뒤바뀐다. */}
+            <div className="mx-auto max-w-[62rem] overflow-x-auto rounded-[18px] border border-white/10 bg-parchment p-3 sm:p-3.5">
               <Image
                 src="/img/ai/cavity-stages.webp"
                 alt="충치 진행 5단계 도해. 법랑질 충치, 상아질 충치, 신경(치수) 침범, 치근단 염증, 치아 발치 필요 순으로 단면 그림과 함께 단계별 증상과 치료 방법을 정리했다."
                 width={1536}
                 height={1024}
                 sizes="(min-width: 1024px) 1100px, 100vw"
-                className="h-auto w-full min-w-[720px] rounded-[12px]"
+                className="h-auto w-full min-w-[640px] rounded-[10px]"
               />
             </div>
 
