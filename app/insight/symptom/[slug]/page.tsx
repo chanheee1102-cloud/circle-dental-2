@@ -9,7 +9,7 @@ import { CLINIC } from '@/lib/clinic';
 import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
-import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
+import { TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
 import { REFS_CONDITION } from '@/lib/references';
 
 export function generateStaticParams() {
@@ -95,9 +95,28 @@ export default async function SymptomDetailPage({
         <PageHero trail={trail} photo="room" eyebrow="증상" title={s.title} />
         <Container className="py-12 lg:py-16">
 
-          {/* 즉답 블록 — AI 가 인용하는 자리. 제목 바로 아래에서 답이 끝난다. */}
-          <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 card-glass p-6">
-            <p className="text-[18px] leading-[1.85] text-ink"><Sentences text={s.answer} /></p>
+          {/*
+            즉답(왼쪽) + 목차(오른쪽)를 한 줄에.
+            ⚠️ 즉답을 좁게(64ch) 왼쪽에만 두지 말 것 — 오른쪽 절반이 통째로 빈다(오너 지적).
+            ⚠️ 즉답은 AI 가 인용하는 자리다. 제목 바로 아래에서 답이 끝나야 한다.
+          */}
+          <div className="mt-8 grid items-start gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+            <div className="rounded-[18px] border-l-[3px] border-clay-400 card-glass p-7">
+              <p className="text-[13px] font-black tracking-[0.14em] text-clay-600">한 줄 답</p>
+              <p className="mt-4 text-[18px] leading-[1.85] text-ink">
+                <Sentences text={s.answer} />
+              </p>
+            </div>
+            <div className="lg:sticky lg:top-28">
+              <TableOfContents
+                items={[
+                  '어떤 경우에 미루면 안 되나요?',
+                  '왜 이런 증상이 생기나요?',
+                  '오기 전에 해볼 수 있는 것이 있나요?',
+                  ...(conditions.length ? ['어떤 질환일 수 있나요?'] : []),
+                ]}
+              />
+            </div>
           </div>
 
           {/*
@@ -125,26 +144,47 @@ export default async function SymptomDetailPage({
           </div>
 
           {/*
-            한눈에 보기 — 지어내지 않는다. 응급 신호와 확인된 원인 이름을 그대로 옮긴다.
-            이 페이지에서 가장 먼저 읽혀야 할 것이 '지금 가야 하나' 라 그 줄을 맨 위에 둔다.
+            ⚠️ 여기에 s.answer 를 다시 넣지 말 것 (2026-09-01) — 위 즉답과 **똑같은 글**이
+               한 번 더 나와, 화면은 글로 꽉 차는데 새로 얻는 것이 없었다.
+            ★ 성격이 다른 둘만 남긴다 — 급한 것(지금 가야 하는 신호)과 참고(흔한 원인).
+              급한 쪽에만 색을 준다. 둘 다 칠하면 급한 것이 급해 보이지 않는다.
+            ⚠️ h-full 을 지우지 말 것 — 없으면 좌우 카드 높이가 달라진다.
           */}
-          <div className="mt-8 grid gap-5 lg:grid-cols-2">
-            <KeyPoints
-              items={[
-                s.answer,
-                `지금 병원에 가야 하는 신호: ${s.urgent.slice(0, 2).join(', ')}`,
-                `흔한 원인: ${s.causes.map((c) => c.name).join(', ')}`,
-              ]}
-            />
-            <TableOfContents
-              items={[
-                '어떤 경우에 미루면 안 되나요?',
-                '왜 이런 증상이 생기나요?',
-                '오기 전에 해볼 수 있는 것이 있나요?',
-                /* 질환 목록이 비면 그 소제목도 없다 — 목차에 없는 자리를 걸면 클릭이 죽는다. */
-                ...(conditions.length ? ['어떤 질환일 수 있나요?'] : []),
-              ]}
-            />
+          <div className="mt-10 grid gap-5 lg:grid-cols-2">
+            <aside
+              aria-label="지금 병원에 가야 하는 신호"
+              className="h-full rounded-[18px] border border-clay-400/45 bg-clay-400/10 p-7"
+            >
+              <p className="flex items-center gap-2.5 text-[13px] font-black tracking-[0.14em] text-clay-600">
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-clay-400" />
+                지금 병원에 가야 하는 신호
+              </p>
+              <ul className="mt-4 space-y-2.5">
+                {s.urgent.slice(0, 3).map((u) => (
+                  <li key={u} className="flex gap-3 text-[16px] leading-[1.75] text-ink">
+                    <span aria-hidden className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-400" />
+                    <span>{u}</span>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+
+            <aside
+              aria-label="흔한 원인"
+              className="h-full rounded-[18px] border border-brand-200/70 card-glass p-7"
+            >
+              <p className="text-[13px] font-black tracking-[0.14em] text-brand-600">흔한 원인</p>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {s.causes.map((c) => (
+                  <li
+                    key={c.name}
+                    className="rounded-full border border-brand-200/70 px-3.5 py-1.5 text-[14.5px] font-semibold text-ink-soft"
+                  >
+                    {c.name}
+                  </li>
+                ))}
+              </ul>
+            </aside>
           </div>
         </Container>
 
