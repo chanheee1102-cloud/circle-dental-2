@@ -1,76 +1,88 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { SPECIALS } from '@/lib/specials';
-import { StrengthIcon } from '@/components/StrengthIcons';
-import { Sentences } from '@/components/ui';
+import { bindKo } from '@/components/ui';
 
 /**
- * '동그라미 치과만의 특별함' 카드 5장.
+ * '동그라미 치과만의 특별함' 카드 일곱 장.
  *
- * ★ 홈과 /about 이 함께 쓴다. 두 곳에 각각 만들면 한쪽만 고쳐져 어긋난다.
- * ★ 사진을 카드 안에 크게 둔다 — 아이콘만 있을 때보다 무엇에 대한 이야기인지 즉시 읽힌다.
- *   아이콘은 사진 위에 작게 얹어 5장이 한 세트로 보이게 하는 역할만 한다.
- * ★ 첫 두 장만 priority — 5장을 한꺼번에 우선 로딩하면 첫 화면이 느려진다.
+ * ★ /about 만 쓴다 (2026-09-01 확인 — 홈에는 이 구획이 없다).
  *
- * ⚠️ 3열로 되돌리지 말 것 — 항목이 7개라 마지막 줄에 한 장만 남아 혼자 떨어졌다
- *    (2026-09-01 오너 지적). 7 = 4 + 3 이라 4열이 맞다.
- * ⚠️ 항목 수가 바뀌면 열 수도 함께 볼 것. 개수와 열이 안 맞으면 반드시 외톨이가 생긴다.
+ * ★★ 왜 첫 장만 두 칸을 쓰나 (2026-09-01 오너: "여기 좀 난잡하지 않게") ★★
+ *   일곱 장을 4열에 깔면 **마지막 줄에 세 장만 남아 오른쪽이 빈다.** 그 빈 칸이
+ *   격자를 무너뜨려 화면이 정리가 안 된 것처럼 보인다.
+ *   첫 장을 두 칸으로 두면 2+1+1 / 1+1+1+1 로 **두 줄이 정확히 채워진다** — 빈 칸 0.
+ *   덤으로 '교수 출신 원장 직접 진료' 가 나머지와 같은 무게로 묻히지 않는다.
+ * ⚠️ 항목 수가 바뀌면 이 계산도 다시 할 것. 8개가 되면 첫 장을 한 칸으로 되돌려야 두 줄이 맞는다.
+ *
+ * ★★ 난잡해 보이던 진짜 원인 세 가지 — 되돌리지 말 것 ★★
+ *   ① **문장마다 줄을 바꾸던 것**(Sentences). 290px 짜리 좁은 칸에서 그 규칙이 걸리면
+ *      한 장이 서너 줄 짜리 들쭉날쭉한 덩어리가 되고, 그것이 일곱 개 겹쳤다.
+ *      여기서는 글이 그냥 흐르게 두고, 한국어 묶음(관형형+의존명사)만 bindKo 로 살린다.
+ *   ② **사진 위 아이콘 뱃지**. 사진 · 아이콘 · 제목 · 본문 · 링크로 한 장에 눈길이 다섯 번
+ *      갈렸다. 아이콘은 정보를 더하지 않아서 뺐다(아이콘 자체는 StrengthIcons 에 남아 있다).
+ *   ③ **들쭉날쭉한 본문 길이**. line-clamp-3 으로 세 줄에서 끊어 카드 높이를 고르게 만든다.
+ *      잘린 글자도 HTML 에는 그대로 있어 검색·AI 는 전문을 읽는다(자세한 내용은 상세 페이지).
+ *
+ * ⚠️⚠️ 되살리지 말 것 (2026-09-01 오너: "클로드 특유의 디자인 포인트 빼고") ⚠️⚠️
+ *   ⓐ 카드마다 붙던 같은 눈썹 라벨 — 일곱 장에 '동그라미 치과만의 특별함' 이 일곱 번 나왔다.
+ *   ⓑ 사진 위 큰 번호 — 번호+라벨 조합은 '경쟁 병원과 똑같다' 는 지적을 받은 형태다.
+ *
+ * ★ 첫 두 장만 priority — 일곱 장을 한꺼번에 우선 로딩하면 첫 화면이 느려진다.
  */
 export function SpecialGrid({ eager = false }: { eager?: boolean }) {
   return (
-    <div className="reveal-stack grid gap-5 sm:grid-cols-2 lg:grid-cols-4 ">
-      {SPECIALS.map((s, i) => (
-        <Link
-          key={s.slug}
-          href={`/about/special/${s.slug}`}
-          className="group flex flex-col overflow-hidden rounded-2xl border border-brand-200/70 card-glass shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
-        >
-          <div className="relative aspect-[16/10] overflow-hidden">
-            <Image
-              src={s.image}
-              alt={s.alt}
-              fill
-              priority={eager && i < 2}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            {/* 아래쪽만 어둡게 — 그 위에 올린 번호와 아이콘이 밝은 사진에서도 읽힌다. */}
+    <div className="reveal-stack grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {SPECIALS.map((s, i) => {
+        /* 첫 장만 두 칸 — 사진과 글이 위아래가 아니라 좌우로 선다. */
+        const wide = i === 0;
+        return (
+          <Link
+            key={s.slug}
+            href={`/about/special/${s.slug}`}
+            className={`group card-edge flex overflow-hidden rounded-2xl border border-brand-200/70 card-glass shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)] ${
+              wide ? 'flex-col sm:col-span-2 sm:flex-row' : 'flex-col'
+            }`}
+          >
             <div
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-t from-brand-900/70 via-transparent to-transparent"
-            />
-            <span
-              aria-hidden
-              className="absolute bottom-4 left-5 flex h-11 w-11 items-center justify-center rounded-xl card-glass/95 text-brand-600 shadow-lg backdrop-blur"
+              className={`relative overflow-hidden ${
+                wide ? 'aspect-[16/10] sm:aspect-auto sm:w-1/2' : 'aspect-[16/10]'
+              }`}
             >
-              <StrengthIcon name={s.key} />
-            </span>
-            <span
-              aria-hidden
-              className="absolute bottom-5 right-5 text-[22px] font-black leading-none text-white/85"
-            >
-              {s.no}
-            </span>
-          </div>
+              <Image
+                src={s.image}
+                alt={s.alt}
+                fill
+                priority={eager && i < 2}
+                sizes={
+                  wide
+                    ? '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw'
+                    : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw'
+                }
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
 
-          <div className="flex flex-1 flex-col p-7">
-            <p className="text-[13.5px] font-black tracking-[0.12em] text-brand-500">{s.eyebrow}</p>
-            <h3 className="display-sm mt-2.5 text-[20px] text-ink group-hover:text-brand-700">
-              {s.title}
-            </h3>
-            <p className="mt-3.5 flex-1 text-[15.5px] leading-[1.8] text-ink-soft"><Sentences text={s.body} /></p>
-            <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-black text-brand-700">
-              자세히 보기
-              <span
-                aria-hidden
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[13.5px] transition-all group-hover:bg-brand-500 group-hover:text-white"
-              >
-                →
+            <div className={`flex flex-1 flex-col p-7 ${wide ? 'sm:justify-center' : ''}`}>
+              <h3 className="display-sm text-[20px] leading-[1.35] text-ink group-hover:text-brand-700">
+                {bindKo(s.title)}
+              </h3>
+              <p className="mt-3.5 line-clamp-3 text-[15.5px] leading-[1.8] text-ink-soft">
+                {bindKo(s.body)}
+              </p>
+              <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-bold text-brand-700">
+                자세히 보기
+                <span
+                  aria-hidden
+                  className="transition-transform group-hover:translate-x-1"
+                >
+                  →
+                </span>
               </span>
-            </span>
-          </div>
-        </Link>
-      ))}
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 }
