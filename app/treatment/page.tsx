@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
 import { TREATMENTS } from '@/lib/treatments';
-import { Container, ContactCta, PageHero } from '@/components/ui';
+import { Container, ContactCta } from '@/components/ui';
+import { TreatmentHero } from '@/components/TreatmentShell';
+import { IMG } from '@/lib/assets';
 import { CareListSection } from '@/components/CareListSection';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, itemListSchema } from '@/lib/seo';
@@ -35,12 +37,17 @@ export default function TreatmentIndexPage() {
           ),
         ]}
       />
-      <PageHero
+      {/*
+        머리말 — 진료과목 아홉 곳과 같은 부품을 쓴다 (2026-09-01 오너 지시).
+        ⚠️ 공용 PageHero 로 되돌리지 말 것 — 그쪽은 병원 소개 · 내원 안내와 함께 쓰는 부품이라
+           눈썹이 알약이고 빵부스러기가 왼쪽이어서, 이 목록만 진료 페이지들과 머리가 달랐다.
+      */}
+      <TreatmentHero
         trail={TRAIL}
-        photo="corridor"
-        eyebrow="진료과목"
-        title="어떤 경우에 어떤 진료를 하나요?"
-        desc="같은 증상이라도 남은 치아와 잇몸뼈 상태에 따라 선택이 달라집니다. 그래서 시술 이름이 아니라 ‘이런 경우에 봅니다’ 로 나눴습니다."
+        eyebrow="고양 화정동 치과 진료과목 · 열 갈래"
+        title={['어떤 경우에', '어떤 진료를 하나요?']}
+        lead="같은 증상이라도 남은 치아와 잇몸뼈 상태에 따라 선택이 달라집니다. 그래서 시술 이름이 아니라 ‘이런 경우에 봅니다’ 로 나눴습니다."
+        photo={{ src: IMG.interior[2].src, alt: IMG.interior[2].alt }}
       />
 
       <Container className="py-12 lg:py-16">

@@ -59,7 +59,8 @@ export default async function JourneyDetailPage({
     { name: j.treatment, path: `/insight/journey/${j.slug}` },
   ];
 
-  const treatment = treatmentBySlug(j.slug);
+  /* ⚠️ j.slug 로 되돌리지 말 것 — 글 주소와 진료 주소가 다른 글이 있다(2026-09-01). */
+  const treatment = treatmentBySlug(j.treatmentSlug ?? j.slug);
 
   const howTo = {
     '@context': 'https://schema.org',

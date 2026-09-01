@@ -20,6 +20,12 @@ export interface JourneyStep {
 export interface Journey {
   slug: string;
   treatment: string;
+  /**
+   * 이 글이 가리키는 진료 페이지 — 비워 두면 글 주소(slug)와 같다고 본다.
+   * ⚠️ 글 주소와 진료 주소가 다른 경우에만 적는다. 안 적으면 '진료 안내 보기' 버튼이
+   *    말없이 사라진다(2026-09-01, 심미치료 → 치아미백 이름 변경 때 겪음).
+   */
+  treatmentSlug?: string;
   /** 자연어 질문 그대로 — 검색 질의와 매칭한다. */
   question: string;
   /** 즉답 2~3문장. */
@@ -158,8 +164,11 @@ export const JOURNEYS: Journey[] = [
     ],
   },
   {
+    /* 글 주소는 그대로 둔다 — 이미 색인돼 있어 바꾸면 그만큼 잃는다.
+       진료 페이지만 치아미백을 가리킨다(라미네이트는 크라운·보철 쪽이 다룬다). */
     slug: 'aesthetic',
-    treatment: '심미치료',
+    treatment: '치아미백',
+    treatmentSlug: 'whitening',
     question: '라미네이트나 미백은 얼마나 걸리나요?',
     answer:
       '치아 미백은 병원에서 하는 경우 1~2회, 집에서 하는 방식은 2~4주 정도 사용합니다. 라미네이트는 본을 뜨고 제작해 붙이는 과정으로 보통 2~3회, 2주 안팎이 걸립니다. 다만 잇몸과 맞물림을 먼저 정리해야 하면 그 기간이 앞에 붙습니다.',

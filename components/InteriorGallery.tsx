@@ -69,7 +69,11 @@ export function InteriorGallery() {
            잘라서 시원해 보이는 것보다 다 보이는 것이 이 페이지의 일이다.
         ⚠️ key 는 일부러다. 바뀔 때마다 요소가 새로 붙어 fade 가 다시 돈다.
       */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-brand-100">
+      {/*
+        ⚠️ 폭 상한을 지우지 말 것 (2026-09-01 오너: "사진 너무 커") — 4:3 이라 넓은 화면에서
+           한 장이 화면을 통째로 먹었다. 사진은 근거지 주인공이 아니다.
+      */}
+      <div className="relative mx-auto aspect-[3/2] w-full max-w-[52rem] overflow-hidden rounded-2xl bg-brand-100">
         <Image
           key={cur.src}
           src={cur.src}

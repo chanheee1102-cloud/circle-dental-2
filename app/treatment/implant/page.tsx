@@ -15,11 +15,11 @@ import {
   IMPLANT_AFTERCARE,
 } from '@/lib/implantPage';
 import { IMPLANT_CASES, CASE_NOTICE } from '@/lib/implantCases';
-import { Container, Breadcrumb, MedicalNotice, Sentences } from '@/components/ui';
+import { Container, MedicalNotice, Sentences } from '@/components/ui';
+import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
 import { SectionHead, Card, GlassCard, DarkPanel, NumChip } from '@/components/saas';
 import { ComparisonTable } from '@/components/ComparisonTable';
 import { JsonLd } from '@/components/JsonLd';
-import { SectionNav } from '@/components/SectionNav';
 import { ArticleMeta, References, charCount } from '@/components/article';
 import { REFS_CONDITION } from '@/lib/references';
 import {
@@ -80,15 +80,6 @@ export default function ImplantPage() {
   const journey = journeyForTreatment('implant');
   const related = t.relatedSymptoms.map(symptomBySlug).filter(Boolean);
 
-  const navItems = [
-    { id: '디지털-방식', label: '디지털 방식' },
-    { id: '시술-방법', label: '시술 방법' },
-    { id: '방식-비교', label: '방식 비교' },
-    { id: '치료-증례', label: '치료 증례' },
-    { id: '진료-원칙', label: '진료 원칙' },
-    ...(journey ? [{ id: '진행-순서', label: '진행 순서' }] : []),
-    { id: '주의사항', label: '주의사항' },
-  ];
 
   return (
     <>
@@ -121,108 +112,30 @@ export default function ImplantPage() {
         ⚠️ 사진을 화면 전체에 깔지 말 것 — 카드에 담아 층을 만든다.
       */}
       {/*
-        ⚠️ 밝은 면으로 되돌리지 말 것 (2026-08-28 오너) — 하위 페이지 머리는 전부 어두운 띠다.
-        ⚠️ 이 면 위 글자는 parchment 계열이다. 회색조(ink-soft 등)는 3:1 대로 떨어진다.
+        머리말 — 진료과목 아홉 곳이 같은 부품을 쓴다 (2026-09-01 오너 지시).
+        ⚠️ 여기서 손으로 다시 그리지 말 것. 모양은 components/TreatmentShell.tsx 에서 바꾼다.
+        ⚠️ 왼쪽 정렬 · 알약 눈썹으로 되돌리지 말 것 — 페이지마다 머리가 달라 보였던 원인이다.
       */}
-      <section className="relative isolate -mt-[68px] overflow-hidden bg-wine-deep pt-[68px] text-parchment sm:-mt-[94px] sm:pt-[94px]">
-        <Image
-          src="/img/clinic/implant-hero.webp"
-          alt="동그라미치과의원 상담실에서 원장이 모니터를 함께 보며 환자에게 치료 계획을 설명하는 모습."
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-[58%_center]"
-        />
-        {/*
-          두 겹 덮개 — 방사형(가운데를 살림) + 선형(위아래를 눌러 줌).
-          ⚠️ 한 겹으로 줄이지 말 것. 사진 밝은 부분에서 작은 글자가 먼저 무너진다.
-        */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(80%_64%_at_50%_38%,rgba(36,34,30,0.5)_0%,rgba(36,34,30,0.82)_62%,rgba(36,34,30,0.93)_100%)]"
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(36,34,30,0.72)_0%,rgba(36,34,30,0.46)_38%,rgba(36,34,30,0.88)_100%)]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_58%_at_78%_10%,rgba(217,164,65,0.14)_0%,transparent_64%)]"
-        />
-        <Container className="relative pt-10 pb-20 lg:pb-28">
-          <Breadcrumb trail={TRAIL} tone="dark" />
+      <TreatmentHero
+        trail={TRAIL}
+        eyebrow="고양 화정동 임플란트 · 보건복지부 인정 통합치의학과 전문의"
+        title={['자연치아를 먼저 보고,', '임플란트는 그다음입니다']}
+        lead={SUMMARY}
+        photo={{
+          src: '/img/clinic/implant-hero.webp',
+          alt: '동그라미치과의원 상담실에서 원장이 모니터를 함께 보며 환자에게 치료 계획을 설명하는 모습.',
+          position: '58% center',
+        }}
+      />
 
-          {/*
-            ⚠️ 2단으로 되돌리지 말 것 — 사진이 배경으로 갔으므로 오른쪽 칸에 넣을 것이 없다.
-               (거기 있던 '진료 전 확인' 쪽지는 바로 위 머리글이 이미 같은 말을 한다)
-          */}
-          <div className="mt-12 max-w-[46em]">
-            <div>
-              <span
-                className="enter inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-[13.5px] font-black text-parchment backdrop-blur-[10px]"
-                style={{ animationDelay: '40ms' }}
-              >
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-clay-500" />
-                진료과목 · 임플란트
-              </span>
-
-              <h1
-                className="enter display-sm mt-7 max-w-[16em] text-[clamp(32px,5.4vw,62px)] leading-[1.14] tracking-[-0.035em] text-parchment"
-                style={{ animationDelay: '140ms' }}
-              >
-                자연치아를 먼저 보고,
-                <br />
-                임플란트는 그다음입니다
-              </h1>
-
-              <p
-                className="enter mt-7 max-w-[48ch] text-[18px] leading-[1.9] text-parchment/85"
-                style={{ animationDelay: '260ms' }}
-              >
-                <Sentences text={SUMMARY} />
-              </p>
-
-              <div className="enter mt-10 flex flex-wrap gap-3" style={{ animationDelay: '380ms' }}>
-                <a
-                  href={CLINIC.booking.naver}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-parchment px-8 py-4 text-[16.5px] font-black text-wine-deep transition-colors hover:bg-mist"
-                >
-                  진료 예약하기
-                  <span aria-hidden>→</span>
-                </a>
-                <a
-                  href={CLINIC.phoneHref}
-                  className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-parchment/70 px-8 py-4 text-[17px] font-semibold tabular-nums text-parchment transition-colors hover:bg-white/10"
-                >
-                  {CLINIC.phone}
-                </a>
-              </div>
-
-              {/* 지표 — 지어낸 숫자를 쓰지 않는다. 이 병원이 실제로 하는 일만 적는다. */}
-              <dl
-                className="enter mt-12 grid max-w-[34rem] grid-cols-3 gap-x-6 border-t border-white/20 pt-7"
-                style={{ animationDelay: '500ms' }}
-              >
-                {[
-                  { k: '진단', v: '3D CT · 구강 스캔' },
-                  { k: '식립', v: '맞춤 수술 가이드' },
-                  { k: '검토', v: '통합치의학과 전문의' },
-                ].map((s) => (
-                  <div key={s.k}>
-                    <dt className="text-[13.5px] font-bold text-clay-300">{s.k}</dt>
-                    <dd className="mt-1.5 text-[15.5px] leading-snug font-black text-parchment">{s.v}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-
-          </div>
-        </Container>
-      </section>
-
-      <SectionNav items={navItems} />
+      {/* 지표 — 지어낸 숫자를 쓰지 않는다. 이 병원이 실제로 하는 일만 적는다. */}
+      <TreatmentStrip
+        items={[
+          { k: '진단', t: '3D CT · 구강 스캔', d: '신경 위치와 뼈의 양을 먼저 확인합니다.' },
+          { k: '식립', t: '맞춤 수술 가이드', d: '화면에서 정한 자리를 그대로 옮겨 심는 디지털 방식입니다.' },
+          { k: '검토', t: '통합치의학과 전문의', d: '자연치아를 살릴 수 있는지 먼저 검토한 뒤에 권합니다.' },
+        ]}
+      />
 
       {/* 01 — 내 얘기인가 */}
       <section className="py-16 lg:py-24">
@@ -248,7 +161,7 @@ export default function ImplantPage() {
         <Container>
           <SectionHead
             id="디지털-방식"
-            n="02"
+            n="01"
             label="디지털 방식"
             title="수술대에서 정하지 않고, 심기 전에 정합니다"
             desc="3D CT와 구강 스캔으로 얻은 자료를 화면에 올려, 어느 자리에 어느 깊이로 어떤 각도로 심을지를 수술 전에 정합니다. 그렇게 정한 위치를 그대로 옮긴 맞춤 가이드를 만들어 그 길을 따라 심는 방식입니다."
@@ -293,9 +206,9 @@ export default function ImplantPage() {
       </section>
 
       {/* 03 — 어떻게 하나 */}
-      <section className="border-y border-brand-200/60 bg-wine-soft/50 py-24 lg:py-32">
+      <section className="border-y border-white/8 bg-wine-soft py-24 lg:py-32">
         <Container>
-          <SectionHead id="시술-방법" n="03" label="시술 방법" title="네 단계로 진행합니다" />
+          <SectionHead id="시술-방법" n="02" label="시술 방법" title="네 단계로 진행합니다" />
 
           <div className="relative mt-14">
             <span
@@ -333,7 +246,7 @@ export default function ImplantPage() {
       {/* 04 — 판단 근거 */}
       <section className="py-24 lg:py-32">
         <Container>
-          <SectionHead id="방식-비교" n="04" label="방식 비교" title={IMPLANT_COMPARE.caption} />
+          <SectionHead id="방식-비교" n="03" label="방식 비교" title={IMPLANT_COMPARE.caption} />
 
           <div className="reveal-stack mt-14 grid gap-5 lg:grid-cols-2">
             {(['legacy', 'digital'] as const).map((key, ci) => (
@@ -375,7 +288,7 @@ export default function ImplantPage() {
         <Container>
           <DarkPanel className="px-7 py-16 sm:px-12 lg:px-16 lg:py-20">
             <SectionHead
-              n="05"
+              n="04"
               label="치료 증례"
               tone="dark"
               title="실제로 이런 경우를 봤습니다"
@@ -424,11 +337,11 @@ export default function ImplantPage() {
       </section>
 
       {/* 06 — 원칙 */}
-      <section className="border-y border-brand-200/60 bg-wine-soft/50 py-24 lg:py-32">
+      <section className="border-y border-white/8 bg-wine-soft py-24 lg:py-32">
         <Container>
           <SectionHead
             id="진료-원칙"
-            n="06"
+            n="05"
             label="진료 원칙"
             title="심는 것보다 오래 쓰는 것을 먼저 봅니다"
           />
@@ -484,13 +397,13 @@ export default function ImplantPage() {
 
       {/* 07 — 얼마나 걸리나 */}
       {journey && (
-        <section className="border-y border-brand-200/60 bg-wine-soft/50 py-24 lg:py-32">
+        <section className="border-y border-white/8 bg-wine-soft py-24 lg:py-32">
           <Container>
             <div className="grid gap-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
               <div className="lg:sticky lg:top-40 lg:self-start">
                 <SectionHead
                   id="진행-순서"
-                  n="07"
+                  n="06"
                   label="진행 순서"
                   title="몇 번에 걸쳐 어떻게 진행되나요?"
                   desc={journey.answer}
@@ -549,7 +462,7 @@ export default function ImplantPage() {
         ⚠️ FAQPage 구조화 데이터도 함께 옮겼다. 화면에서 뺐는데 스키마만 남기면 보이지 않는
            내용을 주장하는 꼴이 된다. 되살리려면 둘을 같이 옮길 것.
       */}
-      <section className="border-y border-brand-200/60 bg-wine-soft/50 py-16 lg:py-24">
+      <section className="border-y border-white/8 bg-wine-soft py-16 lg:py-24">
         <Container>
           <Link href="/faq#implant" className="reveal group block">
             <Card className="flex flex-wrap items-center justify-between gap-6 p-8 transition-all group-hover:border-clay-400 group-hover:shadow-[var(--shadow-lift)]">
@@ -588,7 +501,7 @@ export default function ImplantPage() {
             <div>
               <SectionHead
                 id="주의사항"
-                n="09"
+                n="07"
                 label="수술 후 주의사항"
                 title="심은 다음 며칠이 결과를 좌우합니다"
               />
@@ -606,9 +519,9 @@ export default function ImplantPage() {
       </section>
 
       {/* 세부 주제 */}
-      <section className="border-y border-brand-200/60 bg-wine-soft/50 py-24 lg:py-32">
+      <section className="border-y border-white/8 bg-wine-soft py-24 lg:py-32">
         <Container>
-          <SectionHead n="10" label="더 자세히" title="임플란트, 나눠서 더 보기" />
+          <SectionHead n="08" label="더 자세히" title="임플란트, 나눠서 더 보기" />
           <div className="reveal-stack mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {IMPLANT_TOPICS.map((o) => (
               <Link key={o.slug} href={`/treatment/implant/${o.slug}`} className="reveal group">

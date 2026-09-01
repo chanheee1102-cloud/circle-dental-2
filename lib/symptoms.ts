@@ -349,7 +349,7 @@ export const SYMPTOMS: Symptom[] = [
       '단 음식과 탄산음료의 섭취 횟수를 줄입니다. 총량보다 자주 먹는 것이 더 나쁩니다.',
     ],
     urgent: ['찬 것이나 단것에 시리기 시작했을 때', '음식물이 그 자리에 끼기 시작했을 때', '치아 표면이 손톱에 걸릴 만큼 파였을 때'],
-    relatedTreatments: ['cavity', 'aesthetic'],
+    relatedTreatments: ['cavity', 'whitening'],
   },
   {
     slug: 'kids-cavity',
@@ -557,7 +557,7 @@ export const SYMPTOMS: Symptom[] = [
       '금연은 착색과 잇몸 양쪽에 가장 큰 변화를 만듭니다.',
     ],
     urgent: ['한 개의 치아만 유독 어두워졌을 때 — 신경 문제 가능성', '외상 후 색이 변했을 때', '변색과 함께 시리거나 아플 때'],
-    relatedTreatments: ['aesthetic', 'endodontic', 'scaling-prevention'],
+    relatedTreatments: ['whitening', 'endodontic', 'scaling-prevention'],
   },
   {
     slug: 'crown-fell-out',
@@ -616,7 +616,7 @@ export const SYMPTOMS: Symptom[] = [
       '이쑤시개로 쑤시지 않습니다. 잇몸을 밀어 틈을 더 키웁니다.',
     ],
     urgent: ['없던 틈이 어른이 되어 생겼을 때', '틈이 점점 벌어질 때', '해당 치아가 흔들리거나 잇몸에서 피가 날 때'],
-    relatedTreatments: ['periodontal', 'aesthetic'],
+    relatedTreatments: ['periodontal', 'whitening'],
   },
 ];
 

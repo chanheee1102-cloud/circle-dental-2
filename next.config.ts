@@ -78,6 +78,16 @@ const CONVENTIONAL: Array<[string, string]> = [
    *   링크·북마크가 /visit 으로 이어진다 — 그냥 지우면 전부 404 가 된다.
    */
   ['/contact', '/visit'],
+  /*
+   * ⚠️ /about/tour 를 되살리지 말 것 (2026-09-01) — 본문 209자로 88쪽 중 가장 얇았다.
+   *   사진 열두 장은 /about 안으로 옮겼다. 301 이라야 쌓인 색인·링크가 이어진다.
+   */
+  ['/about/tour', '/about'],
+  /*
+   * ⚠️ /treatment/aesthetic 를 되살리지 말 것 (2026-09-01) — 메뉴는 '심미치료' 인데
+   *   그 주소가 여는 페이지는 치아미백 하나였다. 이름·주소·내용을 whitening 으로 맞췄다.
+   */
+  ['/treatment/aesthetic', '/treatment/whitening'],
 ];
 
 /**

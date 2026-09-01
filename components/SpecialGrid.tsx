@@ -11,10 +11,14 @@ import { Sentences } from '@/components/ui';
  * ★ 사진을 카드 안에 크게 둔다 — 아이콘만 있을 때보다 무엇에 대한 이야기인지 즉시 읽힌다.
  *   아이콘은 사진 위에 작게 얹어 5장이 한 세트로 보이게 하는 역할만 한다.
  * ★ 첫 두 장만 priority — 5장을 한꺼번에 우선 로딩하면 첫 화면이 느려진다.
+ *
+ * ⚠️ 3열로 되돌리지 말 것 — 항목이 7개라 마지막 줄에 한 장만 남아 혼자 떨어졌다
+ *    (2026-09-01 오너 지적). 7 = 4 + 3 이라 4열이 맞다.
+ * ⚠️ 항목 수가 바뀌면 열 수도 함께 볼 것. 개수와 열이 안 맞으면 반드시 외톨이가 생긴다.
  */
 export function SpecialGrid({ eager = false }: { eager?: boolean }) {
   return (
-    <div className="reveal-stack grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="reveal-stack grid gap-5 sm:grid-cols-2 lg:grid-cols-4 ">
       {SPECIALS.map((s, i) => (
         <Link
           key={s.slug}

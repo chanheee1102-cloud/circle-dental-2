@@ -3,10 +3,9 @@ import Link from 'next/link';
 import type { Treatment } from '@/lib/treatments';
 import type { TreatmentPage } from '@/lib/treatmentPages';
 import type { Journey } from '@/lib/insight';
-import { CLINIC } from '@/lib/clinic';
-import { Container, Breadcrumb, Sentences } from '@/components/ui';
+import { Container, Sentences } from '@/components/ui';
+import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
 import { SectionHead, Card, NumChip } from '@/components/saas';
-import { SectionNav } from '@/components/SectionNav';
 
 /**
  * 진료 랜딩 페이지 — 임플란트에서 만든 언어를 나머지 진료가 함께 쓰는 틀.
@@ -36,26 +35,6 @@ export function TreatmentLanding({
   /** 비교표처럼 이 진료에만 붙는 것들. 본문 구간 뒤, FAQ 앞에 들어간다. */
   children?: React.ReactNode;
 }) {
-  /** 지표 3칸 — 사진이 어디로 가느냐에 따라 글 아래에도, 오른쪽 칸에도 놓인다. */
-  const stats = (
-    <dl
-      className="enter mt-12 grid max-w-[34rem] grid-cols-3 gap-x-6 border-t border-white/20 pt-7"
-      style={{ animationDelay: '500ms' }}
-    >
-      {page.stats.map((s) => (
-        <div key={s.k}>
-          <dt className="text-[13.5px] font-bold text-clay-300">{s.k}</dt>
-          <dd className="mt-1.5 text-[15.5px] leading-snug font-black text-parchment">{s.v}</dd>
-        </div>
-      ))}
-    </dl>
-  );
-
-  const navItems = [
-    ...page.blocks.map((b, i) => ({ id: `구간-${i + 1}`, label: b.label })),
-    ...(journey ? [{ id: '진행-순서', label: '진행 순서' }] : []),
-    ...(page.aftercare ? [{ id: '주의사항', label: '주의사항' }] : []),
-  ];
 
   /* AI 사진이 한 장이라도 쓰였는지 — 고지를 렌더할지 정한다. */
   const usesAi =
@@ -64,102 +43,22 @@ export function TreatmentLanding({
   return (
     <>
       {/*
-        히어로 — **어두운 유리 면 위 2단**. 사진은 카드에 담아 층을 만든다.
-        ⚠️ 밝은 면으로 되돌리지 말 것 (2026-08-28 오너) — 하위 페이지 머리는 전부
-           어두운 띠로 통일돼 있다. 여기만 밝으면 진료 페이지만 결이 갈린다.
-        ⚠️ 이 면 위 글자는 parchment 계열이다. 회색조(ink-soft 등)를 쓰면 3:1 대로 떨어진다.
+        머리말 — 진료과목 아홉 곳이 같은 부품을 쓴다 (2026-09-01 오너 지시).
+        ⚠️ 여기서 손으로 다시 그리지 말 것. 모양은 components/TreatmentShell.tsx 에서 바꾼다.
+        ⚠️ 왼쪽 정렬 2단 · 알약 눈썹으로 되돌리지 말 것 — 페이지마다 머리가 달라 보였던 원인이다.
+        ★ 사진은 그대로 배경으로 깐다. 상자에 담으면 진료마다 비율이 제각각이라
+          (1.50 · 2.24 · 2.40 · 4.80) 누군가는 잘리거나 옆이 빈다. 그 길은 이미 두 번 돌았다.
       */}
-      <section className="relative isolate -mt-[68px] overflow-hidden bg-wine-deep pt-[68px] text-parchment sm:-mt-[94px] sm:pt-[94px]">
-        {/*
-          ★★ 사진은 **배경으로 깐다** (2026-08-31 운영자) ★★
-            "대부분 진료페이지에 사진 이상하게 사이즈 돼서 들어가던데 걍 병원소개쪽처럼
-             배경으로 사진을 넣던지."
-            히어로 사진은 진료마다 비율이 제각각이다(1.50 · 2.24 · 2.40 · 4.80).
-            상자에 담는 한 어떤 비율을 골라도 누군가는 잘리거나 옆이 빈다.
-            배경으로 깔면 **비율 문제 자체가 없어진다** — 잘리는 것이 당연한 자리이기 때문이다.
-          ⚠️ 상자(오른쪽 칸 카드 · 전폭 띠)로 되돌리지 말 것. 그 길은 이미 두 번 돌았다.
-          ⚠️ 병원 소개(components/ui.tsx PageHero)와 **같은 두 겹 스크림**을 쓴다.
-             옅게 하지 말 것 — 사진 밝은 부분에서 작은 금색 글자가 2.26:1 까지 떨어진다(실측).
-        */}
-        <Image
-          src={page.hero.src}
-          alt=""
-          aria-hidden
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(78%_62%_at_50%_38%,rgba(36,34,30,0.68)_0%,rgba(36,34,30,0.86)_62%,rgba(36,34,30,0.95)_100%)]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_58%_at_78%_10%,rgba(217,164,65,0.16)_0%,transparent_64%)]"
-        />
-        <Container className="relative pt-10 pb-16 lg:pb-24">
-          <Breadcrumb trail={trail} tone="dark" />
+      <TreatmentHero
+        trail={trail}
+        eyebrow={`고양 화정동 ${t.name} · 보건복지부 인정 통합치의학과 전문의`}
+        title={page.headline.split('\n')}
+        lead={page.lead}
+        photo={{ src: page.hero.src, alt: '' }}
+      />
 
-          <div
-            className="mt-12 grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16"
-          >
-            <div>
-              <span
-                className="enter inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-[13.5px] font-black text-parchment backdrop-blur-[10px]"
-                style={{ animationDelay: '40ms' }}
-              >
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-clay-500" />
-                진료과목 · {t.name}
-              </span>
-
-              {/*
-                ⚠️ 폭 제한은 **글자와 같은 요소**에 건다. 부모에 걸면 부모의 font-size 기준이라
-                   큰 글씨가 좁은 폭에 갇혀 여러 줄로 쪼개진다(실제로 겪은 일).
-                ⚠️ 한글에는 ch 대신 em — ch 는 숫자 0 의 폭이라 한글 한 글자보다 좁다.
-              */}
-              <h1
-                className="enter display-sm mt-7 max-w-[14em] text-[clamp(32px,5.4vw,62px)] leading-[1.16] tracking-[-0.035em] whitespace-pre-line text-parchment"
-                style={{ animationDelay: '140ms' }}
-              >
-                {page.headline}
-              </h1>
-
-              <p
-                className="enter mt-7 max-w-[30em] text-[18px] leading-[1.9] text-parchment/85"
-                style={{ animationDelay: '260ms' }}
-              >
-                <Sentences text={page.lead} />
-              </p>
-
-              <div className="enter mt-10 flex flex-wrap gap-3" style={{ animationDelay: '380ms' }}>
-                <a
-                  href={CLINIC.booking.naver}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-parchment px-8 py-4 text-[16.5px] font-black text-wine-deep transition-colors hover:bg-mist"
-                >
-                  진료 예약하기
-                  <span aria-hidden>→</span>
-                </a>
-                <a
-                  href={CLINIC.phoneHref}
-                  className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-parchment/70 px-8 py-4 text-[16.5px] font-black text-parchment transition-colors hover:bg-white/10"
-                >
-                  {CLINIC.phone}
-                </a>
-              </div>
-
-              {/* 지표 3칸 — 사진이 배경으로 가면서 이 자리에 그대로 남는다. */}
-              {stats}
-            </div>
-
-          </div>
-
-        </Container>
-      </section>
-
-      <SectionNav items={navItems} />
+      {/* 지표 3칸 — 머리말 안에 있던 것을 아래 띠로 옮겼다(2026-09-01). 내용은 그대로다. */}
+      <TreatmentStrip items={page.stats.map((s) => ({ k: s.k, t: s.v }))} />
 
       {/* 본문 구간 — 밝은 면과 크림 면이 번갈아 오게 해서 리듬을 만든다. */}
       {page.blocks.map((b, i) => {
@@ -169,7 +68,7 @@ export function TreatmentLanding({
             key={b.label}
             className={
               tinted
-                ? 'border-y border-brand-200/60 bg-wine-soft/50 py-16 lg:py-24'
+                ? 'border-y border-white/8 bg-wine-soft py-16 lg:py-24'
                 : 'py-16 lg:py-24'
             }
           >
@@ -379,7 +278,7 @@ export function TreatmentLanding({
 
       {/* 진행 순서 */}
       {journey && (
-        <section className="border-y border-brand-200/60 bg-wine-soft/50 py-16 lg:py-24">
+        <section className="border-y border-white/8 bg-wine-soft py-16 lg:py-24">
           <Container>
             <div className="grid gap-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
               <div className="lg:sticky lg:top-40 lg:self-start">
@@ -464,7 +363,7 @@ export function TreatmentLanding({
 
       {/* 주의사항 — 원문에 있는 진료만 렌더된다. */}
       {page.aftercare && (
-        <section className="border-y border-brand-200/60 bg-wine-soft/50 py-16 lg:py-24">
+        <section className="border-y border-white/8 bg-wine-soft py-16 lg:py-24">
           <Container>
             <SectionHead
               id="주의사항"

@@ -5,7 +5,8 @@ import { CLINIC, NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import { treatmentBySlug } from '@/lib/treatments';
 import { symptomBySlug } from '@/lib/symptoms';
 import { journeyForTreatment } from '@/lib/insight';
-import { Container, MedicalNotice, Sentences, Breadcrumb } from '@/components/ui';
+import { Container, MedicalNotice, Sentences } from '@/components/ui';
+import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
 import { BeforeAfter } from '@/components/BeforeAfter';
 import { JsonLd } from '@/components/JsonLd';
 import { ArticleMeta, References, charCount } from '@/components/article';
@@ -134,110 +135,22 @@ export default function CavityPage() {
       />
 
       {/*
-        ★★ 히어로 — 가운데 정렬 + 배경의 빛 번짐 ★★
-          이 페이지에서만 쓰는 문법이다. 다른 진료 페이지는 밝고 왼쪽 정렬이다.
-        ⚠️ 빛 번짐 색은 clay 와 청록만. 남의 사이트 색(보라·초록)을 가져오지 말 것.
+        머리말과 세 칸 띠는 공용 부품이다 (2026-09-01).
+        ⚠️ 여기서 손으로 다시 그리지 말 것 — 진료과목 아홉 곳이 같은 부품을 쓴다.
+           이 페이지가 그 기준이었으므로, 모양을 바꾸려면 components/TreatmentShell.tsx 에서 바꾼다.
       */}
-      {/* ⚠️ 음수 margin + 같은 값의 padding — 띠가 헤더 뒤까지 올라간다. 다른 페이지와 같은 수치다. */}
-      <section className="relative isolate -mt-[68px] overflow-hidden bg-night pt-[128px] pb-24 sm:-mt-[94px] sm:pt-[154px] lg:pb-32">
-        <Image
-          src="/img/scene/cavity-review.webp"
-          alt="원장이 책상에서 모니터에 띄운 치아 방사선 사진 중 깊은 충치가 있는 어금니를 펜으로 짚어 확인하는 모습."
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        {/*
-          두 겹 덮개 — 방사형(가운데를 살림) + 선형(위아래를 눌러 줌).
-          ⚠️ 한 겹으로 줄이지 말 것. 사진 밝은 부분에서 작은 글자가 먼저 무너진다.
-        */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(80%_64%_at_50%_38%,rgba(28,23,25,0.5)_0%,rgba(28,23,25,0.82)_62%,rgba(28,23,25,0.93)_100%)]"
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(28,23,25,0.72)_0%,rgba(28,23,25,0.46)_38%,rgba(28,23,25,0.88)_100%)]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(56%_42%_at_50%_-6%,rgba(217,164,65,0.14)_0%,transparent_66%)]"
-        />
-        {/* 미세 노이즈 — 큰 어두운 면이 밴딩으로 뭉개지는 것을 막는다. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.14] mix-blend-overlay"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")",
-          }}
-        />
+      <TreatmentHero
+        trail={TRAIL}
+        eyebrow="고양 화정동 충치치료 · 보건복지부 인정 통합치의학과 전문의"
+        title={['신경까지 닿은 충치도,', '신경을 살려 두는 방법부터']}
+        lead={LEAD}
+        photo={{
+          src: '/img/scene/cavity-review.webp',
+          alt: '원장이 책상에서 모니터에 띄운 치아 방사선 사진 중 깊은 충치가 있는 어금니를 펜으로 짚어 확인하는 모습.',
+        }}
+      />
 
-        <Container className="relative text-center">
-          {/* ⚠️ 손으로 다시 그리지 말 것 — 공용 부품이라야 규칙이 바뀔 때 같이 따라온다. */}
-          <div className="mb-10 flex justify-center">
-            <Breadcrumb trail={TRAIL} tone="dark" />
-          </div>
-
-          <p className="enter text-[13.5px] font-black text-clay-300" style={{ animationDelay: '40ms' }}>
-            고양 화정동 충치치료 · 보건복지부 인정 통합치의학과 전문의
-          </p>
-
-          {/* 줄마다 아래에서 밀려 올라온다(.line-rise) — 흔한 페이드업과 다르다. */}
-          <h1 className="line-rise reveal display-sm mx-auto mt-7 max-w-[16em] text-[clamp(32px,5.4vw,62px)] leading-[1.14] tracking-[-0.035em] text-parchment">
-            <span>
-              <span>신경까지 닿은 충치도,</span>
-            </span>
-            <span>
-              <span>신경을 살려 두는 방법부터</span>
-            </span>
-          </h1>
-
-          <p
-            className="enter mx-auto mt-8 max-w-[34em] text-[18px] leading-[1.9] text-parchment/85"
-            style={{ animationDelay: '320ms' }}
-          >
-            <Sentences text={LEAD} />
-          </p>
-
-          <div
-            className="enter mt-10 flex flex-wrap justify-center gap-3"
-            style={{ animationDelay: '440ms' }}
-          >
-            <a
-              href={CLINIC.booking.naver}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-wine-bg px-8 py-4 text-[17px] font-semibold text-dusk transition-colors hover:bg-mist"
-            >
-              진료 예약하기 <span aria-hidden>→</span>
-            </a>
-            <a
-              href={CLINIC.phoneHref}
-              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-parchment/80 px-8 py-4 text-[17px] font-semibold tabular-nums text-parchment transition-colors hover:bg-white/10"
-            >
-              {CLINIC.phone}
-            </a>
-          </div>
-
-        </Container>
-      </section>
-
-      {/* 3칸 띠 — 한 단 올린 어두운 면. */}
-      <section className="border-y border-white/8 bg-night-2 py-12 lg:py-16">
-        <Container>
-          <ul className="reveal-stack grid gap-10 sm:grid-cols-3">
-            {STRIP.map((f) => (
-              <li key={f.t} className="reveal">
-                <p className="text-[11.5px] font-black tracking-[0.06em] text-clay-400">{f.k}</p>
-                <p className="mt-2.5 text-[19px] font-black tracking-[-0.02em] text-white">{f.t}</p>
-                <p className="mt-3 max-w-[24em] text-[15.5px] leading-[1.85] text-brand-300">{f.d}</p>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </section>
+      <TreatmentStrip items={STRIP} />
 
       {/* ── 좌우 교차 블록 ① 깊이 ─────────────────────────────────── */}
       <section className="bg-night py-24 lg:py-32">
@@ -439,7 +352,7 @@ export default function CavityPage() {
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             <div className="reveal img-in overflow-hidden rounded-[20px] lg:order-2 border border-white/12 card-glass/[0.04] p-2 lg:order-1">
-              <div className="relative aspect-[16/10] overflow-hidden rounded-[13px]">
+              <div className="card-edge relative aspect-[16/10] overflow-hidden rounded-[13px]">
                 <Image
                   src="/img/scene/cavity-model-work.webp"
                   alt="장갑 낀 손이 치아 모형의 어금니에 파인 자리를 치아색 재료로 채우고 있고, 옆에 광중합기가 놓여 있다."

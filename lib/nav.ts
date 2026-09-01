@@ -49,7 +49,8 @@ export const NAV: NavItem[] = [
        *   가는 길이 사라져 크롤러도 늦게 발견하고 사람도 못 찾는다.
        */
       { label: '근거 · 인증', href: '/about/trust', desc: '자격·논문·언론 기록' },
-      { label: '둘러보기', href: '/about/tour', desc: '병원 내부 사진' },
+      /* ⚠️ '둘러보기'(/about/tour)를 되살리지 말 것 (2026-09-01) — 본문이 209자뿐이라
+         검색에는 빈 페이지였다. 사진 열두 장은 /about 안으로 옮겼고 주소는 301 로 넘긴다. */
       { label: '진료 절차', href: '/about/process', desc: '내원부터 유지관리까지' },
     ],
   },
@@ -65,7 +66,9 @@ export const NAV: NavItem[] = [
       { label: '전체 진료과목', href: '/treatment', desc: '열 갈래를 한눈에' },
       { label: '자연치아 살리기', href: '/treatment/save-natural-tooth', desc: '발치를 권유받았을 때' },
       { label: '임플란트', href: '/treatment/implant', desc: '치아를 뽑았거나 빠진 자리' },
-      { label: '심미치료', href: '/treatment/aesthetic', desc: '앞니 색·모양이 신경 쓰일 때' },
+      /* ⚠️ '심미치료' 로 되돌리지 말 것 — 그 이름으로는 메뉴에서 '치아미백' 을 찾을 수 없었다
+         (2026-09-01 오너 지적). 페이지 내용이 치아미백 하나라 이름을 내용에 맞췄다. */
+      { label: '치아미백', href: '/treatment/whitening', desc: '커피·나이로 누레진 앞니' },
       { label: '신경치료', href: '/treatment/endodontic', desc: '가만히 있어도 욱신거릴 때' },
       { label: '잇몸치료', href: '/treatment/periodontal', desc: '양치할 때 피가 날 때' },
       { label: '충치치료', href: '/treatment/cavity', desc: '검은 점이나 구멍이 보일 때' },

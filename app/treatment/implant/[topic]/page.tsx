@@ -173,7 +173,7 @@ export default async function ImplantTopicPage({
           </div>
         </Container>
 
-        <section className="border-t border-brand-200/60 bg-brand-50/40 py-14">
+        <section className="border-t border-white/8 bg-brand-50 py-14">
           <Container>
             <h2 className="text-[20px] font-black text-ink">임플란트 다른 주제</h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

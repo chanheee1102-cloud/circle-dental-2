@@ -1603,10 +1603,12 @@ time,
    *   안 읽히고 회색보다 따뜻하다고만 느껴진다. 금색 강조가 이 위에서 가장 잘 산다.
    * ⚠️ 채도를 더 올리지 말 것 — 의료 화면에서 붉은 바탕은 '경고' 로도 읽힌다.
    */
-  --pd-bg: #1c1719;
-  --pd-card: #241d21;
-  --pd-card-2: #2b2328;
-  --pd-line: #3a3034;
+  /* ⚠️ 더 어둡게 되돌리지 말 것 — #1c1719 는 거의 검정이라 유리 카드가 떠 보이지 않고
+     화면 전체가 눌렸다(2026-09-01 오너: "너무 어두움"). 더 밝히면 히어로 띠와 경계가 흐려진다. */
+  --pd-bg: #241e21;
+  --pd-card: #2c2429;
+  --pd-card-2: #332a2f;
+  --pd-line: #443a3e;
   --pd-fill: #f0ece4;
 
   /* ① 글자로 주로 쓰이는 색 — 값을 갈아 끼운다(투명도 변형까지 따라온다) */
@@ -1653,27 +1655,142 @@ time,
  *   값을 갈면 변형까지 전부 따라온다.
  */
 .page-dark {
-  --color-parchment: #241d21;
-  --color-brand-50: #241d21;
-  --color-brand-100: #2b2328;
-  --color-brand-200: #3a3034;
-  --color-mist: #3a3034;
-  --color-mist-soft: #2b2328;
-  --color-cream: #1c1719;
-  --color-cream-deep: #241d21;
-  --color-wine-bg: #1c1719;
-  --color-wine-soft: #241d21;
-  --color-wine-line: #3a3034;
-  --color-clay-tint: #2b2328;
+  --color-parchment: #2c2429;
+  --color-brand-50: #2c2429;
+  --color-brand-100: #332a2f;
+  --color-brand-200: #443a3e;
+  --color-mist: #443a3e;
+  --color-mist-soft: #332a2f;
+  --color-cream: #241e21;
+  --color-cream-deep: #2c2429;
+  --color-wine-bg: #241e21;
+  --color-wine-soft: #2c2429;
+  --color-wine-line: #443a3e;
+  --color-clay-tint: #332a2f;
   /*
    * ⚠️ 크라운·보철 페이지가 쓰는 자기 색(paper/inkw)도 함께 뒤집는다.
    *    안 뒤집으면 그 페이지만 밝은 글자·어두운 바탕이 섞여 아래쪽 글이 사라진다(실측).
    */
-  --color-paper: #1c1719;
-  --color-paper-2: #241d21;
+  --color-paper: #241e21;
+  --color-paper-2: #2c2429;
   --color-inkw: #ece5db;
   --color-stone: #d2cabd;
   --color-hairline: #3a3034;
+}
+
+/*
+ * ══ 진료과목 페이지 — 충치치료의 결로 통일 (2026-09-01 오너) ═══════════════
+ *
+ * ★★ 왜 이 한 블록으로 되는가 ★★
+ *   진료 페이지 아홉 곳이 저마다 자기 색 이름을 갖고 있었다 —
+ *   임플란트는 wine, 크라운·보철은 paper, 치아미백은 abyss, 사랑니는 walnut,
+ *   충치치료만 night. 그래서 같은 메뉴 안인데도 페이지마다 바탕색이 달랐다.
+ *   **클래스 이름을 고치는 대신 그 이름이 가리키는 값만 갈아 끼운다.**
+ *   그러면 수백 군데 마크업을 건드리지 않고도 전부 같은 바탕이 된다.
+ *
+ * ★ 기준값은 충치치료가 쓰던 night 두 단이다.
+ *     바탕 #24221e · 한 단 올린 띠 #34312b · 경계선 #423e36
+ *
+ * ⚠️ 글자 색은 건드리지 않는다 — .page-dark 가 이미 뒤집어 둔 사다리가 맞다.
+ *    여기서 또 손대면 페이지마다 다시 어긋난다.
+ * ⚠️ 이 블록을 지우면 진료 페이지만 다섯 가지 바탕색으로 되돌아간다.
+ * ⚠️ .treat-page 는 app/treatment/layout.tsx 한 곳에서만 붙인다.
+ */
+.page-dark.treat-page {
+  /* 바탕 — 충치치료의 --color-night 과 같은 값 */
+  --pd-bg: #24221e;
+  --pd-card: #34312b;
+  --pd-card-2: #3d3931;
+  --pd-line: #423e36;
+
+  /* 한 단 올린 면(띠·카드)으로 쓰이는 이름들 → night-2 */
+  --color-parchment: #34312b;
+  --color-brand-50: #34312b;
+  --color-brand-100: #3d3931;
+  --color-mist-soft: #34312b;
+  --color-cream-deep: #34312b;
+  --color-wine-soft: #34312b;
+  --color-paper-2: #34312b;
+  --color-clay-tint: #3d3931;
+
+  /* 바탕으로 쓰이는 이름들 → night */
+  --color-cream: #24221e;
+  --color-wine-bg: #24221e;
+  --color-paper: #24221e;
+
+  /* 경계선으로 쓰이는 이름들 */
+  --color-brand-200: #423e36;
+  --color-mist: #423e36;
+  --color-wine-line: #423e36;
+  --color-hairline: #423e36;
+
+  /*
+   * ⚠️ 가장 약한 글자만 한 단 올린다 (2026-09-01 실측) — 띠가 #34312b 로 한 단 밝아지면서
+   *    #9c9484 이 그 위에서 4.31:1 로 떨어졌다(기준 4.5:1, 13.5px 라벨 9곳).
+   *    #a29a89 이면 띠 위 4.64:1 · 바탕 위 5.69:1 로 둘 다 통과한다.
+   * ⚠️ 더 낮추지 말 것. 이 값은 여유가 0.14 뿐이라 조금만 어둡게 해도 다시 미달이다.
+   */
+  --color-ink-muted: #a29a89;
+  --color-brand-500: #a29a89;
+
+  background-color: var(--pd-bg);
+}
+
+/*
+ * 치아미백 페이지의 밝은 두 띠를 어두운 띠로 (2026-09-01).
+ *   이 페이지만 '어두운 면 / 밝은 면' 을 번갈아 쓰고 있어서, 진료 메뉴를 넘기다
+ *   여기서만 화면이 하얗게 튀었다. 띠 안에서 쓰는 이름 다섯 개만 갈아 끼운다.
+ * ⚠️ 페이지 전체에 걸지 말 것 — text-lichen · border-graphite 는 이 띠 **바깥**의
+ *    어두운 구간에서 쓰인다. 전체에 걸면 그쪽 글자가 사라진다(실측으로 확인).
+ * ⚠️ lime(금색 강조)은 그대로 둔다. 어두운 면에서 더 잘 산다.
+ */
+.whitening-band {
+  --color-bone: #34312b;    /* 띠 바탕 → night-2 */
+  --color-tissue: #3d3931;  /* 띠 안의 보조 카드 */
+  --color-abyss: #fffdf8;   /* 제목 글자 */
+  --color-graphite: #ccc7bb;/* 보조 글자 */
+  --color-lichen: #423e36;  /* 헤어라인 */
+}
+/*
+ * ⚠️⚠️ 유리 카드 안에서는 **되돌린다** ⚠️⚠️
+ *   .card-glass 는 이 결에서 '밝은 유리' 다(globals 위쪽 .page-native-dark .card-glass).
+ *   띠를 어둡게 하면서 글자까지 밝게 갈아 끼웠더니, 밝은 카드 위에 밝은 글자가 남아
+ *   카드 네 장의 본문이 통째로 사라졌다(2026-09-01 화면으로 확인).
+ *   대비 검사기는 이걸 못 잡는다 — 유리 카드는 배경이 그라데이션이라 건너뛴다.
+ * ⚠️ 이 블록을 지우면 그 네 장이 다시 안 보이게 된다.
+ */
+/*
+ * 카드 안쪽 흰 선 — 사진이 있는 카드에서도 보이게 (2026-09-01 오너 지적).
+ *
+ * ★★ 왜 사진 카드만 선이 없었나 ★★
+ *   안쪽 링(ring-inset)은 **그림자**라 자식 요소 밑에 깔린다. 글자 카드는 안쪽 여백이
+ *   있어서 선이 보이지만, 사진이 카드 폭을 꽉 채우면 그 선을 사진이 덮어 버린다.
+ *   그래서 같은 카드인데 사진이 있는 것만 테두리가 없어 보였다.
+ * ★ 같은 굵기·같은 색을 **맨 위에 한 겹 더** 그린다. 사진 위에도 남는다.
+ * ⚠️ ring-inset 으로 되돌리지 말 것 — 사진 카드에서 다시 사라진다.
+ * ⚠️ pointer-events: none 을 빼지 말 것. 카드 전체를 덮는 판이라 클릭을 먹는다.
+ */
+.card-edge {
+  position: relative;
+}
+.card-edge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--card-edge-color, rgba(255, 255, 255, 0.7));
+  pointer-events: none;
+}
+/** 어두운 면 위의 유리 카드는 같은 선을 훨씬 옅게 쓴다. */
+.card-edge-soft {
+  --card-edge-color: rgba(255, 255, 255, 0.06);
+}
+
+.whitening-band .card-glass {
+  --color-abyss: #24221e;
+  --color-graphite: #635f56;
+  --color-lichen: #e7e2d7;
+  --color-tissue: #edefec;
 }
 
 /*

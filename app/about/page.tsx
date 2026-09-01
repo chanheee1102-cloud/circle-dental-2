@@ -6,7 +6,7 @@ import { CLINIC, TREATMENT_PILLARS, OUTREACH, CREDENTIALS } from '@/lib/clinic';
 import { IMG } from '@/lib/assets';
 import { Container, SectionHead, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { SpecialGrid } from '@/components/SpecialGrid';
-import { WhyUsSection } from '@/components/WhyUsSection';
+import { InteriorGallery } from '@/components/InteriorGallery';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema } from '@/lib/seo';
 
@@ -86,27 +86,11 @@ export default function AboutPage() {
         </div>
 
         {/*
-          진료 네 갈래 — **같은 크기의 카드 넷**으로 둔다.
-          ⚠️ 알약으로 되돌리지 말 것 (2026-08-28 오너) — 이름 길이가 제각각이라 알약이
-             네 개 다른 크기로 늘어서고, 왼쪽에 몰려 붙는다. 격자는 그 둘을 한 번에 없앤다.
+          ⚠️ 진료 네 갈래 버튼을 되살리지 말 것 (2026-09-01 오너) — 아래 문답 카드와 규격이
+             안 맞았고, 같은 링크가 주 메뉴(진료)에 이미 있다. 이 페이지 첫 화면은
+             '이 병원이 어떤 곳인가' 를 말하는 자리라, 진료 목록으로 바로 내보내면
+             그 답을 읽기 전에 나간다.
         */}
-        <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {TREATMENT_PILLARS.map((p) => (
-            <Link
-              key={p.key}
-              href={p.href}
-              className="card-glass group flex items-center justify-between gap-3 rounded-[16px] border border-mist px-6 py-5 text-[16.5px] font-bold text-charcoal"
-            >
-              {p.name}
-              <span
-                aria-hidden
-                className="text-ash transition-transform group-hover:translate-x-0.5"
-              >
-                →
-              </span>
-            </Link>
-          ))}
-        </div>
       </Container>
 
       {/* 자주 묻는 것 — AEO 인용 지점 */}
@@ -131,10 +115,12 @@ export default function AboutPage() {
       {/* 특별함 5 — 원문 그대로 */}
       <section className="py-16 lg:py-24">
         <Container>
+          {/* ⚠️ 제목에 개수를 박지 말 것 — '다섯 가지' 라면서 7개였다(2026-09-01 오너 지적).
+              항목이 바뀔 때마다 거짓말이 된다. */}
           <SectionHead
             eyebrow="동그라미 치과만의 특별함"
-            title="다섯 가지를 약속합니다"
-            desc="각 항목을 누르면 어떤 장비와 방법을 쓰는지, 그 용어가 무엇인지 자세히 보실 수 있습니다."
+            title="동그라미치과는 무엇이 다른가요?"
+            desc="누가 보는지, 무엇으로 보는지, 오시기 편한지 — 병원을 고를 때 실제로 궁금한 것들입니다. 각 항목을 누르면 어떤 장비와 방법을 쓰는지 자세히 보실 수 있습니다."
           />
           <div className="mt-12">
             <SpecialGrid eager />
@@ -193,41 +179,52 @@ export default function AboutPage() {
       </section>
 
       {/*
-        ★ 홈에서 옮겨 왔다 (2026-08-18 운영자: "메인은 진짜 필요한 것만").
-          '무엇이 다른가' 12가지는 홈에서 1,584px 를 차지했는데, 병원을 이미 들여다보기로
-          한 사람이 읽을 내용이지 처음 훑는 사람에게 들이밀 것이 아니다.
-          이 페이지가 바로 그 '들여다보는' 자리이고, 위의 '다섯 가지 약속' 과도 결이 같다.
-        ⚠️ 홈에서 지운 것이 아니라 **옮긴 것**이다 — 링크는 주 메뉴(병원 소개)로 살아 있다.
+        ⚠️ '무엇이 다른가요' 카드 11장(WhyUsSection)을 되살리지 말 것 (2026-09-01 오너).
+           바로 위 특별함 7개와 **6개가 겹쳤다** — 저선량 CT·치료 후 보증제도는 글자까지 같고,
+           교수 출신 원장·통증 줄이는 마취·디지털 장비·위생도 같은 이야기였다.
+           남긴 쪽은 각 카드가 상세 페이지로 이어지고, 걷은 쪽은 아무 데도 가지 않았다.
+        ⚠️ 되살리려면 둘 중 하나만. 둘 다 두면 같은 말이 다시 두 번 나온다.
       */}
-      <WhyUsSection />
 
       {/* 사회공헌 — 원문 그대로 */}
+      {/*
+        내부 둘러보기 — /about/tour 에서 옮겨 왔다 (2026-09-01, 페이지 합침).
+        ⚠️ 다시 별도 페이지로 떼지 말 것 — 그때 본문이 209자뿐이라 검색에는 빈 페이지였다.
+        ★ 사진 열두 장의 설명(alt)은 이 사이트가 가진 몇 안 되는 1차 자료다. 지우지 말 것.
+      */}
       <Container className="py-16">
-        <SectionHead eyebrow="사회공헌" title="동그라미 치과 사회공헌" />
-        <div className="mt-8 max-w-2xl space-y-3">
-          {OUTREACH.map((o) => (
-            <p key={o} className="text-[17px] leading-relaxed text-ink-soft">
-              {o}
-            </p>
-          ))}
+        <SectionHead
+          eyebrow="공간"
+          title="어떤 공간에서 진료하나요?"
+          desc="상담실과 진료실, 소독실을 미리 보실 수 있습니다."
+        />
+        <div className="mt-10">
+          <InteriorGallery />
         </div>
+      </Container>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-3">
-          {[
-            { href: '/about/doctors', t: '의료진 소개', d: '교수 출신 대표원장' },
-            { href: '/about/tour', t: '둘러보기', d: '병원 내부 사진' },
-            { href: '/visit', t: '오시는 길', d: `${CLINIC.address.dong} 현창빌딩 3층` },
-          ].map((c) => (
-            <Link
-              key={c.href}
-              href={c.href}
-              className="group rounded-2xl border border-brand-200/70 card-glass p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400"
+      {/*
+        ⚠️ 큰 구획으로 되돌리지 말 것 (2026-09-01 오너) — 내용이 두 줄뿐이라 아래가 통째로 비었다.
+        ⚠️ 문장은 버리지 말 것 — 십수년 봉사와 방송 기록은 **제3자가 확인할 수 있는 사실**이라
+           AI 검색이 신뢰 근거로 읽는 부분이다. 줄이되 없애지 않는다.
+      */}
+      <Container className="py-14">
+        <p className="eyebrow-chip text-brand-500">사회공헌</p>
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+          {OUTREACH.map((o) => (
+            <li
+              key={o}
+              className="h-full rounded-[18px] border border-mist card-glass p-6 text-[16.5px] leading-[1.75] text-ink-soft"
             >
-              <h2 className="text-[18px] font-black text-ink group-hover:text-brand-700">{c.t}</h2>
-              <p className="mt-2 text-[15px] text-ink-soft">{c.d}</p>
-            </Link>
+              {o}
+            </li>
           ))}
-        </div>
+        </ul>
+
+        {/*
+          ⚠️ '의료진 소개 · 오시는 길' 카드를 되살리지 말 것 (2026-09-01 오너: "자꾸 연결됨").
+             주 메뉴에도, 푸터에도, 이 페이지 안 의료진 구획에도 이미 있다 — 네 번째였다.
+        */}
       </Container>
 
       <ContactCta />

@@ -206,7 +206,9 @@ export const TREATMENT_PILLARS = [
   {
     key: 'aesthetic',
     name: '심미치료',
-    href: '/treatment/aesthetic',
+    /* ⚠️ /treatment/whitening 으로 되돌리지 말 것 — 아래 카피는 '배열·색상·모양' 인데
+       미백으로는 배열이 바뀌지 않는다. 그 셋을 실제로 다루는 곳은 심미보철이다(2026-09-01). */
+    href: '/treatment/crown-prosthesis',
     copy: '배열, 색상, 모양까지 바꿔 아름다운 미소를 디자인합니다.',
   },
   {

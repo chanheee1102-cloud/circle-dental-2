@@ -90,8 +90,10 @@ export function SectionHead({
 
 /**
  * 카드 — 이 페이지의 기본 단위.
- * ★ 안쪽 하이라이트 링(ring-inset white)이 있어야 흰 카드가 흰 배경에서 뜬다.
- *   테두리만으로는 층이 안 생긴다.
+ * ★ 안쪽 하이라이트 선이 있어야 카드가 배경에서 뜬다. 테두리만으로는 층이 안 생긴다.
+ * ⚠️ 그 선은 globals.css 의 .card-edge 로 그린다 — ring-inset 으로 되돌리지 말 것.
+ *   ring 은 그림자라 자식 밑에 깔려서, 사진이 카드 폭을 꽉 채우는 카드에서만
+ *   선이 사라져 보였다(2026-09-01 오너 지적).
  */
 export function Card({
   children,
@@ -106,7 +108,7 @@ export function Card({
 }) {
   return (
     <Tag
-      className={`rounded-[22px] border border-brand-200/80 bg-parchment ring-1 ring-white/70 ring-inset ${
+      className={`rounded-[22px] border border-brand-200/80 bg-parchment card-edge ${
         lift ? 'shadow-[var(--shadow-lift)]' : 'shadow-[var(--shadow-soft)]'
       } ${className}`}
     >
@@ -123,7 +125,7 @@ export function GlassCard({ children, className = '', as: Tag = 'div' }: {
 }) {
   return (
     <Tag
-      className={`rounded-[22px] border border-white/12 bg-white/[0.055] ring-1 ring-white/[0.06] ring-inset backdrop-blur-sm ${className}`}
+      className={`rounded-[22px] border border-white/12 bg-white/[0.055] card-edge card-edge-soft backdrop-blur-sm ${className}`}
     >
       {children}
     </Tag>

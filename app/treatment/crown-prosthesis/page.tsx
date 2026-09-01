@@ -7,6 +7,7 @@ import { symptomBySlug } from '@/lib/symptoms';
 import { journeyForTreatment } from '@/lib/insight';
 import { METHODS, MATERIALS, SHADE_STEPS, RISKS } from '@/lib/aestheticPage';
 import { Container, MedicalNotice, Sentences } from '@/components/ui';
+import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
 import { JsonLd } from '@/components/JsonLd';
 import { ArticleMeta, References, charCount } from '@/components/article';
 import { REFS_TREATMENT } from '@/lib/references';
@@ -97,71 +98,43 @@ export default function CrownProsthesisPage() {
         ]}
       />
 
-      {/* ── 히어로 ─────────────────────────────────────────────────── */}
-      {/* ⚠️ 음수 margin + 같은 값의 padding — 띠가 헤더 뒤까지 올라간다(다른 페이지와 같은 수치). */}
-      <section className="-mt-[68px] pt-[124px] pb-20 sm:-mt-[94px] sm:pt-[150px] lg:pb-24">
-        <Container>
-          <nav aria-label="현재 위치" className="text-[16px] text-stone">
-            {TRAIL.map((c, i) => (
-              <span key={c.path}>
-                {i > 0 ? <span aria-hidden className="mx-2">/</span> : null}
-                {i === TRAIL.length - 1 ? (
-                  <span className="text-inkw">{c.name}</span>
-                ) : (
-                  <Link href={c.path} className="border-b border-stone/50 transition-colors hover:text-inkw">
-                    {c.name}
-                  </Link>
-                )}
-              </span>
-            ))}
-          </nav>
+      {/*
+        머리말 — 진료과목 아홉 곳이 같은 부품을 쓴다 (2026-09-01 오너 지시).
+        ⚠️ 여기서 손으로 다시 그리지 말 것. 모양은 components/TreatmentShell.tsx 에서 바꾼다.
+        ⚠️ 사진 없는 크림색 머리말로 되돌리지 말 것 — 같은 메뉴 안에서 이 페이지만
+           다른 사이트처럼 보였던 원인이다.
+      */}
+      <TreatmentHero
+        trail={TRAIL}
+        eyebrow="고양 화정동 심미보철 · 라미네이트 · 올세라믹"
+        title={['깎는 양이', '결과를 정합니다']}
+        lead={LEAD}
+        photo={{
+          src: '/img/clinic/aes-scanner.webp',
+          alt: '진료실에서 구강 스캐너로 앞니의 형태를 떠 화면에 옮기는 모습.',
+        }}
+      />
 
-          <p className="mt-12 flex items-center gap-3 text-[16px] font-bold text-stone">
-            <span aria-hidden className="h-3 w-3 rounded-full bg-grass" />
-            고양 화정동 심미보철 · 라미네이트 · 올세라믹
-          </p>
-
-          {/*
-            ⚠️ 한글 디스플레이는 700 이다. 레퍼런스의 500 을 그대로 쓰면 큰 크기에서 획이
-               가늘어져 힘이 빠진다(파일 머리말 참고). 자간·행간만 레퍼런스를 따른다.
-          */}
-          <h1 className="display line-rise reveal mt-6 text-[clamp(32px,5.4vw,62px)] leading-[0.98] tracking-[-0.055em]">
-            <span>
-              <span>깎는 양이</span>
-            </span>
-            <span>
-              <span>결과를 정합니다</span>
-            </span>
-          </h1>
-
-          {/*
-            ⚠️ 버튼을 오른쪽 끝(lg:justify-end)에 두지 말 것 — 오른쪽 아래 퀵메뉴 패널과
-               겹친다(실제로 겹쳤다). 다른 진료 페이지와 같이 본문 아래 왼쪽에 세운다.
-          */}
-          <div className="mt-12 max-w-[46em]">
-            <p className="text-[18px] leading-[1.7] text-inkw">
-              <Sentences text={LEAD} />
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <a
-                href={CLINIC.booking.naver}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 rounded-full bg-dusk px-8 py-4 text-[17px] font-semibold text-parchment transition-colors hover:bg-twilight"
-              >
-                진료 예약하기
-                <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-grass" />
-              </a>
-              <a
-                href={CLINIC.phoneHref}
-                className="inline-flex items-center gap-3 rounded-full border-[1.5px] border-charcoal/70 px-8 py-4 text-[17px] font-semibold tabular-nums text-charcoal transition-colors hover:bg-charcoal/6"
-              >
-                {CLINIC.phone}
-              </a>
-            </div>
-          </div>
-        </Container>
-      </section>
+      {/* ⚠️ 수치는 범위로만 적는다 — lib/aestheticPage.ts 의 reduction 과 같은 값이다. */}
+      <TreatmentStrip
+        items={[
+          {
+            k: '라미네이트',
+            t: '앞면 0.3~0.7mm',
+            d: '앞면만 얇게 다듬어 세라믹을 붙입니다. 되돌릴 수 없는 삭제량이 가장 적습니다.',
+          },
+          {
+            k: '올세라믹',
+            t: '전체 1.0~1.5mm',
+            d: '치아 전체를 감싸 씌웁니다. 손상이 크거나 신경치료를 한 치아에 씁니다.',
+          },
+          {
+            k: '먼저 정리하는 것',
+            t: '잇몸과 맞물림',
+            d: '염증이 있으면 경계가 붉게 비치고, 맞물림이 안 맞으면 얇은 세라믹은 깨집니다.',
+          },
+        ]}
+      />
 
       {/*
         ★★ 삭제량 비교 — 이 페이지의 임팩트 자리 ★★
@@ -169,7 +142,7 @@ export default function CrownProsthesisPage() {
           0.3 과 1.5 의 차이가 안 느껴져서, 막대가 실제 비율대로 자라게 한다(.bar-grow).
         ⚠️ 수치는 범위로만 적는다. 단일 값은 모든 케이스에 그 값이 적용되는 것처럼 읽힌다.
       */}
-      <section className="bg-paper-2 py-24 lg:py-32">
+      <section className="border-y border-white/8 bg-paper-2 py-24 lg:py-32">
         <Container>
           <h2 className="display-sm focus-in max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] tracking-[-0.05em]">
             같은 앞니라도 깎는 두께가 세 배까지 차이 납니다
@@ -204,7 +177,7 @@ export default function CrownProsthesisPage() {
 
       {/* 사진 */}
       <Container className="pt-20 lg:pt-28">
-        <div className="img-in reveal overflow-hidden rounded-[64px]">
+        <div className="card-edge img-in reveal overflow-hidden rounded-[64px]">
           <div className="relative aspect-[3/1]">
             <Image
               src="/img/clinic/aes-consult.webp"
@@ -240,7 +213,7 @@ export default function CrownProsthesisPage() {
                 </h3>
                 <p className="mt-6 text-[18px] leading-[1.65]"><Sentences text={m.def} /></p>
 
-                <div className="mt-10 img-in overflow-hidden rounded-[36px]">
+                <div className="card-edge mt-10 img-in overflow-hidden rounded-[36px]">
                   <div className="relative aspect-[16/10]">
                     <Image
                       src={m.key === 'veneer' ? '/img/clinic/aes-veneer.webp' : '/img/clinic/aes-chairside.webp'}
@@ -297,7 +270,7 @@ export default function CrownProsthesisPage() {
       </section>
 
       {/* ── 재료 ────────────────────────────────────────────────────── */}
-      <section className="bg-paper-2 py-24 lg:py-32">
+      <section className="border-y border-white/8 bg-paper-2 py-24 lg:py-32">
         <Container>
           <h2 className="display-sm reveal max-w-[12em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] tracking-[-0.05em]">
             자리마다 유리한 재료가 다릅니다
@@ -331,7 +304,7 @@ export default function CrownProsthesisPage() {
               <p className="reveal mt-8 max-w-[26em] text-[18px] leading-[1.7] text-stone">
                 <Sentences text="보철은 나중에 색이 변하지 않습니다. 그래서 무엇을 먼저 하느냐가 결과를 가릅니다." />
               </p>
-              <div className="img-in reveal mt-12 overflow-hidden rounded-[64px]">
+              <div className="card-edge img-in reveal mt-12 overflow-hidden rounded-[64px]">
                 <div className="relative aspect-[4/3]">
                   <Image
                     src="/img/clinic/aes-scanner.webp"
@@ -365,7 +338,7 @@ export default function CrownProsthesisPage() {
         ── 부작용과 한계 ────────────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 이 구간이 빠지면 페이지 전체가 광고문이 된다.
       */}
-      <section className="bg-paper-2 py-24 lg:py-32">
+      <section className="border-y border-white/8 bg-paper-2 py-24 lg:py-32">
         <Container>
           <div className="grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
             <h2 className="display-sm reveal text-[clamp(28px,4.2vw,46px)] leading-[1.06] tracking-[-0.05em]">

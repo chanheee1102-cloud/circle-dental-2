@@ -14,6 +14,7 @@ import {
   AFTERCARE,
 } from '@/lib/whiteningPage';
 import { Container, MedicalNotice, Sentences } from '@/components/ui';
+import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
 import { JsonLd } from '@/components/JsonLd';
 import { ArticleMeta, References, charCount } from '@/components/article';
 import { REFS_TREATMENT } from '@/lib/references';
@@ -44,10 +45,12 @@ import {
  *    컷(웃는 입·모형 스톡)은 빼고 어두운 시술·제품 사진만 골라 12~16px 라운드에 담았다.
  * ⚠️ 원본을 확대해 늘리지 않는다 — 제품 컷은 625x404 라 그 이상 키우면 뭉갠다.
  * ⚠️ RISKS 를 지우지 말 것. 미백은 개인차와 재착색이 큰 처치라 이것이 빠지면 광고문이 된다.
- * ⚠️ app/treatment/[slug] 의 generateStaticParams 에서 aesthetic 을 빼 두었다.
+ * ⚠️ app/treatment/[slug] 의 generateStaticParams 에서 whitening 을 빼 두었다.
  */
 
-const PATH = '/treatment/aesthetic';
+/* ⚠️ 옛 주소(/treatment/aesthetic)로 되돌리지 말 것 — 메뉴·내용이 '치아미백' 인데
+   주소만 aesthetic 이라 셋이 어긋나 있었다(2026-09-01). next.config 에 301 이 걸려 있다. */
+const PATH = '/treatment/whitening';
 /* ★ 제목이 던진 분기를 그대로 이어받는다 — 아래 04 구간이 이 이야기를 펼친다. */
 const LEAD =
   '미백제는 법랑질 안에 스며든 착색을 분해합니다. 겉에 쌓인 착색은 잘 듣지만, 안쪽에서 온 변색이나 보철물은 같은 방법으로 밝아지지 않습니다. 그래서 원인부터 확인합니다.';
@@ -117,12 +120,12 @@ function Counter({ n, total, dark }: { n: string; total: string; dark?: boolean 
 }
 
 export default function WhiteningPage() {
-  const t = treatmentBySlug('aesthetic');
-  if (!t) throw new Error('aesthetic 진료 데이터 없음 — lib/treatments.ts');
+  const t = treatmentBySlug('whitening');
+  if (!t) throw new Error('whitening 진료 데이터 없음 — lib/treatments.ts');
   const related = t.relatedSymptoms.map(symptomBySlug).filter(Boolean);
 
   return (
-    <div className="page-native-dark bg-abyss">
+    <div className="page-native-dark bg-night">
       <JsonLd
         data={[
           breadcrumbSchema(TRAIL),
@@ -146,82 +149,42 @@ export default function WhiteningPage() {
       />
 
       {/*
-        ★ 히어로 — 어두운 면에 큰 글자만. 제목 위아래로 크게 비운다.
-        ⚠️ 굵기를 올리지 말 것. 이 시스템은 400 단일 굵기가 정체성이다.
+        머리말 — 진료과목 아홉 곳이 같은 부품을 쓴다 (2026-09-01 오너 지시).
+        ⚠️ 여기서 손으로 다시 그리지 말 것. 모양은 components/TreatmentShell.tsx 에서 바꾼다.
+        ⚠️ 이 페이지만의 MONO 빵부스러기·lichen 색 눈썹으로 되돌리지 말 것 —
+           같은 메뉴 안에서 페이지마다 머리가 달라 보였던 원인이다.
       */}
-      {/* ⚠️ 음수 margin + 같은 값의 padding — 띠가 헤더 뒤까지 올라간다(다른 페이지와 같은 수치). */}
-      <section className="relative isolate -mt-[68px] overflow-hidden pt-[128px] pb-24 sm:-mt-[94px] sm:pt-[154px] lg:pb-32">
-        <Image
-          src="/img/clinic/wh-light.webp"
-          alt="전용 광조사기의 푸른빛이 미백제를 바른 앞니에 조사되고 있는 모습."
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        {/*
-          두 겹 덮개 — 방사형(가운데를 살림) + 선형(위아래를 눌러 줌).
-          ⚠️ 한 겹으로 줄이지 말 것. 사진 밝은 부분에서 작은 글자가 먼저 무너진다.
-        */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(80%_64%_at_50%_38%,rgba(28,23,25,0.52)_0%,rgba(28,23,25,0.84)_62%,rgba(28,23,25,0.94)_100%)]"
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(28,23,25,0.74)_0%,rgba(28,23,25,0.48)_38%,rgba(28,23,25,0.9)_100%)]"
-        />
-        <Container className="relative">
-          <nav aria-label="현재 위치" className={`${MONO} text-[14px] font-bold text-lichen`}>
-            {TRAIL.map((c, i) => (
-              <span key={c.path}>
-                {i > 0 ? <span aria-hidden className="mx-2">/</span> : null}
-                {i === TRAIL.length - 1 ? (
-                  <span className="text-lichen">{c.name}</span>
-                ) : (
-                  <Link href={c.path} className="transition-colors hover:text-lichen">
-                    {c.name}
-                  </Link>
-                )}
-              </span>
-            ))}
-          </nav>
+      <TreatmentHero
+        trail={TRAIL}
+        eyebrow="고양 화정동 치아미백 · 보건복지부 인정 통합치의학과 전문의"
+        title={['겉에 쌓인 색인지,', '안쪽에서 온 색인지.']}
+        lead={LEAD}
+        photo={{
+          src: '/img/clinic/wh-light.webp',
+          alt: '전용 광조사기의 푸른빛이 미백제를 바른 앞니에 조사되고 있는 모습.',
+        }}
+      />
 
-          <p className={`mt-14 flex items-center gap-2.5 ${MONO} text-[14px] font-bold text-lichen`}>
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-lime" />
-            치아미백 · 고양 화정동
-          </p>
-
-          {/*
-            ⚠️ 크기를 다시 키우지 말 것. 124px 은 한글에서 두 단어면 한 줄이 차서 화면을
-               통째로 먹고, 그 결과가 '커서 비어 보이는' 화면이었다(오너 지적).
-            ★ 문구는 멋부린 선언 대신 **실제 임상 분기**를 쓴다 — 겉에 쌓인 색과 안쪽에서
-              온 색은 방법이 갈린다. 아래 04 구간이 그 이야기를 이어받는다.
-          */}
-          <h1 className="display line-rise reveal mt-8 text-[clamp(32px,5.4vw,62px)] leading-[1.08] tracking-[-0.025em] text-parchment">
-            <span>
-              <span>겉에 쌓인 색인지,</span>
-            </span>
-            <span>
-              <span>안쪽에서 온 색인지.</span>
-            </span>
-          </h1>
-
-          <p className="mt-12 max-w-[34em] text-[20px] leading-[1.45] font-normal tracking-[-0.006em] text-lichen">
-            <Sentences text={LEAD} />
-          </p>
-
-          <div className="mt-12 flex flex-wrap items-center gap-x-10 gap-y-5">
-            <ArrowBtn href={CLINIC.booking.naver} label="진료 예약하기" external />
-            <a
-              href={CLINIC.phoneHref}
-              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-parchment/80 px-8 py-4 text-[17px] font-semibold tabular-nums text-parchment transition-colors hover:bg-white/10"
-            >
-              {CLINIC.phone}
-            </a>
-          </div>
-        </Container>
-      </section>
+      {/* ⚠️ 지어낸 문구를 넣지 말 것 — 세 칸 모두 lib/whiteningPage.ts 의 제조사 표기와 이 페이지 본문에서 왔다. */}
+      <TreatmentStrip
+        items={[
+          {
+            k: '약제',
+            t: '저농도 미백제',
+            d: '특수 활성제를 더해 고농도 미백제에 준하는 효과를 내도록 설계된 제품입니다(제조사 표기 기준).',
+          },
+          {
+            k: '광원',
+            t: 'BeauTis Light',
+            d: '자외선이 아닌 가시광선을 쓰는 전용 광조사기를 함께 사용합니다.',
+          },
+          {
+            k: '먼저 보는 것',
+            t: '변색의 원인',
+            d: '겉에 쌓인 착색인지 안쪽에서 온 변색인지에 따라 방법이 갈립니다.',
+          },
+        ]}
+      />
 
       {/* ⚠️ 같은 사진을 띠로 다시 두지 말 것 — 히어로 배경으로 올라갔다(2026-09-01). */}
 
@@ -242,7 +205,7 @@ export default function WhiteningPage() {
                 ))}
               </div>
             </div>
-            <div className="img-in reveal overflow-hidden rounded-2xl">
+            <div className="card-edge img-in reveal overflow-hidden rounded-2xl">
               <div className="relative aspect-[16/10]">
                 <Image
                   src="/img/scene/wh-barrier.webp"
@@ -282,7 +245,7 @@ export default function WhiteningPage() {
       </section>
 
       {/* ── 03 제품 — 밝은 면으로 뒤집는다 ─────────────────────────── */}
-      <section className="bg-bone py-24 lg:py-32">
+      <section className="whitening-band border-y border-white/8 bg-bone py-24 lg:py-32">
         <Container>
           <Counter n="03" total="05" />
           <div className="mt-10 flex flex-wrap items-end justify-between gap-8">
@@ -298,7 +261,7 @@ export default function WhiteningPage() {
           <div className="mt-16 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
             {/* 제품 컷 — 원본 625x404. 카드 폭 안에서만 쓰고 늘리지 않는다. */}
             <div className="rounded-[40px] card-glass p-10">
-              <div className="img-in reveal overflow-hidden rounded-2xl bg-tissue">
+              <div className="card-edge img-in reveal overflow-hidden rounded-2xl bg-tissue">
                 <div className="relative aspect-[16/10]">
                   <Image
                     src="/img/clinic/wh-kit.webp"
@@ -376,7 +339,7 @@ export default function WhiteningPage() {
         ── 05 미리 아셔야 할 것 ────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 미백은 개인차와 재착색이 큰 처치다.
       */}
-      <section className="bg-bone py-24 lg:py-32">
+      <section className="whitening-band border-y border-white/8 bg-bone py-24 lg:py-32">
         <Container>
           <Counter n="05" total="05" />
           <div className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
@@ -427,7 +390,7 @@ export default function WhiteningPage() {
           </div>
 
           <div className="mt-20 grid gap-8 border-t border-graphite pt-12 sm:grid-cols-2 lg:grid-cols-4">
-            <Link href="/faq#aesthetic" className="group">
+            <Link href="/faq#whitening" className="group">
               <p className={`${MONO} text-[14px] font-bold text-lichen`}>FAQ</p>
               <p className="mt-3 text-[18px] leading-[1.4] font-normal text-white transition-colors group-hover:text-lime">
                 많이 묻는 것 {t.qa.length}가지

@@ -42,7 +42,9 @@ import {
 
 export function generateStaticParams() {
   /* ⚠️ 전용 페이지가 있는 slug 는 여기서 만들지 않는다 — 같은 경로를 두 곳에서 만들면 빌드가 깨진다. */
-  const OWN = ['implant', 'cavity', 'crown-prosthesis', 'aesthetic', 'wisdom-tooth'];
+  /* ⚠️ 'whitening' 을 빼지 말 것 — app/treatment/whitening 이 그 주소를 직접 갖는다.
+     여기서도 만들면 같은 주소를 두 곳이 만드는 셈이 된다(2026-09-01). */
+  const OWN = ['implant', 'cavity', 'crown-prosthesis', 'whitening', 'wisdom-tooth'];
   return TREATMENTS.filter((t) => !OWN.includes(t.slug) && TREATMENT_PAGES[t.slug]).map((t) => ({
     slug: t.slug,
   }));

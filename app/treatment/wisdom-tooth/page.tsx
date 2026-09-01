@@ -6,6 +6,7 @@ import { treatmentBySlug } from '@/lib/treatments';
 import { symptomBySlug } from '@/lib/symptoms';
 import { journeyForTreatment } from '@/lib/insight';
 import { Container, MedicalNotice, Sentences, plain } from '@/components/ui';
+import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
 import { JsonLd } from '@/components/JsonLd';
 import { ArticleMeta, References, charCount } from '@/components/article';
 import { REFS_TREATMENT } from '@/lib/references';
@@ -183,7 +184,7 @@ export default function WisdomToothPage() {
   const related = t.relatedSymptoms.map(symptomBySlug).filter(Boolean);
 
   return (
-    <div className="page-native-dark bg-walnut text-oat">
+    <div className="page-native-dark bg-night text-oat">
       <JsonLd
         data={[
           breadcrumbSchema(TRAIL),
@@ -207,82 +208,42 @@ export default function WisdomToothPage() {
       />
 
       {/*
-        ★ 히어로 — 사진이 화면을 채우고 글자가 그 위에 뜬다.
-        ⚠️ 사진에 라운드를 주지 않는다. 이 시스템의 사진은 모서리가 살아 있다.
+        머리말 — 진료과목 아홉 곳이 같은 부품을 쓴다 (2026-09-01 오너 지시).
+        ⚠️ 여기서 손으로 다시 그리지 말 것. 모양은 components/TreatmentShell.tsx 에서 바꾼다.
+        ⚠️ 이 페이지만의 walnut 덮개·oat 글자·아래 정렬 3단 구성으로 되돌리지 말 것 —
+           같은 메뉴 안에서 페이지마다 머리가 달라 보였던 원인이다.
       */}
-      {/* ⚠️ 음수 margin + 같은 값의 padding — 띠가 헤더 뒤까지 올라간다(다른 페이지와 같은 수치). */}
-      <section className="relative isolate -mt-[68px] min-h-[78vh] overflow-hidden pt-[68px] sm:-mt-[94px] sm:pt-[94px]">
-        <Image
-          src="/img/clinic/wisdom-room.webp"
-          alt="진료실에서 원장과 진료 보조 인력이 환자의 사랑니 발치를 진행하는 모습."
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        {/* 따뜻한 어둠으로 덮는다 — 검정이 아니라 walnut 이다. */}
-        <div aria-hidden className="absolute inset-0 bg-walnut/78" />
+      <TreatmentHero
+        trail={TRAIL}
+        eyebrow="고양 화정동 사랑니 발치 · 보건복지부 인정 통합치의학과 전문의"
+        title={['모든 사랑니를', '빼야 하는 것은 아닙니다']}
+        lead={LEAD}
+        photo={{
+          src: '/img/clinic/wisdom-room.webp',
+          alt: '진료실에서 원장과 진료 보조 인력이 환자의 사랑니 발치를 진행하는 모습.',
+        }}
+      />
 
-        <Container className="relative flex min-h-[78vh] flex-col justify-between py-14">
-          <nav aria-label="현재 위치" className={`${LABEL} text-[14.5px] text-oat/70`}>
-            {TRAIL.map((c, i) => (
-              <span key={c.path}>
-                {i > 0 ? <span aria-hidden className="mx-2">/</span> : null}
-                {i === TRAIL.length - 1 ? (
-                  <span className="text-oat">{c.name}</span>
-                ) : (
-                  <Link href={c.path} className="transition-opacity hover:opacity-70">
-                    {c.name}
-                  </Link>
-                )}
-              </span>
-            ))}
-          </nav>
-
-          <div className="mt-20">
-            <p className={`${LABEL} text-[14.5px] text-oat/70`}>Circle Dental Clinic — 고양 화정동</p>
-            {/*
-              ⚠️ 한글 제목에 행간 0.9 를 쓰지 말 것 — 받침이 잘린다. 1.02 가 하한이다.
-                 영문 라벨에서만 0.9 의 조밀함을 살린다.
-            */}
-            <h1 className="display line-rise reveal mt-6 text-[clamp(32px,5.4vw,62px)] leading-[1.04] text-oat">
-              <span>
-                <span>모든 사랑니를</span>
-              </span>
-              <span>
-                <span>빼야 하는 것은 아닙니다</span>
-              </span>
-            </h1>
-          </div>
-
-          {/*
-            ⚠️ 버튼을 오른쪽 끝에 두지 말 것 — 오른쪽 아래 퀵메뉴 패널과 겹친다(실제로 겹쳤다).
-               다른 진료 페이지와 같이 본문 아래 왼쪽에 세운다.
-          */}
-          <div className="mt-16 max-w-[46em]">
-            <p className="text-[clamp(17px,1.6vw,22px)] leading-[1.6] font-normal text-oat/90">
-              <Sentences text={LEAD} tone="dark" />
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
-              {/* 채워진 버튼은 이 구간에 하나뿐. */}
-              <a
-                href={CLINIC.booking.naver}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-wine-bg px-8 py-4 text-[17px] font-semibold text-dusk transition-colors hover:bg-mist"
-              >
-                진료 예약하기
-              </a>
-              <a
-                href={CLINIC.phoneHref}
-                className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-parchment/80 px-8 py-4 text-[17px] font-semibold text-parchment transition-colors hover:bg-white/10"
-              >
-                {CLINIC.phone}
-              </a>
-            </div>
-          </div>
-        </Container>
-      </section>
+      {/* ⚠️ 지어낸 문구를 넣지 말 것 — 세 칸 모두 아래 본문에 그대로 나오는 이야기다. */}
+      <TreatmentStrip
+        items={[
+          {
+            k: '먼저 보는 것',
+            t: '빼야 하는지부터',
+            d: '매복 깊이와 인접치·신경관과의 위치 관계에 따라 발치 필요성이 갈립니다.',
+          },
+          {
+            k: '발치할 때',
+            t: '신경관을 피해 분리',
+            d: '인접치와 신경관을 건드리지 않고 사랑니만 정확히 분리합니다.',
+          },
+          {
+            k: '뺀 다음',
+            t: '첫 며칠',
+            d: '그 며칠을 어떻게 보내는지가 회복을 좌우합니다.',
+          },
+        ]}
+      />
 
       {/* ── 왜 문제가 되는가 ────────────────────────────────────────── */}
       <section className="py-24 lg:py-32">
@@ -344,7 +305,7 @@ export default function WisdomToothPage() {
       </section>
 
       {/* ── 매복 사랑니 ─────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="border-y border-white/8 bg-night-2 py-24 lg:py-32">
         <Container>
           <div className="border-t border-dashed border-cork pt-14">
             <p className="eyebrow-chip text-driftwood">
@@ -446,7 +407,7 @@ export default function WisdomToothPage() {
         ── 미리 아셔야 할 것 ────────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 발치는 부작용 가능성이 있는 수술이다.
       */}
-      <section className="py-24 lg:py-32">
+      <section className="border-y border-white/8 bg-night-2 py-24 lg:py-32">
         <Container>
           <div className="border-t border-dashed border-cork pt-14">
             <p className="eyebrow-chip text-driftwood">
