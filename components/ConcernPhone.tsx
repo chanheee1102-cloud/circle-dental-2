@@ -361,7 +361,12 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                   </div>
                   <span
                     aria-hidden
-                    className="pointer-events-none absolute inset-x-0 bottom-[68px] z-10 h-10"
+                    /*
+                     * ⚠️ 흐림 구간을 길게 잡지 말 것 — 그 안의 글자는 반쯤 읽히는 상태로 남는다.
+                     *    40px 일 때 그 자리 글자가 2.97:1 로 측정됐다(2026-09-01). 24px 로 줄여
+                     *    '읽히거나 안 보이거나' 로 빨리 넘어가게 한다. 글은 곧 위로 스크롤돼 온전히 보인다.
+                     */
+                    className="pointer-events-none absolute inset-x-0 bottom-[68px] z-10 h-6"
                     style={{ background: 'linear-gradient(to top, var(--color-cream-deep), transparent)' }}
                   />
                 </div>

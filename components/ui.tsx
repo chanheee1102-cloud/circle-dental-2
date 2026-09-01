@@ -553,7 +553,8 @@ export function ContactCta({
   desc?: string;
 }) {
   return (
-    <Container className="reveal mt-24">
+    // ⚠️ 아래 여백(pb)을 지우지 말 것 — 없으면 카드가 푸터에 바로 붙는다(2026-09-01 오너).
+    <Container className="reveal mt-24 pb-20">
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-600 to-brand-800 px-8 py-14 text-white shadow-[var(--shadow-lift)] sm:px-14">
         {/* 겹친 원 — 히어로와 같은 모티프로 페이지 양끝을 묶는다. */}
         <div aria-hidden className="pointer-events-none absolute inset-0">

@@ -37,7 +37,12 @@ export function SiteFooter() {
      *   푸터 자신의 색이 채우므로 띠가 안 생긴다. 페이지가 밝게 끝나든 어둡게 끝나든 같다.
      * ⚠️ 아래 컨테이너의 위 여백은 뺀다(pt-0) — 안 그러면 테두리에서 글까지 152px 이 된다.
      */
-    <footer className="border-t border-wine-line bg-dusk pt-20 text-mist">
+    /*
+      ⚠️ 윗변 실선(border-t)을 되살리지 말 것 (2026-09-01 오너) — 위아래가 모두 어두워
+         선만 밝게 떠서, 마무리 카드 밑에 줄이 그어진 것처럼 보였다.
+         어두운 면끼리는 선이 아니라 **빈 자리**가 구분을 만든다. pt 가 그 일을 한다.
+    */
+    <footer className="bg-dusk pt-24 text-mist">
       {/* 본문 Container(max-w-[1320px] px-5 lg:px-8)와 같은 폭·여백 — 푸터만 좁으면 축이 어긋난다. */}
       <div className="mx-auto max-w-[1320px] px-5 pb-14 lg:px-8">
         {/*
