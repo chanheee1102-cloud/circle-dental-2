@@ -30,6 +30,20 @@ const TRAIL = [
  * ★ 원장마다 Physician 스키마를 따로 낸다. 지식패널이 인식하는 단위가 '사람'이라
  *   한 페이지에 세 명을 묶어 하나로 내면 누구의 경력인지 기계가 구분하지 못한다.
  */
+/**
+ * 목록 머리 — 금색 라벨 + 짧은 눈금.
+ * ⚠️ 눈금을 flex-1 로 늘리지 말 것 (2026-09-01 실측) — 글 칸이 762px 이라 선이 698px 까지
+ *    뻗어 나가 글자와 관계없는 줄 하나가 화면을 가로질렀다. 라벨 옆 짧은 표시로 충분하다.
+ */
+function Label({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="flex items-center gap-2.5 text-[14px] font-black tracking-[0.06em] text-clay-600">
+      {children}
+      <span aria-hidden className="h-px w-8 bg-clay-600/45" />
+    </p>
+  );
+}
+
 export default function DoctorsPage() {
   const physicians = DOCTORS.map((d) => ({
     '@context': 'https://schema.org',
@@ -92,95 +106,150 @@ export default function DoctorsPage() {
         desc="손끝의 숙련도에 따라 결과가 달라지는 치과 진료, 10년 이상 경력의 교수출신 대표원장님과 보건복지부 인정 전문의들로만 구성된 의료진이 개인 맞춤형 진료를 제공합니다."
       />
 
-      <Container className="py-12 lg:py-16">
+      {/*
+        ★★ 원장 3인 (2026-09-01 오너: "색감도 없고 글씨도 작고 안 찐하고 카드 형태도 별로") ★★
 
-        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
-        <div className="reveal mt-8 max-w-[70ch]">
-          <ArticleMeta path="/about/doctors" />
-        </div>
+        고친 세 가지
+          ① 색 — 이 사이트의 강조색은 금색인데 이 페이지에만 한 점도 없었다. 직함 · 진료 분야 ·
+             '학회활동' 머리를 모두 금색 글자로 세운다(상자는 씌우지 않는다 — 아래 주석 참고).
+             앞 판본의 '학회활동' 알약은 bg-brand-500 이었는데, 어두운 결에서 그 이름은
+             **회갈색(#9c9484)** 이라 강조로 보이지 않았다.
+          ② 글자 — 경력 줄이 16px 에 가장 흐린 색(ink-soft)이었다. 17px 에 본문 색(twilight)
+             으로 올린다. 이름도 36px → 최대 46px.
+          ③ 카드 — 큰 둥근 상자 세 개가 쌓여 있었다. 상자를 걷고 가로줄로 나눈다.
+             /about 을 랜딩 결로 바꿀 때와 같은 정리다 — 같은 규격의 상자가 반복되면
+             화면이 한 겹으로 눌린다.
 
-        {/* 원장 3인 */}
-        <div className="mt-14 space-y-6">
-          {DOCTORS.map((d, i) => (
-            <article
-              /* 닻 — 홈·스키마가 /about/doctors#slug 로 이 사람을 가리킨다. 지우지 말 것. */
-              id={d.slug}
-              key={d.slug}
-              className="rounded-2xl border border-brand-200/70 card-glass p-7 shadow-[var(--shadow-soft)] lg:p-10"
-            >
-              {/*
-                ★ 사진 비율을 건드리지 않는다.
-                  md 이상에서 aspect 를 풀어 카드 높이에 맞춰 늘렸더니 인물이 잘렸다(머리가 위 가장자리에 닿음).
-                  인물 사진은 촬영 시 여백까지 계산된 결과물이라 비율을 바꾸면 반드시 어색해진다.
-                  → 사진은 원본 비율(625×670) 그대로 두고, **열 폭으로** 높이를 맞춘다.
+        ⚠️ 사진 비율(625×670)을 건드리지 말 것 — 세 장 모두 같은 비율이고, 인물 사진은
+           촬영 시 여백까지 계산된 결과물이라 비율을 바꾸면 머리가 잘린다(전에 겪음).
+        ⚠️ 사진을 오른쪽으로 옮기지 말 것 — 사람마다 방향이 다르면 읽는 눈이 매번 자리를
+           다시 찾는다(components/saas.tsx 의 같은 규칙).
+        ⚠️ id={d.slug} 를 지우지 말 것 — 홈과 스키마가 /about/doctors#slug 로 이 사람을 가리킨다.
+        ⚠️ '자세히' 버튼을 되살리지 말 것 — 원장 개별 페이지는 없앴다(2026-08-31 운영자).
+      */}
+      {/*
+        발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다.
+        ⚠️ 여백(py·pt)을 가진 상자로 감싸지 말 것 — ArticleMeta 는 지금 null 을 돌려주므로
+           감싼 상자만 남아 화면에 **빈 띠**가 생긴다(2026-09-01 실측). 다시 켜질 때를 대비해
+           호출은 남기되, 아무것도 안 나오면 높이도 0 이어야 한다.
+      */}
+      <Container>
+        <ArticleMeta path="/about/doctors" />
+      </Container>
 
-                ★ 왜 하필 560px 인가 — 눈대중이 아니라 실측값이다.
-                  글 한 단의 높이는 이 폭 범위(470~590px)에서 줄바꿈이 생기지 않아 602px 로 고정이다.
-                  사진 높이 = 폭 × 670/625 = 폭 × 1.072 이므로 602px 가 되는 폭이 곧 562px 다.
-                  실측: 폭 470 → 사진 504(-98) / 530 → 568(-34) / 550 → 590(-12) / 560 → 600(-2) / 590 → 632(+30).
-                  앞서 440px 로 두었을 때 글이 132px 더 길어 사진 아래가 휑했던 것이 이 계산을 빠뜨린 결과다.
+      <section className="mt-14 border-t border-brand-200/60">
+        {DOCTORS.map((d, i) => (
+          <article key={d.slug} id={d.slug} className="scroll-mt-28 border-b border-brand-200/60">
+            {/*
+              ★ items-stretch — 사진이 **글 높이에 맞춰 늘어난다** (2026-09-01 오너: "사진이랑
+                규격 맞추고 싶은데"). 앞 판본은 사진 461px 에 글 497~587px 라 아래가 어긋났다.
+              ⚠️ 사진 칸을 430px 아래로 줄이지 말 것 — 상자가 세로로 길어질수록 원본(0.93 비율)에서
+                 **좌우가 잘린다.** 500px 이면 가장 긴 원장(김동주)에서도 잘리는 폭이 48px 안쪽이라
+                 어깨가 남는다. 430px 로 두면 118px 이 잘려 팔이 사라졌다.
+            */}
+            <Container className="grid gap-10 py-12 lg:grid-cols-[minmax(0,500px)_minmax(0,1fr)] lg:items-stretch lg:gap-14 lg:py-16">
+              <div className="card-edge relative aspect-[625/670] w-full overflow-hidden rounded-[22px] bg-brand-100 lg:aspect-auto lg:h-full lg:min-h-[536px]">
+                <Image
+                  src={d.photo}
+                  alt={`${CLINIC.name} ${d.role} ${d.name}`}
+                  fill
+                  priority={i === 0}
+                  sizes="(max-width: 1024px) 100vw, 500px"
+                  className="object-cover"
+                />
+              </div>
 
-                ★ 세 번째 카드(김인진 원장)만 학회활동이 없어 글이 542px 다 — 이때는 사진이 58px 더 크다.
-                  남는 공간이 글 쪽(오른쪽 아래)으로 가는 건 원본 홈페이지와 같은 모습이라 그대로 둔다.
-                  반대로 사진 아래가 비면 카드가 무너져 보인다.
-
-                ★ items-start → 사진 윗변과 '동그라미치과 대표원장' 첫 줄이 같은 선에서 시작한다.
-              */}
-              <div className="grid gap-8 md:grid-cols-[minmax(0,560px)_1fr] md:items-start lg:gap-12">
-                <div className="overflow-hidden rounded-xl bg-brand-100">
-                  <Image
-                    src={d.photo}
-                    alt={`${CLINIC.name} ${d.role} ${d.name}`}
-                    width={625}
-                    height={670}
-                    priority={i === 0}
-                    sizes="(max-width: 768px) 100vw, 560px"
-                    className="h-auto w-full"
-                  />
-                </div>
-
-                <div>
-                  <p className="text-[13.5px] font-black tracking-[0.16em] text-brand-500">
-                    동그라미치과 {d.role}
-                  </p>
-                  <h2 className="display mt-2 text-[32px] tracking-[0.06em] text-ink sm:text-[36px]">
+              <div>
+                {/*
+                  ⚠️⚠️ 직함을 이름 **위의 알약**으로 되돌리지 말 것 (2026-09-01 오너:
+                     "원장을 이름 오른쪽 부분에 그냥 문구로, 꼭 위에 클로드 디자인으로 넣기보다") ⚠️⚠️
+                    알약이 이름 위에 한 줄, 진료 분야가 그 아래 한 줄 — 상자가 겹겹이 쌓여
+                    어디에나 있는 화면이 됐다. 직함은 이름 옆에 그냥 붙여 읽게 둔다.
+                  ★ items-baseline — 46px 이름과 18px 직함의 **밑선**이 맞는다. 가운데(center)로
+                    맞추면 큰 글자 옆에서 작은 글자가 떠 보인다.
+                  ⚠️ 금색을 회갈색(brand-500)으로 되돌리지 말 것 — 어두운 결에서 그 이름은
+                     회갈색이라 강조로 안 읽힌다.
+                */}
+                <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                  <h2 className="display text-[clamp(32px,3.4vw,46px)] leading-[1.15] tracking-[0.02em] text-ink">
                     {d.name}
                   </h2>
+                  {/* ⚠️ '동그라미치과' 를 다시 붙이지 말 것 (2026-09-01 오너) — 페이지 전체가
+                      이 병원 의료진 소개라 세 번 되풀이된다. 기계가 읽는 쪽(스키마 name·worksFor,
+                      사진 alt)에는 병원명이 그대로 있으니 정보가 사라지는 것도 아니다. */}
+                  <p className="text-[19px] font-black tracking-[-0.01em] text-clay-600">
+                    {d.role}
+                  </p>
+                </div>
 
-                  <ul className="mt-6 space-y-[7px]">
-                    {d.career.map((c) => (
-                      <li key={c} className="text-[16px] leading-[1.65] text-ink-soft">
-                        {c}
-                      </li>
-                    ))}
-                  </ul>
+                {/*
+                  진료 분야 — lib/doctors.ts 의 focus 다.
+                  ★ 이 값은 이미 구조화 데이터(knowsAbout)로 기계에 내보내고 있었는데 화면에는
+                    없었다. 화면과 기계가 같은 말을 하게 맞춘다.
+                  ⚠️ '전문' 이 아니라 '진료 분야' 다. 전문의 자격과 진료 범위는 다른 말이라
+                     섞어 쓰면 의료광고 심의에서 지적받는다.
+                */}
+                {/*
+                  ⚠️⚠️ 테두리 알약으로 되돌리지 말 것 (2026-09-01 오너: "저 테두리 좀 다른걸로") ⚠️⚠️
+                    바로 위 직함이 이미 알약(eyebrow-chip)이다. 그 아래 또 알약 줄이 오니
+                    같은 모양이 두 줄 겹쳐 어디에나 있는 화면이 됐다.
+                    금색은 그대로 두되 상자를 벗겨 **한 줄 글**로 둔다.
+                  ⚠️ 구분자는 '·' 이 아니라 '/' 다 — 항목 안에 '보철·심미' 처럼 가운뎃점이 이미 있어
+                     같은 기호를 쓰면 어디서 끊기는지 알 수 없다.
+                */}
+                {d.focus.length > 0 && (
+                  <p className="mt-5 text-[16px] leading-[1.75] font-bold text-clay-600">
+                    {d.focus.join(' / ')}
+                  </p>
+                )}
+
+                {/*
+                  ★★ 경력과 학회를 두 열로 (2026-09-01 실측) ★★
+                    한 열로 흘렸더니 글 칸 762px 에 가장 긴 줄이 273~315px 뿐이라
+                    **오른쪽 447~489px 가 통째로 비었다** — 글 칸의 60%다.
+                    그 빈 칸 때문에 블록이 827px 로 길어지고 사진 아래도 366px 가 떴다.
+                    두 열로 나누면 빈 폭이 채워지고 블록도 짧아진다.
+                  ⚠️ 한 열로 되돌리지 말 것 — 경력 줄이 짧아서 반드시 오른쪽이 빈다.
+                  ⚠️ 학회가 없는 원장(김인진)은 경력만 두 칸에 걸쳐 스스로 두 줄기로 흐르게 한다.
+                     안 그러면 그 분만 오른쪽이 비어 셋이 어긋나 보인다.
+                */}
+                <div className="mt-8 grid gap-x-12 gap-y-8 lg:grid-cols-2">
+                  <div className={d.societies.length > 0 ? '' : 'lg:col-span-2'}>
+                    <Label>학력 · 경력</Label>
+                    <ul
+                      className={`mt-4 space-y-2 ${
+                        d.societies.length > 0 ? '' : 'lg:columns-2 lg:gap-x-12 lg:space-y-0'
+                      }`}
+                    >
+                      {d.career.map((c) => (
+                        <li
+                          key={c}
+                          className="text-[17px] leading-[1.7] text-twilight lg:break-inside-avoid lg:py-1"
+                        >
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
                   {d.societies.length > 0 && (
-                    <>
-                      <span className="mt-6 inline-flex rounded-full bg-brand-500 px-3 py-1.5 text-[13.5px] font-black text-white">
-                        학회활동
-                      </span>
-                      <ul className="mt-3 space-y-[7px]">
+                    <div>
+                      <Label>학회활동</Label>
+                      <ul className="mt-4 space-y-2">
                         {d.societies.map((s) => (
-                          <li key={s} className="text-[16px] leading-[1.65] text-ink-soft">
+                          <li key={s} className="text-[17px] leading-[1.7] text-twilight">
                             {s}
                           </li>
                         ))}
                       </ul>
-                    </>
+                    </div>
                   )}
-
-                  {/*
-                    ⚠️ '자세히' 버튼을 되살리지 말 것 — 원장 개별 페이지는 없앴다
-                       (2026-08-31 운영자: "의료진페이지 한명한명 만들지말고, 지금 의료진
-                       소개 페이지만 냅둬줘"). 경력·학회는 이 페이지에 이미 전부 있다.
-                  */}
                 </div>
               </div>
-            </article>
-          ))}
-        </div>
-      </Container>
+            </Container>
+          </article>
+        ))}
+      </section>
 
       {/*
         ★★ 사회활동 — 원본 의료진 페이지에 있는데 우리에게 없던 구획 (2026-08-31) ★★
@@ -193,12 +262,12 @@ export default function DoctorsPage() {
         <Container>
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,52%)] lg:gap-16">
             <div>
-              <p className="text-[15.5px] leading-[1.8] text-ink-soft">
+              <p className="text-[16.5px] leading-[1.8] text-clay-600">
                 기부와 나눔의 문화로
                 <br />
                 사회활동에 적극적으로 참여하는 치과
               </p>
-              <h2 className="display-sm mt-5 text-[26px] leading-[1.45] text-ink sm:text-[30px]">
+              <h2 className="display-sm mt-5 text-[clamp(26px,2.8vw,34px)] leading-[1.4] text-ink">
                 동그라미치과는 십수년간
                 <br />
                 농어촌 무료 진료봉사를
@@ -222,7 +291,7 @@ export default function DoctorsPage() {
                 ⚠️ 이 설명을 지우지 말 것 — 사진 속 현수막이 유일한 근거다. 캡션으로 적어 두면
                    사람도 기계도 '언제·어디서·누구와' 를 사진을 뜯어보지 않고 알 수 있다.
               */}
-              <figcaption className="mt-3 text-[14px] leading-relaxed text-ink-muted">
+              <figcaption className="mt-3 text-[14.5px] leading-relaxed text-ink-soft">
                 농촌사랑 의료봉사 활동전개 · 2014. 02. 05 ~ 02. 08 · 팔탄농협 2층 회의실 ·
                 팔탄농업협동조합, 경희대학교 치과대학 봉사동아리(CDSA)
               </figcaption>
@@ -234,7 +303,7 @@ export default function DoctorsPage() {
       {/* 인증·수료 */}
       <section className="border-y border-brand-200/60 bg-parchment py-16">
         <Container>
-          <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">어떤 인증과 수료를 받았나요?</h2>
+          <h2 className="display-sm text-[clamp(24px,2.6vw,32px)] text-ink">어떤 인증과 수료를 받았나요?</h2>
           {/*
             ★ 라벨을 `CREDENTIALS[i]` 로 가져오지 않는다.
               이미지 배열과 문구 배열을 인덱스로 짝지으면 한쪽 순서만 바뀌어도 전부 어긋나는데
@@ -259,7 +328,7 @@ export default function DoctorsPage() {
                     className="object-contain p-4"
                   />
                 </div>
-                <figcaption className="mt-3.5 text-center text-[13.5px] leading-snug text-ink-soft">
+                <figcaption className="mt-3.5 text-center text-[14.5px] leading-snug text-twilight">
                   {c.label}
                 </figcaption>
               </figure>
@@ -273,18 +342,16 @@ export default function DoctorsPage() {
         <div className="overflow-hidden rounded-2xl border border-brand-200/70 card-glass shadow-[var(--shadow-soft)]">
           <div className="grid gap-0 lg:grid-cols-2">
             <div className="p-8 lg:p-10">
-              <p className="text-[13.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
-                발표 논문
-              </p>
-              <h2 className="display-sm mt-4 text-[21px] leading-snug text-ink">
+              <p className="eyebrow-chip text-clay-600">발표 논문</p>
+              <h2 className="display-sm mt-5 text-[clamp(21px,2.2vw,26px)] leading-snug text-ink">
                 {PUBLICATION_DETAIL.title}
               </h2>
-              <p className="mt-4 text-[15px] text-ink-muted">{PUBLICATION_DETAIL.authors}</p>
+              <p className="mt-4 text-[15.5px] text-ink-soft">{PUBLICATION_DETAIL.authors}</p>
               <div className="mt-6 rounded-2xl bg-brand-50 p-5">
-                <p className="text-[13.5px] font-black tracking-[0.14em] text-brand-600 uppercase">
+                <p className="text-[13.5px] font-black tracking-[0.14em] text-clay-600 uppercase">
                   Clinical Relevance
                 </p>
-                <p className="mt-2.5 text-[15px] leading-relaxed text-ink-soft">
+                <p className="mt-2.5 text-[16px] leading-relaxed text-twilight">
                   <Sentences text={PUBLICATION_DETAIL.relevanceKo} />
                 </p>
               </div>

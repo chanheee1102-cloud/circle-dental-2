@@ -280,9 +280,11 @@ export default function AboutPage() {
                 <Sentences text={o} />
               </p>
             ))}
-            <div className="pt-6">
-              <ArticleMeta path="/about" />
-            </div>
+            {/*
+              ⚠️ 여백(pt)을 가진 상자로 감싸지 말 것 — ArticleMeta 는 지금 null 을 돌려주므로
+                 감싼 상자만 남아 빈 자리가 생긴다. 다시 켜질 때를 대비해 호출만 남긴다.
+            */}
+            <ArticleMeta path="/about" />
           </div>
         </div>
       </Container>
