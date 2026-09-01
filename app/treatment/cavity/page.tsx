@@ -244,7 +244,8 @@ export default function CavityPage() {
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             {/* 왼쪽 — 깊이 세 단계를 어두운 카드로. */}
-            <ol className="reveal-stack order-2 space-y-3 lg:order-1">
+            {/* ⚠️ order 로 좌우를 뒤집지 말 것 — 이 페이지는 제목이 왼쪽, 내용이 오른쪽으로 통일돼 있다. */}
+            <ol className="reveal-stack space-y-3 lg:order-2">
               {DEPTHS.map((d) => (
                 <li
                   key={d.n}
@@ -262,59 +263,60 @@ export default function CavityPage() {
               ))}
             </ol>
 
-            <div className="order-1 lg:order-2">
+            <div className="lg:order-1">
               <h2 className="reveal display-sm max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-white">
                 어디까지 갔는지가 치료를 정합니다
               </h2>
               <p className="reveal mt-6 max-w-[30em] text-[17px] leading-[1.95] text-brand-300">
                 <Sentences text="충치는 겉의 단단한 층에서 시작해 안쪽으로 들어갑니다. 층마다 무르기가 달라 진행 속도가 바뀌고, 신경이 있는 방에 닿는 순간 치료의 성격이 완전히 달라집니다." />
               </p>
+              {/*
+                단계 도해 — 위 층 셋을 다섯 단계로 늘려 단계마다의 치료까지 보여 준다.
+                ⚠️ 아래 sr-only 표를 지우지 말 것 — 그림 속 글자는 검색·AI 가 못 읽는다.
+                   이 페이지에서 가장 촘촘한 정보(5단계 × 증상 × 치료)가 그림 안에 있어서,
+                   표가 없으면 기계에는 통째로 안 보인다. 숨김이 아니라 글자 대체본이다.
+                ⚠️ 밝은 판에 얹는 이유 — 어두운 면 위의 흰 도해는 잘린 종이처럼 뜬다.
+                ⚠️ 좁은 화면에서 줄이지 말고 가로로 밀어 보게 한다. 줄이면 그림 속 글자가 뭉갠다.
+              */}
+              <figure className="reveal mt-9">
+                {/* ⚠️ 폭을 화면 끝까지 늘리지 말 것 — 도해가 본문보다 커지면 이 구획의 주인공이 뒤바뀐다. */}
+                <div className="overflow-x-auto rounded-[16px] border border-white/10 bg-parchment p-2.5">
+                  <Image
+                    src="/img/ai/cavity-stages.webp"
+                    alt="충치 진행 5단계 도해. 법랑질 충치, 상아질 충치, 신경(치수) 침범, 치근단 염증, 치아 발치 필요 순으로 단면 그림과 함께 단계별 증상과 치료 방법을 정리했다."
+                    width={1536}
+                    height={1024}
+                    sizes="(min-width: 1024px) 1100px, 100vw"
+                    className="h-auto w-full min-w-[520px] rounded-[8px]"
+                  />
+                </div>
+
+                <figcaption className="sr-only">
+                  <table>
+                    <caption>충치 진행 단계별 증상과 치료 방법</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">단계</th>
+                        <th scope="col">증상</th>
+                        <th scope="col">치료 방법</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {STAGE_ROWS.map((r) => (
+                        <tr key={r.stage}>
+                          <th scope="row">{r.stage}</th>
+                          <td>{r.symptom}</td>
+                          <td>{r.cure}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </figcaption>
+              </figure>
+
             </div>
           </div>
 
-          {/*
-            단계 도해 — 위 층 셋을 다섯 단계로 늘려 단계마다의 치료까지 보여 준다.
-            ⚠️ 아래 sr-only 표를 지우지 말 것 — 그림 속 글자는 검색·AI 가 못 읽는다.
-               이 페이지에서 가장 촘촘한 정보(5단계 × 증상 × 치료)가 그림 안에 있어서,
-               표가 없으면 기계에는 통째로 안 보인다. 숨김이 아니라 글자 대체본이다.
-            ⚠️ 밝은 판에 얹는 이유 — 어두운 면 위의 흰 도해는 잘린 종이처럼 뜬다.
-            ⚠️ 좁은 화면에서 줄이지 말고 가로로 밀어 보게 한다. 줄이면 그림 속 글자가 뭉갠다.
-          */}
-          <figure className="reveal mt-14">
-            {/* ⚠️ 폭을 화면 끝까지 늘리지 말 것 — 도해가 본문보다 커지면 이 구획의 주인공이 뒤바뀐다. */}
-            <div className="mx-auto max-w-[62rem] overflow-x-auto rounded-[18px] border border-white/10 bg-parchment p-3 sm:p-3.5">
-              <Image
-                src="/img/ai/cavity-stages.webp"
-                alt="충치 진행 5단계 도해. 법랑질 충치, 상아질 충치, 신경(치수) 침범, 치근단 염증, 치아 발치 필요 순으로 단면 그림과 함께 단계별 증상과 치료 방법을 정리했다."
-                width={1536}
-                height={1024}
-                sizes="(min-width: 1024px) 1100px, 100vw"
-                className="h-auto w-full min-w-[640px] rounded-[10px]"
-              />
-            </div>
-
-            <figcaption className="sr-only">
-              <table>
-                <caption>충치 진행 단계별 증상과 치료 방법</caption>
-                <thead>
-                  <tr>
-                    <th scope="col">단계</th>
-                    <th scope="col">증상</th>
-                    <th scope="col">치료 방법</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {STAGE_ROWS.map((r) => (
-                    <tr key={r.stage}>
-                      <th scope="row">{r.stage}</th>
-                      <td>{r.symptom}</td>
-                      <td>{r.cure}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </figcaption>
-          </figure>
         </Container>
       </section>
 
@@ -436,7 +438,7 @@ export default function CavityPage() {
       <section className="border-y border-white/8 bg-night-2 py-24 lg:py-32">
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-            <div className="reveal img-in order-2 overflow-hidden rounded-[20px] border border-white/12 card-glass/[0.04] p-2 lg:order-1">
+            <div className="reveal img-in overflow-hidden rounded-[20px] lg:order-2 border border-white/12 card-glass/[0.04] p-2 lg:order-1">
               <div className="relative aspect-[16/10] overflow-hidden rounded-[13px]">
                 <Image
                   src="/img/scene/cavity-model-work.webp"
@@ -447,7 +449,7 @@ export default function CavityPage() {
                 />
               </div>
             </div>
-            <div className="order-1 lg:order-2">
+            <div className="lg:order-1">
               <p className="reveal text-[14.5px] font-medium text-clay-300">치료 방법</p>
               <h2 className="reveal display-sm mt-5 max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-white">
                 당일에 끝내거나, 조각을 만들어 끼우거나

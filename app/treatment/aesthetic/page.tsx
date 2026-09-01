@@ -150,8 +150,28 @@ export default function WhiteningPage() {
         ⚠️ 굵기를 올리지 말 것. 이 시스템은 400 단일 굵기가 정체성이다.
       */}
       {/* ⚠️ 음수 margin + 같은 값의 padding — 띠가 헤더 뒤까지 올라간다(다른 페이지와 같은 수치). */}
-      <section className="-mt-[68px] pt-[128px] pb-24 sm:-mt-[94px] sm:pt-[154px] lg:pb-32">
-        <Container>
+      <section className="relative isolate -mt-[68px] overflow-hidden pt-[128px] pb-24 sm:-mt-[94px] sm:pt-[154px] lg:pb-32">
+        <Image
+          src="/img/clinic/wh-light.webp"
+          alt="전용 광조사기의 푸른빛이 미백제를 바른 앞니에 조사되고 있는 모습."
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        {/*
+          두 겹 덮개 — 방사형(가운데를 살림) + 선형(위아래를 눌러 줌).
+          ⚠️ 한 겹으로 줄이지 말 것. 사진 밝은 부분에서 작은 글자가 먼저 무너진다.
+        */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(80%_64%_at_50%_38%,rgba(28,23,25,0.52)_0%,rgba(28,23,25,0.84)_62%,rgba(28,23,25,0.94)_100%)]"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(28,23,25,0.74)_0%,rgba(28,23,25,0.48)_38%,rgba(28,23,25,0.9)_100%)]"
+        />
+        <Container className="relative">
           <nav aria-label="현재 위치" className={`${MONO} text-[14px] font-bold text-lichen`}>
             {TRAIL.map((c, i) => (
               <span key={c.path}>
@@ -203,21 +223,7 @@ export default function WhiteningPage() {
         </Container>
       </section>
 
-      {/* 시술 장면 — 원본이 1920x400 이라 그 비율 그대로 쓴다(확대 금지). */}
-      <Container>
-        <div className="img-in reveal overflow-hidden rounded-2xl">
-          <div className="relative aspect-[3/1]">
-            <Image
-              src="/img/clinic/wh-light.webp"
-              alt="전용 광조사기의 푸른빛이 미백제를 바른 앞니에 조사되고 있는 모습."
-              fill
-              priority
-              sizes="(min-width: 1320px) 1256px, 100vw"
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </Container>
+      {/* ⚠️ 같은 사진을 띠로 다시 두지 말 것 — 히어로 배경으로 올라갔다(2026-09-01). */}
 
       {/* ── 01 잇몸 격리 — 이 병원이 원문에서 강조한 부분 ─────────── */}
       <section className="py-24 lg:py-32">
@@ -361,17 +367,8 @@ export default function WhiteningPage() {
             ))}
           </div>
 
-          <div className="img-in reveal mt-14 overflow-hidden rounded-2xl">
-            <div className="relative aspect-[3/1]">
-              <Image
-                src="/img/scene/wh-shade.webp"
-                alt="장갑 낀 손이 치아 색조 가이드를 부채꼴로 펼쳐 들고 모형 치아와 색을 비교하는 접사."
-                fill
-                sizes="(min-width: 1320px) 1256px, 100vw"
-                className="object-cover"
-              />
-            </div>
-          </div>
+          {/* ⚠️ 색조 가이드 사진을 되살리지 말 것 (2026-09-01 오너) — 바로 위 단계 목록이
+              이미 같은 이야기를 하고 있어 사진이 한 번 더 말할 것이 없었다. */}
         </Container>
       </section>
 
