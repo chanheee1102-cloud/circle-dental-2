@@ -71,6 +71,13 @@ const CONVENTIONAL: Array<[string, string]> = [
   ['/services', '/treatment'],
   ['/clinic', '/about'],
   ['/location', '/visit'],
+  /*
+   * ⚠️ /contact 를 되살리지 말 것 (2026-09-01 오너: "내용 거의 중복이야").
+   *   /visit 과 주제가 겹쳐(어디에 있나 · 언제 여나) 같은 검색어를 두고 경쟁했다.
+   *   연락 창구는 /visit 안으로 들어갔다. 여기서 301 로 넘겨야 그동안 쌓인 색인·외부
+   *   링크·북마크가 /visit 으로 이어진다 — 그냥 지우면 전부 404 가 된다.
+   */
+  ['/contact', '/visit'],
 ];
 
 /**

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { ArticleMeta } from '@/components/article';
+import { ArticleMeta, headingId } from '@/components/article';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
 import { Container, PageHero, Sentences } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
@@ -15,6 +15,49 @@ export const metadata: Metadata = {
 const TRAIL = [
   { name: '홈', path: '/' },
   { name: '내원 안내', path: '/visit' },
+];
+
+/** 창구 — 각각 무엇에 맞는지까지 적는다. 나열만 하면 고르는 부담을 넘기는 셈이다. */
+const CHANNELS = [
+  {
+    key: 'phone',
+    name: '전화',
+    value: CLINIC.phone,
+    href: CLINIC.phoneHref,
+    external: false,
+    best: '지금 아프거나 급할 때',
+    detail:
+      '증상을 직접 말씀하시면 그날 오셔야 하는 상황인지 먼저 판단해 드립니다. 진료 중에는 연결이 늦어질 수 있습니다.',
+  },
+  {
+    key: 'naver',
+    name: '네이버 예약',
+    value: '시간 선택 후 바로 확정',
+    href: CLINIC.booking.naver,
+    external: true,
+    best: '급하지 않고 시간을 정하고 싶을 때',
+    detail:
+      '가능한 시간대를 보고 직접 고르실 수 있습니다. 통화 없이 예약이 끝나므로 진료 중이거나 근무 중이어도 잡을 수 있습니다.',
+  },
+  {
+    key: 'kakao',
+    name: '카카오톡 상담',
+    value: '메시지로 문의',
+    href: CLINIC.booking.kakao,
+    external: true,
+    best: '간단히 물어보고 싶을 때',
+    detail:
+      '진료시간·주차·준비물처럼 짧은 질문에 맞습니다. 증상 판단은 구강을 봐야 가능하므로 메시지만으로는 진단해 드릴 수 없습니다.',
+  },
+  {
+    key: 'email',
+    name: '이메일',
+    value: CLINIC.email,
+    href: `mailto:${CLINIC.email}`,
+    external: false,
+    best: '서류·제휴 문의',
+    detail: '진료 문의는 전화나 카카오톡이 빠릅니다.',
+  },
 ];
 
 /**
@@ -146,6 +189,40 @@ export default function VisitPage() {
               </a>
             </div>
           </div>
+        </div>
+
+        {/*
+          연락 창구 — /contact 에서 옮겨 왔다 (2026-09-01, 두 페이지 합침).
+          ⚠️ 다시 별도 페이지로 떼지 말 것 — 그때 '어디에 있나요 / 언제 진료하나요' 가
+             양쪽에 생겨 같은 검색어를 두고 서로 경쟁했다.
+          ★ 나열만 하지 않고 '이럴 때' 를 함께 적는다. 창구만 늘어놓으면 고르는 부담을
+            읽는 사람에게 넘기는 셈이다.
+        */}
+        <div className="mt-14">
+          <h2 id={headingId('어떻게 연락하면 되나요')} className="display-sm scroll-mt-28 text-[22px] text-ink">
+            어떻게 연락하면 되나요?
+          </h2>
+          <ul className="mt-6 grid gap-4 lg:grid-cols-3">
+            {CHANNELS.map((c) => (
+              <li
+                key={c.key}
+                className="h-full rounded-[18px] border border-brand-200/70 card-glass p-6"
+              >
+                <p className="text-[13px] font-black tracking-[0.14em] text-clay-600">{c.best}</p>
+                <p className="display-sm mt-3.5 text-[19px] text-ink">{c.name}</p>
+                <a
+                  href={c.href}
+                  {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  className="mt-2 inline-flex font-bold text-brand-700 underline underline-offset-4"
+                >
+                  {c.value}
+                </a>
+                <p className="mt-3.5 text-[15px] leading-[1.75] text-ink-soft">
+                  <Sentences text={c.detail} />
+                </p>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* 지도 — 확대·축소·드래그 가능. 아래에 네이버·카카오 길찾기 버튼이 함께 붙는다. */}

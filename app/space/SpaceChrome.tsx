@@ -92,7 +92,7 @@ export function SpaceHeader() {
             {CLINIC.phone}
           </a>
           <Link
-            href="/contact"
+            href="/visit"
             className={`sp-arrow ${solid ? '' : '!text-white'}`}
             style={{ fontSize: 13 }}
           >
