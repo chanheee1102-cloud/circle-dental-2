@@ -59,6 +59,25 @@ export function Prose({ children }: { children: React.ReactNode }) {
  * ⚠️ 메타 설명·JSON-LD 에 넣기 전에 **반드시** 통과시킬 것 — 안 그러면 검색 결과에
  *    별표가 그대로 나간다.
  */
+/**
+ * 관형형 + 의존명사를 한 덩어리로 묶는다 (줄바꿈 없는 공백).
+ *
+ * ★ '것 · 수 · 때 · 데 · 바' 는 혼자서는 뜻이 없다. 앞의 관형형에 붙어야 한 덩어리다.
+ *   그 사이에서 줄이 끊기면('살리는 / 것이') 읽는 눈이 앞 줄로 되돌아간다.
+ *   word-break: keep-all 은 낱말 **안쪽**만 지키므로 이 문제는 못 막는다.
+ * ⚠️ 의존명사 뒤에 조사·공백·문장 끝이 올 때만 묶는다 — 그래야 '지역'·'수건'·'때문'
+ *    처럼 같은 글자로 시작하는 보통명사를 건드리지 않는다.
+ * ⚠️ 목록을 함부로 넓히지 말 것. 넓히는 순간 멀쩡한 낱말이 붙어 버린다.
+ */
+export function bindKo(text: string) {
+  // ⚠️ 역슬래시 이스케이프를 쓰지 않는다 — 스크립트로 이 파일을 고칠 때 셸을 거치며
+  //    \s 가 s 로 깨져 규칙이 통째로 죽은 적이 있다(2026-09-01). 문자 집합으로 적는다.
+  return text.replace(
+    /([가-힣]+[은는을ㄹ])[ ]+(것|수|때|데|바|줄|뿐|만큼|따름|나름|채|김)(?=[이가은는을를에도와과의로만부터까지]|[ .,!?)"']|$)/g,
+    (_m, a, b) => a + ' ' + b,
+  );
+}
+
 export function plain(text: string) {
   return text.split('**').join('');
 }
@@ -72,7 +91,8 @@ export function plain(text: string) {
  *    글자로 못 읽는다(실측). tone 을 반드시 맞춰 줄 것.
  */
 function Marked({ text, tone }: { text: string; tone: 'light' | 'dark' }) {
-  const bits = text.split('**');
+  // ⚠️ 관형형+의존명사 묶기는 여기 한 곳에서 한다 — Sentences 의 모든 출력이 이 함수를 지난다.
+  const bits = bindKo(text).split('**');
   /*
    * ⚠️ 짝이 안 맞으면(표시 개수가 홀수) 강조를 **포기한다**.
    *   문장 단위로 쪼갠 뒤 강조를 입히는 구조라, 마침표가 표시 안에 있으면 닫는 표시가
@@ -228,7 +248,9 @@ export function SectionHead({
           ⚠️ 제목이 JSX 면 쪼개지 않는다. 문자열이 아니면 어절을 알 수 없다.
         */}
         {typeof title === 'string'
-          ? title.split(' ').map((w, i, arr) => (
+          ? bindKo(title)
+              .split(' ')
+              .map((w, i, arr) => (
               <span key={`${i}-${w}`}>
                 <span className="word-mask">
                   <span style={{ transitionDelay: `${i * 85}ms` }}>{w}</span>
@@ -352,7 +374,8 @@ export function PageHero({
             id={typeof title === 'string' ? headingId(title) : undefined}
             className="display-sm mt-4 scroll-mt-28 text-[30px] text-parchment sm:text-[40px] lg:text-[46px]"
           >
-            {title}
+            {/* ⚠️ 관형형+의존명사를 묶어 준다 — '살리는 / 것이' 같은 끊김을 막는다(bindKo). */}
+            {typeof title === 'string' ? bindKo(title) : title}
           </h1>
           {desc ? (
             <p className="mx-auto mt-6 max-w-[46em] text-[17px] leading-[1.9] text-parchment/85 sm:text-[18px]">
