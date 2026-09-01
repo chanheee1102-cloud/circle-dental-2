@@ -10,7 +10,6 @@ import {
 import { IMG } from '@/lib/assets';
 import { HeroMedia } from '@/components/HeroMedia';
 import { HeroMarquee } from '@/components/HeroMarquee';
-import { PillarRail } from '@/components/PillarRail';
 import { CredentialFan } from '@/components/CredentialFan';
 import { DoctorStage } from '@/components/DoctorStage';
 import { Reveal } from '@/components/Reveal';
@@ -391,88 +390,41 @@ function PillarSection() {
           />
         </div>
 
-        {/*
-          ★★ 두 번째 버전(circle-dental-2)과 같은 규격 — 카드 400px, 사진 4:5 ★★
-            (2026-08-31 운영자: "여기 크기랑 사진이랑 다 똑같이 해줘. 스크롤 이벤트랑")
-            4열 격자로는 한 칸이 296px 이라 사진이 232px 로 쪼그라든다. v2 는 카드를
-            400px 로 두고 **가로로 넘겨 보는 줄**로 만들어 그 크기를 냈다.
-          ★ 스크롤에 붙어 가로로 밀리는 연출은 components/PillarRail.tsx 가 맡는다
-            (2026-08-31 운영자: "스크롤하면 자동으로 되도록해줘. 지금 스크롤하면 메인페이지만 내려가").
-          ⚠️ 좁은 화면·모션 최소화에서는 그냥 옆으로 넘겨 보는 줄로 물러선다. v2 도 같다.
-        */}
-        <div className="mt-12">
-        <PillarRail>
+        <ul className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
           {/*
-            ★ 스크롤 등장 — 2026-08-31 운영자가 v2 를 가리키며 "스크롤 이벤트랑" 이라고
-              요청해 되살렸다. (2026-08-28 에는 "굳이 스크롤 이벤트 넣지말고" 로 뺐던 자리다.)
-            ⚠️ 카드가 이제 가로 줄이라 넷이 한 화면에 다 안 들어온다 — 하나씩 뜨는 것이
-               오히려 넘겨 보라는 신호가 된다. 격자로 되돌린다면 이 등장도 다시 뺄 것.
+            ⚠️ 여기에는 스크롤 등장(.reveal)을 걸지 않는다 (2026-08-28 오너: "굳이 스크롤
+               이벤트 넣지말고"). 넷이 한눈에 들어오는 것이 이 구획의 목적인데, 하나씩
+               차례로 뜨면 그 목적과 정면으로 어긋난다.
           */}
           {TREATMENT_PILLARS.map((p, i) => {
             const Icon = PILLAR_ICONS[i];
             /* ⚠️ .pillar-cycle 은 li 에 있어야 한다 — 카드에 걸면 hover 3D 가 죽는다(globals.css). */
             return (
-              <li key={p.key} className="reveal pillar-cycle w-[78vw] flex-none snap-start md:w-[400px]">
+              <li key={p.key} className="pillar-cycle">
                 <Link
                   href={p.href}
-                  className="pane-dark pane-card group flex h-full flex-col overflow-hidden rounded-[26px] p-7 md:p-8"
+                  className="pane-dark pane-card group flex h-full min-h-[300px] flex-col overflow-hidden rounded-[18px] p-7"
                 >
                   {/*
-                    ★★ 사진 — 기울어져 있다가 손을 올리면 바로 선다 ★★
-                      두 번째 버전(circle-dental-2)의 카드 형태다(2026-08-31 운영자).
-                      기울기를 홀짝으로 번갈아 준다 — 넷이 같은 각도로 누워 있으면
-                      기울인 것이 아니라 화면이 삐뚤어진 것처럼 보인다.
-                    ⚠️ 사진은 aria-hidden 이다. 무엇에 대한 카드인지는 바로 아래
-                       진료 이름이 이미 말하고 있어, 설명이 두 번 읽히면 방해만 된다.
-                       (alt 는 lib/clinic.ts 에 있고, 다른 곳에서 이 사진을 쓸 때 쓴다.)
+                    ⚠️ 순번(01~04)을 되살리지 말 것 (2026-08-28 오너) — 진료 넷은 순서가
+                       있는 것이 아니라 **나란한 것**이다. 번호를 붙이면 1번이 더 중요한
+                       진료처럼 읽힌다.
                   */}
-                  {/*
-                    ⚠️ 4/5 로 되돌리지 말 것 (2026-08-31 운영자: "사진을 높이를 조금 줄일까
-                       카드 높이가 너무 높아서"). 4/5 면 사진이 420px, 카드가 748px 이라
-                       한 화면에 한 장이 겨우 들어왔다. 정사각이면 카드가 660px 대로 내려온다.
-                    ⚠️ 원본은 640×801(4:5)이라 위아래가 조금 잘린다 — object-cover 가
-                       가운데를 남기므로 넷 다 주제가 살아 있다(실측).
-                  */}
-                  <span className="pillar-shot relative block aspect-[6/5] w-full overflow-hidden rounded-[14px] bg-wine-deep-2">
-                    <Image
-                      src={p.photo}
-                      alt=""
-                      aria-hidden
-                      fill
-                      sizes="(max-width: 767px) 78vw, 340px"
-                      className="object-cover"
-                    />
-                  </span>
-
-                  {/*
-                    ⚠️ 번호는 v2 카드에 있던 것이다. 2026-08-28 에 "진료 넷은 나란한 것이라
-                       번호를 붙이면 1번이 더 중요해 보인다" 며 뺐던 적이 있는데,
-                       2026-08-31 운영자가 v2 화면을 가리키며 "다 똑같이 해줘" 로 되돌렸다.
-                  */}
-                  <span className="display-sm mt-6 block text-[30px] leading-none text-parchment/35">
-                    {p.no}
-                  </span>
-                  <h3 className="mt-4 text-[23px] font-bold tracking-[-0.03em] text-parchment">
+                  <h3 className="display-sm text-[22px] text-parchment sm:text-[24px]">
                     {p.name}
                   </h3>
-                  {/* 영문명 — v2 카드가 한글 아래 세리프로 두던 줄이다. */}
-                  <p className="mt-1 font-serif text-[16px] tracking-[0.01em] text-clay-300">
-                    {p.en}
-                  </p>
-                  {/* ⚠️ 어두운 카드다 — tone="dark" 를 빼지 말 것(강조 색이 밝은 면용으로 나간다). */}
-                  <p className="mt-5 flex-1 text-[15px] leading-[1.85] text-parchment/85">
+                  <p className="mt-3.5 flex-1 text-[15.5px] leading-[1.75] text-parchment/85">
                     <Sentences text={p.copy} tone="dark" />
                   </p>
-
                   {/*
-                    ★★ 아이콘은 '자세히 보기' 맞은편 빈자리에서 그려진다 ★★
-                      (2026-08-31 운영자: "아이콘은 자세히보기 오른쪽 빈공간에 하든 해서
-                       그려지게") — 사진 위 가운데에 두었더니 사진을 가려야 해서 어두운 막이
-                       필요했고, 그 막이 사진을 죽였다. 여기는 원래 비어 있던 자리다.
-                    ⚠️ 그리는 규칙은 globals.css 의 .pillar-cycle:hover .icon-draw 가 가지고
-                       있다 — 여기서 다시 정의하지 말 것.
-                    ⚠️ 쉬는 동안 아이콘은 안 보인다. 진료 이름이 이미 글자로 있어 잃는 정보가
-                       없다(aria-hidden 인 이유다).
+                    ★★ 아이콘은 맨 아래 오른쪽이다 (2026-08-28 오너) ★★
+                      위에 뒀을 때는 쉬는 동안 아이콘이 안 보이니 **제목 위가 빈 칸**으로
+                      남아 글 배치가 어긋나 보였다. 아래 오른쪽으로 내리면 그 빈 자리가
+                      '자세히 보기' 반대편의 여백이 되어 어긋나 보이지 않는다.
+                    ⚠️ 위로 되돌리지 말 것 — 되돌리면 빈 칸 문제가 그대로 돌아온다.
+                    ⚠️ 아이콘은 쉬는 동안 보이지 않는다. 손을 올리면 그려진다(globals.css).
+                       뜻을 지고 있지 않으므로(진료 이름이 이미 글자로 있다) 안 보이는
+                       동안 잃는 정보가 없다 — aria-hidden 인 이유다.
                   */}
                   <span className="mt-6 flex items-center justify-between gap-4 text-parchment">
                     <span className="inline-flex items-center gap-1.5 text-[15px] font-medium">
@@ -481,14 +433,13 @@ function PillarSection() {
                         →
                       </span>
                     </span>
-                    <Icon size={48} />
+                    <Icon />
                   </span>
                 </Link>
               </li>
             );
           })}
-        </PillarRail>
-        </div>
+        </ul>
 
         {/*
           ⚠️ 이 버튼을 제목 옆으로 되돌리지 말 것 (2026-08-28 오너) — 거기 있으면 제목의
@@ -676,10 +627,9 @@ function DoctorSection() {
                  *   **5% 검정이 검정 위에 얹혀 배경이 통째로 사라졌다**(운영자: "인증패 뒤에
                  *   원래 circle dental 클리닉 지나가는 배경이었는데 사라져서").
                  *   어두운 면에서는 밝은 색을 아주 옅게 얹어야 한다.
-                 * ⚠️ 0.12 를 넘기지 말 것 — 그 위 인증서 글자와 다투기 시작한다(실측: 캡션 대비는
-                 *    0.12 에서도 11:1 로 여유가 있지만, 배경이 아니라 두 번째 내용으로 읽히기 시작한다).
+                 * ⚠️ 0.07 을 넘기지 말 것 — 그 위 인증서 글자와 다투기 시작한다.
                  */
-                colorClass="text-parchment/[0.09]"
+                colorClass="text-parchment/[0.055]"
               />
             </div>
             <CredentialFan />
