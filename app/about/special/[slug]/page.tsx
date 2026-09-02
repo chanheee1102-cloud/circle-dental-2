@@ -4,7 +4,8 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { SPECIALS, specialBySlug } from '@/lib/specials';
 import { CLINIC } from '@/lib/clinic';
-import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
+import { AboutHero } from '@/components/AboutHero';
 import { StrengthIcon } from '@/components/StrengthIcons';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, og, imageObjectSchema } from '@/lib/seo';
@@ -105,7 +106,8 @@ export default async function SpecialDetailPage({
           ⚠️ 제목을 아래 격자에서 다시 그리지 말 것 (2026-08-28) — 머리는 PageHero 가 전담한다.
           ★ 아이콘·번호·사진은 격자에 남긴다 — 그것은 머리말이 아니라 내용이다.
         */}
-        <PageHero trail={trail} photo="consult" eyebrow={s.eyebrow} title={s.title} />
+        {/* ⚠️ 눈썹을 넘기지 말 것 — 사진 위 작은 글자는 밝은 사진에서 먼저 깨진다. */}
+        <AboutHero trail={trail} photo="sterile" title={s.title} />
         {/* 히어로 — 사진을 크게 */}
         <Container className="py-10 lg:py-12">
           <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">

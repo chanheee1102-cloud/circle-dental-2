@@ -4,7 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { OUTREACH, CREDENTIALS } from '@/lib/clinic';
 import { IMG } from '@/lib/assets';
-import { Container, SectionHead, ContactCta, Sentences, Breadcrumb, bindKo } from '@/components/ui';
+import { Container, SectionHead, ContactCta, Sentences, bindKo } from '@/components/ui';
+import { AboutHero } from '@/components/AboutHero';
 import { SpecialGrid } from '@/components/SpecialGrid';
 import { InteriorGallery } from '@/components/InteriorGallery';
 import { JsonLd } from '@/components/JsonLd';
@@ -83,57 +84,16 @@ export default function AboutPage() {
       />
 
       {/*
-        ★★ 머리 — 사진이 보이는 것이 요점이다 (2026-09-01 오너: "배경사진도 좀 잘보이게") ★★
-          공용 PageHero 는 사진을 76% 덮는다. 가운데 정렬 글 **뒤쪽 전체**가 어두워야
-          작은 금색 글자까지 버티기 때문이다(그쪽 주석의 2.26:1 실측).
-          여기서는 글을 **아래 왼쪽으로 몰아** 두고 덮개도 아래쪽에만 준다.
-          그래서 사진 위쪽 절반은 거의 그대로 보이고, 글이 앉는 자리만 어둡다.
-        ⚠️ 글을 가운데로 되돌리지 말 것 — 그러면 화면 전체를 덮어야 해서 사진이 다시 사라진다.
-        ⚠️⚠️ 덮개를 여기서 더 옅게 하지 말 것 — **여기가 바닥이다** (2026-09-01 실측) ⚠️⚠️
-           오너 요청으로 두 번 밝혔고, 지금 값에서 빵부스러기가 4.92:1 이다(기준 4.5).
-           여유가 0.42 뿐이라 한 단만 더 밝히면 바로 미달이다.
-           제목 9.14:1 · 본문 8.83:1 은 넉넉하지만, **가장 위에 있는 작은 글자**가 늘 먼저 깨진다.
-        ⚠️ 사진 위에 작은 금색 글자를 올리지 말 것 — 금색은 흰색보다 먼저 무너진다.
+        머리말은 병원 소개 구역이 함께 쓰는 부품이다 (2026-09-01).
+        ⚠️ 여기서 손으로 다시 그리지 말 것 — /about · 의료진 · 근거 · 첫 방문 · 특별함이
+           모두 같은 부품을 쓴다. 사진을 얼마나 덮을지는 그 파일 한 곳에서 정한다.
       */}
-      <section className="relative isolate -mt-[68px] flex min-h-[88vh] flex-col justify-end overflow-hidden bg-wine-deep pt-[68px] text-parchment sm:-mt-[94px] sm:pt-[94px]">
-        <Image
-          src={IMG.interior[2].src}
-          alt=""
-          aria-hidden
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-[50%_38%]"
-        />
-        {/*
-          아래에서 위로 — 글이 앉는 아래 절반만 덮고 위 절반은 사진 그대로 둔다.
-          ⚠️ 스톱 위치를 위로 올리지 말 것 (2026-09-01 실측) — 글 덩어리가 화면 32~84% 를
-             차지해서, 0.55 로 걸쳐 있던 자리에서 제목이 2.91:1(기준 3), 본문이 2.61:1(기준 4.5)
-             이었다. 복도 끝의 밝은 문이 정확히 그 자리 뒤에 있다.
-        */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(to_top,rgba(30,28,25,0.82)_0%,rgba(30,28,25,0.78)_30%,rgba(30,28,25,0.64)_50%,rgba(30,28,25,0.20)_70%,rgba(30,28,25,0.02)_100%)]"
-        />
-        {/* 왼쪽에서 오른쪽으로 한 겹 더 — 글 줄이 긴 쪽만 받쳐 준다. */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(to_right,rgba(30,28,25,0.40)_0%,rgba(30,28,25,0.18)_46%,rgba(30,28,25,0)_76%)]"
-        />
-
-        <Container className="relative pb-16 lg:pb-24">
-          <Breadcrumb trail={TRAIL} tone="dark" />
-          <h1
-            id={headingId(TITLE)}
-            className="display-sm mt-8 max-w-[17em] scroll-mt-28 text-[clamp(30px,4.4vw,54px)] leading-[1.2] tracking-[-0.03em] text-parchment"
-          >
-            {bindKo(TITLE)}
-          </h1>
-          <p className="mt-7 max-w-[44em] text-[17px] leading-[1.9] text-parchment/85 sm:text-[18px]">
-            <Sentences text={LEAD} />
-          </p>
-        </Container>
-      </section>
+      <AboutHero
+        trail={TRAIL}
+        title={TITLE}
+        lead={LEAD}
+        photo="corridor"
+      />
 
       {/*
         ★ 문답 — 카드를 걷고 헤어라인만 남겼다.
@@ -252,7 +212,8 @@ export default function AboutPage() {
         ⚠️ 다시 별도 페이지로 떼지 말 것 — 그때 본문이 209자뿐이라 검색에는 빈 페이지였다.
         ★ 사진 열두 장의 설명(alt)은 이 사이트가 가진 몇 안 되는 1차 자료다. 지우지 말 것.
       */}
-      <section className="border-y border-brand-200/60 bg-parchment py-20 lg:py-28">
+      {/* ⚠️ 어두운 면으로 되돌리지 말 것 — 밝은 진료실 사진 열두 장이 이 구획의 주인공이다. */}
+      <section className="light-band py-20 lg:py-28">
         <Container>
           <SectionHead
             eyebrow="공간"

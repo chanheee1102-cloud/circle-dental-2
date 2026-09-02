@@ -1,9 +1,5 @@
-import { CLINIC, UNVERIFIED } from './clinic';
 import { DOCTORS, PUBLICATION_DETAIL } from './doctors';
 import { IMG } from './assets';
-import { TREATMENTS } from './treatments';
-import { SYMPTOMS } from './symptoms';
-import { CONDITIONS } from './conditions';
 
 /**
  * 신뢰 지표 — "왜 이 병원 말을 믿을 수 있는가" 를 기계와 사람 양쪽이 읽을 수 있게.
@@ -59,16 +55,13 @@ export const TRUST_STATS: TrustStat[] = [
     label: '국제 학술지 발표 논문',
     source: 'lib/doctors.ts — PUBLICATION_DETAIL',
   },
-  {
-    value: `${TREATMENTS.length}개`,
-    label: '진료 영역',
-    source: 'lib/treatments.ts — TREATMENTS.length',
-  },
-  {
-    value: `${SYMPTOMS.length + CONDITIONS.length}가지`,
-    label: '증상 · 질환 설명 문서',
-    source: 'lib/symptoms.ts + lib/conditions.ts',
-  },
+  /*
+   * ⚠️ '진료 영역 N개' · '증상·질환 설명 문서 N가지' 를 여기에 되살리지 말 것
+   *    (2026-09-01 오너: "난잡하다"). 둘 다 **우리 사이트 분량**이라 제3자가 준 근거가 아니다.
+   *    이 페이지는 "병원이 스스로 말하는 것은 근거가 아니다" 가 주장이라, 그 옆에 두면
+   *    주장이 흐려진다. 숫자도 여섯이 되어 네 칸 한 줄이 두 줄로 어중간해진다.
+   *    사이트 분량을 보여 주고 싶으면 근거 페이지가 아니라 다른 자리에 둘 것.
+   */
 ];
 
 /** 논문 제목 — 화면에서 근거로 함께 보여 줄 때 쓴다. */
@@ -130,11 +123,8 @@ export const MEDIA_APPEARANCES = [
   },
 ];
 
-/** 진료 가능 시간대 — '언제 갈 수 있나' 도 신뢰 지표다(야간·토요일). */
-export const ACCESS_FACTS = UNVERIFIED.hours.verified
-  ? [
-      { label: '야간 진료', value: '화 · 목 오후 8시 30분까지' },
-      { label: '토요일 진료', value: '오후 2시까지' },
-      { label: '주차', value: `${CLINIC.parking.type} · ${CLINIC.parking.fee}` },
-    ]
-  : [];
+/*
+ * ⚠️ ACCESS_FACTS(야간·토요일·주차)를 여기에 되살리지 말 것 (2026-09-01) —
+ *    근거 페이지에서 뺐고, 같은 내용은 내원 안내(/visit)에 이미 있다.
+ *    진료시간은 '제3자가 준 근거' 가 아니라 운영 정보다.
+ */

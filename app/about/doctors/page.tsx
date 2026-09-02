@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
-import Link from 'next/link';
 import Image from 'next/image';
 import { CLINIC } from '@/lib/clinic';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
 import { IMG } from '@/lib/assets';
-import { Container, ContactCta, PageHero, Sentences } from '@/components/ui';
+import { Container, ContactCta, Sentences } from '@/components/ui';
+import { AboutHero } from '@/components/AboutHero';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, medicalWebPageSchema } from '@/lib/seo';
 
@@ -83,10 +83,9 @@ export default function DoctorsPage() {
         ]}
       />
 
-      <PageHero
+      <AboutHero
         trail={TRAIL}
         photo="room"
-        eyebrow="의료진 소개"
         title={
           <>
             {/* ⚠️ 줄바꿈 앞에 공백을 둔다 — 없으면 문서의 제목이 "교수출신대표원장님과" 로
@@ -103,7 +102,7 @@ export default function DoctorsPage() {
             지적받는 유형이다. 원문에 있던 사실만 남긴다.
           ⚠️ '인증' → '인정' 은 유지한다(전문의 자격 제도의 공식 용어, lib/clinic.ts 정정 이력).
         */
-        desc="손끝의 숙련도에 따라 결과가 달라지는 치과 진료, 10년 이상 경력의 교수출신 대표원장님과 보건복지부 인정 전문의들로만 구성된 의료진이 개인 맞춤형 진료를 제공합니다."
+        lead="손끝의 숙련도에 따라 결과가 달라지는 치과 진료, 10년 이상 경력의 교수출신 대표원장님과 보건복지부 인정 전문의들로만 구성된 의료진이 개인 맞춤형 진료를 제공합니다."
       />
 
       {/*
@@ -301,7 +300,8 @@ export default function DoctorsPage() {
       </section>
 
       {/* 인증·수료 */}
-      <section className="border-y border-brand-200/60 bg-parchment py-16">
+      {/* ⚠️ 어두운 면으로 되돌리지 말 것 — 종이 문서 넉 장은 밝은 면에 놓일 때 문서로 읽힌다. */}
+      <section className="light-band py-16 lg:py-20">
         <Container>
           <h2 className="display-sm text-[clamp(24px,2.6vw,32px)] text-ink">어떤 인증과 수료를 받았나요?</h2>
           {/*
@@ -319,7 +319,8 @@ export default function DoctorsPage() {
           <div className="mt-10 grid grid-cols-2 items-start gap-x-6 gap-y-8 sm:grid-cols-4">
             {IMG.credentials.map((c) => (
               <figure key={c.src}>
-                <div className="relative aspect-square overflow-hidden rounded-xl border border-brand-100 bg-brand-50/50">
+                {/* ⚠️ 테두리를 brand-100 으로 되돌리지 말 것 — 밝은 띠 위에서 1.03:1 로 사라진다(2026-09-02 실측). */}
+                <div className="relative aspect-square overflow-hidden rounded-xl border border-brand-200 bg-brand-50/50">
                   <Image
                     src={c.src}
                     alt={c.label}

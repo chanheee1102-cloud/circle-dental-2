@@ -73,7 +73,9 @@ export function InteriorGallery() {
         ⚠️ 폭 상한을 지우지 말 것 (2026-09-01 오너: "사진 너무 커") — 4:3 이라 넓은 화면에서
            한 장이 화면을 통째로 먹었다. 사진은 근거지 주인공이 아니다.
       */}
-      <div className="relative mx-auto aspect-[3/2] w-full max-w-[52rem] overflow-hidden rounded-2xl bg-brand-100">
+      <div className="mx-auto flex w-full max-w-[58rem] items-center gap-3">
+        <Arrow side="left" onClick={() => go(i - 1)} />
+        <div className="relative aspect-[3/2] w-full min-w-0 flex-1 overflow-hidden rounded-2xl bg-brand-100">
         <Image
           key={cur.src}
           src={cur.src}
@@ -98,13 +100,12 @@ export function InteriorGallery() {
           className="pointer-events-none absolute h-px w-px opacity-0"
         />
 
-        <Arrow side="left" onClick={() => go(i - 1)} />
-        <Arrow side="right" onClick={() => go(i + 1)} />
-
         {/* 몇 번째인지 — 좁은 화면에서는 썸네일이 다 안 보이므로 숫자로도 말한다. */}
         <p className="absolute right-4 bottom-4 rounded-full bg-charcoal/70 px-3 py-1 text-[14px] font-bold text-parchment tabular-nums">
           {i + 1} / {shots.length}
         </p>
+        </div>
+        <Arrow side="right" onClick={() => go(i + 1)} />
       </div>
 
       {/*
@@ -161,18 +162,25 @@ export function InteriorGallery() {
 }
 
 /**
- * 좌우 화살표.
- * ⚠️ 사진 위에 얹히므로 바탕을 깔아야 한다 — 밝은 사진 위에서 흰 화살표는 사라진다.
+ * 좌우 화살표 — **사진 밖**에 선다 (2026-09-01 오너).
+ * ⚠️ absolute 로 사진 위에 다시 올리지 말 것. 사진 일부를 가리고, 밝은 사진에서 보이게 하려고
+ *    어두운 바탕을 깔아야 했다. 밖으로 나오면 그 바탕도 필요 없다.
+ * ⚠️ 좁은 화면(sm 미만)에서는 숨긴다 — 좌우로 자리를 빼앗기면 사진이 그만큼 작아진다.
+ *    그 화면에서는 아래 썸네일로 넘긴다.
  */
 function Arrow({ side, onClick }: { side: 'left' | 'right'; onClick: () => void }) {
+  /*
+   * ⚠️ 홑글자 화살표만 두지 말 것 (2026-09-01 오너: "좌우 버튼 잘 안 보인다").
+   *   대비만 보면 5.96:1 로 기준을 넘었는데도 안 보였다 — 획이 가는 글자 하나는
+   *   숫자가 통과해도 **버튼으로 안 읽힌다.** 대비 기준(3:1)은 꽉 찬 도형을 전제한다.
+   *   테두리 있는 동그라미는 장식이 아니라 '누를 수 있는 것' 이라는 표시다.
+   */
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={side === 'left' ? '이전 사진' : '다음 사진'}
-      className={`absolute top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-charcoal/55 text-[20px] text-parchment transition hover:bg-charcoal/75 ${
-        side === 'left' ? 'left-3' : 'right-3'
-      }`}
+      className="hidden h-11 w-11 shrink-0 place-items-center rounded-full border border-brand-300 bg-brand-50 text-[24px] leading-none font-bold text-ink transition-colors hover:border-ink hover:bg-brand-100 sm:grid"
     >
       <span aria-hidden>{side === 'left' ? '‹' : '›'}</span>
     </button>

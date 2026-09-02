@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { CLINIC } from '@/lib/clinic';
 import { TRUST_STATS, CREDENTIAL_ROWS, MEDIA_APPEARANCES } from '@/lib/trustSignals';
-import { Container, ContactCta, MedicalNotice, PageHero } from '@/components/ui';
+import { Container, ContactCta, MedicalNotice } from '@/components/ui';
+import { AboutHero } from '@/components/AboutHero';
 import { TrustSection } from '@/components/TrustSection';
 import { ArticleMeta, charCount } from '@/components/article';
 import { JsonLd } from '@/components/JsonLd';
@@ -64,26 +65,28 @@ export default function TrustPage() {
         ]}
       />
 
-      <PageHero
+      <AboutHero
         trail={TRAIL}
         photo="consult"
-        eyebrow="근거"
         title="무엇을 근거로 믿을 수 있나요?"
-        desc="병원이 스스로 좋다고 말하는 것은 근거가 아닙니다. 제3자가 준 자격과 인증, 학술지에 실린 논문, 방송에 나간 기록이 근거입니다."
+        /*
+          ⚠️ 둘째 문장을 다시 늘리지 말 것 (2026-09-01 오너: "한 줄로") — 머리말의 글 칸은
+             한 줄에 약 27자다. 쉼표 마디는 통째로 움직이므로 그보다 길면 마디 하나가
+             다음 줄로 통째로 내려가 석 줄이 된다.
+        */
+        lead="병원이 스스로 좋다고 말하는 것은 근거가 아닙니다. 제3자가 준 자격·인증, 논문, 방송 기록이 근거입니다."
       />
 
-      <Container className="py-12 lg:py-16">
-
-        <div className="mt-8 max-w-[70ch]">
-          <ArticleMeta path="/about/trust" />
-        </div>
+      {/* ⚠️ 여백 가진 상자로 감싸지 말 것 — ArticleMeta 는 지금 null 이라 빈 띠만 남는다. */}
+      <Container className="pt-12 lg:pt-16">
+        <ArticleMeta path="/about/trust" />
       </Container>
 
       {/*
         내용은 홈에 있던 것 그대로다 — 옮긴 것이지 새로 쓴 것이 아니다.
         컴포넌트를 그대로 재사용하므로 숫자·표가 두 곳에서 어긋날 일이 없다.
       */}
-      <TrustSection headless />
+      <TrustSection />
 
       <Container>
         <MedicalNotice />

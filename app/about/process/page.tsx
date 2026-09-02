@@ -3,7 +3,8 @@ import { ArticleMeta } from '@/components/article';
 import { FIRST_VISIT_FLOW } from '@/lib/firstVisit';
 import Link from 'next/link';
 import { CLINIC } from '@/lib/clinic';
-import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
+import { Container, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
+import { AboutHero } from '@/components/AboutHero';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, abs } from '@/lib/seo';
 
@@ -94,91 +95,154 @@ export default function ProcessPage() {
         ]}
       />
 
-      <PageHero
+      <AboutHero
         trail={TRAIL}
-        photo="consult"
-        eyebrow="첫 방문 안내"
+        photo="booth"
         title="치과에 처음 가면 무엇을 하나요?"
-        desc="무엇을 하는지 모르면 첫 방문이 부담스럽습니다. 접수부터 상담까지의 순서는 대체로 정해져 있습니다."
+        lead="무엇을 하는지 모르면 첫 방문이 부담스럽습니다. 접수부터 상담까지의 순서는 대체로 정해져 있습니다."
       />
 
-      <Container className="py-12 lg:py-16">
+      {/*
+        발행·수정일 — ⚠️ 여백 가진 상자로 감싸지 말 것. ArticleMeta 는 지금 null 이라 빈 띠만 남는다.
+      */}
+      <Container>
+        <ArticleMeta path="/about/process" />
+      </Container>
 
-        {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
-        <div className="mt-8 max-w-[70ch]">
-          <ArticleMeta path="/about/process" />
-        </div>
-
-        <ol className="relative mt-14 space-y-0 border-l-2 border-brand-200 pl-8">
+      {/*
+        ★★ 절차 다섯 단계 — 카드가 스크롤을 따라 하나씩 올라온다 (2026-09-02 오너) ★★
+          "카드 형태로, 스크롤하면 하나씩 순서대로 넘어가게 모션 예쁘게."
+        ★ .step-in 은 카드마다 따로 관찰한다 — 묶음이 한꺼번에 뜨는 reveal-stack 과 다르다.
+          읽는 속도에 맞춰 다음 카드가 올라온다. 모양은 globals.css 의 .step-in 에서 정한다.
+        ⚠️ 카드를 걷고 글만 두지 말 것 — 그렇게 뒀더니 "너무 밋밋하다" 는 지적을 받았다.
+        ⚠️ 카드 사이에 가로 구분선을 다시 긋지 말 것 — 그건 그 전에 "억지스럽다" 로 퇴짜다.
+           카드 자체가 이미 경계다.
+        ⚠️ 번호(01~05)를 지우지 말 것 — HowTo 구조화 데이터의 순서와 화면이 같은 말을 해야 한다.
+      */}
+      <Container className="pt-12 pb-16 lg:pt-16 lg:pb-20">
+        <ol className="space-y-4 lg:space-y-5">
           {FLOW.map((f) => (
-            <li key={f.n} className="relative pb-10 last:pb-0">
-              <span
-                aria-hidden
-                className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-wine-bg text-[13.5px] font-black text-brand-600"
-              >
-                {f.n}
-              </span>
-              <h2 className="display-sm text-[19px] text-ink">{f.t}</h2>
-              <p className="mt-3 max-w-[64ch] text-[16.5px] leading-[1.85] text-ink-soft">{f.d}</p>
+            <li key={f.n} className="step-in">
+              <article className="card-glass card-edge rounded-[22px] p-7 sm:p-9 lg:p-10">
+                <div className="grid gap-y-4 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)] lg:items-baseline lg:gap-x-12">
+                  <h2 className="flex items-baseline gap-4">
+                    <span
+                      aria-hidden
+                      className="display text-[clamp(26px,2.8vw,36px)] leading-none tabular-nums text-clay-600"
+                    >
+                      {f.n}
+                    </span>
+                    <span className="display-sm text-[clamp(19px,2vw,24px)] leading-snug text-ink">
+                      {f.t}
+                    </span>
+                  </h2>
+                  <p className="max-w-[62ch] text-[17px] leading-[1.9] text-twilight">
+                    <Sentences text={f.d} />
+                  </p>
+                </div>
+              </article>
             </li>
           ))}
         </ol>
       </Container>
 
-      <section className="border-y border-brand-200/60 bg-parchment py-16">
+
+      {/*
+        ★ 문답 — 병원 소개와 같은 문법(질문 왼쪽, 답 오른쪽, 가로줄).
+        ⚠️ 질문형 h2 + 바로 아래 답 구조를 깨지 말 것 — AI 가 인용해 가는 자리다.
+        ⚠️ 밝은 띠는 한 페이지에 하나다. 여기 말고 다른 구획에 또 붙이지 말 것.
+      */}
+      {/*
+        ★ 문답 — 여기도 선을 걷었다. 질문이 굵고 답이 그 아래 붙으면 그것으로 구분이 된다.
+        ⚠️ 질문형 h2 + 바로 아래 답 구조를 깨지 말 것 — AI 가 인용해 가는 자리다.
+        ⚠️ 밝은 띠는 한 페이지에 하나다.
+      */}
+      {/*
+        ★ 문답 — 번호를 붙여 문서처럼 읽히게 (2026-09-02 오너: "QnA 처럼 번호 붙이고 전문적으로").
+          Q1~Q5 를 금색으로 앞세우고, 답은 질문 글자 왼쪽 끝에 맞춰 들여쓴다.
+        ⚠️ 가로 구분선을 긋지 말 것 — 번호와 들여쓰기가 이미 항목을 나눈다("억지스럽다" 지적).
+        ⚠️ 질문형 제목 + 바로 아래 답 구조를 깨지 말 것 — AI 가 인용해 가는 자리다.
+        ⚠️ 밝은 띠는 한 페이지에 하나다.
+      */}
+      <section className="light-band py-16 lg:py-20">
         <Container>
-          <h2 className="display-sm text-[24px] text-ink sm:text-[28px]">첫 방문 전 자주 묻는 것</h2>
-          <div className="mt-8 divide-y divide-brand-100 border-t border-brand-100">
-            {FIRST_VISIT_QA.map((qa) => (
-              <article key={qa.q} className="py-6">
-                <h3 className="text-[18px] font-black leading-snug text-ink">{qa.q}</h3>
-                <p className="mt-3 max-w-[68ch] text-[16.5px] leading-[1.85] text-ink-soft"><Sentences text={qa.a} /></p>
-              </article>
+          <h2 className="display-sm text-[clamp(23px,2.4vw,30px)] text-ink">첫 방문 전 자주 묻는 것</h2>
+          <ol className="mt-11 space-y-10 lg:space-y-12">
+            {FIRST_VISIT_QA.map((qa, i) => (
+              <li key={qa.q} className="reveal">
+                <h3 className="flex gap-3.5">
+                  <span
+                    aria-hidden
+                    className="display shrink-0 text-[17px] leading-[1.55] tabular-nums text-clay-600"
+                  >
+                    Q{i + 1}
+                  </span>
+                  <span className="text-[clamp(17px,1.8vw,20px)] leading-snug font-black text-ink">
+                    {qa.q}
+                  </span>
+                </h3>
+                {/* ⚠️ 들여쓰기 값을 바꾸려면 위 번호 폭도 함께 볼 것 — 답이 질문 글자와 어긋난다. */}
+                <p className="mt-3 max-w-[64ch] pl-[2.4rem] text-[17px] leading-[1.9] text-twilight">
+                  <Sentences text={qa.a} />
+                </p>
+              </li>
             ))}
-          </div>
+          </ol>
         </Container>
       </section>
 
+      {/*
+        방문 안내 — ⚠️ 그라데이션 버튼으로 되돌리지 말 것 (오너 지시, 사이트 전체 규칙).
+        이 사이트의 버튼은 단색 아니면 테두리다.
+      */}
       <Container className="py-14">
-        <div className="rounded-2xl border border-brand-200/70 card-glass p-8 shadow-[var(--shadow-soft)]">
-          <h2 className="display-sm text-[19px] text-ink">동그라미치과의원 방문 안내</h2>
-          <p className="mt-3 text-[16.5px] leading-relaxed text-ink-soft">
-            진료시간과 위치는 내원 안내에서, 예약은 아래 채널로 확인하실 수 있습니다.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a
-              href={CLINIC.phoneHref}
-              className="rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-3 text-[16.5px] font-black text-white shadow-[var(--shadow-btn)]"
-            >
-              {CLINIC.phone}
-            </a>
-            <a
-              href={CLINIC.booking.naver}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full btn-pane border px-6 py-3 text-[16.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
-            >
-              네이버 예약
-            </a>
-            <a
-              href={CLINIC.booking.kakao}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full btn-pane border px-6 py-3 text-[16.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
-            >
-              카카오톡 상담
-            </a>
-            <Link
-              href="/visit"
-              className="rounded-full btn-pane border px-6 py-3 text-[16.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
-            >
-              오시는 길
-            </Link>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-12">
+          <h2 className="display-sm text-[clamp(19px,2vw,24px)] text-ink">
+            동그라미치과의원 방문 안내
+          </h2>
+          <div>
+            <p className="text-[17px] leading-[1.9] text-twilight">
+              진료시간과 위치는 내원 안내에서, 예약은 아래 채널로 확인하실 수 있습니다.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <a
+                href={CLINIC.phoneHref}
+                /* ⚠️ bg-parchment 로 되돌리지 말 것 — 어두운 서브페이지에서 parchment 는 어두운 값이라
+                   글자와 같은 색이 된다(2026-09-02 실측 1.04:1). 그 조합은 진료 페이지의
+                   bg-night 안(어두운 섬)에서만 밝게 뒤집힌다. 여기는 섬이 아니다. */
+                className="rounded-full bg-clay-600 px-6 py-3 text-[16.5px] font-black text-wine-bg transition-opacity hover:opacity-90"
+              >
+                {CLINIC.phone}
+              </a>
+              <a
+                href={CLINIC.booking.naver}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border-[1.5px] border-ink/60 px-6 py-3 text-[16.5px] font-bold text-ink transition-colors hover:bg-ink hover:text-parchment"
+              >
+                네이버 예약
+              </a>
+              <a
+                href={CLINIC.booking.kakao}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border-[1.5px] border-ink/60 px-6 py-3 text-[16.5px] font-bold text-ink transition-colors hover:bg-ink hover:text-parchment"
+              >
+                카카오톡 상담
+              </a>
+              <Link
+                href="/visit"
+                className="rounded-full border-[1.5px] border-ink/60 px-6 py-3 text-[16.5px] font-bold text-ink transition-colors hover:bg-ink hover:text-parchment"
+              >
+                오시는 길
+              </Link>
+            </div>
           </div>
         </div>
 
         <MedicalNotice />
       </Container>
+
 
       <ContactCta />
     </>
