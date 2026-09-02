@@ -58,7 +58,7 @@ export default function SymptomIndexPage() {
             <Link
               key={s.slug}
               href={`/insight/symptom/${s.slug}`}
-              className="group block h-full rounded-2xl border border-brand-100 card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
+              className="group block h-full rounded-2xl border border-wine-line card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
             >
               <div className="flex items-start justify-between gap-5">
                 <div className="min-w-0">

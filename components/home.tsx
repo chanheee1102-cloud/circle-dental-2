@@ -220,7 +220,7 @@ export function QuietLink({
       className={`group inline-flex w-fit items-center gap-2 border-b pb-1 text-[16.5px] font-medium transition-colors ${
         dark
           ? 'border-wine-line/30 text-parchment hover:border-wine-line'
-          : 'border-wine-line text-charcoal hover:border-signal'
+          : 'border-wine-line text-charcoal hover:border-ink'
       } ${className}`}
     >
       {children}

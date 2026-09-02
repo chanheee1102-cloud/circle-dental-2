@@ -118,15 +118,59 @@ function Marked({ text, tone }: { text: string; tone: 'light' | 'dark' }) {
   );
 }
 /**
- * 쉼표 뒤에서 줄이 바뀌게 한다 — **이보다 짧은 마디만** 통째로 움직인다(글자 수).
+ * 글자당 폭 — **em** 단위.
  *
- * ⚠️ 값을 크게 올리지 말 것. 마디가 길수록 줄 끝에 남는 빈자리도 그만큼 커진다.
- *    실측(9개 페이지): 16 → 문장부호 뒤 18%, 26 → 25%, 34 → 31%.
- *    그런데 줄 끝에 남는 빈자리(상위 10%)는 104px → 141px → 229px 로 뛴다.
- *    34 는 한 줄에 일곱 자쯤이 통째로 비어 눈에 띈다. 26 이 얻는 것과 잃는 것의 경계다.
- * ⚠️ 0 으로 두면 쉼표 규칙이 통째로 꺼진다(줄바꿈이 아무 데서나 일어나던 상태로 돌아간다).
+ * ⚠️⚠️ px 로 되돌리지 말 것 (2026-09-02 실측) ⚠️⚠️
+ *   '글자당 13px' 은 18px 본문에서만 맞는다. 46px 인용문에서는 17자 마디가 실제로 582px
+ *   인데 px 모델은 221px 로 봤다 — 판정이 통째로 어긋난다.
+ *   컨테이너 쿼리의 em 은 **그 칸의 글꼴 크기** 기준이라, em 으로 적으면 어느 크기에서도 맞는다.
+ * ⚠️ 실측 글자당 폭은 0.66 / 0.72 / 0.70 em 이었다(한글에 라틴·공백이 섞인 본문).
+ *    가장 넓은 쪽(0.72)에 맞춘다 — 넉넉한 쪽으로 틀리면 마디가 안 내려갈 뿐이지만,
+ *    모자란 쪽으로 틀리면 내려간 마디가 거기서 또 잘려 앞 줄에 구멍이 남는다.
  */
-const CLAUSE_MAX = 26;
+const EM_PER_CHAR = 0.72;
+
+/**
+ * 앞 마디가 줄을 이만큼은 채워야 다음 마디를 내린다.
+ *
+ * ⚠️⚠️ 아래 clauseX 의 **내림(floor)** 과 한 쌍이다. 하나만 고치지 말 것 ⚠️⚠️
+ *   실측 두 사례가 8%p 차이로 갈린다 —
+ *     통과시켜야: 임플란트 머리말 앞 마디 332px / 칸 612px = 54%
+ *     막아야    : /faq 답변      앞 마디 304px / 칸 668px = 46%
+ *   버킷 오차가 그보다 커서, 앞 마디를 **내림**으로 짧게 보고 기준을 0.50 으로 낮춰야
+ *   둘이 정확히 갈린다. 올림 + 0.55 로 두면 /faq 가 새어 나가 668px 칸에 364px 이 빈다.
+ */
+const CLAUSE_FILL = 0.5;
+
+/**
+ * 버킷 간격(자). 8자마다 한 단계씩 올린다.
+ * ⚠️ 잘게 쪼개지 말 것 — 단계마다 CSS 규칙이 두 개씩 늘고, 8자면 6em 안팎이라 충분하다.
+ * ⚠️ 이 값을 바꾸면 globals.css 의 @container 규칙 목록도 같이 바꿀 것. 둘은 한 쌍이다.
+ */
+const CLAUSE_STEP = 8;
+
+/**
+ * 여기를 넘는 마디는 통째로 옮기지 않는다.
+ * ⚠️ 56자면 41em 이라 사이트에서 가장 넓은 본문 칸에도 겨우 들어간다.
+ *    그보다 길면 어차피 어느 칸에서도 한 줄에 못 들어가므로, 옮겨 봐야 구멍만 남는다.
+ */
+const CLAUSE_MAX = 56;
+
+/** 마디가 한 줄에 들어가려면 필요한 칸(em). */
+const clauseW = (n: number) => Math.ceil(Math.ceil(n / CLAUSE_STEP) * CLAUSE_STEP * EM_PER_CHAR);
+/**
+ * 앞 마디 기준 상한(em) — 칸이 이보다 넓으면 앞 줄이 휑해지므로 내리지 않는다.
+ * ⚠️⚠️ 올림(ceil)으로 바꾸지 말 것 ⚠️⚠️
+ *   앞 마디를 실제보다 길게 보아 '앞 줄이 잘 찼다' 고 착각하고 통과시킨다.
+ *   여기서는 **짧게 보는 쪽(내림)** 이 안전하다 — 애매하면 쉼표 줄바꿈을 포기한다.
+ * ⚠️ 아주 짧은 마디(8자 미만)도 8자로 친다. 0 이 되면 상한이 0em 이라 **항상** 취소되는데,
+ *    그건 맞는 동작이지만 CSS 규칙 목록에 0em 을 따로 두는 것보다 이쪽이 읽기 쉽다.
+ */
+const clauseX = (n: number) =>
+  Math.round(
+    (Math.max(CLAUSE_STEP, Math.floor(n / CLAUSE_STEP) * CLAUSE_STEP) * EM_PER_CHAR) /
+      CLAUSE_FILL,
+  );
 
 /**
  * 한 문장 안에서 **쉼표 뒤**를 줄바꿈 자리로 밀어 준다.
@@ -153,20 +197,56 @@ function Clauses({ text, tone }: { text: string; tone: 'light' | 'dark' }) {
   if (parts.length < 2) return <Marked text={text} tone={tone} />;
   return (
     <>
-      {parts.map((c, i) => (
-        <Fragment key={`${i}-${c.slice(0, 8)}`}>
-          {c.length <= CLAUSE_MAX ? <span className="clause">{c}</span> : c}
-          {/* 나눌 때 없어진 띄어쓰기를 되돌린다 — 없으면 마디끼리 붙어 버린다. */}
-          {i < parts.length - 1 ? ' ' : null}
-        </Fragment>
-      ))}
+      {parts.map((c, i) => {
+        /*
+          마디마다 두 값을 붙인다 —
+            data-w  이 마디가 한 줄에 들어가려면 필요한 칸(em)          → 이보다 좁으면 안 내림
+            data-x  **앞 마디** 기준 상한(em)                            → 이보다 넓으면 안 내림
+          둘 사이일 때만 마디가 통째로 다음 줄로 내려간다. 아래(위)는 '내려가도 안 들어감',
+          위는 '내려가면 앞 줄이 휑함' 이라 둘 다 쉼표 줄바꿈을 포기하는 편이 낫다.
+          ⚠️ data-x 는 **앞 마디**(parts[i-1])의 길이로 계산한다. 자기 길이로 계산하면
+             엉뚱한 것을 재는 것이다 — 앞 줄을 채우는 것은 앞 마디다.
+        */
+        const long = c.length > CLAUSE_MAX;
+        const prev = i > 0 ? parts[i - 1] : null;
+        return (
+          <Fragment key={`${i}-${c.slice(0, 8)}`}>
+            {long ? (
+              c
+            ) : (
+              <span
+                className="clause"
+                data-w={clauseW(c.length)}
+                data-x={prev ? clauseX(prev.length) : undefined}
+              >
+                {c}
+              </span>
+            )}
+            {/* 나눌 때 없어진 띄어쓰기를 되돌린다 — 없으면 마디끼리 붙어 버린다. */}
+            {i < parts.length - 1 ? ' ' : null}
+          </Fragment>
+        );
+      })}
     </>
   );
 }
 
 export function Sentences({ text, tone = 'light' }: { text: string; tone?: 'light' | 'dark' }) {
-  const parts = text.match(/[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g)?.map((s) => s.trim()).filter(Boolean);
-  if (!parts || parts.length < 2) return <Clauses text={text} tone={tone} />;
+  /*
+   * ⚠️⚠️ match() 로 문장을 "골라내지" 말 것 — **글자가 사라진다** (2026-09-02 실측) ⚠️⚠️
+   *   전에는 /[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g 로 문장을 뽑았다. 이 방식은 소수점처럼
+   *   **뒤에 공백이 안 오는 마침표**를 만나면 그 자리에서 매칭이 실패하고, 정규식이
+   *   다음 위치로 건너뛰면서 앞부분을 통째로 버린다.
+   *     "앞면만 0.3~0.7mm 다듬습니다. 전체를 …" → ["7mm 다듬습니다.", "5mm)의 절반 …"]
+   *     (61자가 36자로 줄었다. 화면에서도 문장 앞머리가 사라져 있었다.)
+   * ★ split 은 경계에서만 자르므로 **어떤 글자도 잃지 않는다.** 마침표 뒤에 공백이
+   *   올 때만 자르니 소수점·약어(Dr.)는 그대로 붙어 있는다.
+   */
+  const parts = text
+    .split(/(?<=[.!?])\s+(?=\S)/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (parts.length < 2) return <Clauses text={text} tone={tone} />;
   return (
     <>
       {parts.map((s, i) => (
@@ -334,60 +414,82 @@ export function PageHero({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="relative isolate -mt-[68px] overflow-hidden bg-wine-deep pt-[68px] text-parchment sm:-mt-[94px] sm:pt-[94px]">
-      {photo ? (
-        <Image
-          src={HERO_PHOTOS[photo].src}
-          alt=""
-          aria-hidden
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-      ) : null}
+    <section className={`relative isolate -mt-[68px] overflow-hidden pt-[68px] sm:-mt-[94px] sm:pt-[94px] ${
+      photo ? 'flex min-h-[58vh] items-center bg-night sm:min-h-[62vh]' : ''
+    }`}>
+      {/* ⚠️ 사진이 없는 페이지는 min-h 도 어두운 면도 걸지 않는다 — 빈 화면이 반 페이지 남는다. */}
       {/*
-        두 겹 스크림. ⚠️ 한 겹으로 줄이지 말 것 — 위 주석 참고.
-        ⚠️⚠️ 이 값을 옅게 되돌리지 말 것 (2026-08-28 실측) ⚠️⚠️
-          처음에 옅게(0.35/0.2) 뒀더니 사진 밝은 부분에서 금색 눈금 글자가
-          **2.26:1** 까지 떨어졌다(기준 4.5). 큰 흰 제목은 통과하는데 작은 글자가
-          먼저 무너진다 — 사진 위 글자는 늘 작은 글자가 먼저 깨진다.
-          지금 값은 가운데가 약 76% 덮여 사진이 질감으로만 남는 선이다.
-        사진이 없을 때도 그대로 둔다: 어두운 면에 깊이를 준다.
+        사진은 배경이고 그 위에 **어두운 덮개 + 흰 글자** 다 (2026-09-02 오너: "원본 느낌").
+        ⚠️ 덮개를 걷거나 흰색으로 바꾸지 말 것 — 세 번 시도했고 세 번 반려됐다
+           (components/TreatmentShell.tsx 머리 주석에 이력이 있다).
       */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(78%_62%_at_50%_38%,rgba(36,34,30,0.68)_0%,rgba(36,34,30,0.86)_62%,rgba(36,34,30,0.95)_100%)]"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(36,34,30,0.62)_0%,rgba(36,34,30,0.52)_38%,rgba(36,34,30,0.82)_100%)]"
-      />
+      {photo ? (
+        <>
+          <Image
+            src={HERO_PHOTOS[photo].src}
+            alt=""
+            aria-hidden
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                'radial-gradient(80% 64% at 50% 42%, rgba(30,28,25,0.52) 0%, rgba(30,28,25,0.82) 62%, rgba(30,28,25,0.93) 100%)',
+            }}
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                'linear-gradient(to bottom, rgba(30,28,25,0.70) 0%, rgba(30,28,25,0.46) 38%, rgba(30,28,25,0.88) 100%)',
+            }}
+          />
+        </>
+      ) : null}
 
-      <Container className="relative flex min-h-[42vh] flex-col justify-between py-10 lg:min-h-[48vh] lg:py-12">
-        <Breadcrumb trail={trail} tone="dark" />
-
-        {/* ⚠️ 가운데 정렬은 홈 히어로와 맞춘 것이다. 왼쪽 정렬로 되돌리면 하위 페이지만 결이 갈린다. */}
-        <div className="mx-auto max-w-3xl py-10 text-center lg:py-14">
-          <p className="eyebrow-chip text-clay-300">{eyebrow}</p>
-          <h1
-            id={typeof title === 'string' ? headingId(title) : undefined}
-            className="display-sm mt-4 scroll-mt-28 text-[30px] text-parchment sm:text-[40px] lg:text-[46px]"
-          >
-            {/* ⚠️ 관형형+의존명사를 묶어 준다 — '살리는 / 것이' 같은 끊김을 막는다(bindKo). */}
-            {typeof title === 'string' ? bindKo(title) : title}
-          </h1>
-          {desc ? (
-            <p className="mx-auto mt-6 max-w-[46em] text-[17px] leading-[1.9] text-parchment/85 sm:text-[18px]">
-              <Sentences text={desc} />
-            </p>
-          ) : null}
-          {children ? <div className="mt-8">{children}</div> : null}
+      {/*
+        ⚠️⚠️ 글자색이 사진 유무에 따라 갈린다 ⚠️⚠️
+          사진이 있으면 그 위는 어두운 면이라 parchment 계열,
+          없으면 흰 페이지라 ink 계열이다. 한쪽만 바꾸면 반대쪽에서 글자가 사라진다.
+      */}
+      <Container className="relative py-16 text-center lg:py-20">
+        <div className="flex justify-center">
+          <Breadcrumb trail={trail} tone={photo ? 'dark' : undefined} />
         </div>
 
-        {/* 아래쪽 균형을 잡는 빈 칸 — 제목 덩어리가 띠 한가운데 오게 한다. */}
-        <div aria-hidden className="h-0" />
+        <p
+          className={`eyebrow-chip mt-8 justify-center ${photo ? 'text-clay-300' : 'text-clay-700'}`}
+        >
+          {eyebrow}
+        </p>
+        <h1
+          id={typeof title === 'string' ? headingId(title) : undefined}
+          className={`display-sm mx-auto mt-5 max-w-[20em] scroll-mt-28 text-[clamp(28px,3.6vw,46px)] leading-[1.25] ${
+            photo ? 'text-parchment' : 'text-ink'
+          }`}
+        >
+          {/* ⚠️ 관형형+의존명사를 묶어 준다 — '살리는 / 것이' 같은 끊김을 막는다(bindKo). */}
+          {typeof title === 'string' ? bindKo(title) : title}
+        </h1>
+        {desc ? (
+          <p
+            className={`mx-auto mt-6 max-w-[46em] text-[17px] leading-[1.9] sm:text-[18px] ${
+              photo ? 'text-parchment/85' : 'text-twilight'
+            }`}
+          >
+            <Sentences text={desc} tone={photo ? 'dark' : undefined} />
+          </p>
+        ) : null}
+        {children ? <div className="mt-8">{children}</div> : null}
       </Container>
+
+
     </section>
   );
 }

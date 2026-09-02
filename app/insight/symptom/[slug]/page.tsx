@@ -134,7 +134,7 @@ export default async function SymptomDetailPage({
                 width={1536}
                 height={1024}
                 sizes="(min-width: 1024px) 64ch, 100vw"
-                className="w-full rounded-2xl border border-brand-100 object-cover"
+                className="w-full rounded-2xl border border-wine-line object-cover"
               />
             </figure>
           ) : null}
@@ -232,7 +232,7 @@ export default async function SymptomDetailPage({
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {s.causes.map((c) => (
-              <div key={c.name} className="rounded-2xl border border-brand-100 card-glass p-6">
+              <div key={c.name} className="rounded-2xl border border-wine-line card-glass p-6">
                 <h3 className="text-[17.5px] font-black text-ink">{c.name}</h3>
                 <p className="mt-2.5 text-[15.5px] leading-relaxed text-ink-soft"><Sentences text={c.detail} /></p>
               </div>
@@ -240,7 +240,7 @@ export default async function SymptomDetailPage({
           </div>
         </Container>
 
-        <section className="border-t border-brand-100 bg-parchment py-14">
+        <section className="border-t border-wine-line bg-parchment py-14">
           <Container>
             <h2
               id={headingId('오기 전에 해볼 수 있는 것이 있나요?')}
@@ -294,7 +294,7 @@ export default async function SymptomDetailPage({
                 <Link
                   key={c.slug}
                   href={`/insight/condition/${c.slug}`}
-                  className="group rounded-2xl border border-brand-100 card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
+                  className="group rounded-2xl border border-wine-line card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
                 >
                   <h3 className="text-[18px] font-black text-ink group-hover:text-brand-700">
                     {c.name}
@@ -316,7 +316,7 @@ export default async function SymptomDetailPage({
                 <Link
                   key={t!.slug}
                   href={`/treatment/${t!.slug}`}
-                  className="group rounded-2xl border border-brand-100 card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
+                  className="group rounded-2xl border border-wine-line card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
                 >
                   <h3 className="text-[18px] font-black text-ink group-hover:text-brand-700">
                     {t!.name}

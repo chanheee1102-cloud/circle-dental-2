@@ -51,8 +51,8 @@
    * ⚠️ mint-* 는 첫 화면·버튼·오늘 표시가 쓰는 이름인데, 웜 팔레트에는 민트가 없다.
    *    이름을 지우면 그 자리들을 전부 손봐야 하므로 **값만 웜 쪽으로 돌린다**.
    */
-  --color-ink: #171717;
-  --color-ink-soft: #5c5850;
+  --color-ink: #2b1e14;      /* 고동 — 제목 (베이지 위 11.41:1) */
+  --color-ink-soft: #55432f; /* 고동 보조 (5.53:1) */
   /*
    * ⚠️⚠️ #948c85 로 되돌리지 말 것 — 밝은 바탕에서 3.12:1 이라 기준(4.5)에 미달했다.
    *    "장식용이니 작은 본문에 쓰지 말 것" 이라고 적어 뒀지만 실제로는 빵부스러기·
@@ -61,19 +61,19 @@
    *    지금 값: 크림 바탕 4.74:1 · 흰 면 5.02:1.
    * ⚠️ 어두운 면에서는 쓰지 않는다(실측 0곳). 어두운 쪽은 brand-200/300 이 맡는다.
    */
-  --color-ink-muted: #5f6058;
+  --color-ink-muted: #6b5642;/* 가장 흐린 단계 (4.66:1) — 더 흐리게 하지 말 것 */
 
   /* 웜 뉴트럴 — 따뜻한 회갈색 축 */
-  --color-brand-50: #faf8f3;
-  --color-brand-100: #f2efe7;
-  --color-brand-200: #e7e2d7;
-  --color-brand-300: #ccc7bb;
-  --color-brand-400: #a4a094;
-  --color-brand-500: #646158;
-  --color-brand-600: #5c5950;
-  --color-brand-700: #47443c; /* ← 기준색. 헤더·버튼·푸터가 쓴다 */
-  --color-brand-800: #302c26;
-  --color-brand-900: #24201a;
+  --color-brand-50: #f8f3ea;
+  --color-brand-100: #ece5d8;
+  --color-brand-200: #c9bda6;
+  --color-brand-300: #b3a58a;
+  --color-brand-400: #a89478;
+  --color-brand-500: #6b5a45;
+  --color-brand-600: #59493a;
+  --color-brand-700: #4a3826; /* ← 기준색. 헤더·버튼·푸터가 쓴다 */
+  --color-brand-800: #33261a;
+  --color-brand-900: #2b1e14;
 
   /*
    * 어두운 화면용 두 단계 (2026-08-27).
@@ -82,8 +82,8 @@
    * ⚠️ 순검정(#000)을 쓰지 않는다 — 이 사이트는 웜 뉴트럴 축이라 순검정을 깔면 색이 튄다.
    *   night 는 brand 축과 같은 색상각에서 명도만 더 내린 값이다.
    */
-  --color-night: #24221e;   /* 화면 바탕 */
-  --color-night-2: #34312b; /* 한 단 올린 띠 */
+  --color-night: #241a12;   /* 화면 바탕 */
+  --color-night-2: #33261a; /* 한 단 올린 띠 */
 
   /*
    * ★★ MindMarket 축 — 심미보철 페이지 전용 (2026-08-27, 오너가 스타일 레퍼런스로 지목) ★★
@@ -95,17 +95,17 @@
    * ⚠️ grass 는 **구조 강조 전용**이다(테두리·획·아이콘). 본문 글자색이나 큰 면에 쓰지 말 것.
    * ⚠️ coral 은 서비스 단위 행동 버튼에만. 전역 CTA 색으로 승격하지 말 것.
    */
-  --color-paper: #efebe4;      /* 페이지 바탕 — 흰색이 아니다 */
-  --color-paper-2: #e5e0d5;    /* 한 단 들어간 면 */
-  --color-inkw: #302c26;       /* 본문·테두리·아이콘 (순검정 금지) */
+  --color-paper: #ffffff;      /* 페이지 바탕 — 흰색이 아니다 */
+  --color-paper-2: #f4efe6;    /* 한 단 들어간 면 */
+  --color-inkw: #2b1e14;       /* 본문·테두리·아이콘 (순검정 금지) */
   /*
    * ⚠️ #80827f → #565853 으로 내렸다 (2026-08-27, 실측).
    *   paper-2(#e0dbce) 위에서 2.80:1 이라 본문 크기 글까지 흐릿했다(31곳이 걸렸다).
    *   지금 값은 paper-2 위 5.05:1, paper 위 5.7:1 이다.
    * ⚠️ '눌러 둔 글' 이라는 역할은 그대로다 — 본문(inkw)보다 여전히 옅다.
    */
-  --color-stone: #5b5f5b;      /* 눌러 둔 글 */
-  --color-hairline: #dee2de;   /* 아주 옅은 구분선 */
+  --color-stone: #55432f;      /* 눌러 둔 글 */
+  --color-hairline: #d3c9b6;   /* 아주 옅은 구분선 */
   --color-grass: #d9a441;      /* 구조 강조 */
   --color-coral: #6f746f;      /* 서비스 행동 버튼 */
   --color-sky: #e7bd72;
@@ -123,13 +123,13 @@
    * ⚠️ lichen·tissue 는 밝은 면 전용이다. 어두운 면에 쓰면 묻혀서 면 위계가 깨진다.
    * ⚠️ 이 토큰은 치아미백 한 페이지에서만 쓴다. 사이트 전역에 퍼뜨리지 말 것.
    */
-  --color-abyss: #24221e;   /* 어두운 면 · 본문 글자(밝은 면) */
-  --color-bone: #efebe4;    /* 밝은 면 바탕 */
-  --color-graphite: #635f56;/* 보조 글 · 어두운 면 헤어라인 */
-  --color-lichen: #e7e2d7;  /* 밝은 면 헤어라인 */
-  --color-tissue: #edefec;  /* 밝은 면 보조 카드 */
+  --color-abyss: #2b1e14;   /* 어두운 면 · 본문 글자(밝은 면) */
+  --color-bone: #ffffff;    /* 밝은 면 바탕 */
+  --color-graphite: #55432f;/* 보조 글 · 어두운 면 헤어라인 */
+  --color-lichen: #c9bda6;  /* 밝은 면 헤어라인 */
+  --color-tissue: #f4efe6;  /* 밝은 면 보조 카드 */
   --color-lime: #e7bd72;    /* 강조 — 미세 면에만 */
-  --color-void: #171717;    /* 푸터 전용 */
+  --color-void: #180f09;    /* 푸터 전용 */
 
   /*
    * ★★ 다크룸 축 — 사랑니 페이지 전용 (2026-08-27, 오너가 스타일 레퍼런스로 지목) ★★
@@ -140,23 +140,23 @@
    * ⚠️ 그림자 금지. 깊이는 walnut→bark 두 단계 면 차이로만 만든다.
    * ⚠️ 이 토큰은 사랑니 한 페이지에서만 쓴다.
    */
-  --color-walnut: #1f1f29;  /* 캔버스 — 따뜻한 near-black */
-  --color-bark: #302c26;    /* 유일한 채워진 버튼 면 */
-  --color-cork: #47443c;    /* 헤어라인 · 점선 구분선 */
+  --color-walnut: #1e1710;  /* 캔버스 — 따뜻한 near-black */
+  --color-bark: #33261a;    /* 유일한 채워진 버튼 면 */
+  --color-cork: #4b3a22;    /* 헤어라인 · 점선 구분선 */
   /*
    * ⚠️ #6c5f51 → #a6957f 로 올렸다 (2026-08-27, 실측).
    *   walnut(#100904) 위에서 3.19:1 이라 12px 라벨이 사실상 안 읽혔다.
    *   지금 값은 walnut 위 6.15:1, bark 위 5.11:1 이다. 두 면 모두에서 쓰이므로
    *   더 어둡게 되돌리려면 **두 면 다** 다시 재 볼 것.
    */
-  --color-driftwood: #a4a094;
+  --color-driftwood: #bdac93;
   /*
    * ⚠️ 이름이 cream 이었다가 oat 로 바꿨다 (2026-08-27).
    *   사이트 바탕색도 --color-cream(#faf8f6) 이라 **같은 이름이 두 번** 정의됐고,
    *   뒤에 온 사이트 값이 이겨서 이 페이지 글자 27곳이 전부 #faf8f6 으로 그려지고 있었다.
    *   반대로 순서가 바뀌면 사이트 전체 배경이 주황빛이 된다. 이름을 갈라야만 풀린다.
    */
-  --color-oat: #fffdf8;     /* 글자 — 순백 금지 */
+  --color-oat: #fffaf3;     /* 글자 — 순백 금지 */
   --color-ember: #d9a441;   /* 편집 강조 전용 */
 
   /*
@@ -200,25 +200,25 @@
    * ⚠️ clay-300/400 을 밝은 바탕의 작은 글자로 쓰지 말 것(3.5:1 미만). 밝은 쪽은 clay-600.
    * ⚠️ gold 를 지우지 말 것 — 기존 20개 파일이 쓰고 있다. clay 는 gold 를 대체하지 않고 옆에 선다.
    */
-  --color-clay-300: #e7bd72; /* 어두운 면 본문 */
-  --color-clay-400: #d9a441; /* 어두운 면 숫자·아이콘·테두리 */
-  --color-clay-500: #b8862f; /* 버튼 바탕 */
-  --color-clay-600: #8a5a1f; /* 밝은 바탕의 강조 글자 */
-  --color-clay-700: #6e4718;
-  --color-clay-tint: #e7e2d8; /* 아주 옅은 면 */
+  --color-clay-300: #e8c98f; /* 어두운 면 본문 */
+  --color-clay-400: #cba869; /* 어두운 면 숫자·아이콘·테두리 */
+  --color-clay-500: #4a3826; /* 버튼 바탕 */
+  --color-clay-600: #4a3826; /* 밝은 바탕의 강조 글자 */
+  --color-clay-700: #3b2c1e;
+  --color-clay-tint: #efe6d6; /* 아주 옅은 면 */
 
   /* 강조 — 원본의 로즈/테라코타. 면적을 크게 쓰지 말 것. */
-  --color-gold-400: #9aa09a;
-  --color-gold-500: #6f746f;
-  --color-gold-600: #5b5f5b;
+  --color-gold-400: #c9bda6;
+  --color-gold-500: #55432f;
+  --color-gold-600: #4a3826;
 
   /*
    * ⚠️ 페이지 바탕이다(body). 2026-08-28 에 버건디로 맞췄다 — 투명한 카드는 바탕에
    *   색이 있어야 보이고, 그 색이 페이지마다 다르면 카드가 어떤 데서는 사라진다.
    *   --color-wine-bg 와 **같은 값**이어야 한다. 한쪽만 바꾸지 말 것.
    */
-  --color-cream: #efebe4;
-  --color-cream-deep: #e7e2d8;
+  --color-cream: #ffffff;
+  --color-cream-deep: #f4efe6;
 
   /*
    * ★★ 홈 전용 축 — GIC(General Intelligence Company) 문법 (2026-08-27, 오너 지목) ★★
@@ -260,19 +260,19 @@
    *   투명함은 뒤가 비쳐 보일 때만 보이는데, 뒤가 카드와 같은 색이었다.
    *   지금은 카드가 바탕보다 한 단 위에 떠서 유리로 읽힌다. .card-glass 와 한 쌍이다.
    */
-  --color-wine-bg: #efebe4;      /* 캔버스 */
-  --color-wine-soft: #e5e0d5;    /* 한 단 들어간 면 */
-  --color-wine-line: #d9d3c6;    /* 실선 */
-  --color-wine-deep: #24221e;    /* 어두운 큰 면 (parchment 글자 15.9:1) */
-  --color-wine-deep-2: #34312b;  /* 그 위 한 단 */
+  --color-wine-bg: #ffffff;      /* 캔버스 */
+  --color-wine-soft: #ece5d8;    /* 한 단 들어간 면 */
+  --color-wine-line: #c9bda6;    /* 실선 */
+  --color-wine-deep: #241a12;    /* 어두운 큰 면 (parchment 글자 15.9:1) */
+  --color-wine-deep-2: #33261a;  /* 그 위 한 단 */
 
-  --color-parchment: #fffdf8; /* 캔버스 — 크림(#faf8f6)보다 차고 밝다 */
-  --color-mist: #e7e2d7;      /* 카드 실선 */
-  --color-mist-soft: #f2efe7; /* 더 옅은 구분선 */
-  --color-charcoal: #171717;  /* 제목 (17.86:1) */
-  --color-twilight: #302c26;  /* 본문 (13.91:1) */
-  --color-ash: #5e5a52; /* ⚠️ 한 칸 내려앉은 면(wine-soft) 위 카드에서 4.42:1 로 미달해 한 단 내렸다 (2026-08-28) */       /* 보조 글자 (6.47:1) */
-  --color-dusk: #262320;      /* 유일한 채워진 버튼 · 어두운 큰 면 */
+  --color-parchment: #f4efe6; /* 캔버스 — 크림(#faf8f6)보다 차고 밝다 */
+  --color-mist: #c9bda6;      /* 카드 실선 */
+  --color-mist-soft: #ded4c1; /* 더 옅은 구분선 */
+  --color-charcoal: #2b1e14;  /* 고동 — 제목 (11.41:1) */
+  --color-twilight: #3b2c1e;  /* 고동 — 본문 (10.12:1) */
+  --color-ash: #55432f; /* ⚠️ 한 칸 내려앉은 면(wine-soft) 위 카드에서 4.42:1 로 미달해 한 단 내렸다 (2026-08-28) */       /* 보조 글자 (6.47:1) */
+  --color-dusk: #241a12;      /* 유일한 채워진 버튼 · 어두운 큰 면 */
   --color-signal: #d9a441;    /* 강조 — 어두운 면 글자 7.42:1 / 밝은 면은 테두리 전용(2.08:1) */
 
   --font-sans:
@@ -393,6 +393,15 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 6.5rem;
+  /*
+   * ⚠️⚠️ overflow-x: hidden 으로 바꾸지 말 것 ⚠️⚠️
+   *   hidden 은 **스크롤 컨테이너를 만들어서** position: sticky 헤더가 화면이 아니라
+   *   그 컨테이너를 기준으로 붙는다 — 헤더가 따라오지 않는다.
+   *   clip 은 컨테이너를 만들지 않고 넘치는 부분만 자른다.
+   * ★ 왜 필요한가 — 메가메뉴 띠가 w-screen(100vw)인데, 100vw 는 세로 스크롤바 폭까지
+   *   포함하므로 그만큼 가로로 넘친다. 그 몇 px 이 페이지 전체에 가로 스크롤을 만든다.
+   */
+  overflow-x: clip;
 }
 
 body {
@@ -551,6 +560,69 @@ time,
   transform: none;
   /* 다 뜨고 나면 힌트를 거둔다 — 남겨 두면 그 레이어가 계속 합성 대상으로 남는다. */
   will-change: auto;
+}
+
+/*
+ * ★★ 인증패 전용 진입 — .reveal(10px)보다 훨씬 크게 (2026-09-02 오너: "저 인증패 모션
+ *    좀 더 크게") ★★
+ *   인증패는 네 장이 한 줄에 서는 **이 구획의 주인공**이라, 본문과 같은 10px 로 올라오면
+ *   올라온 줄도 모르고 지나간다. 아래에서 64px 올라오면서 0.88 → 1 로 커지고
+ *   흐림이 걷힌다 — '진열대에 하나씩 놓이는' 움직임이다.
+ * ⚠️ 이 값을 본문(.reveal)에 쓰지 말 것. 글이 이만큼 움직이면 읽기가 방해된다.
+ * ⚠️ blur 를 6px 넘기지 말 것 — 도착 직전 프레임이 뭉개져 인증서 글씨가 지저분해진다.
+ * ⚠️ 관찰자는 RevealScript 하나뿐이다. 선택자 목록에 .plaque-in 이 들어 있어야 동작한다.
+ */
+.plaque-in {
+  opacity: 0;
+  /*
+   * ⚠️⚠️ 값을 다시 줄이지 말 것 (2026-09-02 오너: "너무 깔짝거려서 모션 없는거같잖아") ⚠️⚠️
+   *   전에는 64px · 0.88배였는데, 인증패가 화면에 들어올 때쯤이면 이미 끝나 있어서
+   *   **모션이 없는 것처럼** 보였다. 지금은 훨씬 아래(120px)에서, 더 작게(0.78배),
+   *   더 흐리게(12px) 시작한다.
+   * ★ 살짝 튕긴다 — cubic-bezier 의 셋째 값이 1 을 넘으면 도착점을 지나쳤다 돌아온다.
+   *   그 미세한 되돌림이 '놓였다' 는 느낌을 만든다. 없으면 그냥 미끄러져 멈춘다.
+   * ⚠️ 흐림을 14px 넘기지 말 것 — 도착 직전 프레임이 뭉개져 인증서 글씨가 지저분해진다.
+   * ⚠️ 시간을 1.2s 넘기지 말 것 — 넷째 장이 3초 뒤에 서면 스크롤이 이미 지나가 있다.
+   */
+  transform: translateY(120px) scale(0.78);
+  filter: blur(12px);
+  transition:
+    opacity 0.68s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.05s cubic-bezier(0.22, 1.32, 0.36, 1),
+    filter 0.72s ease-out;
+  will-change: opacity, transform, filter;
+}
+.plaque-in.is-shown {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: auto;
+}
+/*
+ * 바닥 그림자는 판보다 **늦고 느리게** 붙는다 — 판이 내려앉는 동안 그림자가 넓게
+ * 퍼져 있다가 좁아지면, 판이 실제로 바닥으로 내려온 것처럼 읽힌다.
+ * ⚠️ 판과 같은 시간으로 맞추지 말 것. 같이 움직이면 그림자가 판에 붙어 다니는 스티커가 된다.
+ */
+.plaque-in .plaque-shadow {
+  opacity: 0;
+  transform: scaleX(1.35) scaleY(0.6);
+  transition:
+    opacity 0.5s ease-out 0.25s,
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+}
+.plaque-in.is-shown .plaque-shadow {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .plaque-in,
+  .plaque-in.is-shown,
+  .plaque-in .plaque-shadow,
+  .plaque-in.is-shown .plaque-shadow {
+    transform: none;
+    filter: none;
+    transition: opacity 0.3s linear;
+  }
 }
 
 /*
@@ -718,12 +790,16 @@ time,
 .img-in > img,
 .img-in img {
   transform: scale(1.08);
-  transition: transform 1s cubic-bezier(0, 0, 0.2, 1);
-  will-change: transform;
+  opacity: 0;
+  transition:
+    transform 1.05s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.7s cubic-bezier(0, 0, 0.2, 1);
+  will-change: transform, opacity;
 }
 .img-in.is-shown > img,
 .img-in.is-shown img {
   transform: none;
+  opacity: 1;
   will-change: auto;
 }
 
@@ -785,10 +861,17 @@ time,
    *    한쪽만 바꾸면 화면에 유리가 두 종류로 보인다.
    * ⚠️ 이 요소 **안쪽**에 backdrop-filter 를 또 걸지 말 것 — 안쪽 것이 죽는다.
    */
+  /*
+   * ⚠️⚠️ 채움을 rgba(254,255,252,...) 로 되돌리지 말 것 (2026-09-02) ⚠️⚠️
+   *   그건 **거의 순백**이라, 캔버스가 흰색이 된 뒤로는 흰 바탕에 흰 유리라
+   *   카드가 통째로 사라졌다(오너: "배경흰색이랑 너무 구분 안되잖아").
+   *   지금은 베이지를 채운다 — 사진 위에서는 여전히 유리로 비치고,
+   *   흰 바탕 위에서는 한 단 내려앉은 면으로 읽힌다.
+   */
   background-image: linear-gradient(
     135deg,
-    rgba(254, 255, 252, 0.8),
-    rgba(254, 255, 252, 0.62)
+    rgba(246, 241, 232, 0.92),
+    rgba(240, 233, 220, 0.8)
   );
   backdrop-filter: blur(40px) saturate(1.6);
   -webkit-backdrop-filter: blur(40px) saturate(1.6);
@@ -822,7 +905,11 @@ time,
  * ⚠️ 글자는 charcoal 로 둔다. 흰 면 위 17.9:1 이다.
  */
 .btn-pane {
-  border-color: rgba(23, 23, 23, 0.1);
+  /*
+   * ⚠️ 0.1 로 되돌리지 말 것 (2026-09-02 실측) — 밝은 결에서 테두리가 1.22:1 이라
+   *    버튼 모양이 그림자로만 남았다. 고동색 0.26 이면 1.8:1 로 윤곽이 보인다.
+   */
+  border-color: rgba(58, 43, 34, 0.26);
   background-color: color-mix(in srgb, var(--color-parchment) 88%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -836,7 +923,7 @@ time,
     border-color 0.3s cubic-bezier(0, 0, 0.2, 1);
 }
 .btn-pane:hover {
-  border-color: rgba(23, 23, 23, 0.16);
+  border-color: rgba(58, 43, 34, 0.42);
   background-color: var(--color-parchment);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
@@ -905,11 +992,78 @@ time,
  * ⚠️ 흐림을 줄이지 말 것 — 사진의 결이 그대로 비쳐 글자가 읽히지 않는다.
  * ⚠️ 채움을 낮추지 말 것 — 어두운 사진 위에서 charcoal 글자가 무너진다(실측 기준 4.5:1).
  */
+/*
+ * ★★ 띠 안의 카드는 한 단 **되돌린다** (2026-09-02) ★★
+ *   면 사다리가 흰색 → 베이지인데, 베이지 띠 위에 또 베이지 카드를 얹으면 1.00:1 이라
+ *   카드가 통째로 사라진다(실측 4곳: 충치치료 2 · 임플란트 1 · 의료진 1).
+ *   띠 안에서는 카드를 **흰색**으로 되돌려 층을 만든다 — 밝은 면 위에서는 카드가 내려앉고,
+ *   내려앉은 면 위에서는 카드가 떠오른다. 방향만 뒤집힐 뿐 층은 항상 한 칸이다.
+ * ⚠️ 특정성으로 이긴다 — .bg-parchment .bg-parchment 는 (0,2,0) 이라 유틸리티 한 개
+ *    (0,1,0)를 이긴다. 이 블록을 유틸리티보다 앞에 두어도 되지만 특정성이 더 안전하다.
+ * ⚠️ 이 규칙을 지우면 띠 안의 카드가 다시 사라진다. 카드마다 손으로 색을 바꾸지 말 것 —
+ *    새 카드를 만들 때마다 같은 실수가 반복된다.
+ */
+.bg-parchment .bg-parchment,
+.bg-brand-100 .bg-parchment,
+.bg-brand-50 .bg-parchment,
+.bg-wine-soft .bg-parchment,
+.bg-paper-2 .bg-parchment,
+.bg-tissue .bg-parchment,
+.bg-cream-deep .bg-parchment {
+  background-color: #ffffff;
+}
+/*
+ * ⚠️ 한 단계 더 들어가면 **다시 베이지**다 — 층은 언제나 한 칸씩 번갈아야 한다.
+ *   이 줄이 없으면 띠 > 카드 > 그 안의 액자 가 전부 흰색이 되어 액자가 사라진다
+ *   (2026-09-02 실측: 의료진 페이지 인증서 액자 1.000:1).
+ */
+.bg-parchment .bg-parchment .bg-parchment,
+.bg-brand-100 .bg-parchment .bg-parchment,
+.bg-brand-50 .bg-parchment .bg-parchment,
+.bg-wine-soft .bg-parchment .bg-parchment,
+.bg-paper-2 .bg-parchment .bg-parchment,
+.bg-tissue .bg-parchment .bg-parchment,
+.bg-cream-deep .bg-parchment .bg-parchment {
+  background-color: var(--color-parchment);
+}
+.bg-parchment .card-glass,
+.bg-brand-100 .card-glass,
+.bg-brand-50 .card-glass,
+.bg-wine-soft .card-glass,
+.bg-paper-2 .card-glass,
+.bg-tissue .card-glass,
+.bg-cream-deep .card-glass,
+.bg-parchment .pane-glass,
+.bg-brand-100 .pane-glass,
+.bg-brand-50 .pane-glass,
+.bg-wine-soft .pane-glass,
+.bg-paper-2 .pane-glass,
+.bg-tissue .pane-glass,
+.bg-cream-deep .pane-glass {
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.86));
+}
+/*
+ * ⚠️ .light-band 도 같은 띠다 — 클래스 이름만 다르고 색은 parchment 로 같다.
+ *   여기에 안 넣으면 그 띠 안의 카드만 규칙에서 새어 나간다
+ *   (2026-09-02 실측: 의료진 페이지 인증서 액자가 그렇게 사라져 있었다).
+ */
+.light-band .bg-parchment {
+  background-color: #ffffff;
+}
+.light-band .bg-parchment .bg-parchment {
+  background-color: var(--color-parchment);
+}
+.light-band .card-glass,
+.light-band .pane-glass {
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.86));
+}
+
 .pane-glass {
+  /* ⚠️ 위 .card-glass 와 같은 이유로 베이지다. 순백으로 되돌리지 말 것. */
   background-image: linear-gradient(
     135deg,
-    rgba(254, 255, 252, 0.9),
-    rgba(254, 255, 252, 0.78)
+    rgba(246, 241, 232, 0.96),
+    rgba(238, 231, 218, 0.88)
   );
   backdrop-filter: blur(28px) saturate(1.5);
   -webkit-backdrop-filter: blur(28px) saturate(1.5);
@@ -1525,6 +1679,83 @@ time,
  * ★ 클래스 이름은 그대로 둔다 — 부르는 곳이 16군데라 이름을 바꾸면 그만큼 흩어진다.
  *   모양은 여기 한 곳에서만 정한다.
  */
+/*
+ * ══ 블로그 본문 ═══════════════════════════════════════════════════════
+ * 생성기가 내보낸 HTML 을 그대로 그린다. 그쪽은 클래스를 붙이지 않으므로
+ * 태그 이름만 보고 모양을 정한다.
+ * ⚠️ 여기를 지우면 블로그 글이 브라우저 기본 스타일로 나온다(제목이 크고 파랗고 촘촘한 그것).
+ */
+.blog-body > * + * {
+  margin-top: 1.35em;
+}
+.blog-body p {
+  font-size: 17px;
+  line-height: 1.95;
+  color: var(--color-twilight);
+}
+.blog-body h2 {
+  margin-top: 2.6em;
+  font-family: var(--font-display), var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(21px, 2.2vw, 27px);
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+.blog-body h3 {
+  margin-top: 2em;
+  font-weight: 800;
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--color-ink);
+}
+.blog-body ul,
+.blog-body ol {
+  padding-left: 1.15em;
+  font-size: 17px;
+  line-height: 1.95;
+  color: var(--color-twilight);
+}
+.blog-body ul { list-style: disc }
+.blog-body ol { list-style: decimal }
+.blog-body li + li { margin-top: 0.5em }
+.blog-body li::marker { color: var(--color-clay-600) }
+.blog-body strong { font-weight: 800; color: var(--color-ink) }
+.blog-body a {
+  color: var(--color-clay-700);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.blog-body blockquote {
+  border-left: 2px solid color-mix(in srgb, var(--color-clay-600) 45%, transparent);
+  padding-left: 1.25em;
+  color: var(--color-ink);
+}
+.blog-body img {
+  border-radius: 18px;
+}
+.blog-body figcaption {
+  margin-top: 0.7em;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--color-ink-soft);
+}
+.blog-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+.blog-body th,
+.blog-body td {
+  border-bottom: 1px solid var(--color-brand-200);
+  padding: 0.75em 0.5em;
+  text-align: left;
+  vertical-align: top;
+}
+.blog-body th { font-weight: 800; color: var(--color-ink) }
+.blog-body td { color: var(--color-twilight) }
+
 .eyebrow-chip {
   display: inline-flex;
   align-items: center;
@@ -1549,7 +1780,11 @@ time,
    *    부르는 쪽 글자색(이미 대비가 맞은 색)에 금색을 **섞는다.** 그러면 밝기는
    *    그 색을 따라가고 색기만 금색이 되어, 어느 면에서든 읽힌다.
    */
-  color: color-mix(in srgb, currentColor 58%, var(--color-clay-400));
+  /* ⚠️ 58% 로 되돌리지 말 것 — 밝은 결에서 금색 쪽이 너무 세져 13px 번호가 3.2:1 로
+     떨어졌다(2026-09-02 실측, 기준 4.5). 부르는 쪽 글자색을 더 많이 남기고, 섞는 금색도
+     밝은 면용 짙은 금색(clay-600)으로 바꾼다. clay-400 은 어두운 면 전용이라 밝은 면에서
+     섞으면 반드시 흐려진다. */
+  color: color-mix(in srgb, currentColor 90%, var(--color-clay-600));
   font-variant-numeric: tabular-nums;
 }
 
@@ -1755,15 +1990,15 @@ time,
   --color-clay-tint: #3d3931;
 
   /* 바탕으로 쓰이는 이름들 → night */
-  --color-cream: #24221e;
-  --color-wine-bg: #24221e;
-  --color-paper: #24221e;
+  --color-cream: #ffffff;
+  --color-wine-bg: #ffffff;
+  --color-paper: #ffffff;
 
   /* 경계선으로 쓰이는 이름들 */
-  --color-brand-200: #423e36;
-  --color-mist: #423e36;
-  --color-wine-line: #423e36;
-  --color-hairline: #423e36;
+  --color-brand-200: #c9bda6;
+  --color-mist: #c9bda6;
+  --color-wine-line: #c9bda6;
+  --color-hairline: #d3c9b6;
 
   /*
    * ⚠️ 가장 약한 글자만 한 단 올린다 (2026-09-01 실측) — 띠가 #34312b 로 한 단 밝아지면서
@@ -1771,8 +2006,8 @@ time,
    *    #a29a89 이면 띠 위 4.64:1 · 바탕 위 5.69:1 로 둘 다 통과한다.
    * ⚠️ 더 낮추지 말 것. 이 값은 여유가 0.14 뿐이라 조금만 어둡게 해도 다시 미달이다.
    */
-  --color-ink-muted: #a29a89;
-  --color-brand-500: #a29a89;
+  --color-ink-muted: #6b5642;
+  --color-brand-500: #6b5a45;
 
   background-color: var(--pd-bg);
 }
@@ -1785,54 +2020,11 @@ time,
  *    어두운 구간에서 쓰인다. 전체에 걸면 그쪽 글자가 사라진다(실측으로 확인).
  * ⚠️ lime(금색 강조)은 그대로 둔다. 어두운 면에서 더 잘 산다.
  */
-.whitening-band {
-  --color-bone: #34312b;    /* 띠 바탕 → night-2 */
-  --color-tissue: #3d3931;  /* 띠 안의 보조 카드 */
-  --color-abyss: #fffdf8;   /* 제목 글자 */
-  --color-graphite: #ccc7bb;/* 보조 글자 */
-  --color-lichen: #423e36;  /* 헤어라인 */
-}
 /*
- * ⚠️⚠️ 유리 카드 안에서는 **되돌린다** ⚠️⚠️
- *   .card-glass 는 이 결에서 '밝은 유리' 다(globals 위쪽 .page-native-dark .card-glass).
- *   띠를 어둡게 하면서 글자까지 밝게 갈아 끼웠더니, 밝은 카드 위에 밝은 글자가 남아
- *   카드 네 장의 본문이 통째로 사라졌다(2026-09-01 화면으로 확인).
- *   대비 검사기는 이걸 못 잡는다 — 유리 카드는 배경이 그라데이션이라 건너뛴다.
- * ⚠️ 이 블록을 지우면 그 네 장이 다시 안 보이게 된다.
+ * ⚠️ .whitening-band 규칙은 걷었다 (2026-09-02) — 치아미백 페이지의 밝은 두 띠를
+ *    '어두운 띠' 로 뒤집던 규칙이었다. 사이트가 밝은 결로 돌아오면서 뒤집을 일이 없어졌고,
+ *    남겨 두면 그 두 구획만 다시 어두워진다.
  */
-/*
- * 카드 안쪽 흰 선 — 사진이 있는 카드에서도 보이게 (2026-09-01 오너 지적).
- *
- * ★★ 왜 사진 카드만 선이 없었나 ★★
- *   안쪽 링(ring-inset)은 **그림자**라 자식 요소 밑에 깔린다. 글자 카드는 안쪽 여백이
- *   있어서 선이 보이지만, 사진이 카드 폭을 꽉 채우면 그 선을 사진이 덮어 버린다.
- *   그래서 같은 카드인데 사진이 있는 것만 테두리가 없어 보였다.
- * ★ 같은 굵기·같은 색을 **맨 위에 한 겹 더** 그린다. 사진 위에도 남는다.
- * ⚠️ ring-inset 으로 되돌리지 말 것 — 사진 카드에서 다시 사라진다.
- * ⚠️ pointer-events: none 을 빼지 말 것. 카드 전체를 덮는 판이라 클릭을 먹는다.
- */
-.card-edge {
-  position: relative;
-}
-.card-edge::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 1px var(--card-edge-color, rgba(255, 255, 255, 0.7));
-  pointer-events: none;
-}
-/** 어두운 면 위의 유리 카드는 같은 선을 훨씬 옅게 쓴다. */
-.card-edge-soft {
-  --card-edge-color: rgba(255, 255, 255, 0.06);
-}
-
-.whitening-band .card-glass {
-  --color-abyss: #24221e;
-  --color-graphite: #635f56;
-  --color-lichen: #e7e2d7;
-  --color-tissue: #edefec;
-}
 
 /*
  * ⚠️⚠️ 원래부터 어두웠던 구역은 **되돌린다** ⚠️⚠️
@@ -1854,12 +2046,12 @@ time,
 .page-dark .bg-brand-900,
 .page-dark .pane-dark,
 .page-dark .pane-frost {
-  --color-parchment: #fffdf8;
-  --color-mist: #e7e2d7;
-  --color-mist-soft: #f2efe7;
-  --color-brand-100: #f2efe7;
-  --color-brand-200: #e7e2d7;
-  --color-brand-300: #ccc7bb;
+  --color-parchment: #f4efe6;
+  --color-mist: #c9bda6;
+  --color-mist-soft: #ded4c1;
+  --color-brand-100: #ece5d8;
+  --color-brand-200: #c9bda6;
+  --color-brand-300: #b3a58a;
   /*
    * ⚠️⚠️ 글자 계열도 **원래 값으로** 되돌린다 ⚠️⚠️
    *   어두운 섬은 원래부터 '어두운 면 + 밝은 글자' 로 짜인 곳이다. 즉 **밝은 결 기준으로
@@ -1867,15 +2059,15 @@ time,
    *   되돌리지 않으면 'bg-parchment + text-ink' 같은 조합이 밝은 면 + 밝은 글자가 되어
    *   버튼 글자가 통째로 사라진다(실측 1.01:1).
    */
-  --color-ink: #171717;
-  --color-charcoal: #171717;
-  --color-twilight: #302c26;
-  --color-ink-soft: #5c5850;
-  --color-ink-muted: #5f6058;
-  --color-ash: #5e5a52;
-  --color-brand-500: #646158;
-  --color-brand-600: #5c5950;
-  --color-brand-700: #47443c;
+  --color-ink: #2b1e14;
+  --color-charcoal: #2b1e14;
+  --color-twilight: #3b2c1e;
+  --color-ink-soft: #55432f;
+  --color-ink-muted: #6b5642;
+  --color-ash: #55432f;
+  --color-brand-500: #6b5a45;
+  --color-brand-600: #59493a;
+  --color-brand-700: #4a3826;
 }
 
 /*
@@ -1946,7 +2138,7 @@ time,
    * ⚠️ .page-dark 전체를 밝히지 말 것 — 평평한 면에서는 5.08:1 로 이미 넉넉하고,
    *    그쪽까지 밝히면 눈금 글자가 본문과 같은 무게로 올라와 위계가 무너진다.
    */
-  --color-brand-500: #b6ae9f;
+  --color-brand-500: #6b5a45;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background-image:
     radial-gradient(120% 90% at 88% -10%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 56%),
@@ -1977,34 +2169,44 @@ time,
  *    빠뜨리면 그 색만 두 번 어두워진다.
  */
 .page-dark .page-native-dark,
+/*
+ * 밝은 띠 — 밝은 결에서는 '한 단 더 흰 면' 이다 (2026-09-02).
+ *   바탕이 웜 스톤(#efebe4)이라 그보다 흰 종이색(#fffdf8)을 깔면 구획이 나뉜다.
+ * ⚠️ 순백(#fff)으로 하지 말 것 — 이 사이트는 웜 뉴트럴 축이라 순백이 혼자 튄다.
+ * ⚠️ 아래 .page-dark .light-band 는 어두운 결로 돌아갈 때를 위해 남겨 둔다. 지금은 안 걸린다.
+ */
+.light-band {
+  background-color: var(--color-parchment);
+}
+
 .page-dark .light-band {
-  --color-ink: #171717;
-  --color-charcoal: #171717;
-  --color-twilight: #302c26;
-  --color-ink-soft: #5c5850;
-  --color-ink-muted: #5f6058;
-  --color-ash: #5e5a52;
-  --color-brand-300: #ccc7bb;
-  --color-brand-400: #a4a094;
-  --color-brand-500: #646158;
-  --color-brand-600: #5c5950;
-  --color-brand-700: #47443c;
-  --color-gold-600: #8a5a1f;
-  --color-clay-600: #8a5a1f;
-  --color-clay-700: #6e4718;
-  --color-clay-500: #b8862f;
-  --color-parchment: #fffdf8;
-  --color-brand-50: #faf8f3;
-  --color-brand-100: #f2efe7;
-  --color-brand-200: #e7e2d7;
-  --color-mist: #e7e2d7;
-  --color-mist-soft: #f2efe7;
-  --color-cream: #efebe4;
-  --color-cream-deep: #e7e2d8;
-  --color-wine-bg: #efebe4;
-  --color-wine-soft: #e5e0d5;
-  --color-wine-line: #d9d3c6;
-  --color-clay-tint: #e7e2d8;
+  --color-ink: #2b1e14;
+  --color-charcoal: #2b1e14;
+  --color-twilight: #3b2c1e;
+  --color-ink-soft: #55432f;
+  --color-ink-muted: #6b5642;
+  --color-ash: #55432f;
+  --color-brand-300: #b3a58a;
+  --color-brand-400: #a89478;
+  --color-brand-500: #6b5a45;
+  --color-brand-600: #59493a;
+  --color-brand-700: #4a3826;
+  --color-gold-600: #4a3826;
+  --color-clay-600: #4a3826;
+  --color-clay-700: #3b2c1e;
+  --color-clay-500: #4a3826;
+  --color-parchment: #f4efe6;
+  --color-brand-50: #f8f3ea;
+  --color-brand-100: #ece5d8;
+  --color-brand-200: #c9bda6;
+  --color-mist: #c9bda6;
+  --color-mist-soft: #ded4c1;
+  --color-cream: #ffffff;
+  --color-cream-deep: #f4efe6;
+  --color-wine-bg: #ffffff;
+  --color-wine-soft: #ece5d8;
+  --color-wine-line: #c9bda6;
+  --color-clay-tint: #efe6d6;
   background-color: transparent;
 }
 /* 되돌린 페이지 안에서는 아래 덮어쓰기들도 풀어 준다. */
@@ -2050,10 +2252,10 @@ time,
    *    /60 에서 1.79:1, /70 에서 1.98:1 이다.
    * ⚠️ brand-100 은 그대로 둔다 — 사진 placeholder 로도 쓰여서 진하게 하면 회색 상자가 뜬다.
    */
-  --color-brand-200: #948b7d;
-  --color-brand-300: #8a8274;
-  --color-mist: #948b7d;
-  --color-wine-line: #948b7d;
+  --color-brand-200: #c9bda6;
+  --color-brand-300: #b3a58a;
+  --color-mist: #c9bda6;
+  --color-wine-line: #c9bda6;
 }
 
 .page-dark .page-native-dark .card-glass,
@@ -2135,8 +2337,88 @@ blockquote {
   container-type: inline-size;
 }
 
-@container (min-width: 521px) {
-  .clause {
+/*
+ * 마디를 통째로 다음 줄로 내리는 것은 **두 조건이 모두 맞을 때만** 이다.
+ *   data-w  이 마디가 한 줄에 들어가려면 필요한 칸(em) — 칸이 이보다 좁으면 내려도 또 잘린다.
+ *   data-x  앞 마디 기준 상한(em)   — 칸이 이보다 넓으면 앞 줄이 휑하게 남는다.
+ *
+ * ★ 단위가 em 인 것이 핵심이다. 컨테이너 쿼리의 em 은 **그 칸의 글꼴 크기** 기준이라,
+ *   15px 카드든 46px 인용문이든 같은 규칙이 알아서 환산된다.
+ *   px 로 적었을 때는 46px 인용문에서 마디 폭을 1/3 로 잘못 봐 판정이 통째로 어긋났다.
+ *
+ * ⚠️ 취소(data-x) 규칙은 반드시 **뒤에** 둘 것 — 특정성이 같아 나중에 온 쪽이 이긴다.
+ * ⚠️ 이 목록은 components/ui.tsx 의 EM_PER_CHAR · CLAUSE_FILL · CLAUSE_STEP 과 한 쌍이다.
+ *    한쪽만 고치면 data-w/data-x 값이 어느 규칙에도 안 걸려 쉼표 규칙이 통째로 꺼진다.
+ */
+@container (min-width: 6em) {
+  .clause[data-w='6'] {
     display: inline-block;
+  }
+}
+@container (min-width: 12em) {
+  .clause[data-w='12'] {
+    display: inline-block;
+  }
+}
+@container (min-width: 18em) {
+  .clause[data-w='18'] {
+    display: inline-block;
+  }
+}
+@container (min-width: 24em) {
+  .clause[data-w='24'] {
+    display: inline-block;
+  }
+}
+@container (min-width: 29em) {
+  .clause[data-w='29'] {
+    display: inline-block;
+  }
+}
+@container (min-width: 35em) {
+  .clause[data-w='35'] {
+    display: inline-block;
+  }
+}
+@container (min-width: 41em) {
+  .clause[data-w='41'] {
+    display: inline-block;
+  }
+}
+
+/* 앞 줄이 덜 찼을 때는 쉼표 줄바꿈을 포기한다 — 위 주석의 data-x. */
+@container (min-width: 12em) {
+  .clause[data-x='12'] {
+    display: inline;
+  }
+}
+@container (min-width: 23em) {
+  .clause[data-x='23'] {
+    display: inline;
+  }
+}
+@container (min-width: 35em) {
+  .clause[data-x='35'] {
+    display: inline;
+  }
+}
+@container (min-width: 46em) {
+  .clause[data-x='46'] {
+    display: inline;
+  }
+}
+@container (min-width: 58em) {
+  .clause[data-x='58'] {
+    display: inline;
+  }
+}
+@container (min-width: 69em) {
+  .clause[data-x='69'] {
+    display: inline;
+  }
+}
+@container (min-width: 81em) {
+  .clause[data-x='81'] {
+    display: inline;
   }
 }

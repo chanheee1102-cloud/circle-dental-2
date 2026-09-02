@@ -15,8 +15,8 @@ import { IMG } from '@/lib/assets';
  *    지금은 자리를 처음부터 잡아 두고 **아래에서 위로 하나씩 올라오기만** 한다 —
  *    도착하면 흐림이 0 이고 크기도 1 이라 언제 멈춰도 선명하다.
  *
- * ★ 크기를 키웠다 — 액자 높이 190 → 245px, 칸 폭 280 → 284px.
- *   인증서 원본이 236px 폭이라 그보다 크게 늘리면 뭉개진다. 여기가 상한선이다.
+ * ★ 크기는 **원본 해상도(236×242)에 맞춘다.** 그보다 크게 늘리면 그만큼 흐려질 뿐이다.
+ *   눈길은 크기가 아니라 모션이 끈다(globals.css .plaque-in).
  *
  * ★★ 남은 세 가지가 입체를 만든다 ★★
  *   ① 기울기 — 커서 위치를 따라 판이 기운다(원근 900px).
@@ -38,11 +38,40 @@ import { IMG } from '@/lib/assets';
  *    구조(2026-08-18 성능 작업)가 깨진다.
  */
 
-/** 액자가 놓이는 칸 — 밑변이 여기 선다. */
-const SHELF = 'h-[190px] w-full sm:h-[245px]';
+/**
+ * 액자가 놓이는 칸 — 밑변이 여기 선다.
+ *
+ * ⚠️⚠️ 236px 를 넘기지 말 것 — **원본 해상도가 236×242 다** ⚠️⚠️
+ *   300px 로 키웠더니(2026-09-02 오전) 1.24 배 확대가 되어 인증서 글자가 뭉갰다
+ *   (오너: "사진 크기 조금 줄여서 화질좋게"). 지금은 원본과 1:1 이라 가장 선명하다.
+ *   unoptimized 라 브라우저가 원본을 그대로 받고, 늘리는 만큼 그대로 흐려진다.
+ * ★ 크기로 눈길을 끌던 몫은 이제 **모션**이 진다(globals.css .plaque-in).
+ * ⚠️ 더 크게 보여 주고 싶으면 원본 파일부터 큰 것으로 바꿀 것. 여기 숫자만 올리면
+ *    커지는 것은 흐림뿐이다.
+ * ⚠️ 폭 상한도 높이와 같은 이유다 — 넷 중 하나(세계근관치료학회)는 236×178 로 납작해서,
+ *    폭이 넓은 칸에 들어가면 **폭이 먼저 차 1.14 배로 늘어난다**(실측).
+ *    가로·세로 둘 다 막아야 넷 모두 원본 이하로 그려진다.
+ */
+const SHELF = 'mx-auto h-[184px] w-full max-w-[236px] sm:h-[236px]';
 
-export function CredentialFan() {
+export function CredentialFan({ href = '/about/doctors' }: { href?: string | null } = {}) {
   const items = IMG.credentials;
+  /*
+   * ⚠️ 의료진 페이지에서는 href={null} 로 부른다 — 그 페이지가 바로 이 링크의 목적지라
+   *    자기 자신으로 가는 링크가 된다. 자기 링크는 훑는 사람에게 막다른 길이고,
+   *    검색 쪽에서도 의미 없는 내부 링크가 하나 늘 뿐이다.
+   */
+  const Frame = href
+    ? ({ label, children }: { label: string; children: React.ReactNode }) => (
+        <Link
+          href={href}
+          aria-label={`${label} — 의료진 페이지에서 크게 보기`}
+          className="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-4 focus-visible:ring-offset-cream"
+        >
+          {children}
+        </Link>
+      )
+    : ({ children }: { label: string; children: React.ReactNode }) => <div>{children}</div>;
 
   return (
     <ul className="relative z-10 mt-10 grid grid-cols-2 gap-x-6 gap-y-12 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-10">
@@ -51,18 +80,23 @@ export function CredentialFan() {
           ⚠️ 하나씩 올라오게 만드는 것은 이 delay 다. 다 같이 올라오면 '한 덩어리가
              떠오르는' 것이지 '하나씩 튀어나오는' 것이 아니다.
         */
-        <li key={c.src} className="reveal" style={{ transitionDelay: `${i * 130}ms` }}>
-          <Tilt deg={14}>
-            <Link
-              href="/about/doctors"
-              aria-label={`${c.label} — 의료진 페이지에서 크게 보기`}
-              className="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-4 focus-visible:ring-offset-cream"
-            >
-              <figure className="relative px-2">
-                {/* 바닥 그림자 — 판만 뜨고 이건 바닥에 남는다(translateZ 없음). */}
+        <li key={c.src} className="plaque-in" style={{ transitionDelay: `${i * 220}ms` }}>
+          <Tilt deg={20}>
+            <Frame label={c.label}>
+              <figure className="px-2">
+                {/*
+                  ⚠️ 폭 상한은 **사진 상자에만** 건다 — figure 전체에 걸면 캡션까지 236px 로
+                     좁아져 '오스템임플란트 연구자문치과 위촉패' 가 두 줄로 접힌다(실측).
+                */}
+                <div className="relative mx-auto max-w-[236px]">
+                {/*
+                  바닥 그림자 — 판만 뜨고 이건 바닥에 남는다(translateZ 없음).
+                  ⚠️ 이 상자(폭 상한 236px) 안에 두어야 그림자가 판 밑에 정확히 깔린다.
+                     밖으로 빼면 칸이 넓은 화면에서 그림자만 판보다 넓게 퍼진다.
+                */}
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute inset-x-5 bottom-[52px] h-[20px] rounded-[50%] bg-dusk/20 blur-[13px] sm:bottom-[62px]"
+                  className="plaque-shadow pointer-events-none absolute inset-x-5 bottom-[38px] h-[16px] rounded-[50%] bg-dusk/25 blur-[12px] sm:bottom-[46px]"
                 />
 
                 {/*
@@ -102,6 +136,7 @@ export function CredentialFan() {
                     }}
                   />
                 </div>
+                </div>
 
                 {/*
                   캡션 자리를 두 줄 높이로 고정한다 — 이름 길이가 달라 한 줄/두 줄이 오가면
@@ -109,13 +144,13 @@ export function CredentialFan() {
                 */}
                 <figcaption
                   /* ⚠️ text-ash 로 되돌리지 말 것 — 어두운 구획에서 1.7:1 로 안 보인다(app/page.tsx 주석). */
-                  className="relative mt-5 flex min-h-[2.9rem] items-start justify-center text-center text-[14.5px] leading-snug text-oat"
+                  className="relative mt-6 flex min-h-[3.2rem] items-start justify-center text-center text-[16.5px] leading-snug font-medium text-ink-soft"
                   style={{ transform: 'translateZ(20px)' }}
                 >
                   {c.label}
                 </figcaption>
               </figure>
-            </Link>
+            </Frame>
           </Tilt>
         </li>
       ))}

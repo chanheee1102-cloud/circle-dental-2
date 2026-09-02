@@ -106,7 +106,7 @@ export default function CrownProsthesisPage() {
       */}
       <TreatmentHero
         trail={TRAIL}
-        eyebrow="고양 화정동 심미보철 · 라미네이트 · 올세라믹"
+        eyebrow="고양 화정동 심미보철 · 라미네이트와 올세라믹 비교"
         title={['깎는 양이', '결과를 정합니다']}
         lead={LEAD}
         photo={{
@@ -142,7 +142,7 @@ export default function CrownProsthesisPage() {
           0.3 과 1.5 의 차이가 안 느껴져서, 막대가 실제 비율대로 자라게 한다(.bar-grow).
         ⚠️ 수치는 범위로만 적는다. 단일 값은 모든 케이스에 그 값이 적용되는 것처럼 읽힌다.
       */}
-      <section className="border-y border-white/8 bg-paper-2 py-24 lg:py-32">
+      <section className="border-y border-wine-line bg-paper-2 py-24 lg:py-32">
         <Container>
           <h2 className="display-sm focus-in max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] tracking-[-0.05em]">
             같은 앞니라도 깎는 두께가 세 배까지 차이 납니다
@@ -270,7 +270,7 @@ export default function CrownProsthesisPage() {
       </section>
 
       {/* ── 재료 ────────────────────────────────────────────────────── */}
-      <section className="border-y border-white/8 bg-paper-2 py-24 lg:py-32">
+      <section className="border-y border-wine-line bg-paper-2 py-24 lg:py-32">
         <Container>
           <h2 className="display-sm reveal max-w-[12em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] tracking-[-0.05em]">
             자리마다 유리한 재료가 다릅니다
@@ -338,7 +338,7 @@ export default function CrownProsthesisPage() {
         ── 부작용과 한계 ────────────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 이 구간이 빠지면 페이지 전체가 광고문이 된다.
       */}
-      <section className="border-y border-white/8 bg-paper-2 py-24 lg:py-32">
+      <section className="border-y border-wine-line bg-paper-2 py-24 lg:py-32">
         <Container>
           <div className="grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
             <h2 className="display-sm reveal text-[clamp(28px,4.2vw,46px)] leading-[1.06] tracking-[-0.05em]">
@@ -403,6 +403,19 @@ export default function CrownProsthesisPage() {
             </div>
 
             <div className="mt-14 grid gap-8 border-t border-hairline pt-10 sm:grid-cols-2 lg:grid-cols-4">
+              {/*
+                ⚠️ 라미네이트 링크를 지우지 말 것 (2026-09-02) — 이 페이지는 **둘 중 무엇을
+                   고를지**를 다루고, 라미네이트 하나를 깊게 보는 문서는 따로 있다.
+                   서로를 안 가리키면 비교만 보고 상세는 못 본 사람이 생긴다.
+              */}
+              <Link href="/treatment/laminate" className="group">
+                <p className="text-[16px] text-stone">자세히 보기</p>
+                <p className="mt-2 text-[18px] font-bold">
+                  <span className="border-b border-inkw pb-0.5 transition-colors group-hover:border-grass">
+                    라미네이트
+                  </span>
+                </p>
+              </Link>
               <Link href="/faq#crown-prosthesis" className="group">
                 <p className="text-[16px] text-stone">자주 묻는 질문</p>
                 <p className="mt-2 text-[18px] font-bold">
@@ -411,7 +424,8 @@ export default function CrownProsthesisPage() {
                   </span>
                 </p>
               </Link>
-              {related.slice(0, 3).map((s) => (
+              {/* ⚠️ 2개다 — 위에 라미네이트 링크가 들어와 네 칸이 찼다(3개면 한 줄이 밀린다). */}
+              {related.slice(0, 2).map((s) => (
                 <Link key={s!.slug} href={`/insight/symptom/${s!.slug}`} className="group">
                   <p className="text-[16px] text-stone">관련 증상</p>
                   <p className="mt-2 text-[18px] font-bold">

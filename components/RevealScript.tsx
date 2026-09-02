@@ -37,7 +37,7 @@ export function RevealScript() {
      *    .img-in / .line-in / .count-in = 랜딩 페이지 모션 3종(2026-08-26).
      */
     const targets = document.querySelectorAll<HTMLElement>(
-      '.reveal, .reveal-stack, .step-in, .concern, .wipe, .seq, .img-in, .line-in, .count-in, .line-rise, .depth-fill, .bar-grow, .focus-in, .card-draw',
+      '.reveal, .reveal-stack, .step-in, .concern, .wipe, .seq, .img-in, .line-in, .count-in, .line-rise, .depth-fill, .bar-grow, .focus-in, .card-draw, .plaque-in',
     );
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

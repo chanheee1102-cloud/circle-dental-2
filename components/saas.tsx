@@ -125,7 +125,7 @@ export function GlassCard({ children, className = '', as: Tag = 'div' }: {
 }) {
   return (
     <Tag
-      className={`rounded-[22px] border border-white/12 bg-white/[0.055] card-edge card-edge-soft backdrop-blur-sm ${className}`}
+      className={`rounded-[22px] border border-brand-200/70 bg-parchment card-edge card-edge-soft ${className}`}
     >
       {children}
     </Tag>
@@ -133,24 +133,23 @@ export function GlassCard({ children, className = '', as: Tag = 'div' }: {
 }
 
 /**
- * 어두운 패널 — 화면을 가로지르지 않고 모서리가 둥근 채로 안에 들어온다.
- * ★ 방사형 글로우 + 미세 노이즈가 있어야 '검은 사각형' 이 아니라 면으로 읽힌다.
+ * 강조 패널 — 화면을 가로지르지 않고 모서리가 둥근 채로 안에 들어온다.
+ *
+ * ★★ 2026-09-02 에 어두운 패널에서 밝은 패널로 뒤집었다 (오너: "그냥 검은 느낌 아예
+ *    없애") ★★ 이름도 DarkPanel → HighlightPanel 로 바꿨다 — 이름이 색을 말하면
+ *    색이 바뀔 때마다 이름이 거짓말이 된다.
+ * ★ 방사형 글로우는 남긴다. 큰 단색 면은 글로우가 있어야 '네모' 가 아니라 면으로 읽힌다.
+ *   다만 밝은 면에서는 색을 아주 옅게 깐다(0.28 → 0.10).
+ * ⚠️ 미세 노이즈는 뺐다 — 어두운 면의 밴딩을 지우려던 것이라 밝은 면에서는 할 일이 없고,
+ *    mix-blend-overlay 가 밝은 바탕에서는 얼룩으로 보인다.
+ * ⚠️ 이 안의 글자는 ink 계열이어야 한다. white 로 되돌리면 1.0:1 로 사라진다(실측).
  */
-export function DarkPanel({ children, className = '' }: { children: ReactNode; className?: string }) {
+export function HighlightPanel({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`relative isolate overflow-hidden rounded-[28px] bg-ink ${className}`}>
+    <div className={`relative isolate overflow-hidden rounded-[28px] border border-brand-200/70 bg-parchment ${className}`}>
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(75%_60%_at_85%_8%,rgba(201,116,78,0.28)_0%,transparent_58%),radial-gradient(60%_50%_at_10%_100%,rgba(217,144,108,0.14)_0%,transparent_60%)]"
-      />
-      {/* 미세 노이즈 — 큰 어두운 면의 밴딩을 지우고 질감을 준다. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.16] mix-blend-overlay"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")",
-        }}
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(75%_60%_at_85%_8%,rgba(201,116,78,0.10)_0%,transparent_58%),radial-gradient(60%_50%_at_10%_100%,rgba(217,144,108,0.07)_0%,transparent_60%)]"
       />
       <div className="relative">{children}</div>
     </div>

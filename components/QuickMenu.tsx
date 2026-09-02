@@ -78,9 +78,17 @@ export function QuickMenu() {
         ⚠️ 이 패널 **안쪽** 요소에 backdrop-filter 를 또 걸지 말 것. 겹치면 안쪽 것이 죽는다
            (메가메뉴에서 겪었다).
       */}
-      {/* ⚠️ 재질은 .pane-dark 하나에 모여 있다(globals.css). 진료 카드와 같은 값을 쓴다. */}
+      {/*
+        ⚠️ 재질은 .pane-glass 하나에 모여 있다(globals.css). 진료 카드와 같은 값을 쓴다.
+        ⚠️⚠️ lg(1024px)로 되돌리지 말 것 (2026-09-02 실측) ⚠️⚠️
+           이 레일은 폭 86 + 오른쪽 여백 20 = 106px 를 먹는데, 본문 상자는 최대 1320px 라
+           **화면이 1548px 보다 좁으면 본문 오른쪽을 덮는다.** 1280·1366·1440 전부
+           해당한다(실제로 미백 페이지 카드 글자를 가리고 있었다).
+           2xl(1536) 부터는 좌우 여백이 108px 라 딱 비껴간다.
+        ★ 그 아래 폭에서는 아래 고정 바가 같은 네 가지를 그대로 한다 — 없어지는 기능은 없다.
+      */}
       <nav
-        className="pane-dark fixed right-5 bottom-7 z-40 hidden w-[86px] flex-col overflow-hidden rounded-[22px] lg:flex"
+        className="pane-glass fixed right-5 bottom-7 z-40 hidden w-[86px] flex-col overflow-hidden rounded-[22px] 2xl:flex"
         aria-label="빠른 연락"
       >
         {RAIL.map((r, i) => (
@@ -92,7 +100,7 @@ export function QuickMenu() {
             type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             aria-label="맨 위로"
-            className="group flex w-full flex-col items-center gap-1.5 border-t border-white/15 px-1 py-3.5 text-[13.5px] font-semibold text-white/85 transition-colors hover:text-white"
+            className="group flex w-full flex-col items-center gap-1.5 border-t border-brand-200 px-1 py-3.5 text-[13.5px] font-semibold text-ink transition-colors hover:text-white"
           >
             <span
               aria-hidden
@@ -105,7 +113,7 @@ export function QuickMenu() {
         )}
       </nav>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-wine-line bg-wine-bg/95 backdrop-blur lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-wine-line bg-wine-bg/95 backdrop-blur 2xl:hidden">
         <div className="grid grid-cols-4">
           <Link
             href="/visit"
@@ -247,8 +255,8 @@ function RailItem({
   internal?: boolean;
   first?: boolean;
 }) {
-  const cls = `flex w-full flex-col items-center gap-1.5 px-1 py-3.5 text-[13.5px] font-semibold text-white/85 transition-colors hover:text-white ${
-    first ? '' : 'border-t border-white/15'
+  const cls = `flex w-full flex-col items-center gap-1.5 px-1 py-3.5 text-[13.5px] font-semibold text-ink transition-colors hover:text-clay-700 ${
+    first ? '' : 'border-t border-brand-200'
   }`;
   const body = (
     <>

@@ -73,7 +73,7 @@ export default function FaqPage() {
           <h2 className="text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]">
             내원·예약
           </h2>
-          <div className="mt-7 divide-y divide-brand-100 border-t border-brand-100">
+          <div className="mt-7 divide-y divide-wine-line border-t border-wine-line">
             {CLINIC_QA.map((qa) => (
               <article key={qa.q} className="py-6">
                 <h3 className="text-[18px] font-black leading-snug text-ink">{qa.q}</h3>
@@ -123,7 +123,7 @@ export default function FaqPage() {
                 진료 안내 보기 →
               </Link>
             </div>
-            <div className="mt-7 divide-y divide-brand-100 border-t border-brand-100">
+            <div className="mt-7 divide-y divide-wine-line border-t border-wine-line">
               {t.qa.map((qa) => (
                 <article key={qa.q} className="py-6">
                   <h3 className="text-[18px] font-black leading-snug text-ink">{qa.q}</h3>

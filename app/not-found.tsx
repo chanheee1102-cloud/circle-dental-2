@@ -28,7 +28,7 @@ export default function NotFound() {
           <Link
             key={l.href}
             href={l.href}
-            className="rounded-2xl border border-brand-100 card-glass p-5 text-left transition-colors hover:border-brand-300 hover:bg-brand-50"
+            className="rounded-2xl border border-wine-line card-glass p-5 text-left transition-colors hover:border-brand-300 hover:bg-brand-50"
           >
             <span className="block text-[16.5px] font-black text-ink">{l.t}</span>
             <span className="mt-1 block text-[14px] text-ink-soft">{l.d}</span>

@@ -59,11 +59,21 @@ type Doc = (typeof DOCTORS)[number];
  */
 
 /**
- * 사진 아래를 흐려 없애는 마스크 — 어두운 면 위에서 스튜디오 배경이 네모로 남지 않게.
- * ⚠️ 값을 낮추면(더 일찍 사라지면) 흰 가운 아랫단까지 지워진다. 실측으로 잡은 값이다.
+ * 사진 가장자리를 흐려 없애는 마스크 — 스튜디오 회색 배경이 네모로 남지 않게.
+ *
+ * ★★ 2026-09-02 에 좌우까지 넓혔다 ★★
+ *   어두운 면 위에서는 스튜디오 회색이 어둠에 묻혀 아래만 지워도 충분했다. 면이 베이지로
+ *   밝아지자 **회색 네모 셋이 크림 바탕에 그대로 떠 보였다.** 아래·좌우를 함께 지운다.
+ * ⚠️ 아래 78% 값을 낮추지 말 것 — 더 일찍 사라지면 흰 가운 아랫단까지 지워진다(실측).
+ * ⚠️ 좌우는 7% 까지만. 그 이상 파고들면 어깨선이 잘린다(사진마다 인물 폭이 다르다).
+ * ⚠️ mask-composite 를 지우지 말 것 — 두 겹을 겹치지 않으면 뒤 겹 하나만 적용돼
+ *    아래쪽 지움이 통째로 사라진다.
  */
-const FADE =
+const FADE_Y =
   'linear-gradient(to bottom, #000 0%, #000 78%, rgba(0,0,0,0.55) 92%, rgba(0,0,0,0) 100%)';
+const FADE_X =
+  'linear-gradient(to right, rgba(0,0,0,0) 0%, #000 7%, #000 93%, rgba(0,0,0,0) 100%)';
+const FADE = `${FADE_Y}, ${FADE_X}`;
 
 /** 무대 위 한 사람 — 사진 아래에 이름·자격이 가운데로 선다. */
 function Stand({ d, big }: { d: Doc; big?: boolean }) {
@@ -93,20 +103,33 @@ function Stand({ d, big }: { d: Doc; big?: boolean }) {
             className="pointer-events-none absolute -inset-x-8 -top-10 bottom-0 -z-10 rounded-[999px] bg-[radial-gradient(60%_55%_at_50%_45%,rgba(217,164,65,0.16)_0%,transparent_70%)]"
           />
         )}
+      {/*
+        ★ 사진에 모션 (2026-09-02 오너: "의료진 사진에 모션 살짝 넣어줘").
+          .img-in — 스크롤로 들어올 때 1.08 배에서 제자리로 내려앉으며 떠오른다.
+          손을 올리면 아주 조금 더 들어간다(1.035). 얼굴 사진이라 크게 움직이면 부담스럽다.
+        ⚠️ 관찰자를 새로 만들지 말 것 — RevealScript 가 .img-in 을 이미 본다.
+        ⚠️ transform 을 이 상자(마스크가 걸린 곳)에 주지 말 것. 안쪽 img 에 준다 —
+           상자가 움직이면 마스크가 함께 움직여 아랫변 페이드가 흔들린다.
+      */}
       <div
-        className={`relative w-full ${
+        className={`img-in group/photo relative w-full ${
           big
             ? 'h-[360px] sm:h-[430px] lg:-mt-20 lg:h-[460px]'
             : 'h-[300px] sm:h-[360px] lg:h-[380px]'
         }`}
-        style={{ maskImage: FADE, WebkitMaskImage: FADE }}
+        style={{
+          maskImage: FADE,
+          WebkitMaskImage: FADE,
+          maskComposite: 'intersect',
+          WebkitMaskComposite: 'source-in',
+        }}
       >
         <Image
           src={evened(d.photo)}
           alt={`${d.name} ${d.role}`}
           fill
           sizes={big ? '(max-width: 1023px) 80vw, 420px' : '(max-width: 1023px) 60vw, 320px'}
-          className="object-cover object-top"
+          className="object-cover object-top transition-transform duration-[900ms] ease-out group-hover/photo:scale-[1.035]"
           priority={big}
         />
       </div>
@@ -131,26 +154,26 @@ function Stand({ d, big }: { d: Doc; big?: boolean }) {
       <p
         className={`mt-6 inline-flex items-center rounded-full border px-3.5 py-1 font-bold ${
           big
-            ? 'border-signal bg-signal text-[15px] text-wine-deep'
-            : 'border-transparent text-[14.5px] text-signal'
+            ? 'border-ink bg-ink text-[15px] text-parchment'
+            : 'border-transparent text-[14.5px] text-clay-700'
         }`}
       >
         {d.role}
       </p>
       <p
-        className={`mt-2 font-bold tracking-[0.14em] text-oat ${
+        className={`mt-2 font-bold tracking-[0.14em] text-clay-700 ${
           big ? 'text-[30px] sm:text-[34px]' : 'text-[26px] sm:text-[29px]'
         }`}
       >
         <span className="-mr-[0.14em]">{d.name}</span>
       </p>
-      <p className={`mt-4 font-bold text-oat ${big ? 'text-[17px]' : 'text-[16.5px]'}`}>
+      <p className={`mt-4 font-bold text-ink ${big ? 'text-[17px]' : 'text-[16.5px]'}`}>
         {d.license}
       </p>
       {/* ⚠️ 학회는 여기 넣지 말 것 — 세로가 길어져 무대 구도가 무너진다. 전체는 소개 페이지에 있다. */}
       <ul className="mt-2.5 space-y-1.5">
         {d.keyCareer.map((c) => (
-          <li key={c} className="text-[16px] leading-[1.55] text-oat/75">
+          <li key={c} className="text-[16px] leading-[1.55] text-ink-soft">
             {c}
           </li>
         ))}
@@ -185,10 +208,10 @@ export function DoctorStage() {
       <div className="mt-16 flex justify-center">
         <Link
           href="/about/doctors"
-          className="inline-flex items-center gap-2 rounded-full border border-signal/60 px-7 py-3.5 text-[16px] font-bold text-oat transition-colors hover:bg-white/10"
+          className="inline-flex items-center gap-2 rounded-full border border-ink/45 px-7 py-3.5 text-[16px] font-bold text-ink transition-colors hover:bg-white/10"
         >
           의료진 자세히 보기
-          <span aria-hidden className="text-signal">
+          <span aria-hidden className="text-clay-700">
             →
           </span>
         </Link>

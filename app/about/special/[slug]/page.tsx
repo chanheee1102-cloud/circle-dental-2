@@ -150,7 +150,7 @@ export default async function SpecialDetailPage({
         </Container>
 
         {/* 용어 풀이 — 일반적인 치과 지식 */}
-        <section className="border-y border-brand-200/60 bg-parchment py-16">
+        <section className="border-y border-brand-200/80 bg-parchment py-16">
           <Container>
             <p className="text-[13.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
               알아 두면 좋은 것
@@ -161,7 +161,7 @@ export default async function SpecialDetailPage({
             <div className="mb-10 max-w-[70ch]">
               <TableOfContents items={[...s.context.map((c) => c.h), '자주 묻는 질문']} />
             </div>
-            <div className="mt-8 divide-y divide-brand-100">
+            <div className="mt-8 divide-y divide-wine-line">
               {s.context.map((c) => (
                 <div key={c.h} className="py-7 first:pt-0 last:pb-0">
                   <h2 id={headingId(c.h)} className="display-sm scroll-mt-28 text-[19px] text-ink sm:text-[21px]">
@@ -178,7 +178,7 @@ export default async function SpecialDetailPage({
           <h2 id={headingId('자주 묻는 질문')} className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]">
             자주 묻는 질문
           </h2>
-          <div className="mt-8 divide-y divide-brand-100 border-t border-brand-100">
+          <div className="mt-8 divide-y divide-wine-line border-t border-wine-line">
             {s.faq.map((f) => (
               <article key={f.q} className="py-6">
                 <h3 className="text-[18px] font-black leading-snug text-ink">{f.q}</h3>
@@ -190,7 +190,7 @@ export default async function SpecialDetailPage({
         </Container>
 
         {/* 다른 특별함 */}
-        <section className="border-t border-brand-200/60 bg-brand-50/40 py-14">
+        <section className="border-t border-brand-200/80 bg-brand-50/40 py-14">
           <Container>
             <h2 className="text-[20px] font-black text-ink">동그라미 치과만의 특별함</h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

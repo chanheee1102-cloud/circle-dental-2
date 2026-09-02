@@ -3,7 +3,7 @@ import { ArticleMeta } from '@/components/article';
 import Image from 'next/image';
 import { CLINIC } from '@/lib/clinic';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
-import { IMG } from '@/lib/assets';
+import { CredentialFan } from '@/components/CredentialFan';
 import { Container, ContactCta, Sentences } from '@/components/ui';
 import { AboutHero } from '@/components/AboutHero';
 import { JsonLd } from '@/components/JsonLd';
@@ -136,9 +136,9 @@ export default function DoctorsPage() {
         <ArticleMeta path="/about/doctors" />
       </Container>
 
-      <section className="mt-14 border-t border-brand-200/60">
+      <section className="mt-14 border-t border-brand-200/80">
         {DOCTORS.map((d, i) => (
-          <article key={d.slug} id={d.slug} className="scroll-mt-28 border-b border-brand-200/60">
+          <article key={d.slug} id={d.slug} className="step-in scroll-mt-28 border-b border-brand-200/80">
             {/*
               ★ items-stretch — 사진이 **글 높이에 맞춰 늘어난다** (2026-09-01 오너: "사진이랑
                 규격 맞추고 싶은데"). 앞 판본은 사진 461px 에 글 497~587px 라 아래가 어긋났다.
@@ -147,7 +147,8 @@ export default function DoctorsPage() {
                  어깨가 남는다. 430px 로 두면 118px 이 잘려 팔이 사라졌다.
             */}
             <Container className="grid gap-10 py-12 lg:grid-cols-[minmax(0,500px)_minmax(0,1fr)] lg:items-stretch lg:gap-14 lg:py-16">
-              <div className="card-edge relative aspect-[625/670] w-full overflow-hidden rounded-[22px] bg-brand-100 lg:aspect-auto lg:h-full lg:min-h-[536px]">
+              {/* ⚠️ img-in 을 빼지 말 것 (2026-09-02 오너: "의료진 사진에도 모션 살짝"). */}
+              <div className="img-in card-edge relative aspect-[625/670] w-full overflow-hidden rounded-[22px] bg-brand-100 lg:aspect-auto lg:h-full lg:min-h-[536px]">
                 <Image
                   src={d.photo}
                   alt={`${CLINIC.name} ${d.role} ${d.name}`}
@@ -257,7 +258,7 @@ export default function DoctorsPage() {
         ⚠️ 사진 설명은 현수막에 **적혀 있는 것만** 옮겼다 — 날짜·장소·주최가 사진에 다 있다.
            사진에 없는 것(참여 인원, 진료 건수 따위)을 덧붙이지 말 것. 그건 지어내는 것이다.
       */}
-      <section className="border-t border-brand-200/60 py-16">
+      <section className="border-t border-brand-200/80 py-16">
         <Container>
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,52%)] lg:gap-16">
             <div>
@@ -305,50 +306,49 @@ export default function DoctorsPage() {
         <Container>
           <h2 className="display-sm text-[clamp(24px,2.6vw,32px)] text-ink">어떤 인증과 수료를 받았나요?</h2>
           {/*
-            ★ 라벨을 `CREDENTIALS[i]` 로 가져오지 않는다.
-              이미지 배열과 문구 배열을 인덱스로 짝지으면 한쪽 순서만 바뀌어도 전부 어긋나는데
-              화면은 멀쩡해 보인다. 실제로 네 장 모두 다른 인증서 이름을 달고 있었다.
-              문구는 이제 이미지 옆(lib/assets.ts)에 붙어 있으므로 `c.label` 하나만 쓴다.
-
-            ★ 칸 높이를 고정한다.
-              인증서 원본은 236×242 세 장과 236×178 한 장으로 비율이 제각각이다.
-              그대로 흘리면 짧은 한 장만 캡션이 위로 올라와 줄이 어긋난다(원본 홈페이지가 그렇다).
-              정사각 액자에 object-contain 으로 담으면 비율이 달라도 액자 높이가 같아
-              네 캡션이 같은 선에서 시작한다. 잘리는 인증서도 없다.
+            ★★ 네모 액자 격자 → **홈과 같은 부채꼴 진열** (2026-09-02 오너: "저런 위촉패나
+               저런것들도 좀 카드 배경 없애고 임팩트나 모션 넣어주고") ★★
+               같은 인증패 넷을 홈은 커서를 따라 기우는 입체 진열로, 여기는 네모 액자로
+               보여 주고 있었다. **같은 물건에 화면이 두 벌**이었고, 이쪽이 더 밋밋했다.
+               이제 컴포넌트 하나(components/CredentialFan.tsx)를 양쪽이 함께 쓴다.
+            ★ 상자를 없앴다 — 인증서 PNG 는 배경이 지워져 있어 drop-shadow 가 실제 윤곽을
+              따라간다. 액자 안의 액자가 사라지고 인증패 자체가 커진다.
+            ⚠️ 액자 격자로 되돌리지 말 것. 되돌리면 홈과 다시 두 벌이 된다 —
+               고치려면 CredentialFan 쪽을 고칠 것.
+            ⚠️ href={null} 이다 — 이 페이지가 그 링크의 목적지라 자기 자신으로 가는 링크가 된다.
           */}
-          <div className="mt-10 grid grid-cols-2 items-start gap-x-6 gap-y-8 sm:grid-cols-4">
-            {IMG.credentials.map((c) => (
-              <figure key={c.src}>
-                {/* ⚠️ 테두리를 brand-100 으로 되돌리지 말 것 — 밝은 띠 위에서 1.03:1 로 사라진다(2026-09-02 실측). */}
-                <div className="relative aspect-square overflow-hidden rounded-xl border border-brand-200 bg-brand-50/50">
-                  <Image
-                    src={c.src}
-                    alt={c.label}
-                    fill
-                    sizes="(max-width: 640px) 45vw, 260px"
-                    className="object-contain p-4"
-                  />
-                </div>
-                <figcaption className="mt-3.5 text-center text-[14.5px] leading-snug text-twilight">
-                  {c.label}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+          <CredentialFan href={null} />
         </Container>
       </section>
 
-      {/* 발표 논문 */}
+      {/*
+        발표 논문.
+        ★★ 스르륵 (2026-09-02 오너: "밑에 논문도 스르륵 나오게 해주고") ★★
+          바깥 .seq 가 관찰 대상이고, 안쪽 .seq-fade 들이 --d 만큼 늦게 하나씩 뜬다.
+          라벨 → 제목 → 저자 → 요약 → 사진 순서다.
+        ⚠️ 순서를 뒤집지 말 것 — 사진이 먼저 뜨면 글이 사진 위에서 튀어 읽는 순서가 사라진다.
+        ⚠️ 관찰자를 새로 만들지 말 것. 레이아웃에 하나뿐인 RevealScript 가 .seq 를 이미 본다.
+      */}
       <Container className="py-16">
-        <div className="overflow-hidden rounded-2xl border border-brand-200/70 card-glass shadow-[var(--shadow-soft)]">
+        <div className="seq overflow-hidden rounded-2xl border border-brand-200/70 card-glass shadow-[var(--shadow-soft)]">
           <div className="grid gap-0 lg:grid-cols-2">
             <div className="p-8 lg:p-10">
-              <p className="eyebrow-chip text-clay-600">발표 논문</p>
-              <h2 className="display-sm mt-5 text-[clamp(21px,2.2vw,26px)] leading-snug text-ink">
+              <p className="seq-fade eyebrow-chip text-clay-600" style={{ ['--d' as string]: '0ms' }}>
+                발표 논문
+              </p>
+              <h2
+                className="seq-fade display-sm mt-5 text-[clamp(21px,2.2vw,26px)] leading-snug text-ink"
+                style={{ ['--d' as string]: '140ms' }}
+              >
                 {PUBLICATION_DETAIL.title}
               </h2>
-              <p className="mt-4 text-[15.5px] text-ink-soft">{PUBLICATION_DETAIL.authors}</p>
-              <div className="mt-6 rounded-2xl bg-brand-50 p-5">
+              <p
+                className="seq-fade mt-4 text-[15.5px] text-ink-soft"
+                style={{ ['--d' as string]: '300ms' }}
+              >
+                {PUBLICATION_DETAIL.authors}
+              </p>
+              <div className="seq-fade mt-6 rounded-2xl bg-brand-50 p-5" style={{ ['--d' as string]: '440ms' }}>
                 <p className="text-[13.5px] font-black tracking-[0.14em] text-clay-600 uppercase">
                   Clinical Relevance
                 </p>
@@ -362,7 +362,10 @@ export default function DoctorsPage() {
                 object-top 으로 자르면 정작 논문이 화면 밖으로 밀린다(실제로 그랬다).
                 아래를 기준으로 잘라야 제목·저자까지 들어온다.
             */}
-            <div className="relative min-h-[340px] bg-brand-100">
+            <div
+              className="seq-fade img-in relative min-h-[340px] bg-brand-100"
+              style={{ ['--d' as string]: '600ms' }}
+            >
               <Image
                 src={PUBLICATION_DETAIL.image}
                 alt="발표 논문 — Long-term Follow-up of Complicated Crown Fracture With Fragment Reattachment"

@@ -16,13 +16,20 @@ export interface NavChild {
   href: string;
   /** 메뉴에 붙는 한 줄 설명. 클릭 전에 무엇인지 알게 한다. */
   desc?: string;
+  /**
+   * 사이트 밖으로 나가는 링크(블로그 등).
+   * ⚠️ 이 표시가 없으면 사이트맵이 그 주소를 **우리 페이지로 착각해** 내보낸다.
+   *    flatNavPaths 가 이 값을 보고 건너뛴다.
+   */
+  external?: boolean;
 }
 
 /*
  * (2026-08-14) 메가메뉴 오른쪽 '대표 카드'(NavFeature — 사진 + 홍보 문구 + CTA)를 제거했다.
  *   운영자 판단: "굳이 오른쪽에 저건 없어도 돼. 그냥 메뉴만 나오면 돼."
  *   메뉴는 가려던 곳으로 빨리 보내는 자리라 거기서 읽을거리를 권하지 않는다.
- *   ⚠️ 이 파일이 lib/assets · lib/doctors · lib/clinic 을 import 하던 이유가 그 카드였다.
+ *   ⚠️ 이 파일이 lib/assets · lib/doctors 를 import 하던 이유가 그 카드였다.
+ *      (2026-09-02: 블로그를 사이트 안에 두기로 하면서 lib/clinic import 는 다시 뺐다.)
  *      import 도 함께 지웠다 — 헤더는 클라이언트 컴포넌트라 안 쓰는 데이터가 딸려 오면
  *      그만큼 첫 화면에서 받아야 할 자바스크립트가 늘어난다.
  */
@@ -34,72 +41,71 @@ export interface NavItem {
 
 export const NAV: NavItem[] = [
   {
-    label: '병원 소개',
+    /* 기존 홈페이지의 '치과소개' 자리. 우리 쪽에 있는 소개 계열을 전부 여기 모은다. */
+    label: '치과소개',
     href: '/about',
     children: [
       { label: '동그라미의 특별함', href: '/about', desc: '진료를 대하는 기준' },
-      /*
-       * ⚠️ '교수 출신' 이라고만 적었었다 — 확인된 경력은 **외래교수**다(lib/doctors.ts).
-       *    줄여 적은 말이 원문보다 세지면 그건 과장이고, 의료광고에서 자격 과장은 제56조 문제다.
-       */
-      { label: '의료진 소개', href: '/about/doctors', desc: '외래교수 출신 대표원장' },
-      /*
-       * ★ 홈에서 뺀 '근거'(자격·인증·논문·언론)를 옮겨 담은 페이지 (2026-08-14).
-       *   홈에서 뺀 만큼 메뉴에는 반드시 올린다 — 메뉴에 없으면 사이트 안에서 그 페이지로
-       *   가는 길이 사라져 크롤러도 늦게 발견하고 사람도 못 찾는다.
-       */
+      { label: '의료진 소개', href: '/about/doctors', desc: '외래교수 출신 대표원장과 전문의' },
       { label: '근거 · 인증', href: '/about/trust', desc: '자격·논문·언론 기록' },
-      /* ⚠️ '둘러보기'(/about/tour)를 되살리지 말 것 (2026-09-01) — 본문이 209자뿐이라
-         검색에는 빈 페이지였다. 사진 열두 장은 /about 안으로 옮겼고 주소는 301 로 넘긴다. */
-      { label: '진료 절차', href: '/about/process', desc: '내원부터 유지관리까지' },
+      { label: '첫 방문 안내', href: '/about/process', desc: '접수부터 상담까지' },
+      { label: '진료시간 · 오시는 길', href: '/visit', desc: '위치 · 시간 · 연락처' },
     ],
   },
   {
-    label: '진료',
-    href: '/treatment',
     /*
-     * ★ desc 는 전부 lib/treatments.ts 의 whoFor 에서 온다 (2026-08-14).
-     *   메뉴 문구를 새로 지어내지 않는다 — 진료 내용을 말하는 문장은 어디에 있든
-     *   같은 근거에서 나와야 한다. 여기 있는 것은 그 첫 항목을 메뉴 길이에 맞게 줄인 것이다.
+     * 기존 홈페이지의 '자연치아살리기' 묶음 — 뽑지 않고 살리는 쪽 진료를 한데 둔다.
+     * ⚠️ '전체 진료과목'(/treatment)을 여기 첫 줄에 둔다. 기존 메뉴에는 없던 자리지만
+     *    열 갈래를 한눈에 보는 페이지가 어디서도 안 닿으면 그 페이지가 고아가 된다.
      */
+    label: '자연치아살리기',
+    href: '/treatment/save-natural-tooth',
     children: [
       { label: '전체 진료과목', href: '/treatment', desc: '열 갈래를 한눈에' },
       { label: '자연치아 살리기', href: '/treatment/save-natural-tooth', desc: '발치를 권유받았을 때' },
-      { label: '임플란트', href: '/treatment/implant', desc: '치아를 뽑았거나 빠진 자리' },
-      /* ⚠️ '심미치료' 로 되돌리지 말 것 — 그 이름으로는 메뉴에서 '치아미백' 을 찾을 수 없었다
-         (2026-09-01 오너 지적). 페이지 내용이 치아미백 하나라 이름을 내용에 맞췄다. */
-      { label: '치아미백', href: '/treatment/whitening', desc: '커피·나이로 누레진 앞니' },
-      { label: '신경치료', href: '/treatment/endodontic', desc: '가만히 있어도 욱신거릴 때' },
-      { label: '잇몸치료', href: '/treatment/periodontal', desc: '양치할 때 피가 날 때' },
       { label: '충치치료', href: '/treatment/cavity', desc: '검은 점이나 구멍이 보일 때' },
-      { label: '사랑니 발치', href: '/treatment/wisdom-tooth', desc: '사랑니 주변이 붓고 아플 때' },
-      { label: '크라운·보철', href: '/treatment/crown-prosthesis', desc: '깨졌거나 크게 파인 치아' },
-      { label: '스케일링·예방', href: '/treatment/scaling-prevention', desc: '1년 넘게 안 받았다면' },
+      { label: '치아신경치료', href: '/treatment/endodontic', desc: '가만히 있어도 욱신거릴 때' },
+      { label: '잇몸치료(스케일링)', href: '/treatment/periodontal', desc: '양치할 때 피가 날 때' },
+      { label: '스케일링 · 예방', href: '/treatment/scaling-prevention', desc: '1년 넘게 안 받았다면' },
     ],
   },
   {
-    label: '미리 알아두기',
+    label: '임플란트',
+    href: '/treatment/implant',
+    children: [
+      { label: '임플란트', href: '/treatment/implant', desc: '치아를 뽑았거나 빠진 자리' },
+      { label: '크라운 · 보철', href: '/treatment/crown-prosthesis', desc: '깨졌거나 크게 파인 치아' },
+    ],
+  },
+  {
+    label: '심미치료',
+    href: '/treatment/whitening',
+    children: [
+      { label: '라미네이트', href: '/treatment/laminate', desc: '앞면만 얇게 덮는 방법' },
+      { label: '심미보철', href: '/treatment/crown-prosthesis', desc: '깎는 양으로 고르기' },
+      { label: '치아미백', href: '/treatment/whitening', desc: '커피·나이로 누레진 앞니' },
+    ],
+  },
+  {
+    label: '사랑니치료',
+    href: '/treatment/wisdom-tooth',
+    children: [
+      { label: '사랑니 발치', href: '/treatment/wisdom-tooth', desc: '사랑니 주변이 붓고 아플 때' },
+    ],
+  },
+  {
+    /* 기존 '상담 및 예약' 자리 — 예약 길은 히어로와 퀵메뉴에 있으므로 읽을거리를 둔다. */
+    label: '인사이트',
     href: '/insight',
     children: [
+      { label: '블로그', href: '/insight/blog', desc: '자주 받는 질문을 글로' },
       { label: '증상으로 찾기', href: '/insight/symptom', desc: '내 증상이 무엇인지부터' },
       { label: '질환 사전', href: '/insight/condition', desc: '들은 병명이 무엇인지' },
       { label: '치료 여정', href: '/insight/journey', desc: '몇 번 오고 얼마나 걸리는지' },
       { label: '비용 가이드', href: '/insight/cost', desc: '보험이 되는 것과 안 되는 것' },
       { label: '용어 사전', href: '/insight/glossary', desc: '설명에 나오는 말 풀이' },
       { label: '응급 상황', href: '/insight/emergency', desc: '지금 당장 해야 할 것' },
-    ],
-  },
-  {
-    label: '내원 안내',
-    href: '/visit',
-    children: [
-      { label: '오시는 길·진료시간·연락처', href: '/visit', desc: '위치 · 주차 · 여는 시간 · 연락 창구' },
-      /*
-       * ⚠️ '연락처·예약 문의'(/contact)를 되살리지 말 것 (2026-09-01 오너) —
-       *    /visit 과 주제가 겹쳐(어디에 있나 · 언제 여나) 같은 검색어를 두고 경쟁했다.
-       *    연락 창구는 /visit 안으로 들어갔고 /contact 는 301 로 /visit 에 넘긴다.
-       */
-      { label: '자주 묻는 질문', href: '/faq', desc: '오기 전에 많이 묻는 것' },
+      { label: '자주 묻는 질문', href: '/faq', desc: '비용 · 시간 · 통증' },
     ],
   },
 ];
@@ -109,7 +115,8 @@ export function flatNavPaths(): string[] {
   const out = new Set<string>(['/']);
   for (const item of NAV) {
     out.add(item.href);
-    for (const c of item.children ?? []) out.add(c.href);
+    /* ⚠️ 바깥 링크는 넣지 말 것 — 남의 도메인 주소가 우리 사이트맵에 실린다. */
+    for (const c of item.children ?? []) if (!c.external) out.add(c.href);
   }
   return [...out];
 }

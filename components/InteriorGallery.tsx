@@ -75,7 +75,7 @@ export function InteriorGallery() {
       */}
       <div className="mx-auto flex w-full max-w-[58rem] items-center gap-3">
         <Arrow side="left" onClick={() => go(i - 1)} />
-        <div className="relative aspect-[3/2] w-full min-w-0 flex-1 overflow-hidden rounded-2xl bg-brand-100">
+        <div className="img-in relative aspect-[3/2] w-full min-w-0 flex-1 overflow-hidden rounded-2xl bg-brand-100">
         <Image
           key={cur.src}
           src={cur.src}

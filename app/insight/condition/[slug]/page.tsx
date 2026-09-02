@@ -171,7 +171,7 @@ export default async function ConditionDetailPage({
         </Container>
 
         {/* 증상 · 원인 */}
-        <section className="border-y border-brand-200/60 bg-parchment py-14">
+        <section className="border-y border-brand-200/80 bg-parchment py-14">
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
@@ -232,7 +232,7 @@ export default async function ConditionDetailPage({
         </Container>
 
         {/* 치료 · 예방 */}
-        <section className="border-y border-brand-200/60 bg-brand-50/40 py-14">
+        <section className="border-y border-brand-200/80 bg-brand-50/40 py-14">
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
@@ -270,7 +270,7 @@ export default async function ConditionDetailPage({
           <h2 id={headingId('자주 묻는 질문')} className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]">
             자주 묻는 질문
           </h2>
-          <div className="mt-8 divide-y divide-brand-100 border-t border-brand-100">
+          <div className="mt-8 divide-y divide-wine-line border-t border-wine-line">
             {c.faq.map((f) => (
               <article key={f.q} className="py-6">
                 <h3 className="text-[18px] font-black leading-snug text-ink">{f.q}</h3>
@@ -282,7 +282,7 @@ export default async function ConditionDetailPage({
 
         {/* 연결 */}
         {(symptoms.length > 0 || treatments.length > 0) && (
-          <section className="border-t border-brand-200/60 bg-parchment py-14">
+          <section className="border-t border-brand-200/80 bg-parchment py-14">
             <Container>
               <div className="grid gap-10 lg:grid-cols-2">
                 {symptoms.length > 0 && (
@@ -293,7 +293,7 @@ export default async function ConditionDetailPage({
                         <Link
                           key={s!.slug}
                           href={`/insight/symptom/${s!.slug}`}
-                          className="group flex items-center justify-between gap-3 rounded-xl border border-brand-100 px-5 py-3.5 transition-colors hover:border-brand-300 hover:bg-brand-50"
+                          className="group flex items-center justify-between gap-3 rounded-xl border border-wine-line px-5 py-3.5 transition-colors hover:border-brand-300 hover:bg-brand-50"
                         >
                           <span className="text-[15.5px] font-bold text-ink group-hover:text-brand-700">
                             {s!.title}
@@ -314,7 +314,7 @@ export default async function ConditionDetailPage({
                         <Link
                           key={t!.slug}
                           href={`/treatment/${t!.slug}`}
-                          className="group flex items-center justify-between gap-3 rounded-xl border border-brand-100 px-5 py-3.5 transition-colors hover:border-brand-300 hover:bg-brand-50"
+                          className="group flex items-center justify-between gap-3 rounded-xl border border-wine-line px-5 py-3.5 transition-colors hover:border-brand-300 hover:bg-brand-50"
                         >
                           <span className="text-[15.5px] font-bold text-ink group-hover:text-brand-700">
                             {t!.name}

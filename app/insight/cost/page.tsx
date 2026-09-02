@@ -164,7 +164,7 @@ export default function CostPage() {
             </thead>
             <tbody>
               {COST_TOPICS.map((c) => (
-                <tr key={c.slug} className="border-t border-brand-100">
+                <tr key={c.slug} className="border-t border-wine-line">
                   <th scope="row" className="px-6 py-4 align-top text-[15.5px] font-bold text-ink">
                     <a href={`#${c.slug}`} className="hover:text-brand-700 hover:underline">
                       {c.title}
@@ -191,7 +191,7 @@ export default function CostPage() {
             <article
               key={c.slug}
               id={c.slug}
-              className="scroll-mt-28 rounded-2xl border border-brand-100 card-glass p-7"
+              className="scroll-mt-28 rounded-2xl border border-wine-line card-glass p-7"
             >
               <span
                 className={`inline-flex rounded-full px-3 py-1 text-[13.5px] font-black ${BADGE[c.covered]}`}
@@ -205,7 +205,7 @@ export default function CostPage() {
               <p className="mt-3 max-w-[68ch] text-[17px] leading-[1.85] text-ink"><Sentences text={c.answer} /></p>
               <p className="mt-3 max-w-[68ch] text-[16px] leading-[1.8] text-ink-soft"><Sentences text={c.detail} /></p>
 
-              <div className="mt-5 border-t border-brand-50 pt-4">
+              <div className="mt-5 border-t border-wine-line pt-4">
                 <h3 className="text-[13.5px] font-black tracking-wide text-ink-muted">
                   비용을 가르는 요인
                 </h3>

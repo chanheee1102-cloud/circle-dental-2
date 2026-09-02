@@ -38,7 +38,7 @@ export function ComparisonTable({ data }: { data: Data }) {
           </thead>
           <tbody>
             {data.rows.map((r) => (
-              <tr key={r.label} className="border-t border-brand-100">
+              <tr key={r.label} className="border-t border-wine-line">
                 <th
                   scope="row"
                   className="bg-parchment px-6 py-4 align-top text-[15px] font-bold text-ink-soft"

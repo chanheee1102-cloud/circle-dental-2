@@ -213,22 +213,37 @@ export default function HomePage() {
 function Hero() {
   return (
     /*
-     * ⚠️ sticky top-0 — 다음 구획이 이 위를 덮으며 올라온다(위 감싸는 상자 주석 참고).
-     * ⚠️ 높이를 화면과 정확히 같게 둔다. min-h 로 두면 내용이 늘어날 때 고정이 어긋난다.
+     * ★★★ 다섯 번째 판 — **원본 짜임으로 복귀** ★★★
+     *   (2026-09-02 오너가 배포본 화면을 보여 주며: "그냥 원본 느낌으로 가는데,
+     *    서브페이지도 마찬가지로")
+     *
+     * ★★ 이 자리를 다섯 번 고쳤다. 되돌리기 전에 전부 읽을 것 ★★
+     *   ① 원본: 영상 위 어두운 덮개 두 겹 + 흰 글자        ← 지금 이것
+     *   ② 글을 영상 밖(위)으로  → "이거 배경으로 들어가야지 영상"
+     *   ③ 흰 덮개 + 진한 글자   → "왜 배경에 흐릿하게 생기는거야"
+     *   ④ 덮개 0 + 흰 판        → "그냥 원본 느낌으로 가는데"
+     *   ②③④ 는 전부 ①의 덮개를 피하려던 시도였고 셋 다 반려됐다.
+     *   **흰 글자를 영상 위에 올리는 한 덮개는 선택이 아니라 조건이다.**
+     * ⚠️ ②③④ 중 하나로 다시 가려면 오너의 새 지시가 있어야 한다.
+     *
+     * ⚠️ sticky top-0 — 다음 구획이 이 위를 덮으며 올라온다(감싸는 상자 주석 참고).
+     * ⚠️ 높이를 화면과 정확히 같게 둔다. min-h 로 두면 내용이 늘 때 고정이 어긋난다.
      * ⚠️ 음수 위쪽 여백(68/94)은 SiteHeader 의 전체 높이와 같아야 한다.
+     * ⚠️ 이 자리에 중괄호로 감싼 JSX 주석을 쓰지 말 것 — return( 바로 뒤는 아직
+     *    표현식 자리라 문법 오류가 난다. 평범한 블록 주석만 된다.
      */
     <section className="hero-pin sticky top-0 z-0 -mt-[68px] flex h-[100dvh] flex-col overflow-hidden sm:-mt-[94px]">
-      {/* 폴백 배경 — 사진마저 늦게 뜨는 회선에서도 화면이 비지 않는다. */}
-      <div aria-hidden className="absolute inset-0 bg-[#0d1113]" />
+      {/* 폴백 배경 — 영상마저 늦게 뜨는 회선에서도 화면이 비지 않는다. */}
+      <div aria-hidden className="absolute inset-0 bg-night" />
 
       <HeroMedia />
 
       {/*
         덮개 두 겹 —
           ① 가운데를 타원으로 진하게: 글이 놓이는 자리만 집중해서 누른다.
-          ② 위아래로 한 겹 더: 헤더와 사실 띠의 글자를 받쳐 준다.
-        ★ 화면 전체를 고르게 어둡게 하는 대신 이렇게 나누면 **모서리 쪽 사진이 살아 있다.**
-        ⚠️ 색이 중성 먹색이다. 갈색 덮개를 쓰면 사진이 누렇게 뜬다.
+          ② 위아래로 한 겹 더: 헤더와 지역 줄의 글자를 받쳐 준다.
+        ★ 화면 전체를 고르게 어둡게 하는 대신 이렇게 나누면 **모서리 쪽 영상이 살아 있다.**
+        ⚠️ 색이 중성 먹색이다. 갈색 덮개를 쓰면 영상이 누렇게 뜬다.
         ⚠️ 값을 낮추려면 실측부터 — 배경 영상에는 흰 복도처럼 아주 밝은 프레임이 있다.
       */}
       <div
@@ -236,22 +251,20 @@ function Hero() {
         className="absolute inset-0"
         style={{
           background: [
-            'radial-gradient(ellipse 78% 62% at 50% 46%,rgba(20,20,22,.74) 0%,rgba(20,20,22,.62) 52%,rgba(20,20,22,.34) 100%)',
+            'radial-gradient(ellipse 78% 62% at 50% 46%,rgba(20,20,22,.78) 0%,rgba(20,20,22,.66) 52%,rgba(20,20,22,.36) 100%)',
             'linear-gradient(180deg,rgba(20,20,22,.46) 0%,rgba(20,20,22,0) 26%,rgba(20,20,22,0) 68%,rgba(20,20,22,.62) 100%)',
           ].join(','),
         }}
       />
 
       {/*
-        ★★ 아래 붙이기(mt-auto) → 화면 세로 가운데 (2026-08-27 오너: "너무 밑에 치우쳐져 있고") ★★
-          flex-1 이 남는 자리를 통째로 먹고 그 안에서 가운데 정렬한다. 아래 사실 띠는
-          제 높이만 차지하므로, 글은 **띠를 뺀 나머지의 가운데**에 온다.
-        ⚠️ mt-auto 로 되돌리지 말 것 — 그러면 글이 띠 바로 위에 붙어 아래로 쏠린다.
+        ⚠️ mt-auto 로 되돌리지 말 것 — 그러면 글이 지역 줄 바로 위에 붙어 아래로 쏠린다.
         ⚠️ 위쪽 여백(pt)은 헤더가 겹치는 만큼이다. 헤더 높이를 바꾸면 여기도 볼 것.
       */}
       <div className="hero-inner relative flex w-full flex-1 flex-col justify-center px-5 pt-[94px] pb-6 text-center sm:px-8">
         {/* 원문 1번 슬라이드의 윗줄. */}
-        <p className="enter on-photo text-[16.5px] leading-[1.7] font-medium text-white/90 sm:text-[18px]">
+        {/* ⚠️ text-white/90 으로 되돌리지 말 것 — 영상 밝은 프레임에서 4.16:1 로 미달했다(실측). */}
+        <p className="enter on-photo text-[16.5px] leading-[1.7] font-medium text-white sm:text-[18px]">
           10년 이상 경력의 대학 병원 출신 의료진, 디지털 의료장비 활용
         </p>
 
@@ -259,11 +272,7 @@ function Hero() {
           ⚠️⚠️ 이 문구를 바꾸면 scripts/subset-gowun.py 를 다시 돌릴 것 ⚠️⚠️
              잘라낸 글꼴에 없는 글자는 그 글자만 Pretendard 로 떨어져 글꼴이 두 벌 보인다.
           ⚠️ 굵기를 올리지 말 것 — 400 으로 크게 쓰는 것이 이 시스템의 전부다.
-        */}
-        {/*
           ⚠️ 강제 줄바꿈(<br />)을 넣지 말 것 — 원본 홈페이지가 한 줄이다 (2026-08-27 오너).
-             좁은 화면에서는 알아서 두 줄로 접힌다. clamp 가 폭을 따라가므로 억지로
-             끊지 않아도 어느 화면에서든 넘치지 않는다.
         */}
         <h1
           className="enter on-photo display-ko mt-7 text-[clamp(32px,5.4vw,62px)] leading-[1.24] text-white"
@@ -282,8 +291,8 @@ function Hero() {
         </p>
 
         {/*
-          ⚠️ 헤더에서 예약·전화 버튼을 뺐으므로(2026-08-27) 첫 화면에서 그 두 행동으로 가는
-             길은 여기 둘뿐이다. 지우지 말 것.
+          ⚠️ 헤더에 예약 버튼이 하나 있지만(2026-09-02) 전화로 가는 길은 여기 하나뿐이다.
+             둘 다 지우지 말 것.
         */}
         <div
           className="enter mt-9 flex flex-wrap items-center justify-center gap-3"
@@ -304,20 +313,29 @@ function Hero() {
       </div>
 
       {/*
-        ★★ 사실 칩 여섯 → 지역 한 줄 (2026-08-27 오너) ★★
-          전문의·대표원장·야간·토요일·주차는 페이지 안에 더 풍부하게 있고 구조화 데이터에도
-          들어간다 — 기계용으로 중복이라 여기서 빼도 검색 손해가 사실상 없다.
-        ⚠️⚠️ 지역만은 다르다 ⚠️⚠️
-          첫 화면 문구를 원본 3줄로 되돌리면서 지역명이 히어로에서 통째로 빠졌었다.
-          지역명은 h1 주변 본문에 있을 때 가장 세게 먹히고, "고양 화정동 치과" 같은
-          질의에 AI 가 답할 때 근거로 삼는 자리가 거기다.
-          이 줄을 빼려면 지역명을 첫 화면 다른 자리에 대신 넣을 것.
+        ⚠️⚠️ 지역 한 줄을 지우지 말 것 ⚠️⚠️
+          지역명은 h1 주변 본문에 있을 때 가장 세게 먹히고, "고양 화정동 치과" 같은 질의에
+          AI 가 답할 때 근거로 삼는 자리가 거기다. 한 번 빠졌다가 되살린 줄이다.
+          지우려면 지역명을 첫 화면 다른 자리에 대신 넣을 것.
       */}
       <div
-        className="hero-inner enter relative mx-auto w-full max-w-[1320px] px-5 pb-10 text-center sm:pb-14 lg:px-8"
-        style={{ animationDelay: '340ms' }}
+        /*
+          ⚠️ 아래 여백은 **하단 고정 바(약 64px)** 를 피하려고 크다 (2026-09-02 실측).
+             줄이면 흰 바 위에 흰 글자가 얹혀 1.07:1 이 된다. 바가 안 뜨는 2xl 부터만 줄인다.
+        */
+        className="hero-inner relative mx-auto w-full max-w-[1320px] px-5 pb-[5.5rem] text-center sm:pb-24 lg:px-8 2xl:pb-14"
       >
-        <p className="on-photo text-[15.5px] font-medium text-white/80 sm:text-[16.5px]">
+        {/*
+          ⚠️⚠️ .enter 를 이 줄의 **부모**(.hero-inner)에 걸지 말 것 ⚠️⚠️
+            둘 다 opacity 를 애니메이션하는데 .hero-inner 는 스크롤 타임라인이고 fill: both
+            라, 화면 맨 위(진행도 0)에서 .enter 의 시작값 0 을 그대로 붙들어 버린다.
+            그래서 이 줄이 **통째로 안 보였다**(2026-09-02 실측 opacity: 0. 배포본에도 있던
+            문제다). 스크롤 연출은 부모가, 등장은 이 글자가 맡는다.
+        */}
+        <p
+          className="enter on-photo text-[15.5px] font-medium text-white/80 sm:text-[16.5px]"
+          style={{ animationDelay: '340ms' }}
+        >
           {CLINIC.address.locality} {CLINIC.address.dong} · {CLINIC.nearestStation} 인근
         </p>
       </div>
@@ -326,13 +344,14 @@ function Hero() {
 }
 
 /**
- * 진료 4대 축 — **사진 없이 어두운 유리 카드 넷**, 한 줄에.
+ * 진료 4대 축 — **사진 없이 유리 카드 넷**, 한 줄에.
  *
  * ★★ 왜 사진을 뺐나 (2026-08-28 오너) ★★
  *   사진이 카드마다 색이 달라(검정·파랑·회색·청록) 넷이 한 줄에 서니 색이 네 벌로 보였다.
  *   글만 남기면 **읽는 순서가 이름 → 설명 하나로 정리되고**, 카드 넷이 한 덩어리로 읽힌다.
- * ★ 재질은 오른쪽 퀵메뉴와 같은 .pane-dark 다. 화면에 어두운 판이 두 종류가 되지 않는다.
- * ⚠️ 이 면 위 글자는 거의 흰색이어야 한다 — 회색조는 3.5:1 대로 떨어진다(globals.css 주석).
+ * ★ 재질은 오른쪽 퀵메뉴와 같은 .pane-glass 다. 화면에 유리판이 두 종류가 되지 않는다.
+ *   (2026-09-02 오너 "검은 느낌 아예 없애" 로 .pane-dark → .pane-glass 로 함께 뒤집었다.
+ *    한쪽만 바꾸면 화면에 어두운 유리와 밝은 유리가 동시에 뜬다.)
  * ⚠️ 회전목마로 되돌리지 말 것 — 자동 이동 / 스크롤 연동 / 단계 이동 세 판을 다 해 봤다.
  *    git history 에 남아 있다.
  * ⚠️ 카피는 기존 홈페이지 원문 그대로다(lib/clinic.ts TREATMENT_PILLARS).
@@ -340,36 +359,17 @@ function Hero() {
 function PillarSection() {
   return (
     /* ⚠️ 아래 여백을 위보다 짧게 둔다 — 카드 그림자가 아래로 퍼져 실제보다 더 비어 보인다. */
-    <section className="relative isolate pt-16 pb-12 lg:pt-24 lg:pb-16">
+    <section className="relative pt-16 pb-12 lg:pt-24 lg:pb-16">
       {/*
-        배경 진료실 사진 — 유리 카드가 흐릴 대상을 만들어 준다(위 주석 참고).
-        ⚠️ 덮개(다음 div)를 옅게 만들지 말 것. 사진이 선명해지는 만큼 제목이 안 읽힌다.
+        ★★ 배경 진료실 사진을 걷어냈다 (2026-09-02 오너: "사진에 거뭇거뭇하고 흐릿한
+           느낌 다 걷어 선명하고 밝게") ★★
+           여기 있던 것은 진료실 사진 한 장 + 그 위를 wine-bg 로 97%→48% 덮는 그라데이션
+           + backdrop-blur 였다. 덮개를 옅게 하면 왼쪽 위 제목이 사진 밝은 부분에 걸려
+           읽히지 않으므로 **'흐릿함'을 걷으면서 사진을 남길 방법이 없다.** 둘 중 하나다.
+           사진은 뺐다 — 장식(alt="" aria-hidden)이라 문서에서 잃는 정보가 0 이고,
+           같은 복도 사진이 바로 위 머리말 띠와 아래 둘러보기 슬라이드에 이미 두 번 나온다.
+        ⚠️ 되살리려면 덮개도 함께 돌아온다는 것을 알고 되살릴 것.
       */}
-      <Image
-        src={IMG.interior[8].src}
-        alt=""
-        aria-hidden
-        fill
-        sizes="100vw"
-        className="-z-10 object-cover"
-      />
-      {/*
-        ⚠️ 균일한 덮개로 되돌리지 말 것 — 옅게 하면 왼쪽 위 제목이 같이 흐려진다.
-           글자는 왼쪽 위에만 있으므로 그쪽만 진하게 덮고 오른쪽 아래는 연다.
-        ⚠️ 왼쪽 위 0.97 을 낮추지 말 것. 제목이 사진 밝은 부분에 바로 걸린다.
-      */}
-      <div
-        aria-hidden
-        className="-z-10 absolute inset-0 backdrop-blur-[1.5px]"
-        style={{
-          backgroundImage:
-            'linear-gradient(108deg,' +
-            ' color-mix(in srgb, var(--color-wine-bg) 97%, transparent) 0%,' +
-            ' color-mix(in srgb, var(--color-wine-bg) 92%, transparent) 30%,' +
-            ' color-mix(in srgb, var(--color-wine-bg) 66%, transparent) 68%,' +
-            ' color-mix(in srgb, var(--color-wine-bg) 48%, transparent) 100%)',
-        }}
-      />
       <Container>
         {/*
           제목과 '전체 보기' 를 한 줄에 둔다 — 제목 아래 따로 두면 그만큼 구획이 길어진다.
@@ -403,18 +403,18 @@ function PillarSection() {
               <li key={p.key} className="pillar-cycle">
                 <Link
                   href={p.href}
-                  className="pane-dark pane-card group flex h-full min-h-[300px] flex-col overflow-hidden rounded-[18px] p-7"
+                  className="pane-glass pane-card group flex h-full min-h-[300px] flex-col overflow-hidden rounded-[18px] border border-brand-200/70 p-7"
                 >
                   {/*
                     ⚠️ 순번(01~04)을 되살리지 말 것 (2026-08-28 오너) — 진료 넷은 순서가
                        있는 것이 아니라 **나란한 것**이다. 번호를 붙이면 1번이 더 중요한
                        진료처럼 읽힌다.
                   */}
-                  <h3 className="display-sm text-[22px] text-parchment sm:text-[24px]">
+                  <h3 className="display-sm text-[22px] text-ink sm:text-[24px]">
                     {p.name}
                   </h3>
-                  <p className="mt-3.5 flex-1 text-[15.5px] leading-[1.75] text-parchment/85">
-                    <Sentences text={p.copy} tone="dark" />
+                  <p className="mt-3.5 flex-1 text-[15.5px] leading-[1.75] text-ink-soft">
+                    <Sentences text={p.copy} />
                   </p>
                   {/*
                     ★★ 아이콘은 맨 아래 오른쪽이다 (2026-08-28 오너) ★★
@@ -426,7 +426,7 @@ function PillarSection() {
                        뜻을 지고 있지 않으므로(진료 이름이 이미 글자로 있다) 안 보이는
                        동안 잃는 정보가 없다 — aria-hidden 인 이유다.
                   */}
-                  <span className="mt-6 flex items-center justify-between gap-4 text-parchment">
+                  <span className="mt-6 flex items-center justify-between gap-4 text-ink">
                     <span className="inline-flex items-center gap-1.5 text-[15px] font-medium">
                       자세히 보기
                       <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
@@ -466,19 +466,22 @@ function DoctorSection() {
      *    남겨 두면 얼룩으로 읽힌다(오너가 전에 지적한 '배경이 그라데이션' 건과 같은 것).
      */
     /*
-     * ★★ 어두운 구역으로 바꿨다 (2026-08-31 운영자) ★★
-     *   "너무 황금색이랑 안 어울린다. 차라리 배경을 사랑니 발치 페이지처럼 어둡게"
-     *   밝은 바탕에서는 강조색(골드)이 라벨·학회 판에 두 번 찍혀 겉돌았다.
-     *   어두운 면 위에서는 **흰 사진과 흰 글자만으로** 위계가 서고, 강조색이 필요 없다.
-     * ★ 색은 사랑니 치료 페이지와 같은 값을 쓴다(bg-walnut / text-oat) — 사이트 안에서
-     *   어두운 면은 한 벌이어야 한다. 여기만 다른 검정을 쓰면 두 종류가 생긴다.
-     * ⚠️ 어두운 면 위에서는 본문 색을 반드시 함께 지정할 것. 안 하면 잉크색 글자가
-     *    검은 바탕에 얹혀 안 보인다(HomeHead 는 자기 색을 갖고 있다).
+     * ★★ 어두운 구역 → 밝은 구역으로 **되돌렸다** (2026-09-02 오너: "그냥 검은
+     *    느낌 아예 없애") ★★
+     *   2026-08-31 에는 반대였다 — "너무 황금색이랑 안 어울린다. 차라리 배경을 사랑니
+     *   발치 페이지처럼 어둡게". 그때 문제는 **밝은 바탕에서 강조색(골드)이 라벨과 학회
+     *   판에 두 번 찍혀 겉돌던 것**이었고, 어둡게 해서 그것을 덮었다.
+     *   지금은 사이트 전체가 베이지 + 고동색으로 바뀌면서 강조색 자체가 clay(고동)로
+     *   내려앉아 그 문제가 사라졌다 — 전제가 바뀐 것이지, 그때 판단이 틀렸던 것이 아니다.
+     * ★ 앞뒤 구획과 톤이 달라야 구획이 바뀐 것이 보인다는 원칙은 그대로다. 다만 그
+     *   차이를 '어두움' 이 아니라 **한 단 밝은 면(parchment)** 으로 낸다.
+     * ⚠️ 밝은 면 위에서는 본문 색을 ink 계열로 둘 것. oat/parchment 로 되돌리면
+     *    흰 바탕에 흰 글자가 된다(실측 1.0:1).
      */
-    <section className="relative overflow-hidden bg-walnut py-24 text-oat lg:py-32">
+    <section className="relative overflow-hidden bg-parchment py-24 text-ink lg:py-32">
       <Container className="relative">
         <HomeHead
-          className="max-w-3xl [&_*]:text-oat"
+          className="max-w-3xl [&_*]:text-ink"
           label="의료진"
           title="누가 진료하나요?"
           desc={
@@ -570,7 +573,19 @@ function DoctorSection() {
                여기 걸린 넷은 위촉패·수료패·수료증·회원증, 즉 쌓아 온 기록이라 '경력' 이 맞다.
             ⚠️ 선 + 라벨로 되돌리지 말 것 — 구획 눈금은 사이트 전체가 유리 알약 하나를 쓴다.
           */}
-          <p className="reveal eyebrow-chip text-oat">경력</p>
+          {/*
+            ★★ 2026-09-02 오너: "경력 이런거 너무 작아" ★★
+              눈썹 한 줄(13.5px)만 있어서 인증패 넷이 무엇인지 말해 주는 것이 없었다.
+              눈썹을 키우고 **한 줄 설명을 제목으로** 세운다. 훑는 사람에게는 크기가,
+              답변 엔진에게는 이 한 문장이 근거가 된다.
+            ⚠️ '인증' 으로 되돌리지 말 것 — 바로 위 의료진 구획이 '보건복지부 인정 전문의' 를
+               말하고 있어, 같은 화면에 '인증' 이 또 나오면 둘이 같은 것처럼 읽힌다.
+               여기 걸린 넷은 위촉패·수료패·수료증·회원증, 즉 쌓아 온 기록이라 '경력' 이 맞다.
+          */}
+          <p className="reveal eyebrow-chip text-[15px] text-clay-700">경력</p>
+          <h3 className="reveal display-sm mt-4 max-w-[22em] text-[clamp(24px,3vw,34px)] leading-[1.35] tracking-[-0.02em] text-ink">
+            학회와 제조사가 준 위촉패 · 수료 기록입니다
+          </h3>
 
           {/*
             ★★ 조명 hover → 부채꼴 펼침 + 커서 3D (2026-08-25 운영자: "이렇게 버전2에서
@@ -622,14 +637,15 @@ function DoctorSection() {
                 seconds={46}
                 size="clamp(64px, 9.5vw, 176px)"
                 /*
-                 * ⚠️⚠️ **text-charcoal 로 되돌리지 말 것** (2026-08-31 실측) ⚠️⚠️
-                 *   charcoal 은 밝은 페이지용 글자색(#171717)이다. 이 구획이 어두워지면서
-                 *   **5% 검정이 검정 위에 얹혀 배경이 통째로 사라졌다**(운영자: "인증패 뒤에
-                 *   원래 circle dental 클리닉 지나가는 배경이었는데 사라져서").
-                 *   어두운 면에서는 밝은 색을 아주 옅게 얹어야 한다.
-                 * ⚠️ 0.07 을 넘기지 말 것 — 그 위 인증서 글자와 다투기 시작한다.
+                 * ★★ 색이 두 번 뒤집혔고, 진하기는 세 번 바뀌었다 ★★
+                 *   ① 밝은 면 시절: 옅은 검정 → ② 어두운 면 시절: 옅은 흰색(둘 다 5.5%)
+                 *   ③ 2026-09-02 다시 밝은 면: 옅은 **버건디**, 그리고 오너 지시로 진하게
+                 *      ("뒤에 배경에 서클 클리닉 영어로 지나가는거 더 진하게 잘보이게").
+                 * ⚠️ 흰색 계열로 되돌리지 말 것 — 이 면은 흰색이라 통째로 사라진다(실측 1.0:1).
+                 * ⚠️ 0.16 을 넘기지 말 것. 그 위에 인증패 캡션이 지나가는데, 더 진해지면
+                 *    캡션이 무늬와 겹쳐 읽히기 시작한다 — 그때부터는 배경이 아니라 방해다.
                  */
-                colorClass="text-parchment/[0.055]"
+                colorClass="text-clay-700/[0.13]"
               />
             </div>
             <CredentialFan />
@@ -667,12 +683,53 @@ function DoctorSection() {
           */}
           <div className="mt-12 border-t border-wine-line pt-10">
             {/* ⚠️ 모서리 24px — 이 시스템에서 '큰 면' 의 값이다(버튼 8 / 카드 14 / 큰 면 24). */}
-            <div className="seq relative overflow-hidden rounded-[24px] bg-wine-deep">
+            {/*
+              ★★ 논문 배너만 **어두운 채로 남는다** (2026-09-02 오너: "논문은 이전 그대로
+                 어둡게") ★★
+                 같은 날 사이트 전체에서 어두운 면을 걷어냈지만 여기 하나는 예외다.
+                 이유가 있다 — 이 배너의 사진은 **논문 화면**이라 종이가 희고, 흰 면 위에
+                 흰 종이를 얹으면 사진이 배경에 녹아 근거로 안 읽힌다. 어두운 판 위에
+                 놓일 때만 논문이 물건으로 선다.
+              ⚠️ 이 하나를 밝게 바꾸지 말 것. 바꾸면 오너 지시를 어기는 것이고, 사진도 죽는다.
+              ⚠️ 반대로 이 어두움을 다른 구획으로 퍼뜨리지도 말 것 — 사이트에 남은 어두운
+                 큰 면은 여기 하나다.
+              ★ 덮개는 두 장으로 나눈다. 한 요소에 background-color 와 background-image 를
+                같이 걸면 큰 화면에서 둘 다 살아남아 사진 전체가 어두워진다(겪었다).
+            */}
+            <div className="seq relative overflow-hidden rounded-[24px] bg-wine-deep lg:grid lg:grid-cols-[54%_minmax(0,1fr)]">
+              <div className="relative z-10 px-7 py-12 sm:px-10 lg:py-16 xl:py-20">
+                {/*
+                  ⚠️ 사진의 alt 를 비웠으므로(장식이다) 논문 제목은 여기 본문 글자가 진다.
+                     아래 제목을 지우면 이 배너에 논문 정보가 문서상 사라진다.
+                */}
+                {/* ⚠️ 선 + 라벨로 되돌리지 말 것 — 구획 눈금은 사이트 전체가 알약 하나를 쓴다. */}
+                <p className="eyebrow-chip text-clay-300">
+                  <SeqLetters text="논문" step={90} />
+                </p>
+                {/* ⚠️ 논문 제목은 원문 그대로다 — 세리프를 씌우지 않는다. 잘라낸 글꼴에 없는
+                       글자가 섞여 한 줄에 글꼴이 두 벌 보인다. */}
+                <p className="mt-5 text-[19px] leading-[1.6] font-semibold text-parchment sm:text-[21px]">
+                  <SeqLetters text={PUBLICATION_DETAIL.title} step={11} start={420} />
+                </p>
+                <p className="seq-fade mt-3 text-[16px] text-brand-400" style={{ ['--d' as string]: '1400ms' }}>
+                  {PUBLICATION_DETAIL.authors}
+                </p>
+                <div className="seq-fade mt-8 flex flex-wrap gap-2.5" style={{ ['--d' as string]: '1560ms' }}>
+                  <FillBtn href="/about/trust" tone="dark">
+                    근거 · 인증 전체 보기
+                  </FillBtn>
+                  <LineBtn href="/about/doctors" tone="dark">
+                    의료진 소개
+                  </LineBtn>
+                </div>
+              </div>
+
               {/*
-                사진과 덮개를 한 겹으로 묶어 마지막에 함께 띄운다.
-                ⚠️ 이 상자는 absolute 다 — next/image 의 fill 이 기준으로 삼을
-                   위치 지정 조상이 필요하다. static 으로 바꾸면 사진이 배너 전체로
-                   퍼지지 않는다.
+                사진 — 배너 전체에 깔리고 왼쪽 글 뒤만 덮는다.
+                ⚠️ absolute 다. next/image 의 fill 이 기준으로 삼을 위치 지정 조상이
+                   필요해서 바깥 div 가 relative 다.
+                ⚠️ 좁은 화면에서는 글이 사진 전체 위에 놓이므로 고르게 덮고,
+                   큰 화면에서는 왼쪽만 짙게 덮고 노트북이 있는 오른쪽은 완전히 비운다.
               */}
               <div
                 aria-hidden
@@ -688,46 +745,8 @@ function DoctorSection() {
                   /* 노트북이 오른쪽에 있다 — 좁아질수록 오른쪽을 남기고 왼쪽 여백부터 잘라낸다. */
                   className="object-cover object-right"
                 />
-                {/*
-                  덮개를 **두 장으로 나눈다.**
-                  ⚠️ 한 요소에 `bg-brand-900/82 lg:bg-gradient-to-r` 를 같이 걸면 안 된다.
-                     앞은 background-color, 뒤는 background-image 라 **서로 다른 속성**이고,
-                     큰 화면에서 둘 다 살아남아 사진 전체가 어두워진다(논문 글씨가 안 보였다).
-                  ★ 좁은 화면 — 글이 사진 전체 위에 놓이므로 고르게 덮는다.
-                  ★ 큰 화면 — 글은 왼쪽 54%에만 있다. 왼쪽은 짙게, 노트북이 있는 오른쪽은
-                    완전히 비운다. 멈춤 위치를 직접 적는 이유는 to-transparent 만으로는
-                    가운데가 70%쯤 덮여 논문이 회색으로 뭉개지기 때문이다.
-                */}
                 <div className="absolute inset-0 bg-wine-deep/82 lg:hidden" />
-                <div className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(31,31,41,0.95)_0%,rgba(31,31,41,0.92)_40%,rgba(31,31,41,0.70)_56%,rgba(31,31,41,0)_74%)]" />
-              </div>
-
-              <div className="relative px-7 py-12 sm:px-10 lg:w-[54%] lg:py-16 xl:py-20">
-                {/*
-                  ⚠️ 사진의 alt 를 비웠으므로(장식 겹으로 내려갔다) 논문 제목은 여기
-                     본문 글자가 진다. 아래 제목을 지우면 이 배너에 논문 정보가
-                     문서상 사라진다.
-                */}
-                {/* ⚠️ 선 + 라벨로 되돌리지 말 것 — 구획 눈금은 사이트 전체가 알약 하나를 쓴다. */}
-                <p className="eyebrow-chip on-photo text-parchment">
-                  <SeqLetters text="논문" step={90} />
-                </p>
-                {/* ⚠️ 논문 제목은 원문 그대로다 — 세리프를 씌우지 않는다. 잘라낸 글꼴에 없는
-                       글자가 섞여 한 줄에 글꼴이 두 벌 보인다. */}
-                <p className="on-photo mt-5 text-[19px] leading-[1.6] font-semibold text-parchment sm:text-[21px]">
-                  <SeqLetters text={PUBLICATION_DETAIL.title} step={11} start={420} />
-                </p>
-                <p className="seq-fade on-photo mt-3 text-[16px] text-parchment" style={{ ['--d' as string]: '1400ms' }}>
-                  {PUBLICATION_DETAIL.authors}
-                </p>
-                <div className="seq-fade mt-8 flex flex-wrap gap-2.5" style={{ ['--d' as string]: '1560ms' }}>
-                  <FillBtn href="/about/trust" tone="dark">
-                    근거 · 인증 전체 보기
-                  </FillBtn>
-                  <LineBtn href="/about/doctors" tone="dark">
-                    의료진 소개
-                  </LineBtn>
-                </div>
+                <div className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(36,20,23,0.96)_0%,rgba(36,20,23,0.93)_40%,rgba(36,20,23,0.70)_56%,rgba(36,20,23,0)_74%)]" />
               </div>
             </div>
           </div>
@@ -791,7 +810,7 @@ function InteriorSection() {
   );
 }
 /**
- * 진료시간 + 오시는 길 — 어두운 초록 판 위의 마감 구획.
+ * 진료시간 + 오시는 길 — 한 단 밝은 판 위의 마감 구획.
  *
  * ★★ 두 번째 버전(circle-dental-2)의 디자인으로 갈아탔다
  *    (2026-08-25 운영자: "진료시간이나 어디에 주차 저런거 버전2 디자인으로 넣어줘") ★★
@@ -809,10 +828,11 @@ function InteriorSection() {
  *    지금(⑤)은 ①의 문제를 다른 방식으로 푼다 — 진료시간은 **가로 7칸**이라 폭을
  *    나눌 필요가 없고, 오시는 길만 좌우로 나눈다.
  *
- * ⚠️ 어두운 판(dusk) 위이므로 글자·테두리를 전부 parchment / mist 계열로 둔다.
- *    밝은 바탕용 색(charcoal / twilight / ash)을 여기에 쓰면 통째로 안 보인다.
- * ⚠️ signal(파랑)은 여기서는 글자로 써도 된다 — dusk 위에서 5.62:1 이다(전화번호가 그 자리).
- *    밝은 면에서는 2.90:1 이라 테두리 전용이다.
+ * ⚠️⚠️ 2026-09-02 에 밝은 면(parchment)으로 뒤집었다 (오너: "그냥 검은 느낌 아예 없애").
+ *    글자·테두리를 전부 ink / twilight / brand 계열로 둔다. parchment / mist 계열로
+ *    되돌리면 흰 바탕에 흰 글자가 된다.
+ * ⚠️⚠️ signal(금색 #d9a441)을 글자로 되돌리지 말 것 — 어두운 면에서는 7.42:1 이었지만
+ *    밝은 면에서는 **2.08:1** 이라 못 읽는다. 전화번호·주차요금은 clay-700 이다.
  */
 function HoursSection() {
   return (
@@ -832,12 +852,11 @@ function HoursSection() {
      *   양옆에 밝은 띠가 남는 쪽이 어색해졌다 — 전제가 바뀌었다.
      * ⚠️ 안쪽 Container 를 지우지 말 것. 면만 화면 폭이고 글은 본문 폭을 지킨다.
      */
-    <section className="bg-wine-deep py-16 text-parchment lg:py-24">
+    <section className="bg-parchment py-16 text-ink lg:py-24">
       <Container>
         <div>
         <HomeHead
           className="max-w-3xl"
-          tone="dark"
           label="진료시간"
           title={
             <>
@@ -856,7 +875,6 @@ function HoursSection() {
         <div className="mt-24 lg:mt-28">
           <HomeHead
             className="max-w-3xl"
-            tone="dark"
             label="오시는 길"
             title={
               <>
@@ -870,12 +888,12 @@ function HoursSection() {
           <div className="mt-14 grid gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
             <div>
               <Reveal delay={70}>
-                <dl className="divide-y divide-white/12 border-y border-white/12">
+                <dl className="divide-y divide-brand-200 border-y border-brand-200">
                   <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
-                    <dt className="text-[15.5px] text-mist/70">주소</dt>
-                    <dd className="text-[17.5px] leading-[1.8] text-parchment/90">
+                    <dt className="text-[15.5px] text-ink-soft">주소</dt>
+                    <dd className="text-[17.5px] leading-[1.8] text-twilight">
                       <span className="block">{CLINIC.address.full}</span>
-                      <span className="mt-1.5 block text-[16px] text-mist/70">
+                      <span className="mt-1.5 block text-[16px] text-ink-soft">
                         {CLINIC.address.building} · {CLINIC.nearestStation} 인근
                       </span>
                       {/*
@@ -892,25 +910,25 @@ function HoursSection() {
                   </div>
 
                   <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
-                    <dt className="text-[14px] text-mist/70">주차</dt>
-                    <dd className="text-[17px] leading-[1.8] text-parchment/90">
+                    <dt className="text-[14px] text-ink-soft">주차</dt>
+                    <dd className="text-[17px] leading-[1.8] text-twilight">
                       {CLINIC.parking.type} ·{' '}
                       {/* ⚠️ signal(파랑)은 어두운 면에서만 글자로 쓴다 — 밝은 면에선 2.90:1 이라 못 읽는다. */}
-                      <strong className="font-semibold text-signal">{CLINIC.parking.fee}</strong>
+                      <strong className="font-semibold text-clay-700">{CLINIC.parking.fee}</strong>
                       {/* ⚠️ 기계식 주차장 주의사항을 빼지 말 것 — 큰 차량이 헛걸음하는 것을 막는다. */}
-                      <span className="mt-1.5 block text-[16px] leading-[1.8] text-mist/70">
+                      <span className="mt-1.5 block text-[16px] leading-[1.8] text-ink-soft">
                         <Sentences text={CLINIC.parking.note} />
                       </span>
                     </dd>
                   </div>
 
                   <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
-                    <dt className="text-[14px] text-mist/70">전화</dt>
+                    <dt className="text-[14px] text-ink-soft">전화</dt>
                     <dd>
                       {/* 내원 결정의 마지막 한 걸음은 여전히 전화다 — 이 구획에서 가장 큰 글자. */}
                       <a
                         href={CLINIC.phoneHref}
-                        className="tabular text-[34px] font-medium whitespace-nowrap text-signal transition-opacity hover:opacity-80"
+                        className="tabular text-[34px] font-medium whitespace-nowrap text-clay-700 transition-opacity hover:opacity-80"
                       >
                         {CLINIC.phone}
                       </a>
@@ -918,9 +936,9 @@ function HoursSection() {
                   </div>
 
                   <div className="grid gap-2 py-6 sm:grid-cols-[76px_minmax(0,1fr)]">
-                    <dt className="text-[14px] text-mist/70">이메일</dt>
-                    <dd className="min-w-0 text-[17.5px] break-all text-parchment/80">
-                      <a href={`mailto:${CLINIC.email}`} className="hover:text-signal hover:underline">
+                    <dt className="text-[14px] text-ink-soft">이메일</dt>
+                    <dd className="min-w-0 text-[17.5px] break-all text-twilight">
+                      <a href={`mailto:${CLINIC.email}`} className="hover:text-clay-700 hover:underline">
                         {CLINIC.email}
                       </a>
                     </dd>
@@ -933,13 +951,12 @@ function HoursSection() {
                   <FillBtn
                     href={CLINIC.booking.naver}
                     external
-                    tone="dark"
                     label="예약하기 — 네이버 예약 새 창으로 열기"
                   >
                     예약하기
                   </FillBtn>
                   {/* ⚠️ 지도 전체와 길찾기 앱 버튼은 /visit 이 맡는다 — 여기 지도는 보기용이다. */}
-                  <LineBtn href="/visit" tone="dark">
+                  <LineBtn href="/visit">
                     지도 · 길찾기 보기
                   </LineBtn>
                 </div>

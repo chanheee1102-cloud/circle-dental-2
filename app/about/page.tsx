@@ -24,8 +24,20 @@ const TRAIL = [
 ];
 
 const TITLE = '자연 그대로의 치아를 최대한 살리는 것이 동그라미 치과의 진료 철학입니다';
+/*
+ * 머리말 아래 한 문단.
+ *
+ * ⚠️⚠️ 문장을 셋 이상으로 늘리지 말 것 (2026-09-02 오너) ⚠️⚠️
+ *   Sentences 는 문장마다 줄을 바꾸므로 **문장 수 = 최소 줄 수** 다.
+ *   앞 판본은 세 문장이었고 가운데 문장이 길어 네 줄이 됐다. 그 결과 두 가지가 어긋났다.
+ *     ① 히어로가 아래 정렬이라 글이 길어진 만큼 **제목이 위로 밀렸다** — 병원 소개의
+ *        다른 페이지들과 제목 높이가 안 맞았다(실측 315px vs 383~455px).
+ *     ② 셋째 줄에 '대체하기 어렵습니다.' 만 홀로 남아 문단이 지저분해 보였다.
+ * ⚠️ 둘째 문장에 쉼표를 넣지 말 것 — 쉼표 마디는 통째로 움직여서 한 마디가 다음 줄로
+ *    내려가면 다시 세 줄이 된다.
+ */
 const LEAD =
-  '임플란트는 마지막 선택이 될 수 있도록 합니다. 뽑고 심는 것이 빠른 길처럼 보여도, 자연치아는 씹는 힘의 세기와 방향을 감지하는 감각을 갖고 있어 대체하기 어렵습니다. 그래서 남길 수 있는 조건인지를 먼저 확인합니다.';
+  '임플란트는 마지막 선택이 될 수 있도록 합니다. 씹는 감각을 지닌 자연치아는 대체하기 어려워 남길 수 있는 조건부터 확인합니다.';
 
 /**
  * 병원 소개.
@@ -102,9 +114,9 @@ export default function AboutPage() {
         ⚠️ 카드로 되돌리지 말 것(2026-09-01 오너) — 문답·특별함·사회공헌이 전부 같은 둥근 카드라
            화면이 한 겹으로 눌렸다.
       */}
-      <section className="border-b border-brand-200/60">
+      <section className="border-b border-brand-200/80">
         {ABOUT_QA.map((qa) => (
-          <div key={qa.q} className="border-t border-brand-200/60">
+          <div key={qa.q} className="step-in border-t border-brand-200/80">
             <Container className="grid gap-5 py-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16 lg:py-16">
               <h2
                 id={headingId(qa.q)}
@@ -153,11 +165,11 @@ export default function AboutPage() {
               desc="손끝의 숙련도에 따라 결과가 달라지는 치과 진료, 10년 이상 경력의 교수출신 대표원장님과 보건복지부 인정 전문의들로만 구성된 의료진이 한차원 높은 의료서비스를 제공합니다."
             />
 
-            <ul className="mt-9 border-t border-brand-200/60">
+            <ul className="mt-9 border-t border-brand-200/80">
               {CREDENTIALS.map((c) => (
                 <li
                   key={c}
-                  className="border-b border-brand-200/60 py-3.5 text-[16px] leading-[1.7] text-ink-soft"
+                  className="border-b border-brand-200/80 py-3.5 text-[16px] leading-[1.7] text-ink-soft"
                 >
                   {c}
                 </li>
@@ -179,7 +191,7 @@ export default function AboutPage() {
                다른 비율을 주면 그 안에서 또 잘려 구도가 어긋난다.
             ⚠️ card-edge — 사이트의 다른 사진 액자와 같은 안쪽 선이다. globals.css 참조.
           */}
-          <div className="card-edge relative aspect-[3/2] w-full overflow-hidden rounded-[22px]">
+          <div className="img-in card-edge relative aspect-[3/2] w-full overflow-hidden rounded-[22px]">
             <Image
               src={IMG.doctorsTeam}
               alt="동그라미치과의원 의료진 — 가운데가 대표원장입니다."
@@ -232,23 +244,36 @@ export default function AboutPage() {
            AI 검색이 신뢰 근거로 읽는 부분이다. 줄이되 없애지 않는다.
         ⚠️ 카드로 되돌리지 말 것 — 두 줄짜리 사실에 상자를 씌우면 특별함 카드와 같은 무게가 된다.
       */}
-      <Container className="py-16 lg:py-20">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
-          <p className="text-[13.5px] font-black tracking-[0.06em] text-brand-500">사회공헌</p>
-          <div className="max-w-[62ch] space-y-4">
-            {OUTREACH.map((o) => (
-              <p key={o} className="text-[17px] leading-[1.9] text-ink-soft">
-                <Sentences text={o} />
-              </p>
-            ))}
-            {/*
-              ⚠️ 여백(pt)을 가진 상자로 감싸지 말 것 — ArticleMeta 는 지금 null 을 돌려주므로
-                 감싼 상자만 남아 빈 자리가 생긴다. 다시 켜질 때를 대비해 호출만 남긴다.
-            */}
-            <ArticleMeta path="/about" />
+      {/*
+        ★★ 왼쪽 라벨 + 오른쪽 두 줄 → **라벨 + 두 사실을 나란히** (2026-09-02 오너:
+           "여기만 조금 고쳐줘 이상해") ★★
+           전에는 왼쪽 칸(45%)이 라벨 한 줄뿐이라 통째로 비고, 오른쪽 두 문장 아래도
+           비어서 '무언가 빠진 화면' 으로 보였다. 두 사실을 좌우로 나란히 두면 줄이 꽉 찬다.
+        ⚠️ 큰 구획으로 되돌리지 말 것 — 내용이 두 줄뿐이라 아래가 통째로 빈다(2026-09-01).
+        ⚠️ 문장은 버리지 말 것 — 십수년 봉사와 방송 기록은 **제3자가 확인할 수 있는 사실**이라
+           AI 검색이 신뢰 근거로 읽는 부분이다. 줄이되 없애지 않는다.
+        ⚠️ 카드로 되돌리지 말 것 — 두 줄짜리 사실에 상자를 씌우면 특별함 카드와 같은 무게가 된다.
+        ★ 띠(light-band)로 감싸 '본문이 아니라 기록' 이라는 것을 면으로 말한다.
+      */}
+      <section className="light-band border-y border-wine-line py-12 lg:py-14">
+        <Container>
+          <div className="reveal grid items-baseline gap-x-14 gap-y-6 lg:grid-cols-[10rem_minmax(0,1fr)]">
+            <p className="eyebrow-chip text-clay-700">사회공헌</p>
+            <div className="grid gap-x-14 gap-y-4 sm:grid-cols-2">
+              {OUTREACH.map((o) => (
+                <p key={o} className="text-[16.5px] leading-[1.8] text-twilight">
+                  <Sentences text={o} />
+                </p>
+              ))}
+            </div>
           </div>
-        </div>
-      </Container>
+          {/*
+            ⚠️ 여백(pt)을 가진 상자로 감싸지 말 것 — ArticleMeta 는 지금 null 을 돌려주므로
+               감싼 상자만 남아 빈 자리가 생긴다. 다시 켜질 때를 대비해 호출만 남긴다.
+          */}
+          <ArticleMeta path="/about" />
+        </Container>
+      </section>
 
       {/*
         ⚠️ '의료진 소개 · 오시는 길' 카드를 되살리지 말 것 (2026-09-01 오너: "자꾸 연결됨").

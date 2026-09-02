@@ -17,7 +17,7 @@ import {
 import { IMPLANT_CASES, CASE_NOTICE } from '@/lib/implantCases';
 import { Container, MedicalNotice, Sentences } from '@/components/ui';
 import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
-import { SectionHead, Card, GlassCard, DarkPanel, NumChip } from '@/components/saas';
+import { SectionHead, Card, GlassCard, HighlightPanel, NumChip } from '@/components/saas';
 import { ComparisonTable } from '@/components/ComparisonTable';
 import { JsonLd } from '@/components/JsonLd';
 import { ArticleMeta, References, charCount } from '@/components/article';
@@ -206,7 +206,7 @@ export default function ImplantPage() {
       </section>
 
       {/* 03 — 어떻게 하나 */}
-      <section className="border-y border-white/8 bg-wine-soft py-24 lg:py-32">
+      <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
         <Container>
           <SectionHead id="시술-방법" n="02" label="시술 방법" title="네 단계로 진행합니다" />
 
@@ -286,11 +286,10 @@ export default function ImplantPage() {
       */}
       <section id="치료-증례" className="scroll-mt-36 pb-24 lg:pb-32">
         <Container>
-          <DarkPanel className="px-7 py-16 sm:px-12 lg:px-16 lg:py-20">
+          <HighlightPanel className="px-7 py-16 sm:px-12 lg:px-16 lg:py-20">
             <SectionHead
               n="04"
               label="치료 증례"
-              tone="dark"
               title="실제로 이런 경우를 봤습니다"
               desc="다른 곳에서 어렵다는 말을 들은 경우도 원인부터 확인하면 길이 생기기도 합니다. 아래는 그런 두 경우입니다."
             />
@@ -299,13 +298,13 @@ export default function ImplantPage() {
               {IMPLANT_CASES.map((c) => (
                 <GlassCard key={c.no} as="div" className="reveal p-7 sm:p-9">
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                    <span className="rounded-lg bg-white/12 px-2.5 py-1 text-[13.5px] font-black tracking-[0.06em] text-clay-300">
+                    <span className="rounded-lg bg-brand-100 px-2.5 py-1 text-[13.5px] font-black tracking-[0.06em] text-clay-700">
                       {c.no}
                     </span>
                     {/* 기간을 숨기면 '금방 끝난다' 는 인상을 준다 — 원문 값을 그대로 적는다. */}
-                    <span className="text-[13.5px] font-bold text-brand-300">치료 기간 {c.period}</span>
+                    <span className="text-[13.5px] font-bold text-ink-soft">치료 기간 {c.period}</span>
                   </div>
-                  <h3 className="display-sm mt-5 max-w-[30em] text-[18px] leading-[1.5] text-white sm:text-[20px]">
+                  <h3 className="display-sm mt-5 max-w-[30em] text-[18px] leading-[1.5] text-ink sm:text-[20px]">
                     {c.title}
                   </h3>
                   <ul className="mt-7 grid gap-4 sm:grid-cols-3">
@@ -320,7 +319,7 @@ export default function ImplantPage() {
                             className="object-cover"
                           />
                         </div>
-                        <p className="mt-2.5 text-[13.5px] font-bold text-brand-300"><Sentences text={im.caption} /></p>
+                        <p className="mt-2.5 text-[13.5px] font-bold text-ink-soft"><Sentences text={im.caption} /></p>
                       </li>
                     ))}
                   </ul>
@@ -329,15 +328,15 @@ export default function ImplantPage() {
             </div>
 
             {/* ⚠️ 증례와 항상 함께 렌더한다. 따로 떼지 말 것. */}
-            <p className="reveal mt-10 max-w-[76ch] text-[14px] leading-[1.9] text-brand-300">
+            <p className="reveal mt-10 max-w-[76ch] text-[14px] leading-[1.9] text-ink-soft">
               {CASE_NOTICE}
             </p>
-          </DarkPanel>
+          </HighlightPanel>
         </Container>
       </section>
 
       {/* 06 — 원칙 */}
-      <section className="border-y border-white/8 bg-wine-soft py-24 lg:py-32">
+      <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
         <Container>
           <SectionHead
             id="진료-원칙"
@@ -360,7 +359,7 @@ export default function ImplantPage() {
       {/* 원장이 내건 문장 */}
       <section className="py-24 lg:py-32">
         <Container>
-          <DarkPanel className="reveal px-8 py-16 sm:px-14 lg:px-16 lg:py-24">
+          <HighlightPanel className="reveal px-8 py-16 sm:px-14 lg:px-16 lg:py-24">
             {/*
               ⚠️⚠️ 폭 제한은 **글자와 같은 요소**에 건다 ⚠️⚠️
                 전에는 blockquote(16px)에 max-w-[24ch] 를 걸고 글자는 안쪽 p 의 42px 였다.
@@ -371,7 +370,7 @@ export default function ImplantPage() {
                  한글 제목의 줄 수를 맞출 때는 **em** 으로 적을 것. 45자를 두 줄로 두려면 22em.
             */}
             <blockquote>
-              <p className="display-sm max-w-[22em] text-[clamp(28px,4.2vw,46px)] leading-[1.34] tracking-[-0.03em] text-white">
+              <p className="display-sm max-w-[22em] text-[clamp(28px,4.2vw,46px)] leading-[1.34] tracking-[-0.03em] text-ink">
                 <Sentences text="자연치아를 살리기 위해 노력하며, 임플란트는 마지막 선택이 될 수 있도록 합니다." />
               </p>
             </blockquote>
@@ -380,24 +379,24 @@ export default function ImplantPage() {
               보조 문장과 버튼을 한 줄로 나눠 오른쪽 빈 자리를 채운다.
               큰 인용문 아래에 둘 다 왼쪽으로 붙이면 패널 오른쪽 절반이 통째로 비어 보인다.
             */}
-            <div className="mt-12 flex flex-wrap items-center justify-between gap-8 border-t border-white/12 pt-8">
-              <p className="max-w-[34em] text-[17px] leading-[1.9] text-brand-200">
+            <div className="mt-12 flex flex-wrap items-center justify-between gap-8 border-t border-wine-line pt-8">
+              <p className="max-w-[34em] text-[17px] leading-[1.9] text-twilight">
                 장기적인 예후까지 생각한 계획으로 고민과 걱정을 덜어 드리겠습니다.
               </p>
               <Link
                 href="/treatment/save-natural-tooth"
-                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-parchment px-7 py-3.5 text-[16px] font-black text-ink transition-colors hover:bg-brand-100"
+                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-ink px-7 py-3.5 text-[16px] font-black text-wine-bg transition-opacity hover:opacity-90"
               >
                 자연치아 살리기 먼저 보기 <span aria-hidden>→</span>
               </Link>
             </div>
-          </DarkPanel>
+          </HighlightPanel>
         </Container>
       </section>
 
       {/* 07 — 얼마나 걸리나 */}
       {journey && (
-        <section className="border-y border-white/8 bg-wine-soft py-24 lg:py-32">
+        <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
           <Container>
             <div className="grid gap-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
               <div className="lg:sticky lg:top-40 lg:self-start">
@@ -462,7 +461,7 @@ export default function ImplantPage() {
         ⚠️ FAQPage 구조화 데이터도 함께 옮겼다. 화면에서 뺐는데 스키마만 남기면 보이지 않는
            내용을 주장하는 꼴이 된다. 되살리려면 둘을 같이 옮길 것.
       */}
-      <section className="border-y border-white/8 bg-wine-soft py-16 lg:py-24">
+      <section className="border-y border-wine-line bg-wine-soft py-16 lg:py-24">
         <Container>
           <Link href="/faq#implant" className="reveal group block">
             <Card className="flex flex-wrap items-center justify-between gap-6 p-8 transition-all group-hover:border-clay-400 group-hover:shadow-[var(--shadow-lift)]">
@@ -519,7 +518,7 @@ export default function ImplantPage() {
       </section>
 
       {/* 세부 주제 */}
-      <section className="border-y border-white/8 bg-wine-soft py-24 lg:py-32">
+      <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
         <Container>
           <SectionHead n="08" label="더 자세히" title="임플란트, 나눠서 더 보기" />
           <div className="reveal-stack mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

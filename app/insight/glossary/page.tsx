@@ -85,7 +85,7 @@ export default function GlossaryPage() {
           {GLOSSARY.map((t) => (
             <div
               key={t.term}
-              className="rounded-2xl border border-brand-100 card-glass p-6 transition-colors hover:border-brand-200"
+              className="rounded-2xl border border-wine-line card-glass p-6 transition-colors hover:border-brand-200"
             >
               {/*
                 ★★ <abbr title> 로 감싼다 (2026-08-14) ★★

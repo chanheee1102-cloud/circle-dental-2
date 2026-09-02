@@ -45,7 +45,7 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
             }`}
           >
             <div
-              className={`relative overflow-hidden ${
+              className={`img-in relative overflow-hidden ${
                 wide ? 'aspect-[16/10] sm:aspect-auto sm:w-1/2' : 'aspect-[16/10]'
               }`}
             >

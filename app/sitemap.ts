@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { CLINIC } from '@/lib/clinic';
 import { contentDates } from '@/lib/contentMeta';
 import { flatNavPaths } from '@/lib/nav';
+import { allPosts } from '@/lib/blog';
 import { TREATMENTS } from '@/lib/treatments';
 import { SYMPTOMS } from '@/lib/symptoms';
 import { CONDITIONS } from '@/lib/conditions';
@@ -58,6 +59,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const treatmentPages = TREATMENTS.map((t) => entry(`/treatment/${t.slug}`, 0.9));
+
+  /*
+   * 블로그 — content/blog 에 파일을 떨구면 사이트맵에도 저절로 실린다.
+   * ⚠️ 손으로 적지 말 것. 한 달에 열 편이면 손으로 관리하는 목록은 반드시 어긋난다.
+   * ★ lastModified 는 글에 적힌 날짜다 — 색인이 '언제 바뀐 글인지' 를 보고 다시 온다.
+   */
+  const blogPages = allPosts().map((p) => ({
+    ...entry(`/insight/blog/${p.slug}`, 0.6),
+    lastModified: new Date(p.updated ?? p.date),
+  }));
   const symptomPages = SYMPTOMS.map((s) => entry(`/insight/symptom/${s.slug}`, 0.9));
   const conditionPages = CONDITIONS.map((c) => entry(`/insight/condition/${c.slug}`, 0.9));
   const journeyPages = JOURNEYS.map((j) => entry(`/insight/journey/${j.slug}`, 0.8));
@@ -70,6 +81,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...staticPages,
     ...extraHubs,
     ...treatmentPages,
+    ...blogPages,
     ...symptomPages,
     ...conditionPages,
     ...journeyPages,

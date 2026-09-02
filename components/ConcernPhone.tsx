@@ -182,7 +182,7 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                   **여섯 마디가 더 있다는 것**도 **목차를 누를 수 있다는 것**도 모른다.
                 ⚠️ 지우지 말 것. 이 한 줄이 없으면 첫 대화 한 판만 보고 지나간다.
               */}
-              <p className="mt-9 hidden text-[14.5px] text-mist lg:block">
+              <p className="mt-9 hidden text-[14.5px] text-ink-soft lg:block">
                 아래 고민을 누르거나, 화면 위에서 굴려 보세요.
               </p>
               <ul className="mt-3 hidden lg:block">
@@ -195,14 +195,14 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                         onClick={() => jump(n)}
                         aria-current={on}
                         className={`flex w-full items-center gap-3.5 py-[13px] text-left text-[16.5px] transition-colors duration-300 ${
-                          on ? 'font-bold text-parchment' : 'text-mist hover:text-parchment'
+                          on ? 'font-bold text-ink' : 'text-ink-soft hover:text-ink'
                         }`}
                       >
                         {/* 지금 보고 있는 줄만 눈금이 길어지고 금색이 된다 — 색과 길이 둘로 말한다. */}
                         <span
                           aria-hidden
                           className={`h-px shrink-0 transition-[width,background-color] duration-300 ${
-                            on ? 'w-7 bg-signal' : 'w-2.5 bg-mist'
+                            on ? 'w-7 bg-ink' : 'w-2.5 bg-mist'
                           }`}
                         />
                         {con.topic}
@@ -388,7 +388,7 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                 ⚠️ 이 한 줄을 지우지 말 것 — 위 주석의 두 이유가 그대로 살아 있다.
                    2026-08-31 오너 요청으로 두 문장을 한 줄로 줄인 것이지, 없앤 것이 아니다.
               */}
-              <p className="mt-5 max-w-[330px] text-center text-[13.5px] leading-relaxed text-mist/80">
+              <p className="mt-5 max-w-[330px] text-center text-[13.5px] leading-relaxed text-ink-soft">
                 예시 대화 · 공휴일·임시 휴진은 반영되지 않습니다
               </p>
             </div>

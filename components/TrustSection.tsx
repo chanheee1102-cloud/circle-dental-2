@@ -57,7 +57,7 @@ export function TrustSection() {
 
       {/* ── 인증과 자격 — 전폭 표 ── */}
       {/* ⚠️ 어두운 면으로 되돌리지 말 것 — 표는 흰 종이의 문법이다. */}
-      <section className="light-band mt-16">
+      <section className="reveal light-band mt-16">
         <Container className="py-12 lg:py-16">
           <h2
             id={headingId('인증과 자격은 어디서 받았나요')}
@@ -94,7 +94,7 @@ export function TrustSection() {
               </thead>
               <tbody>
                 {CREDENTIAL_ROWS.map((c) => (
-                  <tr key={c.name} className="border-b border-brand-200/60">
+                  <tr key={c.name} className="border-b border-brand-200/80">
                     <th scope="row" className="py-4 pr-5 align-top text-[16px] font-bold text-ink">
                       {c.name}
                     </th>
@@ -111,7 +111,7 @@ export function TrustSection() {
       </section>
 
       {/* ── 논문 · 언론 — 두 칸 ── */}
-      <section className="border-t border-brand-200/60">
+      <section className="reveal border-t border-brand-200/80">
         <Container className="grid gap-12 py-12 lg:grid-cols-2 lg:gap-16 lg:py-16">
           <div>
             <h2

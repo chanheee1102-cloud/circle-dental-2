@@ -68,7 +68,7 @@ export function TreatmentLanding({
             key={b.label}
             className={
               tinted
-                ? 'border-y border-white/8 bg-wine-soft py-16 lg:py-24'
+                ? 'border-y border-wine-line bg-wine-soft py-16 lg:py-24'
                 : 'py-16 lg:py-24'
             }
           >
@@ -278,7 +278,7 @@ export function TreatmentLanding({
 
       {/* 진행 순서 */}
       {journey && (
-        <section className="border-y border-white/8 bg-wine-soft py-16 lg:py-24">
+        <section className="border-y border-wine-line bg-wine-soft py-16 lg:py-24">
           <Container>
             <div className="grid gap-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
               <div className="lg:sticky lg:top-40 lg:self-start">
@@ -363,7 +363,7 @@ export function TreatmentLanding({
 
       {/* 주의사항 — 원문에 있는 진료만 렌더된다. */}
       {page.aftercare && (
-        <section className="border-y border-white/8 bg-wine-soft py-16 lg:py-24">
+        <section className="border-y border-wine-line bg-wine-soft py-16 lg:py-24">
           <Container>
             <SectionHead
               id="주의사항"

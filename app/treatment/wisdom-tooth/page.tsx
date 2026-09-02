@@ -184,7 +184,7 @@ export default function WisdomToothPage() {
   const related = t.relatedSymptoms.map(symptomBySlug).filter(Boolean);
 
   return (
-    <div className="page-native-dark bg-night text-oat">
+    <div>
       <JsonLd
         data={[
           breadcrumbSchema(TRAIL),
@@ -249,7 +249,7 @@ export default function WisdomToothPage() {
       <section className="py-24 lg:py-32">
         <Container>
           <div className="border-t border-dashed border-cork pt-14">
-            <p className="eyebrow-chip text-driftwood">
+            <p className="eyebrow-chip text-ink-soft">
               <span className="eyebrow-n">01</span>
               발치 기준
             </p>
@@ -266,12 +266,12 @@ export default function WisdomToothPage() {
               ⚠️ 제목을 두 줄로 접히게 하지 말 것 — '좋습니다' 가 혼자 떨어진다.
             */}
             <div className="mt-10">
-              <h2 className="display-sm text-[clamp(28px,3.9vw,44px)] leading-[1.06] text-balance text-oat">
+              <h2 className="display-sm text-[clamp(28px,3.9vw,44px)] leading-[1.06] text-balance text-ink">
                 이런 경우에는 빼는 편이 좋습니다
               </h2>
-              <p className="mt-6 max-w-[52em] text-[clamp(15px,1.3vw,18px)] leading-[1.7] font-normal text-oat/75">
+              <p className="mt-6 max-w-[52em] text-[clamp(15px,1.3vw,18px)] leading-[1.7] font-normal text-ink/75">
                 대부분의 사랑니는 칫솔질과 치실이 닿지 않아{' '}
-                <strong className="font-semibold text-ember">충치와 치주질환의 출발점</strong>이
+                <strong className="font-semibold text-clay-600">충치와 치주질환의 출발점</strong>이
                 됩니다.
               </p>
             </div>
@@ -295,9 +295,9 @@ export default function WisdomToothPage() {
                     />
                   </div>
                 </div>
-                <p className={`mt-7 ${LABEL} text-[14.5px] text-ember`}>{r.label}</p>
-                <h3 className="display-sm mt-3 text-[20px] leading-[1.3] text-oat">{r.t}</h3>
-                <p className="mt-4 text-[17px] leading-[1.6] font-normal text-oat/75">{r.d}</p>
+                <p className={`mt-7 ${LABEL} text-[14.5px] text-clay-600`}>{r.label}</p>
+                <h3 className="display-sm mt-3 text-[20px] leading-[1.3] text-ink">{r.t}</h3>
+                <p className="mt-4 text-[17px] leading-[1.6] font-normal text-ink/75">{r.d}</p>
               </li>
             ))}
           </ol>
@@ -305,14 +305,14 @@ export default function WisdomToothPage() {
       </section>
 
       {/* ── 매복 사랑니 ─────────────────────────────────────────────── */}
-      <section className="border-y border-white/8 bg-night-2 py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 bg-parchment py-24 lg:py-32">
         <Container>
           <div className="border-t border-dashed border-cork pt-14">
-            <p className="eyebrow-chip text-driftwood">
+            <p className="eyebrow-chip text-ink-soft">
               <span className="eyebrow-n">02</span>
               매복 사랑니
             </p>
-            <h2 className="display-sm mt-10 max-w-[16em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] text-oat">
+            <h2 className="display-sm mt-10 max-w-[16em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] text-ink">
               매복된 사랑니는 꼭 발치해야 하나요?
             </h2>
           </div>
@@ -321,12 +321,12 @@ export default function WisdomToothPage() {
             <ol className="divide-y divide-dashed divide-cork border-y border-dashed border-cork">
               {IMPACTED.map((v, i) => (
                 <li key={v.k} className="flex gap-6 py-8">
-                  <span className={`${LABEL} shrink-0 pt-1 text-[13.5px] text-driftwood`}>
+                  <span className={`${LABEL} shrink-0 pt-1 text-[13.5px] text-ink-soft`}>
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <div>
-                    <p className="display-sm text-[18px] leading-[1.3] text-ember">{v.k}</p>
-                    <p className="mt-2.5 text-[17.5px] leading-[1.65] font-normal text-oat/85">
+                    <p className="display-sm text-[18px] leading-[1.3] text-clay-600">{v.k}</p>
+                    <p className="mt-2.5 text-[17.5px] leading-[1.65] font-normal text-ink/85">
                       {v.v}
                     </p>
                   </div>
@@ -358,11 +358,11 @@ export default function WisdomToothPage() {
       <section className="py-24 lg:py-32">
         <Container>
           <div className="border-t border-dashed border-cork pt-14">
-            <p className="eyebrow-chip text-driftwood">
+            <p className="eyebrow-chip text-ink-soft">
               <span className="eyebrow-n">03</span>
               발치 후 주의사항
             </p>
-            <h2 className="display-sm mt-10 max-w-[14em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] text-oat">
+            <h2 className="display-sm mt-10 max-w-[14em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] text-ink">
               뺀 다음 며칠이 회복을 좌우합니다
             </h2>
           </div>
@@ -371,12 +371,12 @@ export default function WisdomToothPage() {
           <ol className="mt-14 grid gap-6 sm:grid-cols-2">
             {AFTERCARE.map((a, i) => (
               <li key={a.k}>
-                <div className="pane-frost pane-card h-full overflow-hidden rounded-[18px] p-8">
-                  <p className={`${LABEL} text-[14.5px] text-driftwood`}>
+                <div className="pane-glass pane-card border border-brand-200/70 h-full overflow-hidden rounded-[18px] p-8">
+                  <p className={`${LABEL} text-[14.5px] text-ink-soft`}>
                     {String(i + 1).padStart(2, '0')}
                   </p>
-                  <p className="display-sm mt-4 text-[19px] leading-[1.3] text-oat">{a.k}</p>
-                  <p className="mt-3 text-[17px] leading-[1.65] font-normal text-oat/80">{a.v}</p>
+                  <p className="display-sm mt-4 text-[19px] leading-[1.3] text-ink">{a.k}</p>
+                  <p className="mt-3 text-[17px] leading-[1.65] font-normal text-ink-soft">{a.v}</p>
                 </div>
               </li>
             ))}
@@ -391,9 +391,9 @@ export default function WisdomToothPage() {
                 { k: '내원 횟수', v: journey.visits },
                 { k: '치료 기간', v: journey.duration },
               ].map((x) => (
-                <div key={x.k} className="pane-frost pane-card overflow-hidden rounded-[18px] p-8">
-                  <dt className={`${LABEL} text-[14.5px] text-driftwood`}>{x.k}</dt>
-                  <dd className="display-sm mt-4 text-[clamp(20px,2.1vw,30px)] leading-[1.2] text-oat">
+                <div key={x.k} className="pane-glass pane-card border border-brand-200/70 overflow-hidden rounded-[18px] p-8">
+                  <dt className={`${LABEL} text-[14.5px] text-ink-soft`}>{x.k}</dt>
+                  <dd className="display-sm mt-4 text-[clamp(20px,2.1vw,30px)] leading-[1.2] text-ink">
                     {x.v}
                   </dd>
                 </div>
@@ -407,10 +407,10 @@ export default function WisdomToothPage() {
         ── 미리 아셔야 할 것 ────────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 발치는 부작용 가능성이 있는 수술이다.
       */}
-      <section className="border-y border-white/8 bg-night-2 py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 bg-parchment py-24 lg:py-32">
         <Container>
           <div className="border-t border-dashed border-cork pt-14">
-            <p className="eyebrow-chip text-driftwood">
+            <p className="eyebrow-chip text-ink-soft">
               <span className="eyebrow-n">04</span>
               알아 두실 점
             </p>
@@ -423,20 +423,20 @@ export default function WisdomToothPage() {
               ⚠️ 문장은 원문 그대로다. 부작용 설명을 줄이거나 부드럽게 고치지 말 것.
             */}
             <div className="mt-10">
-              <h2 className="display-sm max-w-[16em] text-[clamp(28px,3.9vw,44px)] leading-[1.06] text-oat">
+              <h2 className="display-sm max-w-[16em] text-[clamp(28px,3.9vw,44px)] leading-[1.06] text-ink">
                 미리 아셔야 할 것
               </h2>
-              <p className="mt-6 max-w-[38em] text-[17px] leading-[1.7] font-normal text-oat/70">
+              <p className="mt-6 max-w-[38em] text-[17px] leading-[1.7] font-normal text-ink-muted">
                 <Sentences text="발치는 수술입니다. 아래는 실제로 생길 수 있는 일이며, 사람마다 정도가 다릅니다." />
               </p>
               <ul className="mt-12 grid gap-6 sm:grid-cols-2">
                 {RISKS.map((r, i) => (
                   <li key={r}>
-                    <div className="pane-frost pane-card h-full overflow-hidden rounded-[18px] p-8">
-                      <p className={`${LABEL} text-[14.5px] text-driftwood`}>
+                    <div className="pane-glass pane-card border border-brand-200/70 h-full overflow-hidden rounded-[18px] p-8">
+                      <p className={`${LABEL} text-[14.5px] text-ink-soft`}>
                         {String(i + 1).padStart(2, '0')}
                       </p>
-                      <p className="mt-4 text-[17.5px] leading-[1.65] font-normal text-oat/85">{r}</p>
+                      <p className="mt-4 text-[17.5px] leading-[1.65] font-normal text-ink/85">{r}</p>
                     </div>
                   </li>
                 ))}
@@ -450,10 +450,10 @@ export default function WisdomToothPage() {
       <section className="pb-24 lg:pb-32">
         <Container>
           <div className="border-t border-dashed border-cork pt-14">
-            <h2 className="display-sm focus-in max-w-[14em] text-[clamp(28px,4.2vw,46px)] leading-[1.05] text-oat">
+            <h2 className="display-sm focus-in max-w-[14em] text-[clamp(28px,4.2vw,46px)] leading-[1.05] text-ink">
               빼야 하는지부터 확인하세요
             </h2>
-            <p className="mt-8 max-w-[32em] text-[clamp(16px,1.5vw,20px)] leading-[1.55] font-normal text-oat/80">
+            <p className="mt-8 max-w-[32em] text-[clamp(16px,1.5vw,20px)] leading-[1.55] font-normal text-ink-soft">
               <Sentences text="누운 각도와 신경관까지의 거리에 따라 방법과 회복이 달라집니다. 사진으로 위치를 확인한 뒤에 뺄지 지켜볼지 함께 정합니다." />
             </p>
 
@@ -468,7 +468,7 @@ export default function WisdomToothPage() {
               </a>
               <a
                 href={CLINIC.phoneHref}
-                className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-parchment/80 px-8 py-4 text-[17px] font-semibold tabular-nums text-parchment transition-colors hover:bg-white/10"
+                className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-brand-100"
               >
                 {CLINIC.phone}
               </a>
@@ -476,15 +476,15 @@ export default function WisdomToothPage() {
 
             <div className="mt-20 grid gap-8 border-t border-dashed border-cork pt-12 sm:grid-cols-2 lg:grid-cols-4">
               <Link href="/faq#wisdom-tooth" className="group">
-                <p className={`${LABEL} text-[14.5px] text-driftwood`}>FAQ</p>
-                <p className="mt-3 text-[18px] leading-[1.4] font-normal text-oat underline decoration-cork underline-offset-4 transition-colors group-hover:decoration-ember">
+                <p className={`${LABEL} text-[14.5px] text-ink-soft`}>FAQ</p>
+                <p className="mt-3 text-[18px] leading-[1.4] font-normal text-ink underline decoration-cork underline-offset-4 transition-colors group-hover:decoration-ember">
                   많이 묻는 것 {t.qa.length}가지
                 </p>
               </Link>
               {related.slice(0, 3).map((s) => (
                 <Link key={s!.slug} href={`/insight/symptom/${s!.slug}`} className="group">
-                  <p className={`${LABEL} text-[14.5px] text-driftwood`}>관련 증상</p>
-                  <p className="mt-3 text-[18px] leading-[1.4] font-normal text-oat underline decoration-cork underline-offset-4 transition-colors group-hover:decoration-ember">
+                  <p className={`${LABEL} text-[14.5px] text-ink-soft`}>관련 증상</p>
+                  <p className="mt-3 text-[18px] leading-[1.4] font-normal text-ink underline decoration-cork underline-offset-4 transition-colors group-hover:decoration-ember">
                     {s!.title}
                   </p>
                 </Link>

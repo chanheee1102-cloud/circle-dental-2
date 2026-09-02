@@ -89,7 +89,7 @@ export default function VisitPage() {
 
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
           {/* 위치 */}
-          <div className="rounded-2xl border border-brand-100 card-glass p-8">
+          <div className="rounded-2xl border border-wine-line card-glass p-8">
             <h2 className="text-[18px] font-black text-ink">어디에 있나요?</h2>
             <dl className="mt-6 space-y-5">
               <div>
@@ -155,10 +155,10 @@ export default function VisitPage() {
           </div>
 
           {/* 진료시간 */}
-          <div className="rounded-2xl border border-brand-100 card-glass p-8">
+          <div className="rounded-2xl border border-wine-line card-glass p-8">
             <h2 className="text-[18px] font-black text-ink">언제 진료하나요?</h2>
             <div className="mt-6">
-              <ul className="divide-y divide-brand-100">
+              <ul className="divide-y divide-wine-line">
                 {UNVERIFIED.hours.display.map((h) => (
                   <li
                     key={h.label}

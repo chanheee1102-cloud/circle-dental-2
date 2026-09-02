@@ -154,7 +154,7 @@ function ArticleMetaHidden({ path, tone = 'light' }: { path: string; tone?: 'lig
   return (
     <div
       className={`flex flex-wrap items-center gap-x-5 gap-y-2 border-t pt-6 text-[14.5px] ${
-        dark ? 'border-white/15 text-white/60' : 'border-brand-100 text-ink-soft'
+        dark ? 'border-white/15 text-white/60' : 'border-wine-line text-ink-soft'
       }`}
     >
       <span>
@@ -224,7 +224,7 @@ function ReferencesHidden({ items, tone = 'light' }: { items: Reference[]; tone?
     <section
       aria-labelledby="references"
       className={`reveal rounded-2xl border p-6 sm:p-7 ${
-        dark ? 'border-white/15 card-glass/[0.04]' : 'border-brand-200/70 bg-parchment'
+        dark ? 'border-brand-200/70 bg-parchment' : 'border-brand-200/70 bg-parchment'
       }`}
     >
       <h2 id="references" className={`text-[16px] font-black ${dark ? 'text-white' : 'text-ink'}`}>

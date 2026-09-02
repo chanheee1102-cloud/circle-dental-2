@@ -66,7 +66,7 @@ export default function JourneyIndexPage() {
               </h2>
               <p className="mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft"><Sentences text={j.answer} /></p>
 
-              <div className="mt-5 flex flex-wrap gap-2 border-t border-brand-100 pt-4">
+              <div className="mt-5 flex flex-wrap gap-2 border-t border-wine-line pt-4">
                 <span className="rounded-full border border-brand-200 px-3 py-1.5 text-[13.5px] font-bold text-brand-700">
                   내원 {j.visits}
                 </span>

@@ -1,15 +1,13 @@
 /*
- * treatment 아래 모든 페이지의 결 — 어두운 서브페이지 (2026-08-31 오너: "서브페이지 전부").
+ * ⚠️⚠️ page-dark 를 다시 붙이지 말 것 (2026-09-02 피드백: "전체적으로 하얗고 따뜻한 색상으로") ⚠️⚠️
+ *   이 사이트의 기본 팔레트는 홈이 쓰는 웜 스톤(바탕 #efebe4 · 카드 #fffdf8)이다.
+ *   .page-dark 는 그 값을 통째로 뒤집던 껍데기였고, 지금은 어느 페이지에도 붙이지 않는다.
+ *   되돌리려면 globals.css 의 .page-dark 블록이 그대로 남아 있으니 클래스만 다시 붙이면 된다.
+ *   다만 그때는 밝은 결 기준으로 고쳐 둔 색들(금색 라벨·선 색·밝은 띠)을 함께 봐야 한다.
  *
- * ⚠️ 이 파일을 지우면 이 폴더만 밝은 결로 되돌아간다. 색은 globals.css 의
- *    .page-dark 한 곳에 모여 있다 — 값을 바꾸려면 거기서 바꿀 것.
- * ⚠️ 홈(/)에는 붙이지 않는다. 홈은 밝은 결이 기준이다.
- *
- * ★ treat-page — 진료과목 아홉 곳의 바탕색을 충치치료의 결 하나로 모은다
- *   (2026-09-01 오너: "진료 메뉴 전체를 충치치료 페이지 디자인으로 통일").
- *   ⚠️ 이 클래스를 여기 말고 다른 데서 붙이지 말 것. 한 곳에서만 붙어야
- *      "진료 페이지는 전부 같다" 가 규칙으로 유지된다.
+ * ⚠️ treat-page 도 함께 뗐다 — globals.css 의 규칙이 .page-dark.treat-page 라서
+ *    page-dark 없이는 아무 일도 하지 않는다. 어두운 결로 돌아갈 때 둘을 함께 붙일 것.
  */
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <div className="page-dark treat-page">{children}</div>;
+  return <>{children}</>;
 }

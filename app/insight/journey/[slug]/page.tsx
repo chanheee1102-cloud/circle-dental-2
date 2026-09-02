@@ -152,7 +152,7 @@ export default async function JourneyDetailPage({
           </div>
         </Container>
 
-        <section className="border-y border-brand-200/60 bg-parchment py-14">
+        <section className="border-y border-brand-200/80 bg-parchment py-14">
           <Container>
             <h2
               id={headingId('회차별로 하는 일')}
@@ -193,7 +193,7 @@ export default async function JourneyDetailPage({
             {j.variables.map((v) => (
               <li
                 key={v}
-                className="flex gap-3 rounded-xl border border-brand-100 card-glass px-5 py-4 text-[15.5px] leading-relaxed text-ink-soft"
+                className="flex gap-3 rounded-xl border border-wine-line card-glass px-5 py-4 text-[15.5px] leading-relaxed text-ink-soft"
               >
                 <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-500" />
                 {v}

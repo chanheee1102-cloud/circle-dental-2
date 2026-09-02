@@ -111,7 +111,7 @@ export default function CavityPage() {
   const related = t.relatedSymptoms.map(symptomBySlug).filter(Boolean);
 
   return (
-    <div className="page-native-dark">
+    <div>
       <JsonLd
         data={[
           breadcrumbSchema(TRAIL),
@@ -153,7 +153,7 @@ export default function CavityPage() {
       <TreatmentStrip items={STRIP} />
 
       {/* ── 좌우 교차 블록 ① 깊이 ─────────────────────────────────── */}
-      <section className="bg-night py-24 lg:py-32">
+      <section className="py-24 lg:py-32">
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             {/* 왼쪽 — 깊이 세 단계를 어두운 카드로. */}
@@ -162,14 +162,14 @@ export default function CavityPage() {
               {DEPTHS.map((d) => (
                 <li
                   key={d.n}
-                  className="reveal rounded-2xl border border-white/10 card-glass/[0.045] p-6 ring-1 ring-white/[0.05] ring-inset"
+                  className="reveal rounded-2xl border border-brand-200/70 bg-parchment p-6 ring-1 ring-brand-200/50 ring-inset"
                 >
                   <div className="flex items-baseline gap-3">
-                    <span className="text-[13.5px] font-black text-clay-400 tabular-nums">{d.n}</span>
-                    <p className="text-[18px] font-black tracking-[-0.02em] text-white">{d.layer}</p>
+                    <span className="text-[13.5px] font-black text-clay-600 tabular-nums">{d.n}</span>
+                    <p className="text-[18px] font-black tracking-[-0.02em] text-ink">{d.layer}</p>
                   </div>
-                  <p className="mt-3 text-[15.5px] leading-[1.85] text-brand-300"><Sentences text={d.body} /></p>
-                  <p className="mt-4 inline-flex rounded-full bg-clay-400/12 px-3 py-1.5 text-[13.5px] font-black text-clay-300">
+                  <p className="mt-3 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={d.body} /></p>
+                  <p className="mt-4 inline-flex rounded-full bg-clay-tint px-3 py-1.5 text-[13.5px] font-black text-clay-600">
                     <Sentences text={d.cure} />
                   </p>
                 </li>
@@ -177,10 +177,10 @@ export default function CavityPage() {
             </ol>
 
             <div className="lg:order-1">
-              <h2 className="reveal display-sm max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-white">
+              <h2 className="reveal display-sm max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-ink">
                 어디까지 갔는지가 치료를 정합니다
               </h2>
-              <p className="reveal mt-6 max-w-[30em] text-[17px] leading-[1.95] text-brand-300">
+              <p className="reveal mt-6 max-w-[30em] text-[17px] leading-[1.95] text-ink-soft">
                 <Sentences text="충치는 겉의 단단한 층에서 시작해 안쪽으로 들어갑니다. 층마다 무르기가 달라 진행 속도가 바뀌고, 신경이 있는 방에 닿는 순간 치료의 성격이 완전히 달라집니다." />
               </p>
               {/*
@@ -193,7 +193,7 @@ export default function CavityPage() {
               */}
               <figure className="reveal mt-9">
                 {/* ⚠️ 폭을 화면 끝까지 늘리지 말 것 — 도해가 본문보다 커지면 이 구획의 주인공이 뒤바뀐다. */}
-                <div className="overflow-x-auto rounded-[16px] border border-white/10 bg-parchment p-2.5">
+                <div className="overflow-x-auto rounded-[16px] border border-brand-200/70 bg-parchment p-2.5">
                   <Image
                     src="/img/ai/cavity-stages.webp"
                     alt="충치 진행 5단계 도해. 법랑질 충치, 상아질 충치, 신경(치수) 침범, 치근단 염증, 치아 발치 필요 순으로 단면 그림과 함께 단계별 증상과 치료 방법을 정리했다."
@@ -234,17 +234,17 @@ export default function CavityPage() {
       </section>
 
       {/* ── 좌우 교차 블록 ② MTA ──────────────────────────────────── */}
-      <section className="border-y border-white/8 bg-night-2 py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 bg-parchment py-24 lg:py-32">
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             <div>
-              <p className="reveal text-[14.5px] font-medium text-clay-300">
+              <p className="reveal text-[14.5px] font-medium text-clay-600">
                 MTA 직접치수복조술
               </p>
-              <h2 className="reveal display-sm mt-5 max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-white">
+              <h2 className="reveal display-sm mt-5 max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-ink">
                 신경을 제거하면, 그 치아의 시계가 빨라집니다
               </h2>
-              <div className="reveal mt-7 max-w-[32em] space-y-5 text-[17px] leading-[1.95] text-brand-300">
+              <div className="reveal mt-7 max-w-[32em] space-y-5 text-[17px] leading-[1.95] text-ink-soft">
                 <p>
                   <Sentences text="신경을 제거하면 함께 지나던 혈관도 사라져 영양 공급이 끊깁니다. 치아가 잘 부서지게 되어 장기적으로 수명이 짧아지고, 씌워야 하는 보철 비용도 올라갑니다." />
                 </p>
@@ -255,20 +255,20 @@ export default function CavityPage() {
             </div>
 
             <div className="reveal-stack grid gap-4">
-              <div className="reveal rounded-2xl border border-white/10 card-glass/[0.03] p-7">
-                <p className="text-[13.5px] font-black text-brand-400">일반적인 경우</p>
-                <p className="mt-3 text-[19px] font-black tracking-[-0.02em] text-white">신경을 전부 제거</p>
-                <ul className="mt-5 space-y-2.5 text-[15.5px] leading-[1.8] text-brand-300">
+              <div className="reveal rounded-2xl border border-brand-200/70 bg-parchment p-7">
+                <p className="text-[13.5px] font-black text-ink-soft">일반적인 경우</p>
+                <p className="mt-3 text-[19px] font-black tracking-[-0.02em] text-ink">신경을 전부 제거</p>
+                <ul className="mt-5 space-y-2.5 text-[15.5px] leading-[1.8] text-ink-soft">
                   <li>혈관도 함께 사라져 영양 공급이 끊깁니다</li>
                   <li>치아가 잘 부서져 씌워서 보강해야 합니다</li>
                   <li>치료 회차와 비용이 늘어납니다</li>
                 </ul>
               </div>
               {/* 강조되는 쪽만 clay 로 테를 두른다 — 면으로 칠하지 않는다. */}
-              <div className="reveal rounded-2xl border border-clay-400/35 bg-clay-400/[0.07] p-7 ring-1 ring-clay-400/10 ring-inset">
-                <p className="text-[13.5px] font-black text-clay-300">조건이 맞을 때</p>
-                <p className="mt-3 text-[19px] font-black tracking-[-0.02em] text-white">MTA로 신경을 덮어 둠</p>
-                <ul className="mt-5 space-y-2.5 text-[15.5px] leading-[1.8] text-brand-200">
+              <div className="reveal rounded-2xl border border-clay-600/40 bg-clay-400/[0.07] p-7 ring-1 ring-clay-400/10 ring-inset">
+                <p className="text-[13.5px] font-black text-clay-600">조건이 맞을 때</p>
+                <p className="mt-3 text-[19px] font-black tracking-[-0.02em] text-ink">MTA로 신경을 덮어 둠</p>
+                <ul className="mt-5 space-y-2.5 text-[15.5px] leading-[1.8] text-ink-soft">
                   <li>신경이 살아 있어 영양 공급이 이어집니다</li>
                   <li>치아를 깎는 양이 줄어듭니다</li>
                   <li>건강보험은 적용되지 않습니다</li>
@@ -286,21 +286,21 @@ export default function CavityPage() {
         ⚠️ 원본이 220x175 뿐이다. 크게 늘리지 말 것 — 앞 판본은 615px 로 띄워 뭉갰다.
         ⚠️⚠️ CASE_NOTE 를 지우지 말 것 — 의료법 제56조.
       */}
-      <section className="bg-night py-24 lg:py-32">
+      <section className="py-24 lg:py-32">
         <Container>
           <div className="mx-auto max-w-[38em] text-center">
-            <p className="reveal text-[14.5px] font-medium text-clay-300">
+            <p className="reveal text-[14.5px] font-medium text-clay-600">
               실제 증례
             </p>
-            <h2 className="reveal display-sm mt-5 text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-white">
+            <h2 className="reveal display-sm mt-5 text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-ink">
               신경을 남긴 채 마무리한 경우
             </h2>
-            <p className="reveal mt-5 text-[16.5px] leading-[1.9] text-brand-300">
+            <p className="reveal mt-5 text-[16.5px] leading-[1.9] text-ink-soft">
               경계를 좌우로 끌어 치료 전후 방사선 사진을 겹쳐 보실 수 있습니다.
             </p>
           </div>
 
-          <div className="reveal mx-auto mt-14 max-w-[64rem] rounded-[22px] border border-white/12 card-glass/[0.035] p-6 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.8)] sm:p-8">
+          <div className="reveal mx-auto mt-14 max-w-[64rem] rounded-[22px] border border-brand-200 bg-parchment p-6 shadow-[var(--shadow-soft)] sm:p-8">
             <div className="grid gap-10 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:gap-12">
               <div>
                 <BeforeAfter
@@ -315,7 +315,7 @@ export default function CavityPage() {
                     { src: '/img/clinic/cavity-case-c.webp', alt: 'MTA 위를 수복 재료로 채워 마무리한 구강 내 사진.' },
                   ].map((im) => (
                     <li key={im.src}>
-                      <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-white/12 bg-night">
+                      <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-brand-200 bg-wine-bg">
                         <Image src={im.src} alt={im.alt} fill sizes="(min-width: 1024px) 180px, 45vw" className="object-cover" />
                       </div>
                     </li>
@@ -328,17 +328,17 @@ export default function CavityPage() {
                 <ol className="space-y-6">
                   {CASE_ROWS.map((r) => (
                     <li key={r.n} className="flex gap-4">
-                      <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white/12 text-[11.5px] font-black text-clay-300">
+                      <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-clay-tint text-[11.5px] font-black text-clay-600">
                         {r.n}
                       </span>
                       <div>
-                        <p className="text-[16px] font-black text-white">{r.t}</p>
-                        <p className="mt-1.5 text-[15.5px] leading-[1.85] text-brand-300">{r.d}</p>
+                        <p className="text-[16px] font-black text-ink">{r.t}</p>
+                        <p className="mt-1.5 text-[15.5px] leading-[1.85] text-ink-soft">{r.d}</p>
                       </div>
                     </li>
                   ))}
                 </ol>
-                <p className="mt-8 border-t border-white/10 pt-6 text-[14px] leading-[1.9] text-brand-400">
+                <p className="mt-8 border-t border-brand-200/70 pt-6 text-[14px] leading-[1.9] text-ink-soft">
                   {CASE_NOTE}
                 </p>
               </div>
@@ -348,10 +348,10 @@ export default function CavityPage() {
       </section>
 
       {/* ── 좌우 교차 블록 ③ 시술 ─────────────────────────────────── */}
-      <section className="border-y border-white/8 bg-night-2 py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 bg-parchment py-24 lg:py-32">
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-            <div className="reveal img-in overflow-hidden rounded-[20px] lg:order-2 border border-white/12 card-glass/[0.04] p-2 lg:order-1">
+            <div className="reveal img-in overflow-hidden rounded-[20px] lg:order-2 border border-brand-200 bg-parchment p-2 lg:order-1">
               <div className="card-edge relative aspect-[16/10] overflow-hidden rounded-[13px]">
                 <Image
                   src="/img/scene/cavity-model-work.webp"
@@ -363,22 +363,22 @@ export default function CavityPage() {
               </div>
             </div>
             <div className="lg:order-1">
-              <p className="reveal text-[14.5px] font-medium text-clay-300">치료 방법</p>
-              <h2 className="reveal display-sm mt-5 max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-white">
+              <p className="reveal text-[14.5px] font-medium text-clay-600">치료 방법</p>
+              <h2 className="reveal display-sm mt-5 max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-ink">
                 당일에 끝내거나, 조각을 만들어 끼우거나
               </h2>
-              <p className="reveal mt-6 max-w-[30em] text-[17px] leading-[1.95] text-brand-300">
+              <p className="reveal mt-6 max-w-[30em] text-[17px] leading-[1.95] text-ink-soft">
                 <Sentences text="파인 범위가 작으면 치아색 재료를 채워 그날 마무리합니다. 넓게 파여 채우는 것만으로는 버티기 어려운 자리는 본을 떠서 조각을 따로 만들어 끼웁니다." />
               </p>
               {journey ? (
-                <dl className="reveal mt-9 flex gap-x-12 border-t border-white/10 pt-7">
+                <dl className="reveal mt-9 flex gap-x-12 border-t border-brand-200/70 pt-7">
                   <div>
-                    <dt className="text-[13.5px] font-bold text-clay-400">내원 횟수</dt>
-                    <dd className="mt-1.5 text-[22px] font-black tracking-[-0.02em] text-white">{journey.visits}</dd>
+                    <dt className="text-[13.5px] font-bold text-clay-600">내원 횟수</dt>
+                    <dd className="mt-1.5 text-[22px] font-black tracking-[-0.02em] text-ink">{journey.visits}</dd>
                   </div>
                   <div>
-                    <dt className="text-[13.5px] font-bold text-clay-400">치료 기간</dt>
-                    <dd className="mt-1.5 text-[22px] font-black tracking-[-0.02em] text-white">{journey.duration}</dd>
+                    <dt className="text-[13.5px] font-bold text-clay-600">치료 기간</dt>
+                    <dd className="mt-1.5 text-[22px] font-black tracking-[-0.02em] text-ink">{journey.duration}</dd>
                   </div>
                 </dl>
               ) : null}
@@ -388,7 +388,7 @@ export default function CavityPage() {
       </section>
 
       {/* ── 마무리 ─────────────────────────────────────────────────── */}
-      <section className="relative isolate overflow-hidden bg-night py-24 lg:py-32">
+      <section className="relative isolate overflow-hidden py-24 lg:py-32">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(46%_60%_at_50%_120%,rgba(201,116,78,0.30)_0%,transparent_66%)]"
@@ -396,10 +396,10 @@ export default function CavityPage() {
         <Container className="relative">
           <div className="flex flex-wrap items-end justify-between gap-10">
             <div>
-              <h2 className="reveal display-sm max-w-[14em] text-[clamp(28px,4.2vw,46px)] leading-[1.2] tracking-[-0.03em] text-white">
+              <h2 className="reveal display-sm max-w-[14em] text-[clamp(28px,4.2vw,46px)] leading-[1.2] tracking-[-0.03em] text-ink">
                 신경을 살릴 수 있는 상태인지부터 확인하세요
               </h2>
-              <p className="reveal mt-6 max-w-[32em] text-[17px] leading-[1.9] text-brand-300">
+              <p className="reveal mt-6 max-w-[32em] text-[17px] leading-[1.9] text-ink-soft">
                 <Sentences text="같은 깊이라도 신경의 노출 정도와 감염 상태에 따라 방법이 달라집니다. 검사로 확인한 뒤에 무엇이 가능한지 말씀드립니다." />
               </p>
             </div>
@@ -414,7 +414,7 @@ export default function CavityPage() {
               </a>
               <a
                 href={CLINIC.phoneHref}
-                className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-parchment/80 px-8 py-4 text-[17px] font-semibold tabular-nums text-parchment transition-colors hover:bg-white/10"
+                className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-brand-100"
               >
                 {CLINIC.phone}
               </a>
@@ -422,17 +422,17 @@ export default function CavityPage() {
           </div>
 
           {/* 이어지는 곳 — 어두운 면 위의 조용한 링크 줄. */}
-          <div className="mt-16 grid gap-4 border-t border-white/10 pt-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-16 grid gap-4 border-t border-brand-200/70 pt-10 sm:grid-cols-2 lg:grid-cols-4">
             <Link href="/faq#cavity" className="reveal group">
-              <p className="text-[13.5px] font-black text-clay-400">자주 묻는 질문</p>
-              <p className="mt-2 text-[16.5px] font-black text-white group-hover:text-clay-300">
+              <p className="text-[13.5px] font-black text-clay-600">자주 묻는 질문</p>
+              <p className="mt-2 text-[16.5px] font-black text-ink group-hover:text-clay-600">
                 충치치료에 대해 많이 묻는 것 {t.qa.length}가지 <span aria-hidden>→</span>
               </p>
             </Link>
             {related.slice(0, 3).map((s) => (
               <Link key={s!.slug} href={`/insight/symptom/${s!.slug}`} className="reveal group">
-                <p className="text-[13.5px] font-black text-clay-400">관련 증상</p>
-                <p className="mt-2 text-[16.5px] font-black text-white group-hover:text-clay-300">
+                <p className="text-[13.5px] font-black text-clay-600">관련 증상</p>
+                <p className="mt-2 text-[16.5px] font-black text-ink group-hover:text-clay-600">
                   {s!.title} <span aria-hidden>→</span>
                 </p>
               </Link>
@@ -446,7 +446,7 @@ export default function CavityPage() {
            앞 구간이 전부 어두운데 여기만 밝으면 페이지가 끊겨 보이므로 bg-night 로 감싼다.
            그리고 어두운 면이 됐으니 tone="dark" 를 넘긴다 — 안 넘기면 어두운 글자가 묻힌다.
       */}
-      <div className="bg-night">
+      <div className="bg-wine-bg">
       <Container className="py-14">
         <div className="max-w-[46em]">
           <ArticleMeta path={PATH} tone="dark" />

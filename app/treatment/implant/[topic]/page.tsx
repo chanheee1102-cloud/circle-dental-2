@@ -115,7 +115,7 @@ export default async function ImplantTopicPage({
           </div>
         </Container>
 
-        <section className="border-y border-brand-200/60 bg-parchment py-14">
+        <section className="border-y border-brand-200/80 bg-parchment py-14">
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
@@ -163,7 +163,7 @@ export default async function ImplantTopicPage({
           <h2 id={headingId('자주 묻는 질문')} className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]">
             자주 묻는 질문
           </h2>
-          <div className="mt-8 divide-y divide-brand-100 border-t border-brand-100">
+          <div className="mt-8 divide-y divide-wine-line border-t border-wine-line">
             {t.faq.map((f) => (
               <article key={f.q} className="py-6">
                 <h3 className="text-[18px] font-black leading-snug text-ink">{f.q}</h3>
@@ -173,7 +173,7 @@ export default async function ImplantTopicPage({
           </div>
         </Container>
 
-        <section className="border-t border-white/8 bg-brand-50 py-14">
+        <section className="border-t border-wine-line bg-brand-50 py-14">
           <Container>
             <h2 className="text-[20px] font-black text-ink">임플란트 다른 주제</h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

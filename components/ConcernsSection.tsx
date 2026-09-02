@@ -52,21 +52,24 @@ export function ConcernsSection() {
   return (
     /*
      * ⚠️ 여기는 화면 폭 그대로 둔다 — ConcernPhone 이 sticky + h-screen 으로 한 장면을
-     *    통째로 쓰기 때문에 안으로 들이면 그 고정이 깨진다. 색만 dusk 로 맞춘다.
+     *    통째로 쓰기 때문에 안으로 들이면 그 고정이 깨진다.
+     * ⚠️ 2026-09-02 에 밝은 면(brand-100)으로 뒤집었다 (오너: "검은 느낌 아예 없애").
+     *    앞뒤가 parchment 라 여기만 한 단 낮춰 구획이 바뀐 것을 보이게 한다.
      */
-    <section className="relative bg-wine-deep text-parchment">
+    <section className="relative bg-brand-100 text-ink">
       {/*
         ★ 배경의 큰 동그라미 셋 — 병원 이름이 '동그라미' 다.
-          어두운 면을 그냥 두면 평평한 검은 판인데, 여기에 흔한 보라·파랑 그라데이션 얼룩을
+          큰 면을 그냥 두면 평평한 판인데, 여기에 흔한 보라·파랑 그라데이션 얼룩을
           깔면 그거야말로 어디서나 보는 화면이 된다. 대신 **브랜드의 모티프**를 아주 옅게
           띄우고 느리게 움직인다. 이 병원에서만 성립하는 배경이다.
-        ⚠️ 선 두께 1px · 흰색 4% 를 넘기지 말 것. 글자 뒤에서 무늬가 읽히기 시작하면
+        ⚠️ 선 두께 1px · 잉크색 8% 를 넘기지 말 것. 글자 뒤에서 무늬가 읽히기 시작하면
            그때부터는 배경이 아니라 방해다.
+        ⚠️ 흰색 선으로 되돌리지 말 것 — 이 면은 2026-09-02 부터 밝다. 흰 선은 안 보인다.
       */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        <span className="drift absolute -top-24 -left-20 h-[420px] w-[420px] rounded-full border border-white/[0.05]" />
-        <span className="drift drift-slow absolute top-1/3 -right-32 h-[560px] w-[560px] rounded-full border border-white/[0.04]" />
-        <span className="drift drift-late absolute -bottom-28 left-1/3 h-[300px] w-[300px] rounded-full border border-white/[0.055]" />
+        <span className="drift absolute -top-24 -left-20 h-[420px] w-[420px] rounded-full border border-ink/[0.07]" />
+        <span className="drift drift-slow absolute top-1/3 -right-32 h-[560px] w-[560px] rounded-full border border-ink/[0.06]" />
+        <span className="drift drift-late absolute -bottom-28 left-1/3 h-[300px] w-[300px] rounded-full border border-ink/[0.08]" />
       </div>
 
       <ConcernPhone
@@ -78,13 +81,13 @@ export function ConcernsSection() {
                가리키는데, 이 구획이 하는 일은 **내원 전에 걸리는 것들을 미리 답하는 것**이다.
                '내원 전' 이 그 자리를 말한다.
           */}
-          <p className="eyebrow-chip text-mist">내원 전</p>
+          <p className="eyebrow-chip text-clay-700">내원 전</p>
           {/*
             ★ 이 섹션의 제목만 다른 섹션보다 크다. 여기는 화면에 고정돼 한 장면을
               통째로 쓰는 자리라 다른 섹션과 같은 크기면 왼쪽이 비어 보인다.
               (기기와의 거리를 좁히는 일도 겸한다 — ConcernPhone 의 격자 폭 주석 참고)
           */}
-          <h2 className="display-ko mt-5 text-[clamp(30px,4.8vw,50px)] text-parchment">
+          <h2 className="display-ko mt-5 text-[clamp(30px,4.8vw,50px)] text-ink">
             {words.map((w, i) => (
               /*
                * 어절마다 가면(overflow:hidden)을 씌우고 그 안에서 밀어 올린다.
@@ -99,7 +102,7 @@ export function ConcernsSection() {
               </span>
             ))}
           </h2>
-          <p className="mt-6 text-[18px] leading-[1.9] text-parchment">
+          <p className="mt-6 text-[18px] leading-[1.9] text-twilight">
             <Sentences text="치과를 미루는 이유는 대개 치료가 아니라 망설임입니다. 자주 듣는 이야기와 저희가 하는 일을 정리했습니다." />
           </p>
           </Reveal>

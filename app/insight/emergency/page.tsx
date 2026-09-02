@@ -166,9 +166,9 @@ export default function EmergencyPage() {
             <article
               key={c.id}
               id={c.id}
-              className="scroll-mt-28 overflow-hidden rounded-2xl border border-brand-100 card-glass"
+              className="scroll-mt-28 overflow-hidden rounded-2xl border border-wine-line card-glass"
             >
-              <div className="border-b border-brand-50 p-7">
+              <div className="border-b border-wine-line p-7">
                 <span className="inline-flex rounded-full bg-gold-400/20 px-3 py-1 text-[13.5px] font-black text-gold-600">
                   <Sentences text={c.urgency} />
                 </span>
@@ -179,7 +179,7 @@ export default function EmergencyPage() {
               </div>
 
               <div className="grid gap-0 sm:grid-cols-2">
-                <div className="border-b border-brand-50 p-7 sm:border-b-0 sm:border-r">
+                <div className="border-b border-wine-line p-7 sm:border-b-0 sm:border-r">
                   <h3 className="text-[14px] font-black tracking-wide text-brand-700">이렇게 하세요</h3>
                   <ul className="mt-3.5 space-y-2.5">
                     {c.doList.map((d) => (
@@ -214,7 +214,7 @@ export default function EmergencyPage() {
                    색 띠까지 같이 줄어 카드가 잘린 것처럼 보인다. 그래서 안쪽 span 에 준다.
                 ⚠️ em 단위여야 한다. ch 는 한글에서 절반으로 계산된다(이 세션에서 겪었다).
               */}
-              <p className="border-t border-brand-50 bg-wine-bg/60 px-7 py-4 text-[14.5px] leading-relaxed text-ink-soft">
+              <p className="border-t border-wine-line bg-wine-bg/60 px-7 py-4 text-[14.5px] leading-relaxed text-ink-soft">
                 <span className="block max-w-[44em]"><Sentences text={c.note} /></span>
               </p>
             </article>
