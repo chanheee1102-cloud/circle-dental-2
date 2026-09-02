@@ -339,7 +339,7 @@ export function directorPersonSchema() {
     hasCredential: [
       {
         '@type': 'EducationalOccupationalCredential',
-        name: '보건복지부 인정 통합치의학과 전문의',
+        name: '보건복지부인증 통합치의학과 전문의',
         credentialCategory: '전문의 자격',
         recognizedBy: { '@type': 'GovernmentOrganization', name: '보건복지부' },
       },

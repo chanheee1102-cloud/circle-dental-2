@@ -168,7 +168,7 @@ function ArticleMetaHidden({ path, tone = 'light' }: { path: string; tone?: 'lig
         </Link>
         {/* ⚠️ paper(#f5f1e4) 위에서 ink-muted 는 4.44:1 로 미달이었다(실측) — ink-soft 는 5.9:1. */}
         <span className={`ml-1.5 ${dark ? 'text-white/60' : 'text-ink-soft'}`}>
-          · 보건복지부 인정 통합치의학과 전문의
+          · 보건복지부인증 통합치의학과 전문의
         </span>
       </span>
       <span aria-hidden className={dark ? 'text-white/40' : 'text-ink-muted'}>

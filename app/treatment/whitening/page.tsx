@@ -173,7 +173,7 @@ export default function WhiteningPage() {
       */}
       <TreatmentHero
         trail={TRAIL}
-        eyebrow="고양 화정동 치아미백 · 보건복지부 인정 통합치의학과 전문의"
+        eyebrow="고양 화정동 치아미백 · 보건복지부인증 통합치의학과 전문의"
         title={['치아 변색의 원인을', '먼저 확인하고 시작합니다']}
         lead={LEAD}
         photo={{

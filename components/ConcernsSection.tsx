@@ -103,7 +103,9 @@ export function ConcernsSection() {
             ))}
           </h2>
           <p className="mt-6 text-[18px] leading-[1.9] text-twilight">
-            <Sentences text="치과를 미루는 이유는 대개 치료가 아니라 망설임입니다. 자주 듣는 이야기와 저희가 하는 일을 정리했습니다." />
+            {/* ⚠️ 2026-09-02 오너 지정 문구. 임의로 줄이지 말 것 — 두 문장이 한 짝이다.
+                   ('선택해 보세요' 는 목록 바로 위, ConcernPhone 이 맡는다.) */}
+            <Sentences text="치과 치료를 망설이는 건, 분명 그만한 이유가 있습니다. 동그라미치과는 치료에 대한 두려움부터 비용에 대한 걱정까지, 망설이고 계신 이유에 맞춰 필요한 진료를 함께 고민합니다." />
           </p>
           </Reveal>
         }

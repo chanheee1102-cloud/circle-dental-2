@@ -51,7 +51,7 @@ export function TreatmentLanding({
       */}
       <TreatmentHero
         trail={trail}
-        eyebrow={`고양 화정동 ${t.name} · 보건복지부 인정 통합치의학과 전문의`}
+        eyebrow={`고양 화정동 ${t.name} · 보건복지부인증 통합치의학과 전문의`}
         title={page.headline.split('\n')}
         lead={page.lead}
         photo={{ src: page.hero.src, alt: '' }}

@@ -183,7 +183,7 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                 ⚠️ 지우지 말 것. 이 한 줄이 없으면 첫 대화 한 판만 보고 지나간다.
               */}
               <p className="mt-9 hidden text-[14.5px] text-ink-soft lg:block">
-                아래 고민을 누르거나, 화면 위에서 굴려 보세요.
+                아래에서 지금 가장 고민되는 이유를 선택해 보세요.
               </p>
               <ul className="mt-3 hidden lg:block">
                 {CONCERNS.map((con, n) => {

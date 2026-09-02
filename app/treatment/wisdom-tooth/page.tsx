@@ -20,7 +20,7 @@ import {
 } from '@/lib/seo';
 
 /**
- * 사랑니 치료 — 다크룸(ORYZO) 시스템으로 만든 페이지.
+ * 사랑니 발치 — 다크룸(ORYZO) 시스템으로 만든 페이지.
  *
  * ★★ 이 시스템의 규칙 ★★
  *   ① **따뜻한 흑백.** 순백(#fff)도 순검정(#000)도 쓰지 않는다. walnut(#100904) 위에
@@ -64,16 +64,16 @@ const LEAD =
 const LEAD_PLAIN = plain(LEAD);
 
 export const metadata: Metadata = {
-  title: '사랑니 치료',
+  title: '사랑니 발치',
   description: LEAD_PLAIN.slice(0, 155),
   alternates: { canonical: PATH },
-  openGraph: og({ title: withLocality('사랑니 치료'), description: LEAD_PLAIN.slice(0, 155), path: PATH }),
+  openGraph: og({ title: withLocality('사랑니 발치'), description: LEAD_PLAIN.slice(0, 155), path: PATH }),
 };
 
 const TRAIL = [
   { name: '홈', path: '/' },
   { name: '진료과목', path: '/treatment' },
-  { name: '사랑니 치료', path: PATH },
+  { name: '사랑니 발치', path: PATH },
 ];
 
 const DOC_IMAGE = {
@@ -189,7 +189,7 @@ export default function WisdomToothPage() {
         data={[
           breadcrumbSchema(TRAIL),
           medicalWebPageSchema({
-            title: withLocality('사랑니 치료'),
+            title: withLocality('사랑니 발치'),
             description: LEAD_PLAIN,
             path: PATH,
             about: { type: 'MedicalProcedure', name: '사랑니 발치' },
@@ -198,7 +198,7 @@ export default function WisdomToothPage() {
           imageObjectSchema({ path: PATH, ...DOC_IMAGE }),
           articleSchema({
             path: PATH,
-            title: '사랑니 치료',
+            title: '사랑니 발치',
             description: LEAD_PLAIN,
             wordCount: charCount(LEAD, REASONS.map((r) => r.d).join('')),
             keywords: ['사랑니', '사랑니 발치', '매복 사랑니'],
@@ -215,7 +215,7 @@ export default function WisdomToothPage() {
       */}
       <TreatmentHero
         trail={TRAIL}
-        eyebrow="고양 화정동 사랑니 발치 · 보건복지부 인정 통합치의학과 전문의"
+        eyebrow="고양 화정동 사랑니 발치 · 보건복지부인증 통합치의학과 전문의"
         title={['모든 사랑니를', '빼야 하는 것은 아닙니다']}
         lead={LEAD}
         photo={{

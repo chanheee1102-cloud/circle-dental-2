@@ -158,7 +158,16 @@ function Stand({ d, big }: { d: Doc; big?: boolean }) {
             : 'border-transparent text-[14.5px] text-clay-700'
         }`}
       >
-        {d.role}
+        {/*
+          ⚠️ 병원명을 떼지 말 것 (2026-09-02 오너: "대표원장/원장 문구 옆에 병원명 추가").
+             '대표원장' 만 있으면 어느 병원 대표원장인지가 이 줄에 없다 — 홈은 사람 이름으로
+             검색해 들어오는 자리라 사람과 병원이 한 줄에 같이 있어야 한다.
+          ⚠️ /about/doctors 에는 붙이지 않는다 — 그 페이지는 2026-09-01 에 오너가 직접
+             빼라고 한 자리다(페이지 전체가 이 병원 의료진이라 세 번 되풀이된다).
+        */}
+        {/* ⚠️ `{CLINIC.shortName} {d.role}` 처럼 나눠 쓰지 말 것 — 사이에 React 주석 노드가
+            끼어 "동그라미치과<!-- --> <!-- -->대표원장" 으로 나간다(실측). 한 문자열로 낸다. */}
+        {`${CLINIC.shortName} ${d.role}`}
       </p>
       <p
         className={`mt-2 font-bold tracking-[0.14em] text-clay-700 ${

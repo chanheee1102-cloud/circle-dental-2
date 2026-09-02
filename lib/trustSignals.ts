@@ -37,7 +37,7 @@ const specialistCount = DOCTORS.filter((d) =>
 export const TRUST_STATS: TrustStat[] = [
   {
     value: `${specialistCount}명`,
-    label: '보건복지부 인정 통합치의학과 전문의',
+    label: '보건복지부인증 통합치의학과 전문의',
     source: 'lib/doctors.ts — career 에 전문의 자격이 있는 원장 수',
   },
   {

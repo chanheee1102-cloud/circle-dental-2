@@ -65,10 +65,12 @@ export const CONCERNS: Concern[] = [
     source: 'lib/treatments.ts save-natural-tooth intro — 진료 철학 원문',
   },
   {
-    quote: '다른 치과에서 뽑아야 한다고 들었어요.',
-    topic: '뽑아야 한다고 들어서',
+    quote: '지금 꼭 치료해야 하는 건지 모르겠어요.',
+    /* ⚠️ 2026-09-02 오너 지정 항목명. 이전에는 '뽑아야 한다고 들어서' 였다 —
+       답변에 그 경우가 그대로 남아 있으므로 발치 재확인 문의도 여기로 들어온다. */
+    topic: '꼭 치료해야 하는지 몰라서',
     answer:
-      '한 번 더 확인해 보시는 편이 좋습니다. 뽑기 전에 다시 보는 것이 이 진료의 출발점입니다. 신경치료 후 다시 아프신 경우나 금이 갔다고 들으신 경우도 마찬가지입니다.',
+      '지금 손대야 하는 것과 지켜봐도 되는 것을 나눠 말씀드립니다. 다른 곳에서 뽑아야 한다고 들으셨거나 신경치료 후 다시 아프신 경우라면, 뽑기 전에 다시 보는 것이 이 진료의 출발점입니다.',
     href: '/treatment/save-natural-tooth',
     cta: '살릴 수 있는지 보기',
     source: 'lib/treatments.ts save-natural-tooth whoFor — "다른 곳에서 발치를 권유받은 경우" 등',
@@ -84,7 +86,7 @@ export const CONCERNS: Concern[] = [
   },
   {
     quote: '비용이 얼마나 나올지 몰라 겁이 나요.',
-    topic: '비용이 걱정돼서',
+    topic: '비용이 부담될까 걱정돼서',
     answer:
       '진료비는 상태에 따라 달라 미리 확정해 드리기 어렵습니다. 다만 무엇이 보험이 되고 무엇이 비용을 좌우하는지는 오시기 전에 아실 수 있습니다.',
     href: '/insight/cost',
@@ -93,7 +95,7 @@ export const CONCERNS: Concern[] = [
   },
   {
     quote: '낮에는 도저히 시간을 못 내요.',
-    topic: '낮에 시간을 못 내서',
+    topic: '낮에 시간을 내기 어려워서',
     answer:
       '늦게까지 여는 날을 따로 두고 있습니다. 화요일과 목요일은 저녁 8시 30분까지, 토요일은 오후 2시까지 진료합니다.',
     href: '/visit',

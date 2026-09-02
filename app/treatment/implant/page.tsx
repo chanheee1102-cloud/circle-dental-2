@@ -118,7 +118,7 @@ export default function ImplantPage() {
       */}
       <TreatmentHero
         trail={TRAIL}
-        eyebrow="고양 화정동 임플란트 · 보건복지부 인정 통합치의학과 전문의"
+        eyebrow="고양 화정동 임플란트 · 보건복지부인증 통합치의학과 전문의"
         title={['자연치아를 먼저 보고,', '임플란트는 그다음입니다']}
         lead={SUMMARY}
         photo={{

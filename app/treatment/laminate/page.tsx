@@ -105,7 +105,7 @@ export default function LaminatePage() {
 
       <TreatmentHero
         trail={TRAIL}
-        eyebrow="고양 화정동 라미네이트 · 보건복지부 인정 통합치의학과 전문의"
+        eyebrow="고양 화정동 라미네이트 · 보건복지부인증 통합치의학과 전문의"
         title={['앞면만 얇게 덮어', '자연치아를 남깁니다']}
         lead={LEAD}
         photo={{

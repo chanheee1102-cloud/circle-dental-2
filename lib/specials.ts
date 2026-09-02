@@ -1,5 +1,5 @@
 /**
- * '동그라미 치과만의 특별함' 5가지 — 각각 독립 페이지.
+ * '동그라미치과만의 특별함' 5가지 — 각각 독립 페이지.
  *
  * ★ 왜 카드에서 끝내지 않고 페이지로 여는가
  *   기존 홈페이지는 이 다섯을 큰 사진 슬라이드로 보여 준다. 그런데 슬라이드는
@@ -43,7 +43,7 @@ const SPECIALS_RAW: Special[] = [
     slug: 'pain-control',
     no: '06',
     key: 'pain',
-    eyebrow: '동그라미 치과만의 특별함',
+    eyebrow: '동그라미치과만의 특별함',
     title: '통증과 불편함을 줄입니다',
     body: '도포마취제, 마취가글, 통증을 줄여 주는 마취 장비뿐 아니라 다년간 숙련된 노하우로 통증과 불편함을 줄이고 빠르고 전문적인 진료를 약속합니다.',
     image: `${P}/20210927_ab779fb49387d.jpg`,
@@ -85,7 +85,7 @@ const SPECIALS_RAW: Special[] = [
     slug: 'digital-diagnosis',
     no: '02',
     key: 'digital',
-    eyebrow: '동그라미 치과만의 특별함',
+    eyebrow: '동그라미치과만의 특별함',
     title: '최신 디지털 진료장비 보유',
     /* ★ 원문 그대로. 장비 이름(Trios 3 move)도 원문에 적힌 그대로 둔다. */
     body: 'Trios 3 move 구강 스캐너를 이용한 네비게이션 임플란트 시술.',
@@ -116,7 +116,7 @@ const SPECIALS_RAW: Special[] = [
     slug: 'medical-team',
     no: '01',
     key: 'faculty',
-    eyebrow: '동그라미 치과만의 특별함',
+    eyebrow: '동그라미치과만의 특별함',
     title: '10년 이상 경력의 대학병원 교수출신 원장 직접 진료',
     /*
      * ★ 제목·본문 모두 병원 홈페이지 원문 그대로다. /about/doctors 페이지 제목
@@ -127,7 +127,7 @@ const SPECIALS_RAW: Special[] = [
      *   우리가 확인한 사실은 아니다. 경력 표시는 사실과 달라선 안 되므로(의료법 제56조),
      *   병원 확인이 오면 이 줄과 /about/doctors 제목을 **함께** 고칠 것 — 한쪽만 고치면 어긋난다.
      */
-    body: '일반적인 로컬의원에서 해결하기 힘든 다양한 난케이스 보유. 보건복지부 인정 치과 전문의들로만 구성된 의료진.',
+    body: '일반적인 로컬의원에서 해결하기 힘든 다양한 난케이스 보유. 보건복지부인증 치과 전문의들로만 구성된 의료진.',
     image: `${P}/20210906_a99cb036e51c0.jpg`,
     alt: '초록 드레이프를 덮은 환자를 진료하는 원장과 진료를 돕는 스태프',
     context: [
@@ -159,7 +159,7 @@ const SPECIALS_RAW: Special[] = [
     slug: 'custom-implant',
     no: '03',
     key: 'implant',
-    eyebrow: '동그라미 치과만의 특별함',
+    eyebrow: '동그라미치과만의 특별함',
     /* ★ 제목·본문은 병원 홈페이지(/special) 원문 그대로다. */
     title: '개인에 맞는 맞춤형 임플란트',
     body: '모든 임플란트 케이스에 맞춤형 어벗트먼트와 고품질 지르코니아크라운 적용.',
@@ -198,7 +198,7 @@ const SPECIALS_RAW: Special[] = [
     slug: 'low-dose-ct',
     no: '04',
     key: 'ct',
-    eyebrow: '동그라미 치과만의 특별함',
+    eyebrow: '동그라미치과만의 특별함',
     /*
      * ⚠️⚠️ 원문 제목은 "**인체에 무해한** 저선량 CT 사용" 이다 — '무해' 를 되살리지 말 것.
      *   방사선 기기에 '무해' 는 절대적 안전성 주장이라 의료법 제56조가 금지하는 표현이다.
@@ -241,7 +241,7 @@ const SPECIALS_RAW: Special[] = [
     slug: 'warranty',
     no: '07',
     key: 'warranty',
-    eyebrow: '동그라미 치과만의 특별함',
+    eyebrow: '동그라미치과만의 특별함',
     title: '치료 후 보증제도',
     body: '동그라미치과에서 치료받은 치아는 철저한 보증제도를 통해 지속적인 관리를 동그라미가 책임집니다.',
     image: `${P}/20211103_53aaffd64e862.jpg`,
@@ -275,7 +275,7 @@ const SPECIALS_RAW: Special[] = [
     slug: 'hygiene',
     no: '05',
     key: 'hygiene',
-    eyebrow: '동그라미 치과만의 특별함',
+    eyebrow: '동그라미치과만의 특별함',
     title: '철저한 소독 및 멸균 시스템',
     body: '동그라미치과의 모든 병원위생관리는 전 직원대상 교육과 매일 위생관리담당자를 통해 엄격히 지켜지고 있습니다.',
     image: `${P}/20211103_cacdef84eae0a.png`,

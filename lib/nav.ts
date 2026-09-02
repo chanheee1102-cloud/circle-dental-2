@@ -87,7 +87,9 @@ export const NAV: NavItem[] = [
     ],
   },
   {
-    label: '사랑니치료',
+    /* ⚠️ '사랑니치료' 로 되돌리지 말 것 (2026-09-02 오너). 붙여쓰기는 '자연치아살리기' 와
+       같은 규칙 — 메뉴 이름표는 붙여 쓰고 문서 제목은 띄어 쓴다. */
+    label: '사랑니발치',
     href: '/treatment/wisdom-tooth',
     children: [
       { label: '사랑니 발치', href: '/treatment/wisdom-tooth', desc: '사랑니 주변이 붓고 아플 때' },

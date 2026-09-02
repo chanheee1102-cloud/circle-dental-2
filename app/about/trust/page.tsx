@@ -26,7 +26,7 @@ import { breadcrumbSchema, medicalWebPageSchema, articleSchema, og } from '@/lib
  */
 export const metadata: Metadata = {
   title: '무엇을 근거로 믿을 수 있나요',
-  description: `${CLINIC.name}의 자격과 인증, 학술지 발표 논문, 방송 기록을 한자리에 정리했습니다. 보건복지부 인정 통합치의학과 전문의 ${TRUST_STATS[0].value}, 인증·수료 ${CREDENTIAL_ROWS.length - 1}건, 발급처를 함께 적었습니다.`,
+  description: `${CLINIC.name}의 자격과 인증, 학술지 발표 논문, 방송 기록을 한자리에 정리했습니다. 보건복지부인증 통합치의학과 전문의 ${TRUST_STATS[0].value}, 인증·수료 ${CREDENTIAL_ROWS.length - 1}건, 발급처를 함께 적었습니다.`,
   alternates: { canonical: '/about/trust' },
   openGraph: og({
     title: `무엇을 근거로 믿을 수 있나요 | ${CLINIC.name}`,

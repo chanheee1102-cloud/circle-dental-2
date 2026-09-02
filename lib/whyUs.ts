@@ -60,8 +60,8 @@ export const WHY_US: WhyUsGroup[] = [
     cards: [
       {
         title: '전문의 3인 진료',
-        body: '세 분 원장 모두 보건복지부 인정 통합치의학과 전문의입니다. 진단이 애매한 경우 서로 의견을 나눕니다.',
-        source: 'lib/doctors.ts — 세 원장 career 에 모두 "보건복지부 인정 통합치의학과 전문의" 기재',
+        body: '세 분 원장 모두 보건복지부인증 통합치의학과 전문의입니다. 진단이 애매한 경우 서로 의견을 나눕니다.',
+        source: 'lib/doctors.ts — 세 원장 career 에 모두 "보건복지부인증 통합치의학과 전문의" 기재',
       },
       {
         title: '교수 출신 대표원장',
