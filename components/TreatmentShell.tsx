@@ -150,15 +150,38 @@ export function TreatmentStrip({
   items: { k: string; t: string; d?: string }[];
 }) {
   return (
-    <section className="border-y border-brand-200/70 bg-parchment py-12 lg:py-16">
+    <section className="border-y border-brand-200/70 bg-parchment py-14 lg:py-20">
       <Container>
-        <ul className="reveal-stack grid gap-10 sm:grid-cols-3">
-          {items.map((f) => (
-            <li key={f.t} className="reveal">
-              <p className="text-[11.5px] font-black tracking-[0.06em] text-clay-700">{f.k}</p>
-              <p className="mt-2.5 text-[19px] font-black tracking-[-0.02em] text-ink">{f.t}</p>
+        {/*
+          ★★ 칸 사이 세로 구분선 (2026-09-02 오너: "이렇게 구분선 들어가면 좋을 거 같아여") ★★
+            셋을 여백만으로 나눠 두면 넓은 화면에서 **한 줄 문장처럼 이어져 읽힌다.**
+            선이 들어가면 '따로 선 세 가지' 라는 것이 글을 읽기 전에 보인다.
+          ⚠️ 첫 칸에는 선이 없다 — 선은 칸의 개수가 아니라 **사이의 개수**만큼 필요하다.
+             모든 li 에 border-l 을 걸면 컨테이너 왼쪽 끝에 선이 하나 더 생긴다.
+          ⚠️ 좁은 화면에서는 가로선으로 뒤집는다. 한 줄로 쌓이는데 세로선을 그으면
+             글자 왼쪽에 짧은 막대만 남는다.
+          ⚠️ gap 을 세로(gap-y)로만 준다 — 가로 gap 이 있으면 선이 칸 사이 한가운데가
+             아니라 오른쪽 칸에 붙어 보인다. 가로 숨은 px-8 이 맡는다.
+          ⚠️ items-stretch(격자 기본값)를 끄지 말 것 — 칸 높이가 다르면 선 길이도 달라진다.
+        */}
+        <ul className="reveal-stack grid gap-y-9 sm:grid-cols-3 sm:gap-y-0">
+          {items.map((f, i) => (
+            <li
+              key={f.t}
+              className={`reveal ${
+                i === 0
+                  ? 'sm:pr-8'
+                  : 'border-t border-brand-300/60 pt-9 sm:border-t-0 sm:border-l sm:border-brand-300/70 sm:px-8 sm:pt-0 sm:last:pr-0'
+              }`}
+            >
+              {/* ⚠️ 2026-09-02 오너: "하단 글씨 전체적으로 크기 키우고". 되돌리지 말 것 —
+                  눈썹 11.5px / 제목 19px 이던 자리다. 히어로 바로 아래라 그만큼 작아 보였다. */}
+              <p className="text-[13px] font-black tracking-[0.06em] text-clay-700">{f.k}</p>
+              <p className="mt-3 text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[23.5px]">
+                {f.t}
+              </p>
               {f.d && (
-                <p className="mt-3 max-w-[24em] text-[15.5px] leading-[1.85] text-twilight">{f.d}</p>
+                <p className="mt-3.5 max-w-[24em] text-[17px] leading-[1.8] text-twilight">{f.d}</p>
               )}
             </li>
           ))}

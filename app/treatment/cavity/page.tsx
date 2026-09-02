@@ -195,7 +195,15 @@ export default function CavityPage() {
               ))}
             </ol>
 
-            <div className="lg:order-1">
+            {/*
+              ⚠️⚠️ min-w-0 을 빼지 말 것 (2026-09-02 실측) ⚠️⚠️
+                아래 도해는 좁은 화면에서 가로로 밀어 보게 만든 것인데(overflow-x-auto),
+                **격자 칸은 기본이 min-width:auto** 라 칸이 도해의 최소 너비까지 벌어져
+                버렸다. 그래서 도해 안이 아니라 **페이지 전체가 옆으로 밀렸다**
+                (390px 화면에서 172px 초과). min-w-0 이 칸을 줄어들 수 있게 해야
+                그제야 overflow-x-auto 가 제 일을 한다.
+            */}
+            <div className="min-w-0 lg:order-1">
               <h2 className="reveal display-sm max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-ink">
                 어디까지 갔는지가 치료를 정합니다
               </h2>
