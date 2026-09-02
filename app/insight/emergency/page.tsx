@@ -134,8 +134,8 @@ export default function EmergencyPage() {
         trail={TRAIL}
         photo="sterile"
         eyebrow="응급 상황"
-        title="지금 할 수 있는 것과, 하면 안 되는 것"
-        desc="응급 상황에서는 좋은 뜻으로 한 행동이 결과를 바꾸기도 합니다. 병원에 오시기 전 몇 분이 그만큼 중요합니다."
+        title="지금 무엇을 해야 할지 먼저 보세요"
+        desc="응급 상황에서는 좋은 뜻으로 한 행동이 오히려 상황을 나쁘게 만들기도 합니다. 병원에 오시기 전 몇 분 동안 하실 수 있는 것과 피하셔야 할 것을 상황별로 정리했습니다."
       />
 
       <Container className="py-12 lg:py-16">

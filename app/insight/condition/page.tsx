@@ -47,8 +47,8 @@ export default function ConditionIndexPage() {
         trail={TRAIL}
         photo="room"
         eyebrow="질환 사전"
-        title="진료실에서 들은 그 병명, 무엇인지부터"
-        desc="같은 병명이라도 진행 단계와 남은 조직에 따라 치료가 갈립니다. 병명을 이미 들으셨다면 여기서 시작하세요."
+        title="들으신 병명이 무엇인지부터 말씀드립니다"
+        desc="같은 병명이라도 진행 단계와 남은 조직에 따라 치료가 갈립니다. 병명을 이미 들으셨다면 여기서 시작해 보세요."
       />
 
       <Container className="py-12 lg:py-16">

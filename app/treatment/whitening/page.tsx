@@ -53,7 +53,7 @@ import {
 const PATH = '/treatment/whitening';
 /* ★ 제목이 던진 분기를 그대로 이어받는다 — 아래 04 구간이 이 이야기를 펼친다. */
 const LEAD =
-  '미백제는 법랑질 안에 스며든 착색을 분해합니다. 겉에 쌓인 착색은 잘 듣지만, 안쪽에서 온 변색이나 보철물은 같은 방법으로 밝아지지 않습니다. 그래서 원인부터 확인합니다.';
+  '미백제는 법랑질 안에 스며든 착색을 분해합니다. 겉에 쌓인 착색에는 잘 듣지만 안쪽에서 온 변색이나 보철물은 같은 방법으로 밝아지지 않아, 변색의 원인부터 확인하고 시작합니다.';
 
 export const metadata: Metadata = {
   title: '치아미백',
@@ -174,7 +174,9 @@ export default function WhiteningPage() {
       <TreatmentHero
         trail={TRAIL}
         eyebrow="고양 화정동 치아미백 · 보건복지부인증 통합치의학과 전문의"
-        title={['치아 변색의 원인을', '먼저 확인하고 시작합니다']}
+        /* ⚠️ 물음표를 지우지 말 것 — 미백에서 가장 많이 받는 질문이고,
+           바로 아래 lead 가 '겉 착색은 듣고 안쪽 변색·보철물은 아니다' 로 답한다. */
+        title={['미백하면', '누구나 하얘지나요?']}
         lead={LEAD}
         photo={{
           src: '/img/clinic/wh-light.webp',

@@ -75,8 +75,8 @@ export default function GlossaryPage() {
         trail={TRAIL}
         photo="booth"
         eyebrow="용어 사전"
-        title="설명을 들을 때 옆에 두고 보세요"
-        desc="진료실에서 쓰는 말이 어렵게 들리는 것은 당연합니다. 자주 나오는 것만 한두 문장으로 풀었습니다."
+        title="어렵게 들린 말은 여기서 찾아보세요"
+        desc="진료실에서 쓰는 말이 어렵게 들리는 것은 당연합니다. 자주 나오는 용어만 한두 문장으로 풀어 두었으니 설명을 들으실 때 옆에 두고 보세요."
       />
 
       <Container className="py-12 lg:py-16">

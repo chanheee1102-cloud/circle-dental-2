@@ -75,8 +75,8 @@ export default function CostPage() {
         trail={TRAIL}
         photo="consult"
         eyebrow="비용 가이드"
-        title="금액보다 먼저 알아야 하는 것들"
-        desc="같은 치료라도 보험이 되는 부분과 안 되는 부분이 나뉩니다. 그 경계가 최종 비용을 가장 크게 좌우합니다."
+        title="같은 치료라도 비용이 갈리는 이유가 있습니다"
+        desc="건강보험이 되는 부분과 안 되는 부분이 나뉘고, 그 경계가 최종 비용을 가장 크게 좌우합니다. 무엇이 어디에 해당하는지 미리 보고 오세요."
       />
 
       <Container className="py-12 lg:py-16">

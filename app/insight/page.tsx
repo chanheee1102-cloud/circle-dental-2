@@ -66,8 +66,8 @@ export default function InsightHubPage() {
         trail={TRAIL}
         photo="consult"
         eyebrow="미리 알아두기"
-        title="진료 시간에 다 못 하는 이야기를 여기에 적었습니다"
-        desc="치료 자체보다 그 앞뒤의 설명이 부족해서 불안한 경우가 많습니다. 미리 읽고 오시면 진료실에서 할 이야기가 달라집니다."
+        title="진료실에서 다 드리지 못한 이야기를 여기에 모았습니다"
+        desc="치료 자체보다 그 앞뒤의 설명이 부족해서 불안한 경우가 많습니다. 미리 읽고 오시면 진료실에서 나눌 이야기가 달라집니다."
       />
 
       <Container className="py-12 lg:py-16">

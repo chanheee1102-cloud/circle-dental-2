@@ -106,7 +106,10 @@ export default function LaminatePage() {
       <TreatmentHero
         trail={TRAIL}
         eyebrow="고양 화정동 라미네이트 · 보건복지부인증 통합치의학과 전문의"
-        title={['앞면만 얇게 덮어', '자연치아를 남깁니다']}
+        /* ★ 여기는 서술형으로 둔다 — 앞뒤 진료 페이지(사랑니 · 미백)가 질문형이라
+           메뉴를 훑을 때 물음표만 이어지면 그것대로 기계가 쓴 것처럼 보인다.
+           '최대한' 은 이 병원이 스스로 쓰는 말이다(자연치아를 최대한 살리는). */
+        title={['앞면만 얇게 다듬어', '자연치아를 최대한 남깁니다']}
         lead={LEAD}
         photo={{
           src: DOC_IMAGE.src,

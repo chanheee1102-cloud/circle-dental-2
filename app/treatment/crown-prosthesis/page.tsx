@@ -43,7 +43,7 @@ import {
 
 const PATH = '/treatment/crown-prosthesis';
 const LEAD =
-  '심미보철은 색과 모양만 다루는 치료가 아닙니다. 치아를 얼마나 깎는지, 그 아래 남은 구조가 힘을 견딜 수 있는지가 결과와 수명을 함께 정합니다.';
+  '심미보철은 색과 모양만 다루는 치료가 아닙니다. 치아를 얼마나 깎는지, 그 아래 남은 구조가 힘을 견딜 수 있는지에 따라 결과와 수명이 함께 달라집니다.';
 
 export const metadata: Metadata = {
   title: '심미보철',
@@ -107,7 +107,9 @@ export default function CrownProsthesisPage() {
       <TreatmentHero
         trail={TRAIL}
         eyebrow="고양 화정동 심미보철 · 라미네이트와 올세라믹 비교"
-        title={['깎는 양이', '결과를 정합니다']}
+        /* ⚠️ '깎는 양' 을 제목에서 빼지 말 것 — 이 페이지가 라미네이트와 올세라믹을
+           가르는 기준이 그것이고, 본문 전체가 그 비교다. */
+        title={['깎는 양을 먼저 정하고', '색과 모양을 맞춥니다']}
         lead={LEAD}
         photo={{
           src: '/img/clinic/aes-scanner.webp',

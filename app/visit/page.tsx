@@ -76,7 +76,7 @@ export default function VisitPage() {
         trail={TRAIL}
         photo="corridor"
         eyebrow="내원 안내"
-        title="화정동 현창빌딩 3층입니다"
+        title="화정동 현창빌딩 3층에서 진료합니다"
         desc={`${CLINIC.nearestStation} 인근이며, ${CLINIC.serviceArea.slice(0, 4).join(' · ')} 에서 오십니다.`}
       />
 

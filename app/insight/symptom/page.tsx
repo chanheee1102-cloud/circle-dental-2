@@ -34,8 +34,8 @@ export default function SymptomIndexPage() {
         trail={TRAIL}
         photo="room"
         eyebrow="증상으로 찾기"
-        title="지금 느끼는 것에서 시작하세요"
-        desc="어떤 치료가 필요한지는 진단의 결과입니다. 출발점은 증상이어야 합니다."
+        title="병명은 모르셔도 괜찮습니다"
+        desc="어떤 치료가 필요한지는 검사와 진단의 결과이고, 출발점은 지금 느끼시는 증상입니다. 아픈 자리와 느낌으로 먼저 찾아보세요."
       />
 
       <Container className="py-12 lg:py-16">
