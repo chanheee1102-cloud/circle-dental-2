@@ -193,7 +193,7 @@ export default async function JourneyDetailPage({
                 className="flex gap-3 rounded-2xl border border-brand-200/70 bg-parchment px-5 py-4 text-[15.5px] leading-relaxed text-twilight"
               >
                 <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700" />
-                <span><Sentences text={v} /></span>
+                <span className="min-w-0 flex-1"><Sentences text={v} /></span>
               </li>
             ))}
           </ul>

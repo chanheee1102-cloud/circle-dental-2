@@ -382,7 +382,7 @@ export default function WhiteningPage() {
               {AFTERCARE.map((a) => (
                 <li key={a} className="flex gap-4 text-[17.5px] leading-[1.6] font-normal text-ink">
                   <span aria-hidden className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-clay-600" />
-                  <span><Sentences text={a} /></span>
+                  <span className="min-w-0 flex-1"><Sentences text={a} /></span>
                 </li>
               ))}
             </ul>

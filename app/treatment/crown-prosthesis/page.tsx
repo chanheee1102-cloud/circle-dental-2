@@ -268,7 +268,7 @@ export default function CrownProsthesisPage() {
                     {m.indications.map((v) => (
                       <li key={v} className="flex gap-3 text-[16.5px] leading-[1.7] text-twilight">
                         <span aria-hidden className="mt-[11px] h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700" />
-                        <span><Sentences text={v} /></span>
+                        <span className="min-w-0 flex-1"><Sentences text={v} /></span>
                       </li>
                     ))}
                   </ul>

@@ -72,11 +72,25 @@ export const NAV: NavItem[] = [
   {
     label: '임플란트',
     href: '/treatment/implant',
+    /*
+     * ★★ 하위 주제를 메뉴에 건다 (2026-09-03) ★★
+     *   여섯 페이지가 만들어져 있는데 메뉴 어디에도 없어 **들어갈 길이 목록 카드뿐**이었다.
+     *   임플란트는 질의가 가장 잘게 갈라지는 영역이라(뼈이식·상악동·보험…) 메뉴에서
+     *   바로 닿는 편이 맞다. 오너도 "임플란트 메뉴에 페이지 하나" 를 물으며 알아챈 자리다.
+     * ⚠️ 이름을 길게 쓰지 말 것 — 메가메뉴의 칸은 whitespace-nowrap 이라 옆 칸과 겹친다.
+     *    'CT와 구강스캐너를 이용한 계획' 같은 설명은 desc 로 내린다.
+     * ⚠️ '크라운 · 보철' 을 여기 다시 넣지 말 것 (2026-09-03 오너: "두개 페이지가 똑같은데") —
+     *    심미치료 묶음의 '심미보철' 과 **같은 페이지**(/treatment/crown-prosthesis)였다.
+     */
     children: [
       { label: '임플란트', href: '/treatment/implant', desc: '치아를 뽑았거나 빠진 자리' },
-      /* ⚠️ '크라운 · 보철' 을 여기 다시 넣지 말 것 (2026-09-03 오너: "두개 페이지가 똑같은데") —
-         심미치료 묶음의 '심미보철' 과 **같은 페이지**(/treatment/crown-prosthesis)였다.
-         한 페이지가 메뉴 두 곳에 다른 이름으로 걸리면 서로 다른 페이지인 줄 알고 둘 다 눌러 본다. */
+      { label: '발치 즉시 식립', href: '/treatment/implant/immediate-placement', desc: '뽑은 자리에 바로 심는 방법' },
+      { label: '임플란트 재수술', href: '/treatment/implant/reoperation', desc: '심은 임플란트에 문제가 생겼을 때' },
+      { label: '뼈이식', href: '/treatment/implant/bone-graft', desc: '뼈가 부족하다고 들었을 때' },
+      { label: '상악동 거상술', href: '/treatment/implant/sinus-lift', desc: '위턱 어금니에 심을 때' },
+      { label: '디지털 네비게이션', href: '/treatment/implant/digital-navigation', desc: 'CT와 구강스캐너로 계획' },
+      { label: '만 65세 보험', href: '/treatment/implant/senior-insurance', desc: '조건과 적용 범위' },
+      { label: '관리와 수명', href: '/treatment/implant/aftercare', desc: '심은 뒤가 사용 기간을 정합니다' },
     ],
   },
   {

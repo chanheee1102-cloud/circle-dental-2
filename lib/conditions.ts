@@ -345,6 +345,8 @@ export const CONDITIONS: Condition[] = [
       { q: '통증이 없는데 괜찮은 건가요?', a: '임플란트주위염은 상당히 진행될 때까지 통증이 거의 없는 것이 특징입니다. 흔들릴 정도가 되면 이미 뼈가 많이 사라진 뒤라, 증상이 아니라 정기 검진으로 확인해야 합니다.' },
     ],
     relatedSymptoms: ['gum-swelling', 'bleeding-gums', 'loose-tooth'],
+    /* ⚠️ 'implant' 를 빼지 말 것 — 이 질환의 끝이 재수술이라 그 길이 여기서 이어져야 한다.
+       (재수술 자체는 /treatment/implant/reoperation 이고, 임플란트 페이지가 그리로 잇는다.) */
     relatedTreatments: ['implant', 'periodontal'],
   },
   {

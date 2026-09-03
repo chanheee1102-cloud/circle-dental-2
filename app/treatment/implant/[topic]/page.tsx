@@ -6,7 +6,7 @@ import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
-import { KeyPoints, TableOfContents, ArticleMeta, References, headingId, charCount } from '@/components/article';
+import { TableOfContents, ArticleMeta, References, headingId, charCount } from '@/components/article';
 import { REFS_TREATMENT } from '@/lib/references';
 
 /**
@@ -109,8 +109,14 @@ export default async function ImplantTopicPage({
             <ArticleMeta path={BUILDPATH} />
           </div>
 
-          <div className="mt-8 grid gap-5 lg:grid-cols-2">
-            <KeyPoints items={[t.answer, '이런 경우: ' + t.indications.slice(0, 2).join(', ')]} />
+          {/*
+            ⚠️ 요약(KeyPoints)을 되살리지 말 것 (2026-09-03) — items 첫 줄이 t.answer 라
+               **바로 위 즉답 블록과 같은 문장**이 한 화면에 두 번 나왔다. 재수술처럼 즉답이
+               세 문장인 주제에서는 그 되풀이가 화면의 절반을 먹는다.
+               이 사이트의 원칙이기도 하다 — 질환·여정 상세 주석: "같은 문장이 두 번 나오면
+               인용 가치가 떨어진다. 답은 본문 첫 자리에 한 번만 둔다."
+          */}
+          <div className="mt-8 max-w-md">
             <TableOfContents items={['이런 경우에 해당합니다', '알아 두실 점', '자주 묻는 질문']} />
           </div>
         </Container>
@@ -131,7 +137,7 @@ export default async function ImplantTopicPage({
                       >
                         ✓
                       </span>
-                      <span><Sentences text={s} /></span>
+                      <span className="min-w-0 flex-1"><Sentences text={s} /></span>
                     </li>
                   ))}
                 </ul>
@@ -150,7 +156,7 @@ export default async function ImplantTopicPage({
                       >
                         !
                       </span>
-                      <span><Sentences text={s} /></span>
+                      <span className="min-w-0 flex-1"><Sentences text={s} /></span>
                     </li>
                   ))}
                 </ul>

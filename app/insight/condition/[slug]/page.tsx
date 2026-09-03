@@ -185,7 +185,7 @@ export default async function ConditionDetailPage({
                         aria-hidden
                         className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700"
                       />
-                      <span><Sentences text={s} /></span>
+                      <span className="min-w-0 flex-1"><Sentences text={s} /></span>
                     </li>
                   ))}
                 </ul>
@@ -201,7 +201,7 @@ export default async function ConditionDetailPage({
                         aria-hidden
                         className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700"
                       />
-                      <span><Sentences text={s} /></span>
+                      <span className="min-w-0 flex-1"><Sentences text={s} /></span>
                     </li>
                   ))}
                 </ul>
@@ -255,7 +255,7 @@ export default async function ConditionDetailPage({
                       >
                         ✓
                       </span>
-                      <span><Sentences text={p} /></span>
+                      <span className="min-w-0 flex-1"><Sentences text={p} /></span>
                     </li>
                   ))}
                 </ul>

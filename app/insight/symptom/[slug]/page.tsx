@@ -207,7 +207,7 @@ export default async function SymptomDetailPage({
               {s.urgent.map((u) => (
                 <li key={u} className="flex gap-2.5 text-[16px] leading-relaxed text-ink-soft">
                   <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700" />
-                  <span><Sentences text={u} /></span>
+                  <span className="min-w-0 flex-1"><Sentences text={u} /></span>
                 </li>
               ))}
             </ul>
@@ -260,7 +260,7 @@ export default async function SymptomDetailPage({
                   >
                     ✓
                   </span>
-                  <span><Sentences text={c} /></span>
+                  <span className="min-w-0 flex-1"><Sentences text={c} /></span>
                 </li>
               ))}
             </ul>

@@ -75,7 +75,10 @@ export function KeyPoints({ items, title = '요약' }: { items: string[]; title?
         {items.slice(0, 5).map((t) => (
           <li key={t} className="flex gap-3 text-[16px] leading-[1.75] text-ink-soft">
             <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700" />
-            <span><Sentences text={t} /></span>
+            {/* ⚠️ min-w-0 flex-1 을 빼지 말 것 — Sentences 가 문장마다 span.block 을 만들어
+                이 칸의 최소 너비가 '가장 긴 낱말' 이 된다. flex 자식이라 좁은 카드에서는
+                거기까지 줄어들어 글자가 한 낱말씩 세로로 쌓인다(2026-09-03 실측). */}
+            <span className="min-w-0 flex-1"><Sentences text={t} /></span>
           </li>
         ))}
       </ul>
