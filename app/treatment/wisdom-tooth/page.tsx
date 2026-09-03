@@ -319,7 +319,8 @@ export default function WisdomToothPage() {
       </section>
 
       {/* ── 매복 사랑니 ─────────────────────────────────────────────── */}
-      <section className="border-y border-brand-200/70 bg-parchment py-16 sm:py-24 lg:py-32">
+      {/* ⚠️ id·scroll-mt 를 지우지 말 것 — 메뉴의 '매복사랑니' 가 이 자리를 가리킨다(lib/nav.ts). */}
+      <section id="매복-사랑니" className="scroll-mt-28 border-y border-brand-200/70 bg-parchment py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="border-t border-wine-line pt-14">
             <p className="eyebrow-chip text-clay-700">
@@ -367,7 +368,8 @@ export default function WisdomToothPage() {
       </section>
 
       {/* ── 발치 후 ─────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-24 lg:py-32">
+      {/* ⚠️ id·scroll-mt 를 지우지 말 것 — 메뉴의 '발치 후 주의사항' 이 이 자리를 가리킨다. */}
+      <section id="발치-후-주의사항" className="scroll-mt-28 py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="border-t border-wine-line pt-14">
             <p className="eyebrow-chip text-clay-700">
@@ -417,7 +419,8 @@ export default function WisdomToothPage() {
         ── 치료 전에 알아 두실 점 ────────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 발치는 부작용 가능성이 있는 수술이다.
       */}
-      <section className="border-y border-brand-200/70 bg-parchment py-16 sm:py-24 lg:py-32">
+      {/* ⚠️ id·scroll-mt 를 지우지 말 것 — 메뉴의 '매복사랑니' 가 이 자리를 가리킨다(lib/nav.ts). */}
+      <section id="매복-사랑니" className="scroll-mt-28 border-y border-brand-200/70 bg-parchment py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="border-t border-wine-line pt-14">
             <p className="eyebrow-chip text-clay-700">
