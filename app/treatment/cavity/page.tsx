@@ -366,7 +366,7 @@ export default function CavityPage() {
                   ))}
                 </ol>
                 <p className="mt-8 border-t border-brand-200/70 pt-6 text-[14px] leading-[1.9] text-ink-soft">
-                  {CASE_NOTE}
+                  <Sentences text={CASE_NOTE} />
                 </p>
               </div>
             </div>

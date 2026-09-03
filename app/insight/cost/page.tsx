@@ -104,12 +104,23 @@ export default function CostPage() {
           치과 치료비는 얼마인가요?
         </h2>
         <div className="mt-4 max-w-[68ch] rounded-2xl border border-brand-200/70 bg-parchment p-6">
+          {/*
+            ⚠️ 강조(<strong>)가 들어 있어 <Sentences> 를 쓸 수 없다(문자열만 받는다).
+               문장마다 span.block 으로 직접 나눈다 — 마침표 뒤에서 줄이 바뀐다. 글자는 그대로다.
+          */}
           <p className="text-[18px] leading-[1.85] text-ink">
-            같은 이름의 치료라도 <strong className="font-black">건강보험이 적용되는지</strong>에
-            따라 부담이 크게 갈립니다. 급여 항목은 전국 어느 치과에서나 정해진 기준을 따르고
-            본인부담률도 정해져 있는 반면, 비급여 항목은 병원이 각자 정하고 원내에 게시합니다.
-            그래서 &lsquo;얼마&rsquo;는 <strong className="font-black">어떤 항목이 몇 개 필요한지</strong>가
-            정해진 뒤에야 나옵니다.
+            <span className="block">
+              같은 이름의 치료라도 <strong className="font-black">건강보험이 적용되는지</strong>에
+              따라 부담이 크게 갈립니다.
+            </span>
+            <span className="block">
+              급여 항목은 전국 어느 치과에서나 정해진 기준을 따르고 본인부담률도 정해져 있는 반면,
+              비급여 항목은 병원이 각자 정하고 원내에 게시합니다.
+            </span>
+            <span className="block">
+              그래서 &lsquo;얼마&rsquo;는 <strong className="font-black">어떤 항목이 몇 개 필요한지</strong>가
+              정해진 뒤에야 나옵니다.
+            </span>
           </p>
         </div>
         <div className="mt-6 max-w-[68ch] space-y-3 text-[16.5px] leading-[1.85] text-ink-soft">

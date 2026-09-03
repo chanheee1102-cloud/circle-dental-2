@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { CLINIC } from '@/lib/clinic';
 import { DOCTORS } from '@/lib/doctors';
 import { contentDates, formatKoreanDate } from '@/lib/contentMeta';
+/* ⚠️ ui ↔ article 서로 import — 함수만 주고받아 순환이어도 안전하다(next build 로 확인). */
+import { Sentences } from '@/components/ui';
 
 /**
  * 본문형 문서에 공통으로 붙는 조각들 — 요약 / 목차 / 저자·수정일 / 참고자료.
@@ -73,7 +75,7 @@ export function KeyPoints({ items, title = '요약' }: { items: string[]; title?
         {items.slice(0, 5).map((t) => (
           <li key={t} className="flex gap-3 text-[16px] leading-[1.75] text-ink-soft">
             <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700" />
-            <span>{t}</span>
+            <span><Sentences text={t} /></span>
           </li>
         ))}
       </ul>

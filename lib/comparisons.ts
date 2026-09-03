@@ -96,7 +96,7 @@ export const NATURAL_VS_IMPLANT: ComparisonTable = {
     },
   ],
   note:
-    '그래서 살릴 수 있는 치아는 먼저 살리는 방향을 검토합니다. 다만 무조건 살리는 것이 답은 아닙니다 — 살릴 수 없는 치아를 끌고 가면 주변 뼈가 더 녹아 나중에 임플란트를 심을 자리마저 잃습니다.',
+    '그래서 살릴 수 있는 치아는 먼저 살리는 방향을 검토합니다. 다만 무조건 살리는 것이 답은 아닙니다 — 살릴 수 없는 치아를 끌고 가면, 주변 뼈가 더 녹아 나중에 임플란트를 심을 자리마저 잃습니다.',
 };
 
 export const COMPARISONS = [MISSING_TOOTH_OPTIONS, NATURAL_VS_IMPLANT];

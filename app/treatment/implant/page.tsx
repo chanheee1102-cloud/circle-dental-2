@@ -351,7 +351,7 @@ export default function ImplantPage() {
 
             {/* ⚠️ 증례와 항상 함께 렌더한다. 따로 떼지 말 것. */}
             <p className="reveal mt-10 max-w-[76ch] text-[14px] leading-[1.9] text-ink-soft">
-              {CASE_NOTICE}
+              <Sentences text={CASE_NOTICE} />
             </p>
           </HighlightPanel>
         </Container>
@@ -464,7 +464,7 @@ export default function ImplantPage() {
 
             {journey.variables.length ? (
               <p className="reveal mt-12 max-w-[74ch] text-[14.5px] leading-[1.9] text-ink-muted">
-                기간이 늘어나는 경우도 있습니다. {journey.variables.join(' ')}
+                <Sentences text={`기간이 늘어나는 경우도 있습니다. ${journey.variables.join(' ')}`} />
               </p>
             ) : null}
           </Container>

@@ -324,7 +324,7 @@ export function TreatmentLanding({
 
             {journey.variables.length ? (
               <p className="reveal mt-12 max-w-[46em] text-[14.5px] leading-[1.9] text-ink-muted">
-                기간이 늘어나는 경우도 있습니다. {journey.variables.join(' ')}
+                <Sentences text={`기간이 늘어나는 경우도 있습니다. ${journey.variables.join(' ')}`} />
               </p>
             ) : null}
           </Container>

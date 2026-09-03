@@ -147,7 +147,13 @@ const EM_PER_CHAR = 0.72;
  * ⚠️ 이 값을 바꾸면 globals.css 의 data-x 규칙 목록(14·29·43·58·72·86·101em)도 같이 바꿀 것.
  *    값은 round(n × 0.72 / FILL), n = 8·16·…·56.
  */
-const CLAUSE_FILL = 0.4;
+/*
+ * ★ 0.40 → 0.30 (2026-09-03 오너, 라미네이트 히어로: "밑에 쉼표 뒤에 줄바꿈 해주고 …
+ *   이런거 때문에 내가 줄바꿈 말한거야"). 앞 마디가 칸의 30% 만 채워도 쉼표에서 끊는다.
+ *   그 아래(앞 줄이 30% 미만)는 여전히 포기한다 — 그건 균형이 아니라 구멍이다.
+ * ⚠️ globals.css 의 data-x 목록(19·38·58·77·96·115·134em)과 한 쌍 — round(n × 0.72 / FILL).
+ */
+const CLAUSE_FILL = 0.3;
 
 /**
  * 버킷 간격(자). 8자마다 한 단계씩 올린다.
@@ -156,15 +162,13 @@ const CLAUSE_FILL = 0.4;
  */
 const CLAUSE_STEP = 8;
 
-/**
- * 여기를 넘는 마디는 통째로 옮기지 않는다.
- * ⚠️ 56자면 41em 이라 사이트에서 가장 넓은 본문 칸에도 겨우 들어간다.
- *    그보다 길면 어차피 어느 칸에서도 한 줄에 못 들어가므로, 옮겨 봐야 구멍만 남는다.
+/*
+ * ★★ 2026-09-03 — '마디가 한 줄에 들어갈 때만 옮긴다' 는 조건(data-w · CLAUSE_MAX)을 버렸다 ★★
+ *   그 조건 때문에 라미네이트 히어로의 둘째 문장(쉼표 뒤 마디 43자, 칸 34em)이 쉼표에서
+ *   안 끊기고 "무는 / 힘이" 처럼 아무 데서나 잘렸다. 오너가 원한 것은 **쉼표 뒤가 새 줄**이지
+ *   '마디가 한 줄' 이 아니다. 이제 쉼표 뒤 마디는 길이와 상관없이 새 줄에서 시작하고,
+ *   길면 그 안에서 자연스럽게 접힌다(display:block). 남은 예외는 아래 clauseX 하나다.
  */
-const CLAUSE_MAX = 56;
-
-/** 마디가 한 줄에 들어가려면 필요한 칸(em). */
-const clauseW = (n: number) => Math.ceil(Math.ceil(n / CLAUSE_STEP) * CLAUSE_STEP * EM_PER_CHAR);
 /**
  * 앞 마디 기준 상한(em) — 칸이 이보다 넓으면 앞 줄이 휑해지므로 내리지 않는다.
  * ⚠️⚠️ 올림(ceil)으로 바꾸지 말 것 ⚠️⚠️
@@ -207,28 +211,26 @@ function Clauses({ text, tone }: { text: string; tone: 'light' | 'dark' }) {
       {parts.map((c, i) => {
         /*
           마디마다 두 값을 붙인다 —
-            data-w  이 마디가 한 줄에 들어가려면 필요한 칸(em)          → 이보다 좁으면 안 내림
             data-x  **앞 마디** 기준 상한(em)                            → 이보다 넓으면 안 내림
           둘 사이일 때만 마디가 통째로 다음 줄로 내려간다. 아래(위)는 '내려가도 안 들어감',
           위는 '내려가면 앞 줄이 휑함' 이라 둘 다 쉼표 줄바꿈을 포기하는 편이 낫다.
           ⚠️ data-x 는 **앞 마디**(parts[i-1])의 길이로 계산한다. 자기 길이로 계산하면
              엉뚱한 것을 재는 것이다 — 앞 줄을 채우는 것은 앞 마디다.
         */
-        const long = c.length > CLAUSE_MAX;
         const prev = i > 0 ? parts[i - 1] : null;
+        /*
+         * ★ 나열 쉼표는 끊지 않는다 (2026-09-03 실측) — "임플란트, 심미치료, 사랑니 발치" 나
+         *   "치아 배열, 색상, 모양까지" 는 절이 아니라 목록이다. 거기서 줄을 바꾸면 낱말이
+         *   한 줄에 하나씩 서는 표가 된다(홈 진료 카드에서 실제로 그렇게 됐다).
+         *   앞뒤 마디가 **둘 다 8자 이상**일 때만 절로 본다. 짧은 쪽이 하나라도 있으면 목록이다.
+         */
+        const isClause = !!prev && prev.length >= CLAUSE_STEP && c.length >= CLAUSE_STEP;
         return (
           <Fragment key={`${i}-${c.slice(0, 8)}`}>
-            {long ? (
-              c
-            ) : (
-              <span
-                className="clause"
-                data-w={clauseW(c.length)}
-                data-x={prev ? clauseX(prev.length) : undefined}
-              >
-                {c}
-              </span>
-            )}
+            {/* 첫 마디·목록 항목은 그대로 흐른다. 절(data-x)만 새 줄에서 시작한다. */}
+            <span className="clause" data-x={isClause ? clauseX(prev.length) : undefined}>
+              {c}
+            </span>
             {/* 나눌 때 없어진 띄어쓰기를 되돌린다 — 없으면 마디끼리 붙어 버린다. */}
             {i < parts.length - 1 ? ' ' : null}
           </Fragment>

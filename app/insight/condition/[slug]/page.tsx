@@ -239,7 +239,7 @@ export default async function ConditionDetailPage({
                   일반적인 치료 방향
                 </h2>
                 <p className="mt-5 max-w-[62ch] text-[16.5px] leading-[1.85] text-ink-soft">
-                  {c.treatment}
+                  <Sentences text={c.treatment} />
                 </p>
               </div>
               <div>
