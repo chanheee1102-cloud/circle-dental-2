@@ -164,7 +164,7 @@ export default function ProcessPage() {
         ⚠️ 질문형 제목 + 바로 아래 답 구조를 깨지 말 것 — AI 가 인용해 가는 자리다.
         ⚠️ 밝은 띠는 한 페이지에 하나다.
       */}
-      <section className="light-band py-16 lg:py-20">
+      <section className="light-band py-12 sm:py-16 lg:py-20">
         <Container>
           <h2 className="display-sm text-[clamp(23px,2.4vw,30px)] text-ink">첫 방문 전에 자주 받는 질문</h2>
           <ol className="mt-11 space-y-10 lg:space-y-12">

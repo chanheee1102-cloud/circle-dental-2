@@ -375,7 +375,7 @@ export function SiteHeader() {
             onClick={() => setMobileOpen((v) => !v)}
             /* ⚠️ ☰ ✕ 같은 유니코드 글리프로 되돌리지 말 것 — 글꼴마다 굵기·크기가 달라
                같은 헤더 안의 SVG 화살표(예약하기)와 획 두께가 안 맞는다. */
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-full border outline-none focus-visible:ring-2 focus-visible:ring-clay-700/60 sm:h-11 sm:w-11 lg:hidden ${
+            className={`inline-flex h-11 w-11 items-center justify-center rounded-full border outline-none focus-visible:ring-2 focus-visible:ring-clay-700/60 lg:hidden ${
               overHero ? 'border-white/40 text-white' : 'border-wine-line text-charcoal'
             }`}
             aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}

@@ -71,7 +71,7 @@ export default function TreatmentIndexPage() {
           목록 쪽에는 카드에 없던 '이런 경우에 봅니다' 까지 있어 카드를 남길 이유가 없다.
         ⚠️ 둘을 같이 두면 같은 열 개 링크가 한 페이지에 두 번 생긴다 — 사람에게도 기계에게도 손해다.
       */}
-      <section className="light-band py-16 lg:py-20">
+      <section className="light-band py-12 sm:py-16 lg:py-20">
         <Container>
           <CareListSection />
         </Container>

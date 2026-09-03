@@ -58,7 +58,7 @@ export function TrustSection() {
       {/* ── 인증과 자격 — 전폭 표 ── */}
       {/* ⚠️ 어두운 면으로 되돌리지 말 것 — 표는 흰 종이의 문법이다. */}
       <section className="reveal light-band mt-16">
-        <Container className="py-12 lg:py-16">
+        <Container className="py-10 sm:py-12 lg:py-16">
           <h2
             id={headingId('인증과 자격은 어디서 받았나요')}
             className="display-sm scroll-mt-28 text-[clamp(24px,2.6vw,32px)] text-ink"

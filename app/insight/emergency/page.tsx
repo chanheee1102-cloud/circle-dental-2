@@ -138,7 +138,7 @@ export default function EmergencyPage() {
         desc="응급 상황에서는 좋은 뜻으로 한 행동이 오히려 상황을 나쁘게 만들기도 합니다. 병원에 오시기 전 몇 분 동안 하실 수 있는 것과 피하셔야 할 것을 상황별로 정리했습니다."
       />
 
-      <Container className="py-16 lg:py-20">
+      <Container className="py-12 sm:py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">

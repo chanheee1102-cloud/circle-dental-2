@@ -61,7 +61,7 @@ export default function FaqPage() {
         desc="궁금한 점을 정리해 오시면 진료실에서 더 깊은 이야기를 할 수 있습니다. 여기에 없는 것은 전화로 물어보셔도 됩니다."
       />
 
-      <Container className="py-16 lg:py-20">
+      <Container className="py-12 sm:py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">

@@ -93,7 +93,7 @@ export default async function SymptomDetailPage({
              인용 가치가 떨어진다. 답은 본문 첫 자리에 한 번만 둔다.
         */}
         <PageHero trail={trail} photo="room" eyebrow="증상" title={s.title} />
-        <Container className="py-16 lg:py-20">
+        <Container className="py-12 sm:py-16 lg:py-20">
 
           {/*
             즉답(왼쪽) + 목차(오른쪽)를 한 줄에.
@@ -220,7 +220,7 @@ export default async function SymptomDetailPage({
           </Container>
         </section>
 
-        <Container className="py-16 lg:py-20">
+        <Container className="py-12 sm:py-16 lg:py-20">
           <h2
             id={headingId('왜 이런 증상이 생기나요?')}
             className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink"
@@ -240,7 +240,7 @@ export default async function SymptomDetailPage({
           </div>
         </Container>
 
-        <section className="border-t border-wine-line bg-parchment py-16 lg:py-20">
+        <section className="border-t border-wine-line bg-parchment py-12 sm:py-16 lg:py-20">
           <Container>
             <h2
               id={headingId('오기 전에 해볼 수 있는 것이 있나요?')}
@@ -279,7 +279,7 @@ export default async function SymptomDetailPage({
             여기는 그 원인을 **읽으러 갈 곳**이라 역할이 겹치지 않는다.
         */}
         {conditions.length > 0 && (
-          <Container className="py-16 lg:py-20">
+          <Container className="py-12 sm:py-16 lg:py-20">
             <h2
               id={headingId('어떤 질환일 수 있나요')}
               className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink"
@@ -307,7 +307,7 @@ export default async function SymptomDetailPage({
         )}
 
         {treatments.length > 0 && (
-          <Container className="py-16 lg:py-20">
+          <Container className="py-12 sm:py-16 lg:py-20">
             <h2 className="display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
               어떤 치료로 이어지나요?
             </h2>

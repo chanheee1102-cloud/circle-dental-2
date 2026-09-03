@@ -80,7 +80,7 @@ export default function VisitPage() {
         desc={`${CLINIC.nearestStation} 인근이며, ${CLINIC.serviceArea.slice(0, 4).join(' · ')} 에서 오십니다.`}
       />
 
-      <Container className="py-16 lg:py-20">
+      <Container className="py-12 sm:py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">

@@ -317,7 +317,7 @@ export default function DoctorsPage() {
 
       {/* 인증·수료 */}
       {/* ⚠️ 어두운 면으로 되돌리지 말 것 — 종이 문서 넉 장은 밝은 면에 놓일 때 문서로 읽힌다. */}
-      <section className="light-band py-16 lg:py-20">
+      <section className="light-band py-12 sm:py-16 lg:py-20">
         <Container>
           <h2 className="display-sm text-[clamp(24px,2.6vw,32px)] text-ink">어떤 인증과 수료를 받았나요?</h2>
           {/*

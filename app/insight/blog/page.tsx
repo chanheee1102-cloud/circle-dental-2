@@ -69,7 +69,7 @@ export default function BlogIndexPage() {
         desc="상담 중에 짧게밖에 말씀드리지 못한 내용을 글로 남깁니다. 읽고 오시면 진료실에서 다음 이야기부터 하실 수 있습니다."
       />
 
-      <Container className="py-24 lg:py-32">
+      <Container className="py-16 sm:py-24 lg:py-32">
         {posts.length === 0 ? (
           /* ⚠️ 이 자리를 지우지 말 것 — 첫 글을 올리기 전까지 방문자가 보는 화면이다. */
           <p className="max-w-[46em] text-[17px] leading-[1.9] text-ink-soft">

@@ -150,7 +150,7 @@ export default function LaminatePage() {
       />
 
       {/* ── 01 무엇인가 ─────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <p className="eyebrow-chip text-clay-700">라미네이트란</p>
           <h2 className="display-sm reveal mt-5 max-w-[16em] text-[clamp(26px,3.6vw,40px)] leading-[1.2] tracking-[-0.02em] text-ink">
@@ -163,7 +163,7 @@ export default function LaminatePage() {
       </section>
 
       {/* ── 02 특징 (기존 홈페이지 원문) ─────────────────────────── */}
-      <section className="light-band border-y border-wine-line py-24 lg:py-32">
+      <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
         <Container>
           <h2 className="display-sm max-w-[18em] text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             라미네이트는 어떤 점이 다른가요?
@@ -194,7 +194,7 @@ export default function LaminatePage() {
       </section>
 
       {/* ── 03 가능한 조건 · 적합한 경우 ─────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
             <div>
@@ -224,7 +224,7 @@ export default function LaminatePage() {
       </section>
 
       {/* ── 04 색 맞추기 ─────────────────────────────────────────── */}
-      <section className="light-band border-y border-wine-line py-24 lg:py-32">
+      <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
         <Container>
           <h2 className="display-sm max-w-[18em] text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             색은 이 순서로 맞춥니다
@@ -249,7 +249,7 @@ export default function LaminatePage() {
 
       {/* ── 05 한계 · 치료 전에 알아 두실 점 ──────────────────────────── */}
       {/* ⚠️⚠️ 이 구획을 지우지 말 것 — 의료법 제56조. 되돌릴 수 없는 치료다. */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
             <h2 className="display-sm max-w-[12em] text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
@@ -274,7 +274,7 @@ export default function LaminatePage() {
       </section>
 
       {/* ── 문답 ─────────────────────────────────────────────────── */}
-      <section className="light-band border-y border-wine-line py-24 lg:py-32">
+      <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
         <Container>
           <h2 className="display-sm max-w-[18em] text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             많이 묻는 것
@@ -297,7 +297,7 @@ export default function LaminatePage() {
       </section>
 
       {/* ── 마무리 ───────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <h2 className="display-sm max-w-[13em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
             깎는 양부터 정하고 시작합니다

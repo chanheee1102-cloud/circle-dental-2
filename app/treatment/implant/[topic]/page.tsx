@@ -97,7 +97,7 @@ export default async function ImplantTopicPage({
         */}
         <PageHero trail={trail} photo="consult" eyebrow="임플란트" title={t.name} desc={t.tagline} />
 
-        <Container className="py-16 lg:py-20">
+        <Container className="py-12 sm:py-16 lg:py-20">
 
           <div className="mt-8 max-w-[64ch] rounded-2xl border border-brand-200/70 bg-parchment p-6">
             <p className="text-[18px] leading-[1.85] text-ink"><Sentences text={t.answer} /></p>
@@ -121,7 +121,7 @@ export default async function ImplantTopicPage({
           </div>
         </Container>
 
-        <section className="border-y border-brand-200/80 bg-parchment py-16 lg:py-20">
+        <section className="border-y border-brand-200/80 bg-parchment py-12 sm:py-16 lg:py-20">
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
@@ -165,7 +165,7 @@ export default async function ImplantTopicPage({
           </Container>
         </section>
 
-        <Container className="py-16 lg:py-20">
+        <Container className="py-12 sm:py-16 lg:py-20">
           <h2 id={headingId('자주 묻는 질문')} className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             자주 묻는 질문
           </h2>
@@ -179,7 +179,7 @@ export default async function ImplantTopicPage({
           </div>
         </Container>
 
-        <section className="light-band border-t border-wine-line py-16 lg:py-20">
+        <section className="light-band border-t border-wine-line py-12 sm:py-16 lg:py-20">
           <Container>
             <h2 className="display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">임플란트 다른 주제</h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

@@ -172,7 +172,7 @@ export default function CavityPage() {
       <TreatmentStrip items={STRIP} />
 
       {/* ── 좌우 교차 블록 ① 깊이 ─────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             {/* 왼쪽 — 깊이 세 단계를 어두운 카드로. */}
@@ -261,7 +261,7 @@ export default function CavityPage() {
       </section>
 
       {/* ── 좌우 교차 블록 ② MTA ──────────────────────────────────── */}
-      <section className="border-y border-brand-200/70 bg-parchment py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 bg-parchment py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             <div>
@@ -313,7 +313,7 @@ export default function CavityPage() {
         ⚠️ 원본이 220x175 뿐이다. 크게 늘리지 말 것 — 앞 판본은 615px 로 띄워 뭉갰다.
         ⚠️⚠️ CASE_NOTE 를 지우지 말 것 — 의료법 제56조.
       */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="mx-auto max-w-[38em] text-center">
             <p className="reveal text-[14.5px] font-medium text-clay-600">
@@ -365,7 +365,7 @@ export default function CavityPage() {
                     </li>
                   ))}
                 </ol>
-                <p className="mt-8 border-t border-brand-200/70 pt-6 text-[14px] leading-[1.9] text-ink-soft">
+                <p className="mt-8 border-t border-brand-200/70 pt-6 text-[15px] leading-[1.9] text-ink-soft">
                   <Sentences text={CASE_NOTE} />
                 </p>
               </div>
@@ -375,7 +375,7 @@ export default function CavityPage() {
       </section>
 
       {/* ── 좌우 교차 블록 ③ 시술 ─────────────────────────────────── */}
-      <section className="border-y border-brand-200/70 bg-parchment py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 bg-parchment py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
             <div className="reveal img-in overflow-hidden rounded-[20px] lg:order-2 border border-brand-200 bg-parchment p-2 lg:order-1">
@@ -415,7 +415,7 @@ export default function CavityPage() {
       </section>
 
       {/* ── 마무리 ─────────────────────────────────────────────────── */}
-      <section className="relative isolate overflow-hidden py-24 lg:py-32">
+      <section className="relative isolate overflow-hidden py-16 sm:py-24 lg:py-32">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(46%_60%_at_50%_120%,rgba(201,116,78,0.30)_0%,transparent_66%)]"

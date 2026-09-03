@@ -44,7 +44,7 @@ export default function JourneyIndexPage() {
         desc="치료가 길어지는 이유는 대부분 시술 시간이 아니라 아무는 것을 기다리는 시간입니다. 어느 단계에서 기다리게 되는지 아시면 일정을 잡기가 수월합니다."
       />
 
-      <Container className="py-16 lg:py-20">
+      <Container className="py-12 sm:py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">

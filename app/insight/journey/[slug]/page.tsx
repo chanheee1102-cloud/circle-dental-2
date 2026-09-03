@@ -114,7 +114,7 @@ export default async function JourneyDetailPage({
              인용 가치가 떨어진다. 답은 본문 첫 자리에 한 번만 둔다.
         */}
         <PageHero trail={trail} photo="corridor" eyebrow="치료 여정" title={j.question} />
-        <Container className="py-16 lg:py-20">
+        <Container className="py-12 sm:py-16 lg:py-20">
 
           <div className="mt-8 max-w-[64ch] rounded-2xl border border-brand-200/70 bg-parchment p-6">
             <p className="text-[18px] leading-[1.85] text-ink"><Sentences text={j.answer} /></p>
@@ -152,7 +152,7 @@ export default async function JourneyDetailPage({
           </div>
         </Container>
 
-        <section className="border-y border-brand-200/80 bg-parchment py-16 lg:py-20">
+        <section className="border-y border-brand-200/80 bg-parchment py-12 sm:py-16 lg:py-20">
           <Container>
             <h2
               id={headingId('회차별로 하는 일')}
@@ -176,7 +176,7 @@ export default async function JourneyDetailPage({
           </Container>
         </section>
 
-        <Container className="py-16 lg:py-20">
+        <Container className="py-12 sm:py-16 lg:py-20">
           <h2
             id={headingId('이럴 때 더 걸립니다')}
             className="scroll-mt-28 display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink"

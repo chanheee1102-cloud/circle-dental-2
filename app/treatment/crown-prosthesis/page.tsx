@@ -166,7 +166,7 @@ export default function CrownProsthesisPage() {
         ⚠️ 막대 색 — 라미네이트는 고동(clay-700), 크라운은 실선색(brand-300). 짙고 옅음이
            '덜 깎는 쪽' 을 가리킨다. 금색을 칠하지 말 것(밝은 면).
       */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <h2 className="display-sm reveal max-w-[13em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
             같은 앞니라도 깎는 두께가 세 배까지 차이 납니다
@@ -205,7 +205,7 @@ export default function CrownProsthesisPage() {
       </section>
 
       {/* ── 두 방법: 조건과 한계까지 ────────────────────────────────── */}
-      <section className="light-band border-y border-wine-line py-24 lg:py-32">
+      <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
         <Container>
           <h2 className="display-sm reveal max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
             남은 치아 상태에 따라 가능한 방법이 갈립니다
@@ -295,7 +295,7 @@ export default function CrownProsthesisPage() {
       </section>
 
       {/* ── 재료 ────────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <h2 className="display-sm reveal max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
             자리마다 유리한 재료가 다릅니다
@@ -321,7 +321,7 @@ export default function CrownProsthesisPage() {
       </section>
 
       {/* ── 색 맞추기 ───────────────────────────────────────────────── */}
-      <section className="light-band border-y border-wine-line py-24 lg:py-32">
+      <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
             <div className="lg:sticky lg:top-32 lg:self-start">
@@ -366,7 +366,7 @@ export default function CrownProsthesisPage() {
         ── 부작용과 한계 ────────────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 이 구간이 빠지면 페이지 전체가 광고문이 된다.
       */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
             <h2 className="display-sm reveal text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
@@ -384,7 +384,7 @@ export default function CrownProsthesisPage() {
       </section>
 
       {/* ── 마무리 ──────────────────────────────────────────────────── */}
-      <section className="light-band border-y border-wine-line py-24 lg:py-32">
+      <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
         <Container>
           <h2 className="display-sm reveal max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
             덜 깎는 방법이 가능한지 먼저 봅니다

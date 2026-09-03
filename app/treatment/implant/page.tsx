@@ -160,7 +160,7 @@ export default function ImplantPage() {
       />
 
       {/* 01 — 내 얘기인가 */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-center lg:gap-14">
             <h2 className="reveal display-sm max-w-[20em] text-[clamp(21px,2.6vw,30px)] leading-[1.35] tracking-[-0.02em] text-ink">
@@ -179,7 +179,7 @@ export default function ImplantPage() {
       </section>
 
       {/* 02 — 뭐가 다른가 */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <SectionHead
             id="디지털-방식"
@@ -228,7 +228,7 @@ export default function ImplantPage() {
       </section>
 
       {/* 03 — 어떻게 하나 */}
-      <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
+      <section className="border-y border-wine-line bg-wine-soft py-16 sm:py-24 lg:py-32">
         <Container>
           <SectionHead id="시술-방법" n="02" label="시술 방법" title="네 단계로 진행합니다" />
 
@@ -266,7 +266,7 @@ export default function ImplantPage() {
       </section>
 
       {/* 04 — 판단 근거 */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <SectionHead id="방식-비교" n="03" label="방식 비교" title={IMPLANT_COMPARE.caption} />
 
@@ -306,9 +306,9 @@ export default function ImplantPage() {
           ① 치료 기간을 그대로 적고 ② 하단 고지를 함께 렌더하며 ③ 집계 표현을 쓰지 않는다.
           셋 중 하나라도 빼지 말 것.
       */}
-      <section id="치료-증례" className="scroll-mt-36 pb-24 lg:pb-32">
+      <section id="치료-증례" className="scroll-mt-36 pb-16 sm:pb-24 lg:pb-32">
         <Container>
-          <HighlightPanel className="px-7 py-16 sm:px-12 lg:px-16 lg:py-20">
+          <HighlightPanel className="px-7 py-12 sm:py-16 sm:px-12 lg:px-16 lg:py-20">
             <SectionHead
               n="04"
               label="치료 증례"
@@ -350,7 +350,7 @@ export default function ImplantPage() {
             </div>
 
             {/* ⚠️ 증례와 항상 함께 렌더한다. 따로 떼지 말 것. */}
-            <p className="reveal mt-10 max-w-[76ch] text-[14px] leading-[1.9] text-ink-soft">
+            <p className="reveal mt-10 max-w-[76ch] text-[15px] leading-[1.9] text-ink-soft">
               <Sentences text={CASE_NOTICE} />
             </p>
           </HighlightPanel>
@@ -358,7 +358,7 @@ export default function ImplantPage() {
       </section>
 
       {/* 06 — 원칙 */}
-      <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
+      <section className="border-y border-wine-line bg-wine-soft py-16 sm:py-24 lg:py-32">
         <Container>
           <SectionHead
             id="진료-원칙"
@@ -379,9 +379,9 @@ export default function ImplantPage() {
       </section>
 
       {/* 원장이 내건 문장 */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
-          <HighlightPanel className="reveal px-8 py-16 sm:px-14 lg:px-16 lg:py-24">
+          <HighlightPanel className="reveal px-8 py-12 sm:py-16 sm:px-14 lg:px-16 lg:py-24">
             {/*
               ⚠️⚠️ 폭 제한은 **글자와 같은 요소**에 건다 ⚠️⚠️
                 전에는 blockquote(16px)에 max-w-[24ch] 를 걸고 글자는 안쪽 p 의 42px 였다.
@@ -418,7 +418,7 @@ export default function ImplantPage() {
 
       {/* 07 — 얼마나 걸리나 */}
       {journey && (
-        <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
+        <section className="border-y border-wine-line bg-wine-soft py-16 sm:py-24 lg:py-32">
           <Container>
             <div className="grid gap-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
               <div className="lg:sticky lg:top-40 lg:self-start">
@@ -472,7 +472,7 @@ export default function ImplantPage() {
       )}
 
       {/* 빠진 치아를 대신하는 방법 */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <ComparisonTable data={MISSING_TOOTH_OPTIONS} />
         </Container>
@@ -483,7 +483,7 @@ export default function ImplantPage() {
         ⚠️ FAQPage 구조화 데이터도 함께 옮겼다. 화면에서 뺐는데 스키마만 남기면 보이지 않는
            내용을 주장하는 꼴이 된다. 되살리려면 둘을 같이 옮길 것.
       */}
-      <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
+      <section className="border-y border-wine-line bg-wine-soft py-16 sm:py-24 lg:py-32">
         <Container>
           <Link href="/faq#implant" className="reveal group block">
             <Card className="flex flex-wrap items-center justify-between gap-6 p-8 transition-colors group-hover:border-brand-300">
@@ -505,7 +505,7 @@ export default function ImplantPage() {
       </section>
 
       {/* 09 — 사후 */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
             <Card lift className="reveal img-in overflow-hidden">
@@ -540,7 +540,7 @@ export default function ImplantPage() {
       </section>
 
       {/* 세부 주제 */}
-      <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
+      <section className="border-y border-wine-line bg-wine-soft py-16 sm:py-24 lg:py-32">
         <Container>
           <SectionHead n="08" label="더 자세히" title="임플란트 주제별로 자세히 보기" />
           <div className="reveal-stack mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -563,7 +563,7 @@ export default function ImplantPage() {
 
       {/* 관련 증상 */}
       {related.length > 0 && (
-        <section className="py-24 lg:py-32">
+        <section className="py-16 sm:py-24 lg:py-32">
           <Container>
             <h2 className="reveal display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
               이런 증상도 함께 봅니다

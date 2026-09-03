@@ -109,7 +109,7 @@ export default async function SpecialDetailPage({
         {/* ⚠️ 눈썹을 넘기지 말 것 — 사진 위 작은 글자는 밝은 사진에서 먼저 깨진다. */}
         <AboutHero trail={trail} photo="sterile" title={s.title} />
         {/* 히어로 — 사진을 크게 */}
-        <Container className="py-16 lg:py-20">
+        <Container className="py-12 sm:py-16 lg:py-20">
           <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
             <div>
               <div className="flex items-center gap-4">
@@ -150,7 +150,7 @@ export default async function SpecialDetailPage({
         </Container>
 
         {/* 용어 풀이 — 일반적인 치과 지식 */}
-        <section className="border-y border-brand-200/80 bg-parchment py-16 lg:py-20">
+        <section className="border-y border-brand-200/80 bg-parchment py-12 sm:py-16 lg:py-20">
           <Container>
             <p className="eyebrow-chip text-clay-700">함께 알아 두시면 좋은 내용</p>
             <div className="mb-10 max-w-[70ch]">
@@ -173,7 +173,7 @@ export default async function SpecialDetailPage({
           </Container>
         </section>
 
-        <Container className="py-16 lg:py-20">
+        <Container className="py-12 sm:py-16 lg:py-20">
           <h2 id={headingId('자주 묻는 질문')} className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             자주 묻는 질문
           </h2>
@@ -189,7 +189,7 @@ export default async function SpecialDetailPage({
         </Container>
 
         {/* 다른 특별함 */}
-        <section className="light-band border-t border-wine-line py-16 lg:py-20">
+        <section className="light-band border-t border-wine-line py-12 sm:py-16 lg:py-20">
           <Container>
             <h2 className="display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">동그라미치과만의 특별함</h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

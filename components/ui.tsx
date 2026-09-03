@@ -456,7 +456,7 @@ export function PageHero({
           사진이 있으면 그 위는 어두운 면이라 parchment 계열,
           없으면 흰 페이지라 ink 계열이다. 한쪽만 바꾸면 반대쪽에서 글자가 사라진다.
       */}
-      <Container className="relative py-16 text-center lg:py-20">
+      <Container className="relative py-12 sm:py-16 text-center lg:py-20">
         <div className="flex justify-center">
           <Breadcrumb trail={trail} tone={photo ? 'dark' : undefined} />
         </div>
@@ -664,7 +664,7 @@ export function ContactCta({
      *   필요한 다음 걸음은 위치가 아니라 시간을 잡는 것이다. 위치는 푸터와 상단 메뉴에 있다.
      * ★ 외부 도메인이라 새 창 + rel="noopener".
      */
-    <section className="light-band reveal border-t border-wine-line py-24 lg:py-32">
+    <section className="light-band reveal border-t border-wine-line py-16 sm:py-24 lg:py-32">
       <Container>
         <h2 className="display-sm text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink max-w-[14em]">{title}</h2>
         <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">

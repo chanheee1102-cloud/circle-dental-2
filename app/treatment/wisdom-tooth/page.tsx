@@ -260,7 +260,7 @@ export default function WisdomToothPage() {
       />
 
       {/* ── 왜 문제가 되는가 ────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="border-t border-wine-line pt-14">
             <p className="eyebrow-chip text-clay-700">
@@ -319,7 +319,7 @@ export default function WisdomToothPage() {
       </section>
 
       {/* ── 매복 사랑니 ─────────────────────────────────────────────── */}
-      <section className="border-y border-brand-200/70 bg-parchment py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 bg-parchment py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="border-t border-wine-line pt-14">
             <p className="eyebrow-chip text-clay-700">
@@ -367,7 +367,7 @@ export default function WisdomToothPage() {
       </section>
 
       {/* ── 발치 후 ─────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="border-t border-wine-line pt-14">
             <p className="eyebrow-chip text-clay-700">
@@ -417,7 +417,7 @@ export default function WisdomToothPage() {
         ── 치료 전에 알아 두실 점 ────────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 발치는 부작용 가능성이 있는 수술이다.
       */}
-      <section className="border-y border-brand-200/70 bg-parchment py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 bg-parchment py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="border-t border-wine-line pt-14">
             <p className="eyebrow-chip text-clay-700">
@@ -457,7 +457,7 @@ export default function WisdomToothPage() {
       </section>
 
       {/* ── 마무리 ──────────────────────────────────────────────────── */}
-      <section className="pb-24 lg:pb-32">
+      <section className="pb-16 sm:pb-24 lg:pb-32">
         <Container>
           <div className="border-t border-wine-line pt-14">
             <h2 className="display-sm focus-in max-w-[14em] text-[clamp(28px,4.2vw,46px)] leading-[1.12] tracking-[-0.02em] text-ink">

@@ -68,8 +68,8 @@ export function TreatmentLanding({
             key={b.label}
             className={
               tinted
-                ? 'border-y border-wine-line bg-wine-soft py-24 lg:py-32'
-                : 'py-24 lg:py-32'
+                ? 'border-y border-wine-line bg-wine-soft py-16 sm:py-24 lg:py-32'
+                : 'py-16 sm:py-24 lg:py-32'
             }
           >
             <Container>
@@ -278,7 +278,7 @@ export function TreatmentLanding({
 
       {/* 진행 순서 */}
       {journey && (
-        <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
+        <section className="border-y border-wine-line bg-wine-soft py-16 sm:py-24 lg:py-32">
           <Container>
             <div className="grid gap-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
               <div className="lg:sticky lg:top-40 lg:self-start">
@@ -339,7 +339,7 @@ export function TreatmentLanding({
            내용을 주장하는 꼴이라 검색엔진이 무시하거나 감점한다. 되살리려면 둘을 같이 옮길 것.
       */}
       {t.qa.length ? (
-        <section className="py-24 lg:py-32">
+        <section className="py-16 sm:py-24 lg:py-32">
           <Container>
             <Link href={`/faq#${t.slug}`} className="reveal group block">
               <Card className="flex flex-wrap items-center justify-between gap-6 p-8 transition-colors group-hover:border-brand-300">
@@ -363,7 +363,7 @@ export function TreatmentLanding({
 
       {/* 주의사항 — 원문에 있는 진료만 렌더된다. */}
       {page.aftercare && (
-        <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
+        <section className="border-y border-wine-line bg-wine-soft py-16 sm:py-24 lg:py-32">
           <Container>
             <SectionHead
               id="주의사항"
@@ -385,7 +385,7 @@ export function TreatmentLanding({
 
       {/* 관련 증상 */}
       {related.length > 0 && (
-        <section className="py-24 lg:py-32">
+        <section className="py-16 sm:py-24 lg:py-32">
           <Container>
             <h2 className="reveal display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
               이런 증상도 함께 봅니다

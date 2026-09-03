@@ -79,7 +79,7 @@ export default function CostPage() {
         desc="건강보험이 적용되는 부분과 그렇지 않은 부분이 나뉘고, 그 경계가 최종 비용을 가장 크게 좌우합니다. 어떤 항목이 어디에 해당하는지 아래에 정리해 두었습니다."
       />
 
-      <Container className="py-16 lg:py-20">
+      <Container className="py-12 sm:py-16 lg:py-20">
 
         <div className="mt-9 max-w-[70ch]">
           <ArticleMeta path="/insight/cost" />

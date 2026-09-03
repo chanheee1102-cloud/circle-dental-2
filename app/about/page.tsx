@@ -162,7 +162,7 @@ export default function AboutPage() {
         ⚠️ 자격 목록에 체크 동그라미를 되살리지 말 것(2026-09-01 오너). 사실을 적은 줄이라
            장식이 필요 없고, 그 장식이 '어디서나 보는 화면' 을 만드는 지점이다.
       */}
-      <section className="bg-parchment py-24 lg:py-32">
+      <section className="bg-parchment py-16 sm:py-24 lg:py-32">
         <Container className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-16">
           <div className="w-full max-w-[580px]">
             <SectionHead
@@ -214,7 +214,7 @@ export default function AboutPage() {
       </section>
 
       {/* 특별함 7 — 원문 그대로 */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           {/* ⚠️ 제목에 개수를 박지 말 것 — '다섯 가지' 라면서 7개였다(2026-09-01 오너 지적).
               항목이 바뀔 때마다 거짓말이 된다. */}
@@ -235,7 +235,7 @@ export default function AboutPage() {
         ★ 사진 열두 장의 설명(alt)은 이 사이트가 가진 몇 안 되는 1차 자료다. 지우지 말 것.
       */}
       {/* ⚠️ 어두운 면으로 되돌리지 말 것 — 밝은 진료실 사진 열두 장이 이 구획의 주인공이다. */}
-      <section className="light-band py-24 lg:py-32">
+      <section className="light-band py-16 sm:py-24 lg:py-32">
         <Container>
           <SectionHead
             eyebrow="진료환경"

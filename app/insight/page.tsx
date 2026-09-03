@@ -70,7 +70,7 @@ export default function InsightHubPage() {
         desc="치료보다 그 앞뒤 설명이 부족해 불안하신 경우가 많습니다. 미리 읽고 오시면 진료실에서 더 깊은 이야기를 나눌 수 있습니다."
       />
 
-      <Container className="py-16 lg:py-20">
+      <Container className="py-12 sm:py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">

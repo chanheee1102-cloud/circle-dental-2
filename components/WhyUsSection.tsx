@@ -21,7 +21,7 @@ import { Reveal } from '@/components/Reveal';
  */
 export function WhyUsSection() {
   return (
-    <section className="border-y border-brand-200/80 bg-wine-soft/40 py-24 lg:py-32">
+    <section className="border-y border-brand-200/80 bg-wine-soft/40 py-16 sm:py-24 lg:py-32">
       {/*
         ★★ 좌우 비대칭 — 제목을 왼쪽 레일에 세워 두고 내용만 오른쪽으로 흐른다 (2026-08-18) ★★
           운영자가 가져온 참고 사이트(리베리의원)에서 가장 값이 큰 아이디어였다.

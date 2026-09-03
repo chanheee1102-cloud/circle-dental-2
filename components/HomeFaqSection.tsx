@@ -25,7 +25,7 @@ export function HomeFaqSection() {
   return (
     /* ⚠️ 한 칸 내려앉은 면 — 앞(시설)·뒤(진료시간)가 캔버스라 여기서 톤이 바뀌어야
        구획이 바뀐 것이 보인다. 홈의 면 차례는 globals.css .home-flow 주석에 있다. */
-    <section className="bg-wine-soft py-24 lg:py-32">
+    <section className="bg-wine-soft py-16 sm:py-24 lg:py-32">
       <Container>
         <div className="grid gap-12 lg:grid-cols-[minmax(0,340px)_1fr] lg:gap-16">
           {/* 왼쪽 — 제목과 전체 보기. 오른쪽 목록이 길어도 이 열은 위에 붙어 따라온다. */}

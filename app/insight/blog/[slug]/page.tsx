@@ -81,7 +81,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         ]}
       />
 
-      <Container className="pt-12 lg:pt-16">
+      <Container className="pt-10 sm:pt-12 lg:pt-16">
         <Breadcrumb trail={trail} />
 
         <div className="mt-9 flex flex-wrap items-baseline gap-x-4 gap-y-2">

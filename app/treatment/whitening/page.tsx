@@ -218,7 +218,7 @@ export default function WhiteningPage() {
       {/* ⚠️ 같은 사진을 띠로 다시 두지 말 것 — 히어로 배경으로 올라갔다(2026-09-01). */}
 
       {/* ── 01 잇몸 격리 — 이 병원이 원문에서 강조한 부분 ─────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <Counter n="01" total="05" dark />
           <div className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-20">
@@ -250,7 +250,7 @@ export default function WhiteningPage() {
       </section>
 
       {/* ── 02 과정 ─────────────────────────────────────────────────── */}
-      <section className="border-t border-brand-200/70 py-24 lg:py-32">
+      <section className="border-t border-brand-200/70 py-16 sm:py-24 lg:py-32">
         <Container>
           <Counter n="02" total="05" dark />
           <h2 className="display-sm mt-10 max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
@@ -272,7 +272,7 @@ export default function WhiteningPage() {
       </section>
 
       {/* ── 03 제품 — 밝은 면으로 뒤집는다 ─────────────────────────── */}
-      <section className="border-y border-brand-200/70 light-band py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 light-band py-16 sm:py-24 lg:py-32">
         <Container>
           <Counter n="03" total="05" />
           <div className="mt-10 flex flex-wrap items-end justify-between gap-8">
@@ -327,7 +327,7 @@ export default function WhiteningPage() {
       </section>
 
       {/* ── 04 듣는 착색과 안 듣는 착색 ────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <Counter n="04" total="05" dark />
           <h2 className="display-sm mt-10 max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
@@ -362,7 +362,7 @@ export default function WhiteningPage() {
         ── 05 미리 아셔야 할 것 ────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 미백은 개인차와 재착색이 큰 처치다.
       */}
-      <section className="border-y border-brand-200/70 light-band py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 light-band py-16 sm:py-24 lg:py-32">
         <Container>
           <Counter n="05" total="05" />
           <div className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
@@ -391,7 +391,7 @@ export default function WhiteningPage() {
       </section>
 
       {/* ── 마무리 ──────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <h2 className="display-sm focus-in max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
             변색의 원인에 따라 미백 방법이 달라집니다

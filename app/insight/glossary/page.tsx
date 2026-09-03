@@ -79,7 +79,7 @@ export default function GlossaryPage() {
         desc="진료실에서 쓰는 용어가 어렵게 들리는 것은 당연합니다. 자주 나오는 말을 한두 문장으로 풀어 두었으니 설명을 들으실 때 함께 보시면 됩니다."
       />
 
-      <Container className="py-16 lg:py-20">
+      <Container className="py-12 sm:py-16 lg:py-20">
 
         <dl className="mt-12 grid gap-3 sm:grid-cols-2">
           {GLOSSARY.map((t) => (

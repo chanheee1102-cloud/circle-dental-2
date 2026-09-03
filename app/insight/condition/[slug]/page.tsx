@@ -121,7 +121,7 @@ export default async function ConditionDetailPage({
              인용 가치가 떨어진다. 답은 본문 첫 자리에 한 번만 둔다.
         */}
         <PageHero trail={trail} photo="consult" eyebrow="질환" title={c.name} />
-        <Container className="py-16 lg:py-20">
+        <Container className="py-12 sm:py-16 lg:py-20">
           <p className="mt-3 text-[16.5px] font-semibold text-ink-muted">{c.aka.join(' · ')}</p>
 
           <div className="mt-8 max-w-[70ch]">
@@ -171,7 +171,7 @@ export default async function ConditionDetailPage({
         </Container>
 
         {/* 증상 · 원인 */}
-        <section className="border-y border-brand-200/80 bg-parchment py-16 lg:py-20">
+        <section className="border-y border-brand-200/80 bg-parchment py-12 sm:py-16 lg:py-20">
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
@@ -211,7 +211,7 @@ export default async function ConditionDetailPage({
         </section>
 
         {/* 진행 단계 — '언제 가야 하나'를 스스로 가늠하게 해 준다. */}
-        <Container className="py-16 lg:py-20">
+        <Container className="py-12 sm:py-16 lg:py-20">
           <h2 id={headingId('방치하면 이렇게 진행합니다')} className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             방치하면 이렇게 진행합니다
           </h2>
@@ -231,7 +231,7 @@ export default async function ConditionDetailPage({
         </Container>
 
         {/* 치료 · 예방 */}
-        <section className="light-band border-y border-wine-line py-16 lg:py-20">
+        <section className="light-band border-y border-wine-line py-12 sm:py-16 lg:py-20">
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
@@ -265,7 +265,7 @@ export default async function ConditionDetailPage({
         </section>
 
         {/* FAQ */}
-        <Container className="py-16 lg:py-20">
+        <Container className="py-12 sm:py-16 lg:py-20">
           <h2 id={headingId('자주 묻는 질문')} className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             자주 묻는 질문
           </h2>
@@ -281,7 +281,7 @@ export default async function ConditionDetailPage({
 
         {/* 연결 */}
         {(symptoms.length > 0 || treatments.length > 0) && (
-          <section className="border-t border-brand-200/80 bg-parchment py-16 lg:py-20">
+          <section className="border-t border-brand-200/80 bg-parchment py-12 sm:py-16 lg:py-20">
             <Container>
               <div className="grid gap-10 lg:grid-cols-2">
                 {symptoms.length > 0 && (

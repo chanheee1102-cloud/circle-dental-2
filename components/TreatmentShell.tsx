@@ -53,7 +53,9 @@ export function TreatmentHero({
 }) {
   return (
     /* ⚠️ 음수 margin + 같은 값의 padding — 띠가 헤더 뒤까지 올라간다. 수치를 페이지마다 바꾸지 말 것. */
-    <section className="relative isolate -mt-[68px] overflow-hidden bg-night pt-[128px] pb-24 sm:-mt-[94px] sm:pt-[154px] lg:pb-32">
+    /* ⚠️ 휴대폰 값(pt-[112px] pb-16)은 버튼을 감춘 뒤 다시 잡은 것이다 — 되돌리면 첫 화면에
+         빈 자리가 남는다. sm 부터는 예전 값 그대로다. */
+    <section className="relative isolate -mt-[68px] overflow-hidden bg-night pt-[112px] pb-16 sm:-mt-[94px] sm:pt-[154px] sm:pb-16 sm:pb-24 lg:pb-32">
       {/* ⚠️ alt 는 비운다 — 장식 사진이다. 뜻은 아래 제목이 전부 진다. */}
       {photo && (
         <Image
@@ -119,7 +121,15 @@ export function TreatmentHero({
           <Sentences text={lead} tone="dark" />
         </p>
 
-        <div className="enter mt-10 flex flex-wrap justify-center gap-3" style={{ animationDelay: '440ms' }}>
+        {/*
+          ★★ 휴대폰에서는 감춘다 (2026-09-03 오너: "밑에 저렇게 예약버튼이랑 전화버튼있으니깐
+             저 예약하기랑 전화번호 없애도 되지 않을까 모바일은") ★★
+             하단 고정 바(components/QuickMenu.tsx)에 네이버 예약과 전화가 **늘 떠 있다.**
+             같은 두 가지를 첫 화면에서 또 크게 보여 주면 그만큼 제목과 설명이 밀린다.
+          ⚠️ sm 부터는 되살린다 — 태블릿·데스크톱은 자리가 넉넉하고, 넓은 화면(2xl)에서는
+             하단 바가 옆 세로 막대로 바뀌어 눈에 덜 띈다.
+        */}
+        <div className="enter mt-10 hidden flex-wrap justify-center gap-3 sm:flex" style={{ animationDelay: '440ms' }}>
           <a
             href={CLINIC.booking.naver}
             target="_blank"
@@ -150,7 +160,7 @@ export function TreatmentStrip({
   items: { k: string; t: string; d?: string }[];
 }) {
   return (
-    <section className="border-y border-brand-200/70 bg-parchment py-14 lg:py-20">
+    <section className="border-y border-brand-200/70 bg-parchment py-10 sm:py-14 lg:py-20">
       <Container>
         {/*
           ★★ 칸 사이 세로 구분선 (2026-09-02 오너: "이렇게 구분선 들어가면 좋을 거 같아여") ★★

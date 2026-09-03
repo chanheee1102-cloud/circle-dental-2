@@ -51,7 +51,7 @@ export default function ConditionIndexPage() {
         desc="같은 병명이라도 진행 단계와 남은 조직에 따라 치료가 갈립니다. 병명을 이미 들으셨다면 여기서 시작해 보세요."
       />
 
-      <Container className="py-16 lg:py-20">
+      <Container className="py-12 sm:py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">

@@ -78,7 +78,7 @@ export default function TrustPage() {
       />
 
       {/* ⚠️ 여백 가진 상자로 감싸지 말 것 — ArticleMeta 는 지금 null 이라 빈 띠만 남는다. */}
-      <Container className="pt-12 lg:pt-16">
+      <Container className="pt-10 sm:pt-12 lg:pt-16">
         <ArticleMeta path="/about/trust" />
       </Container>
 

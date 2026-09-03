@@ -127,7 +127,7 @@ export default async function TreatmentPage({ params }: { params: Promise<{ slug
 
       <TreatmentLanding t={t} page={page} journey={journey} related={related} trail={trail}>
         {comparison ? (
-          <section className="py-24 lg:py-32">
+          <section className="py-16 sm:py-24 lg:py-32">
             <Container>
               <ComparisonTable data={comparison} />
             </Container>

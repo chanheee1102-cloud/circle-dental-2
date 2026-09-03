@@ -129,7 +129,7 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
         ⚠️ 여기에 sticky·h-screen·calc 높이를 다시 넣지 말 것 — 위 머리말 참조.
            페이지 스크롤은 이 구획을 그냥 지나간다.
       */}
-      <div className="py-24 lg:py-32">
+      <div className="py-16 sm:py-24 lg:py-32">
         <div className="mx-auto w-full max-w-[1320px] px-5 lg:px-8">
           {/*
             ★★ 규격 (2026-08-25 운영자: "좀 규격? 배치? 를 좀더 잘 맞춰볼래?") ★★

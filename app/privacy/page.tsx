@@ -62,7 +62,7 @@ export default function PrivacyPage() {
         desc={`${CLINIC.name}은 「개인정보 보호법」과 「의료법」에 따라 환자의 개인정보를 보호하고 관련 고충을 신속하게 처리하기 위해 다음과 같이 처리방침을 두고 있습니다. 이 방침은 홈페이지 이용과 내원 진료 모두에 적용됩니다.`}
       />
 
-      <Container className="py-12 lg:py-16">
+      <Container className="py-10 sm:py-12 lg:py-16">
         {/* 개인정보처리방침은 '언제 기준인지' 가 특히 중요하다 — 개정 이력이 곧 신뢰다. */}
         <div className="max-w-[70ch]">
           <ArticleMeta path="/privacy" />

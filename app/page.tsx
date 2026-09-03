@@ -294,8 +294,15 @@ function Hero() {
           ⚠️ 헤더에 예약 버튼이 하나 있지만(2026-09-02) 전화로 가는 길은 여기 하나뿐이다.
              둘 다 지우지 말 것.
         */}
+        {/*
+          ★★ 휴대폰에서는 감춘다 (2026-09-03 오너) ★★
+             하단 고정 바에 네이버 예약과 전화가 늘 떠 있다. 첫 화면에서 같은 두 가지를
+             또 보여 주면 제목·설명·지역 한 줄이 그만큼 아래로 밀린다.
+          ⚠️ 위 주석의 "전화로 가는 길은 여기 하나뿐" 은 이제 맞지 않는다 — 하단 바에 있다.
+             단 sm 이상에서는 하단 바가 눈에 덜 띄므로 버튼을 되살린다.
+        */}
         <div
-          className="enter mt-9 flex flex-wrap items-center justify-center gap-3"
+          className="enter mt-9 hidden flex-wrap items-center justify-center gap-3 sm:flex"
           style={{ animationDelay: '250ms' }}
         >
           <FillBtn
@@ -359,7 +366,7 @@ function Hero() {
 function PillarSection() {
   return (
     /* ⚠️ 아래 여백을 위보다 짧게 둔다 — 카드 그림자가 아래로 퍼져 실제보다 더 비어 보인다. */
-    <section className="relative pt-16 pb-12 lg:pt-24 lg:pb-16">
+    <section className="relative pt-12 sm:pt-16 pb-12 lg:pt-24 lg:pb-16">
       {/*
         ★★ 배경 진료실 사진을 걷어냈다 (2026-09-02 오너: "사진에 거뭇거뭇하고 흐릿한
            느낌 다 걷어 선명하고 밝게") ★★
@@ -478,7 +485,7 @@ function DoctorSection() {
      * ⚠️ 밝은 면 위에서는 본문 색을 ink 계열로 둘 것. oat/parchment 로 되돌리면
      *    흰 바탕에 흰 글자가 된다(실측 1.0:1).
      */
-    <section className="relative overflow-hidden bg-parchment py-24 text-ink lg:py-32">
+    <section className="relative overflow-hidden bg-parchment py-16 sm:py-24 text-ink lg:py-32">
       <Container className="relative">
         <HomeHead
           className="max-w-3xl [&_*]:text-ink"
@@ -769,7 +776,7 @@ function DoctorSection() {
  */
 function InteriorSection() {
   return (
-    <section className="py-24 lg:py-32">
+    <section className="py-16 sm:py-24 lg:py-32">
       <Container>
         <HomeHead
           className="max-w-3xl"
@@ -852,7 +859,7 @@ function HoursSection() {
      *   양옆에 밝은 띠가 남는 쪽이 어색해졌다 — 전제가 바뀌었다.
      * ⚠️ 안쪽 Container 를 지우지 말 것. 면만 화면 폭이고 글은 본문 폭을 지킨다.
      */
-    <section className="bg-parchment py-16 text-ink lg:py-24">
+    <section className="bg-parchment py-12 sm:py-16 text-ink lg:py-24">
       <Container>
         <div>
         <HomeHead

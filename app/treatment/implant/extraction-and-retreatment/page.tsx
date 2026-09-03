@@ -164,7 +164,7 @@ export default function ExtractionAndRetreatmentPage() {
       <TreatmentStrip items={STRIP} />
 
       {/* ── 01 발치 즉시 식립 ──────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
             <div className="lg:sticky lg:top-32 lg:self-start">
@@ -208,7 +208,7 @@ export default function ExtractionAndRetreatmentPage() {
       </section>
 
       {/* ── 02 임플란트 재수술 ─────────────────────────────────────── */}
-      <section className="light-band border-y border-wine-line py-24 lg:py-32">
+      <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
         <Container>
           <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
             <div className="lg:sticky lg:top-32 lg:self-start">
@@ -262,7 +262,7 @@ export default function ExtractionAndRetreatmentPage() {
       </section>
 
       {/* ── 문답 ───────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="py-16 sm:py-24 lg:py-32">
         <Container>
           <h2 className="display-sm reveal text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             자주 묻는 질문
@@ -283,7 +283,7 @@ export default function ExtractionAndRetreatmentPage() {
       </section>
 
       {/* ── 마무리 ─────────────────────────────────────────────────── */}
-      <section className="light-band border-y border-wine-line py-24 lg:py-32">
+      <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
         <Container>
           <h2 className="display-sm reveal max-w-[13em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
             남은 뼈를 먼저 확인합니다
