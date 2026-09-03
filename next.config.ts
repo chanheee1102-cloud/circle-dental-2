@@ -126,6 +126,13 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      /*
+       * 임플란트 하위 두 주제를 한 페이지로 합쳤다 (2026-09-03 오너 지시).
+       * ⚠️ 지우지 말 것 — /immediate-placement 는 색인된 주소다. 리다이렉트가 없으면
+       *    '발치 즉시 임플란트' 로 들어오던 길이 404 가 된다.
+       */
+      { source: '/treatment/implant/immediate-placement', destination: '/treatment/implant/extraction-and-retreatment', permanent: true },
+      { source: '/treatment/implant/reoperation', destination: '/treatment/implant/extraction-and-retreatment', permanent: true },
       ...OLD_SITE.map(([source, destination]) => ({ source, destination, permanent: true })),
       ...CONVENTIONAL.map(([source, destination]) => ({ source, destination, permanent: true })),
       /*
