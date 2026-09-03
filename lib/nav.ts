@@ -90,9 +90,14 @@ export const NAV: NavItem[] = [
      *    서랍의 '전체 보기' 와 메뉴 이름 자체가 그리로 간다.
      */
     children: [
-      { label: '디지털 임플란트', href: '/treatment/implant/digital-navigation', desc: 'CT와 구강스캐너로 미리 계획' },
-      { label: '전체임플란트', href: '/treatment/implant/full-arch', desc: '한 악의 치아를 모두 잃었을 때' },
-      { label: '3D CT 정밀진단', href: '/about/special/low-dose-ct', desc: '저선량으로 촬영하는 3차원 진단' },
+      /*
+       * ⚠️ 칸을 늘리지 말 것 (2026-09-03 오너: "임플란트 메뉴 많아졌잖아. 아까처럼 두 개로 줄여").
+       *    한때 '디지털 임플란트 / 전체임플란트 / 3D CT 정밀진단' 을 여기 얹었다가 되돌렸다.
+       *    세 페이지는 그대로 살아 있고 각자 자기 자리에서 링크된다 —
+       *    digital-navigation·full-arch 는 /treatment/implant 의 주제 목록이,
+       *    low-dose-ct 는 /about 의 특별함 칸이 건다. 메뉴에서 뺐다고 고아가 되지 않는다.
+       */
+      { label: '임플란트', href: '/treatment/implant', desc: '치아를 뽑았거나 빠진 자리' },
       { label: '즉시 식립 · 재수술', href: '/treatment/implant/extraction-and-retreatment', desc: '바로 심는 경우와 다시 심는 경우' },
     ],
   },
