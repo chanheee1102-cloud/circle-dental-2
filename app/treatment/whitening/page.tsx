@@ -52,14 +52,24 @@ import {
    주소만 aesthetic 이라 셋이 어긋나 있었다(2026-09-01). next.config 에 301 이 걸려 있다. */
 const PATH = '/treatment/whitening';
 /* ★ 제목이 던진 분기를 그대로 이어받는다 — 아래 04 구간이 이 이야기를 펼친다. */
+/* ⚠️ 2026-09-03 오너 지정 문구(히어로에 그대로 나간다). */
 const LEAD =
-  '미백제는 법랑질 안에 스며든 착색을 분해합니다. 겉에 쌓인 착색에는 잘 듣지만 안쪽에서 온 변색이나 보철물은 같은 방법으로 밝아지지 않아, 변색의 원인부터 확인하고 시작합니다.';
+  '치아미백은 치아에 스며든 색소를 분해해, 본연의 치아색을 보다 밝게 개선하는 치료입니다. 변색의 원인과 치아 상태에 따라 미백 효과에 차이가 있을 수 있어, 정확한 원인을 파악한 뒤 적합한 방법을 안내드립니다.';
+
+/**
+ * 검색 결과에 뜨는 설명 — 화면 문구와 **일부러 다르게** 둔다.
+ * ⚠️ LEAD 로 되돌리지 말 것 (2026-09-03) — 새 문구에는 '법랑질'·'착색'·'보철물' 이 없다.
+ *    셋 다 본문 04 구간('듣는 착색과 안 듣는 착색')이 실제로 다루는 내용이고,
+ *    '미백 안 되는 치아' 를 찾는 사람이 치는 말이다.
+ */
+const META_DESC =
+  '고양 화정동 치아미백. 미백제는 법랑질 안에 스며든 착색을 분해합니다. 겉에 쌓인 착색에는 잘 듣지만 안쪽에서 온 변색이나 보철물은 같은 방법으로 밝아지지 않아, 변색의 원인부터 확인하고 시작합니다.';
 
 export const metadata: Metadata = {
   title: '치아미백',
-  description: LEAD.slice(0, 155),
+  description: META_DESC.slice(0, 155),
   alternates: { canonical: PATH },
-  openGraph: og({ title: withLocality('치아미백'), description: LEAD.slice(0, 155), path: PATH }),
+  openGraph: og({ title: withLocality('치아미백'), description: META_DESC.slice(0, 155), path: PATH }),
 };
 
 const TRAIL = [
@@ -174,9 +184,9 @@ export default function WhiteningPage() {
       <TreatmentHero
         trail={TRAIL}
         eyebrow="고양 화정동 치아미백 · 보건복지부인증 통합치의학과 전문의"
-        /* ⚠️ 물음표를 지우지 말 것 — 미백에서 가장 많이 받는 질문이고,
+        /* ⚠️ 2026-09-03 오너 지정 제목. 물음표를 지우지 말 것 — 미백에서 가장 많이 받는 질문이고,
            바로 아래 lead 가 '겉 착색은 듣고 안쪽 변색·보철물은 아니다' 로 답한다. */
-        title={['미백하면', '누구나 하얘지나요?']}
+        title={['치아미백은', '누구나 효과를 볼 수 있나요?']}
         lead={LEAD}
         photo={{
           src: '/img/clinic/wh-light.webp',

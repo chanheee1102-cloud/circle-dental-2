@@ -40,14 +40,25 @@ import {
  */
 
 const PATH = '/treatment/laminate';
+/* ⚠️ 2026-09-03 오너 지정 문구(히어로에 그대로 나간다). */
 const LEAD =
-  '라미네이트는 치아 앞면만 0.3~0.7mm 얇게 다듬고, 그 위에 세라믹 판을 붙이는 방법입니다. 되돌릴 수 없는 삭제량이 가장 적은 대신, 붙일 자리에 법랑질이 남아 있어야 하고 무는 힘이 앞니에 몰리지 않아야 합니다.';
+  '라미네이트는 치아 앞면을 필요한 만큼만 다듬어, 얇은 세라믹을 부착하는 심미치료입니다. 동그라미치과에서는 자연치아 보존을 우선으로, 치아 상태와 교합을 세심하게 살펴 치료를 계획합니다.';
+
+/**
+ * 검색 결과에 뜨는 설명 — 화면 문구와 **일부러 다르게** 둔다.
+ * ⚠️ LEAD 로 되돌리지 말 것 (2026-09-03) — 새 문구에는 '0.3~0.7mm' 도 '법랑질' 도 없다.
+ *    삭제량 수치는 이 페이지가 심미보철과 갈리는 유일한 근거이고(본문 특징 01),
+ *    법랑질 조건은 가능·불가능을 가르는 기준이다. 화면에서 빠진 만큼 여기서 지킨다.
+ * ⚠️ 본문에 없는 것을 여기 적지 말 것.
+ */
+const META_DESC =
+  '고양 화정동 라미네이트. 치아 앞면만 0.3~0.7mm 얇게 다듬고 그 위에 세라믹 판을 붙입니다. 되돌릴 수 없는 삭제량이 가장 적은 대신, 붙일 자리에 법랑질이 남아 있어야 하고 무는 힘이 앞니에 몰리지 않아야 합니다.';
 
 export const metadata: Metadata = {
   title: '라미네이트',
-  description: LEAD.slice(0, 155),
+  description: META_DESC.slice(0, 155),
   alternates: { canonical: PATH },
-  openGraph: og({ title: withLocality('라미네이트'), description: LEAD.slice(0, 155), path: PATH }),
+  openGraph: og({ title: withLocality('라미네이트'), description: META_DESC.slice(0, 155), path: PATH }),
 };
 
 const TRAIL = [
@@ -106,10 +117,10 @@ export default function LaminatePage() {
       <TreatmentHero
         trail={TRAIL}
         eyebrow="고양 화정동 라미네이트 · 보건복지부인증 통합치의학과 전문의"
-        /* ★ 여기는 서술형으로 둔다 — 앞뒤 진료 페이지(사랑니 · 미백)가 질문형이라
+        /* ⚠️ 2026-09-03 오너 지정 제목. 서술형으로 둔다 — 앞뒤 진료 페이지(사랑니 · 미백)가 질문형이라
            메뉴를 훑을 때 물음표만 이어지면 그것대로 기계가 쓴 것처럼 보인다.
            '최대한' 은 이 병원이 스스로 쓰는 말이다(자연치아를 최대한 살리는). */
-        title={['앞면만 얇게 다듬어', '자연치아를 최대한 남깁니다']}
+        title={['자연치아를 최대한 보존하는', '동그라미 라미네이트']}
         lead={LEAD}
         photo={{
           src: DOC_IMAGE.src,

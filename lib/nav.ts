@@ -61,12 +61,12 @@ export const NAV: NavItem[] = [
     label: '자연치아살리기',
     href: '/treatment/save-natural-tooth',
     children: [
-      { label: '전체 진료과목', href: '/treatment', desc: '열 갈래를 한눈에' },
-      { label: '자연치아 살리기', href: '/treatment/save-natural-tooth', desc: '발치를 권유받았을 때' },
-      { label: '충치치료', href: '/treatment/cavity', desc: '검은 점이나 구멍이 보일 때' },
-      { label: '치아신경치료', href: '/treatment/endodontic', desc: '가만히 있어도 욱신거릴 때' },
-      { label: '잇몸치료(스케일링)', href: '/treatment/periodontal', desc: '양치할 때 피가 날 때' },
-      { label: '스케일링 · 예방', href: '/treatment/scaling-prevention', desc: '1년 넘게 안 받았다면' },
+      { label: '전체 진료과목', href: '/treatment', desc: '증상별 진료 안내' },
+      { label: '자연치아 살리기', href: '/treatment/save-natural-tooth', desc: '자연치아 보존을 위한 정밀 진료' },
+      { label: '충치치료', href: '/treatment/cavity', desc: '충치 단계에 따른 맞춤 치료' },
+      { label: '치아신경치료', href: '/treatment/endodontic', desc: '자연치아 보존을 위한 근관치료' },
+      { label: '잇몸치료(스케일링)', href: '/treatment/periodontal', desc: '치석 제거와 잇몸 염증 관리' },
+      { label: '스케일링 · 예방', href: '/treatment/scaling-prevention', desc: '만 19세 이상, 연 1회 건강보험 적용' },
     ],
   },
   {

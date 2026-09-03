@@ -2357,51 +2357,96 @@ blockquote {
  *    한쪽만 고치면 data-x 값이 어느 규칙에도 안 걸려 예외(되돌리기)가 통째로 꺼진다.
  */
 /*
- * ★★ 2026-09-03 — 쉼표 뒤 마디는 **새 줄에서 시작**한다 (display: block) ★★
- *   전에는 마디가 한 줄에 들어갈 때만(data-w) inline-block 으로 통째로 옮겼다. 그래서 긴 마디는
- *   쉼표에서 안 끊기고 아무 데서나 잘렸다(라미네이트 히어로 "무는 / 힘이"). 이제 둘째 마디부터
- *   길이와 상관없이 새 줄이고, 길면 그 안에서 접힌다. 첫 마디(data-x 없음)는 그대로 흐른다.
- * ⚠️ 이 규칙은 @container 밖이다 — 재지 못하는 칸(표 등)에서도 쉼표 뒤 줄바꿈은 일어난다.
- *    예외(앞 줄이 너무 짧을 때 되돌리기)만 아래 @container 로 잰다.
+ * ★★ 쉼표 뒤 마디는 **새 줄에서 시작**한다 (2026-09-03) ★★
+ *   기본값이 block 이다. 되돌리는 경우는 하나뿐 — **여기까지의 글이 한 줄에 다 들어갈 때.**
+ *   그때는 끊어 봐야 줄 하나를 버리는 것이라 그냥 흐르게 둔다.
+ *   data-fit = 여기까지의 글이 한 줄에 들어가려면 필요한 칸(em). 칸이 그보다 넓으면 되돌린다.
+ * ⚠️ components/ui.tsx 의 clauseFit · EM_PER_CHAR · CLAUSE_STEP 과 한 쌍이다.
+ *    한쪽만 고치면 값이 어느 규칙에도 안 걸려 되돌리기가 통째로 꺼진다(= 늘 끊긴다).
+ * ⚠️ 기본값(block)은 @container 밖이다 — 칸을 못 재는 자리(표 등)에서도 쉼표 줄바꿈은 된다.
  */
-.clause[data-x] {
+.clause[data-fit] {
   display: block;
 }
 
-/* 앞 줄이 덜 찼을 때는 쉼표 줄바꿈을 포기한다 — 앞 마디가 칸의 30% 미만이면 되돌린다.
-   ⚠️ 값은 components/ui.tsx 의 CLAUSE_FILL(0.30) 과 한 쌍 — round(n×0.72/0.30), n=8·16·…·56. */
-@container (min-width: 19em) {
-  .clause[data-x='19'] {
+@container (min-width: 7em) {
+  .clause[data-fit='7'] {
     display: inline;
   }
 }
-@container (min-width: 38em) {
-  .clause[data-x='38'] {
+@container (min-width: 14em) {
+  .clause[data-fit='14'] {
     display: inline;
   }
 }
-@container (min-width: 58em) {
-  .clause[data-x='58'] {
+@container (min-width: 20em) {
+  .clause[data-fit='20'] {
     display: inline;
   }
 }
-@container (min-width: 77em) {
-  .clause[data-x='77'] {
+@container (min-width: 27em) {
+  .clause[data-fit='27'] {
     display: inline;
   }
 }
-@container (min-width: 96em) {
-  .clause[data-x='96'] {
+@container (min-width: 34em) {
+  .clause[data-fit='34'] {
     display: inline;
   }
 }
-@container (min-width: 115em) {
-  .clause[data-x='115'] {
+@container (min-width: 41em) {
+  .clause[data-fit='41'] {
     display: inline;
   }
 }
-@container (min-width: 134em) {
-  .clause[data-x='134'] {
+@container (min-width: 48em) {
+  .clause[data-fit='48'] {
     display: inline;
   }
 }
+@container (min-width: 54em) {
+  .clause[data-fit='54'] {
+    display: inline;
+  }
+}
+@container (min-width: 61em) {
+  .clause[data-fit='61'] {
+    display: inline;
+  }
+}
+@container (min-width: 68em) {
+  .clause[data-fit='68'] {
+    display: inline;
+  }
+}
+@container (min-width: 75em) {
+  .clause[data-fit='75'] {
+    display: inline;
+  }
+}
+@container (min-width: 82em) {
+  .clause[data-fit='82'] {
+    display: inline;
+  }
+}
+@container (min-width: 88em) {
+  .clause[data-fit='88'] {
+    display: inline;
+  }
+}
+@container (min-width: 95em) {
+  .clause[data-fit='95'] {
+    display: inline;
+  }
+}
+@container (min-width: 102em) {
+  .clause[data-fit='102'] {
+    display: inline;
+  }
+}
+@container (min-width: 109em) {
+  .clause[data-fit='109'] {
+    display: inline;
+  }
+}
+
