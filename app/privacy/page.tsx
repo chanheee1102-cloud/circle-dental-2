@@ -193,8 +193,8 @@ export default function PrivacyPage() {
           </Article>
         </div>
 
-        <div className="mt-16 rounded-2xl bg-brand-50 p-7 text-[15px] leading-relaxed text-ink-soft">
-          <p className="font-bold text-brand-700">사업자 정보</p>
+        <div className="mt-16 rounded-2xl border border-brand-200/70 bg-parchment p-7 text-[15px] leading-relaxed text-ink-soft">
+          <p className="font-bold text-clay-700">사업자 정보</p>
           <p className="mt-2.5">
             {CLINIC.name} · 대표자 {CLINIC.director} · 사업자등록번호 {CLINIC.bizNo}
           </p>
@@ -228,9 +228,9 @@ function Article({
 }) {
   return (
     <section className="reveal">
-      <p className="text-[13.5px] font-black tracking-[0.18em] text-brand-500">제 {n} 조</p>
+      <p className="text-[13.5px] font-black tracking-[0.06em] text-clay-700">제 {n} 조</p>
       <h2 className="display-sm mt-2.5 text-[20px] leading-snug text-ink sm:text-[23px]">{title}</h2>
-      <p className="mt-3.5 max-w-[70ch] text-[16.5px] font-semibold leading-[1.8] text-brand-700">
+      <p className="mt-3.5 max-w-[70ch] text-[16.5px] font-semibold leading-[1.8] text-clay-700">
         <Sentences text={lead} />
       </p>
       <div className="mt-4 max-w-[70ch] space-y-4 text-[16.5px] leading-[1.9] text-ink-soft">

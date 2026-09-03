@@ -25,7 +25,7 @@ export function ComparisonTable({ data }: { data: Data }) {
         <table className="w-full min-w-[640px] border-collapse text-left">
           <caption className="sr-only">{data.title}</caption>
           <thead>
-            <tr className="bg-brand-50/70">
+            <tr className="bg-parchment">
               <th scope="col" className="px-6 py-4 text-[14px] font-black text-ink-muted">
                 비교 기준
               </th>

@@ -134,11 +134,11 @@ export default function EmergencyPage() {
         trail={TRAIL}
         photo="sterile"
         eyebrow="응급 상황"
-        title="지금 무엇을 해야 할지 먼저 보세요"
+        title="병원에 오시기 전에 하실 일을 먼저 말씀드립니다"
         desc="응급 상황에서는 좋은 뜻으로 한 행동이 오히려 상황을 나쁘게 만들기도 합니다. 병원에 오시기 전 몇 분 동안 하실 수 있는 것과 피하셔야 할 것을 상황별로 정리했습니다."
       />
 
-      <Container className="py-12 lg:py-16">
+      <Container className="py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">
@@ -146,16 +146,16 @@ export default function EmergencyPage() {
         </div>
 
         {/* 전화 안내를 맨 위에 둔다 — 급한 사람이 아래까지 읽지 않는다. */}
-        <div className="mt-8 flex flex-wrap items-center gap-4 rounded-2xl bg-brand-700 px-7 py-6 text-white">
+        <div className="mt-8 flex flex-wrap items-center gap-4 rounded-2xl border border-clay-600/40 bg-clay-400/[0.07] ring-1 ring-clay-400/10 ring-inset px-7 py-6 text-ink">
           <div className="min-w-0 flex-1">
             <p className="text-[16px] font-black">지금 상황을 먼저 말씀해 주세요</p>
-            <p className="mt-1 text-[14.5px] text-brand-100/85">
-              바로 오셔야 하는지, 조치 후 다음 진료일에 오셔도 되는지 판단해 드립니다.
+            <p className="mt-1 text-[14.5px] text-twilight">
+              바로 오셔야 하는 상황인지 함께 확인하고, 그동안 하실 수 있는 조치를 말씀드립니다.
             </p>
           </div>
           <a
             href={CLINIC.phoneHref}
-            className="shrink-0 rounded-full bg-parchment px-6 py-3 text-[17px] font-black text-brand-700"
+            className="shrink-0 rounded-full bg-ink px-7 py-3.5 text-[17px] font-semibold text-wine-bg"
           >
             {CLINIC.phone}
           </a>
@@ -166,13 +166,13 @@ export default function EmergencyPage() {
             <article
               key={c.id}
               id={c.id}
-              className="scroll-mt-28 overflow-hidden rounded-2xl border border-wine-line card-glass"
+              className="scroll-mt-28 overflow-hidden rounded-2xl border border-brand-200/70 bg-parchment"
             >
               <div className="border-b border-wine-line p-7">
-                <span className="inline-flex rounded-full bg-gold-400/20 px-3 py-1 text-[13.5px] font-black text-gold-600">
+                <span className="inline-flex rounded-full bg-clay-tint px-3 py-1 text-[13.5px] font-black text-clay-700">
                   <Sentences text={c.urgency} />
                 </span>
-                <h2 className="mt-3.5 text-[20px] font-black leading-snug tracking-[-0.01em] text-ink sm:text-[22px]">
+                <h2 className="mt-3.5 display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
                   {c.title}
                 </h2>
                 <p className="mt-3 max-w-[68ch] text-[17px] leading-[1.85] text-ink"><Sentences text={c.answer} /></p>
@@ -180,29 +180,29 @@ export default function EmergencyPage() {
 
               <div className="grid gap-0 sm:grid-cols-2">
                 <div className="border-b border-wine-line p-7 sm:border-b-0 sm:border-r">
-                  <h3 className="text-[14px] font-black tracking-wide text-brand-700">이렇게 하세요</h3>
+                  <h3 className="text-[14px] font-black tracking-wide text-clay-700">이렇게 하세요</h3>
                   <ul className="mt-3.5 space-y-2.5">
                     {c.doList.map((d) => (
                       <li key={d} className="flex gap-2.5 text-[15.5px] leading-relaxed text-ink-soft">
-                        <span aria-hidden className="mt-0.5 shrink-0 font-black text-brand-500">
+                        <span aria-hidden className="mt-0.5 shrink-0 font-black text-clay-700">
                           ○
                         </span>
-                        {d}
+                        <span><Sentences text={d} /></span>
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div className="p-7">
-                  <h3 className="text-[14px] font-black tracking-wide text-gold-600">
+                  <h3 className="text-[14px] font-black tracking-wide text-clay-700">
                     이건 하지 마세요
                   </h3>
                   <ul className="mt-3.5 space-y-2.5">
                     {c.dontList.map((d) => (
                       <li key={d} className="flex gap-2.5 text-[15.5px] leading-relaxed text-ink-soft">
-                        <span aria-hidden className="mt-0.5 shrink-0 font-black text-gold-600">
+                        <span aria-hidden className="mt-0.5 shrink-0 font-black text-clay-700">
                           ✕
                         </span>
-                        {d}
+                        <span><Sentences text={d} /></span>
                       </li>
                     ))}
                   </ul>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Container } from '@/components/ui';
+import { Container, Sentences } from '@/components/ui';
 import { CLINIC } from '@/lib/clinic';
 
 /**
@@ -31,7 +31,7 @@ export default function NotFound() {
             className="rounded-2xl border border-wine-line card-glass p-5 text-left transition-colors hover:border-brand-300 hover:bg-brand-50"
           >
             <span className="block text-[16.5px] font-black text-ink">{l.t}</span>
-            <span className="mt-1 block text-[14px] text-ink-soft">{l.d}</span>
+            <span className="mt-1 block text-[14px] text-ink-soft"><Sentences text={l.d} /></span>
           </Link>
         ))}
       </div>

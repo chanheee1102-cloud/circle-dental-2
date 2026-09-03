@@ -28,7 +28,7 @@ import { Sentences } from '@/components/ui';
  */
 export function SectionIndex({ n, label }: { n: string; label: string }) {
   return (
-    <p className="eyebrow-chip text-ink-soft">
+    <p className="eyebrow-chip text-clay-700">
       <span className="eyebrow-n">{n}</span>
       {label}
     </p>
@@ -64,14 +64,14 @@ export function SectionHead({
            .eyebrow-chip 한 곳에 있고, 사이트의 모든 구획 눈금이 그것 하나를 쓴다.
         ⚠️ 어두운 면에서 clay-400 은 4.26:1 로 미달이었다(실측). clay-300 이 6.1:1 이다.
       */}
-      <p className={`eyebrow-chip ${dark ? 'text-brand-200' : 'text-ink-soft'}`}>
+      <p className={`eyebrow-chip ${dark ? 'text-brand-200' : 'text-clay-700'}`}>
         <span className="eyebrow-n" style={{ color: dark ? 'var(--color-clay-300)' : undefined }}>
           {n}
         </span>
         {label}
       </p>
       <h2
-        className={`display-sm mt-6 max-w-[26em] text-[clamp(26px,3.4vw,42px)] leading-[1.24] tracking-[-0.03em] ${
+        className={`display-sm mt-6 max-w-[26em] text-[clamp(26px,3.6vw,42px)] leading-[1.2] tracking-[-0.02em] ${
           dark ? 'text-white' : 'text-ink'
         }`}
       >
@@ -109,7 +109,7 @@ export function Card({
   return (
     <Tag
       className={`rounded-[22px] border border-brand-200/80 bg-parchment card-edge ${
-        lift ? 'shadow-[var(--shadow-lift)]' : 'shadow-[var(--shadow-soft)]'
+        lift ? 'shadow-[var(--shadow-soft)]' : ''
       } ${className}`}
     >
       {children}
@@ -146,11 +146,7 @@ export function GlassCard({ children, className = '', as: Tag = 'div' }: {
  */
 export function HighlightPanel({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`relative isolate overflow-hidden rounded-[28px] border border-brand-200/70 bg-parchment ${className}`}>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(75%_60%_at_85%_8%,rgba(201,116,78,0.10)_0%,transparent_58%),radial-gradient(60%_50%_at_10%_100%,rgba(217,144,108,0.07)_0%,transparent_60%)]"
-      />
+    <div className={`relative isolate overflow-hidden rounded-[22px] border border-brand-200/70 bg-parchment ${className}`}>
       <div className="relative">{children}</div>
     </div>
   );

@@ -97,9 +97,9 @@ export default async function ImplantTopicPage({
         */}
         <PageHero trail={trail} photo="consult" eyebrow="임플란트" title={t.name} desc={t.tagline} />
 
-        <Container className="py-12 lg:py-16">
+        <Container className="py-16 lg:py-20">
 
-          <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 card-glass p-6 shadow-[var(--shadow-soft)]">
+          <div className="mt-8 max-w-[64ch] rounded-2xl border border-brand-200/70 bg-parchment p-6">
             <p className="text-[18px] leading-[1.85] text-ink"><Sentences text={t.answer} /></p>
           </div>
 
@@ -115,11 +115,11 @@ export default async function ImplantTopicPage({
           </div>
         </Container>
 
-        <section className="border-y border-brand-200/80 bg-parchment py-14">
+        <section className="border-y border-brand-200/80 bg-parchment py-16 lg:py-20">
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
-                <h2 id={headingId('이런 경우에 해당합니다')} className="display-sm scroll-mt-28 text-[21px] text-ink">
+                <h2 id={headingId('이런 경우에 해당합니다')} className="scroll-mt-28 display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
                   이런 경우에 해당합니다
                 </h2>
                 <ul className="mt-6 space-y-3">
@@ -127,18 +127,18 @@ export default async function ImplantTopicPage({
                     <li key={s} className="flex gap-3 text-[16.5px] leading-relaxed text-ink-soft">
                       <span
                         aria-hidden
-                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-[13.5px] text-white"
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-clay-700 text-[13.5px] text-white"
                       >
                         ✓
                       </span>
-                      {s}
+                      <span><Sentences text={s} /></span>
                     </li>
                   ))}
                 </ul>
               </div>
               {/* 부작용·한계를 같은 비중으로 둔다. 이점만 적으면 의료광고법상 문제가 된다. */}
               <div>
-                <h2 id={headingId('알아 두실 점')} className="display-sm scroll-mt-28 text-[21px] text-ink">
+                <h2 id={headingId('알아 두실 점')} className="scroll-mt-28 display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
                   알아 두실 점
                 </h2>
                 <ul className="mt-6 space-y-3">
@@ -146,11 +146,11 @@ export default async function ImplantTopicPage({
                     <li key={s} className="flex gap-3 text-[16.5px] leading-relaxed text-ink-soft">
                       <span
                         aria-hidden
-                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-500 text-[13.5px] text-white"
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-clay-700 text-[13.5px] text-white"
                       >
                         !
                       </span>
-                      {s}
+                      <span><Sentences text={s} /></span>
                     </li>
                   ))}
                 </ul>
@@ -159,8 +159,8 @@ export default async function ImplantTopicPage({
           </Container>
         </section>
 
-        <Container className="py-14">
-          <h2 id={headingId('자주 묻는 질문')} className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]">
+        <Container className="py-16 lg:py-20">
+          <h2 id={headingId('자주 묻는 질문')} className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             자주 묻는 질문
           </h2>
           <div className="mt-8 divide-y divide-wine-line border-t border-wine-line">
@@ -173,26 +173,26 @@ export default async function ImplantTopicPage({
           </div>
         </Container>
 
-        <section className="border-t border-wine-line bg-brand-50 py-14">
+        <section className="light-band border-t border-wine-line py-16 lg:py-20">
           <Container>
-            <h2 className="text-[20px] font-black text-ink">임플란트 다른 주제</h2>
+            <h2 className="display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">임플란트 다른 주제</h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {others.map((o) => (
                 <Link
                   key={o.slug}
                   href={`/treatment/implant/${o.slug}`}
-                  className="group rounded-xl border border-brand-200/70 card-glass px-5 py-4 transition-colors hover:border-brand-400"
+                  className="group rounded-2xl border border-brand-200/70 bg-parchment px-5 py-4 transition-colors hover:border-brand-300"
                 >
-                  <span className="block text-[16px] font-black text-ink group-hover:text-brand-700">
+                  <span className="block text-[16px] font-black text-ink transition-colors group-hover:text-clay-700">
                     {o.name}
                   </span>
-                  <span className="mt-1 block text-[14px] text-ink-muted">{o.tagline}</span>
+                  <span className="mt-1 block text-[14px] text-ink-muted"><Sentences text={o.tagline} /></span>
                 </Link>
               ))}
             </div>
             <Link
               href="/insight/journey/implant"
-              className="mt-8 inline-flex items-center gap-2 text-[16px] font-black text-brand-700 hover:underline"
+              className="mt-8 inline-flex items-center gap-2 text-[16px] font-black text-clay-700 hover:underline"
             >
               임플란트는 몇 번 오고 얼마나 걸리나요 <span aria-hidden>→</span>
             </Link>

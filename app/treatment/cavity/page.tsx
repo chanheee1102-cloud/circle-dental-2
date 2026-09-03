@@ -205,7 +205,7 @@ export default function CavityPage() {
             */}
             <div className="min-w-0 lg:order-1">
               <h2 className="reveal display-sm max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-ink">
-                어디까지 갔는지가 치료를 정합니다
+                충치가 어느 층까지 갔는지에 따라 치료가 갈립니다
               </h2>
               <p className="reveal mt-6 max-w-[30em] text-[17px] leading-[1.95] text-ink-soft">
                 <Sentences text="충치는 겉의 단단한 층에서 시작해 안쪽으로 들어갑니다. 층마다 무르기가 달라 진행 속도가 바뀌고, 신경이 있는 방에 닿는 순간 치료의 성격이 완전히 달라집니다." />
@@ -269,7 +269,7 @@ export default function CavityPage() {
                 MTA 직접치수복조술
               </p>
               <h2 className="reveal display-sm mt-5 max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-ink">
-                신경을 제거하면, 그 치아의 시계가 빨라집니다
+                신경을 제거한 치아는 수명이 짧아집니다
               </h2>
               <div className="reveal mt-7 max-w-[32em] space-y-5 text-[17px] leading-[1.95] text-ink-soft">
                 <p>
@@ -360,7 +360,7 @@ export default function CavityPage() {
                       </span>
                       <div>
                         <p className="text-[16px] font-black text-ink">{r.t}</p>
-                        <p className="mt-1.5 text-[15.5px] leading-[1.85] text-ink-soft">{r.d}</p>
+                        <p className="mt-1.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={r.d} /></p>
                       </div>
                     </li>
                   ))}
@@ -392,7 +392,7 @@ export default function CavityPage() {
             <div className="lg:order-1">
               <p className="reveal text-[14.5px] font-medium text-clay-600">치료 방법</p>
               <h2 className="reveal display-sm mt-5 max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.22] tracking-[-0.03em] text-ink">
-                당일에 끝내거나, 조각을 만들어 끼우거나
+                당일에 마무리하는 방법과 조각을 만들어 끼우는 방법이 있습니다
               </h2>
               <p className="reveal mt-6 max-w-[30em] text-[17px] leading-[1.95] text-ink-soft">
                 <Sentences text="파인 범위가 작으면 치아색 재료를 채워 그날 마무리합니다. 넓게 파여 채우는 것만으로는 버티기 어려운 자리는 본을 떠서 조각을 따로 만들어 끼웁니다." />
@@ -424,7 +424,7 @@ export default function CavityPage() {
           <div className="flex flex-wrap items-end justify-between gap-10">
             <div>
               <h2 className="reveal display-sm max-w-[14em] text-[clamp(28px,4.2vw,46px)] leading-[1.2] tracking-[-0.03em] text-ink">
-                신경을 살릴 수 있는 상태인지부터 확인하세요
+                신경을 살릴 수 있는 상태인지 먼저 확인합니다
               </h2>
               <p className="reveal mt-6 max-w-[32em] text-[17px] leading-[1.9] text-ink-soft">
                 <Sentences text="같은 깊이라도 신경의 노출 정도와 감염 상태에 따라 방법이 달라집니다. 검사로 확인한 뒤에 무엇이 가능한지 말씀드립니다." />

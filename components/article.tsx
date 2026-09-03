@@ -58,21 +58,21 @@ export function headingId(text: string) {
  *   답변 엔진이 "어디까지가 결론인지" 를 못 고른다.
  * ⚠️ 여기에 본문에 없는 사실을 새로 쓰지 않는다. 요약은 본문의 압축이지 추가가 아니다.
  */
-export function KeyPoints({ items, title = '한눈에 보기' }: { items: string[]; title?: string }) {
+export function KeyPoints({ items, title = '요약' }: { items: string[]; title?: string }) {
   if (items.length === 0) return null;
   return (
     <aside
       aria-label={title}
-      className="reveal rounded-2xl border border-brand-200/70 bg-brand-50/60 p-6 sm:p-7"
+      className="reveal rounded-2xl border border-brand-200/70 bg-parchment p-6 sm:p-7"
     >
-      <p className="flex items-center gap-2.5 text-[13.5px] font-black tracking-[0.16em] text-brand-600 uppercase">
-        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gold-500" />
+      <p className="flex items-center gap-2.5 text-[13.5px] font-black tracking-[0.06em] text-clay-700">
+        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-clay-700" />
         {title}
       </p>
       <ul className="mt-4 space-y-2.5">
         {items.slice(0, 5).map((t) => (
           <li key={t} className="flex gap-3 text-[16px] leading-[1.75] text-ink-soft">
-            <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400" />
+            <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700" />
             <span>{t}</span>
           </li>
         ))}
@@ -93,18 +93,18 @@ export function KeyPoints({ items, title = '한눈에 보기' }: { items: string
 export function TableOfContents({ items }: { items: string[] }) {
   if (items.length < 3) return null; // 두 줄짜리 목차는 자리만 차지한다
   return (
-    <nav aria-label="목차" className="reveal rounded-2xl border border-brand-200/70 card-glass p-6 sm:p-7">
-      <p className="text-[13.5px] font-black tracking-[0.16em] text-brand-600 uppercase">목차</p>
+    <nav aria-label="목차" className="reveal rounded-2xl border border-brand-200/70 bg-parchment p-6 sm:p-7">
+      <p className="text-[13.5px] font-black tracking-[0.06em] text-clay-700">목차</p>
       <ol className="mt-4 space-y-2">
         {items.map((t, i) => (
           <li key={t} className="flex gap-3 text-[15.5px] leading-relaxed">
             {/* ⚠️ brand-300 은 밝은 바탕에서 2.08:1 이었다. 번호도 읽는 글이다. */}
-            <span aria-hidden className="shrink-0 tabular-nums font-black text-brand-500">
+            <span aria-hidden className="shrink-0 tabular-nums font-black text-clay-700">
               {String(i + 1).padStart(2, '0')}
             </span>
             <a
               href={`#${headingId(t)}`}
-              className="text-ink-soft underline-offset-4 transition-colors hover:text-brand-700 hover:underline"
+              className="text-ink-soft underline-offset-4 transition-colors hover:text-clay-700 hover:underline"
             >
               {t}
             </a>

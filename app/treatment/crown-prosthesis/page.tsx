@@ -21,18 +21,31 @@ import {
 } from '@/lib/seo';
 
 /**
- * 심미보철 — 크림 종이(MindMarket) 시스템.
+ * 심미보철 — 라미네이트와 올세라믹 크라운을 **깎는 양**으로 가르는 비교 문서.
  *
- * ★★ 이 페이지만 다른 축을 쓴다 ★★
- *   바탕이 흰색이 아니라 크림 종이(#f5f1e4)이고, 층은 그림자가 아니라 크림→흰색 면 차이로만
- *   만든다. 라운드는 카드·버튼 50px, 사진 상자 64px. 초록은 **구조 강조 전용**이고
- *   코랄은 서비스 단위 행동 버튼 하나에만 쓴다.
+ * ★★ 2026-09-03 사이트의 결로 되돌렸다 (오너: "심미 보철은 디자인적인 부분 한번
+ *    전문가 지정해서 보완") ★★
+ *   이 페이지만 다른 시스템 위에 있었다 — '크림 종이(MindMarket)' 축: 50~64px 알약
+ *   모서리, 유리 카드(card-glass), 회색(#6f746f) 막대, 회색(#c3c7c3) 마감 띠.
+ *   팔레트를 하양·베이지·고동으로 바꿀 때 다른 페이지는 토큰을 따라왔는데 여기는
+ *   제 토큰(grass·coral·sun·paper·inkw·stone)을 따로 갖고 있어서 그대로 남았다.
+ *   같은 메뉴에서 이 페이지로 넘어오면 다른 사이트처럼 보였다.
  *
- * ★★ 한글 디스플레이 타이포 (2026-08-27 오너: "폰트도 마찬가지") ★★
- *   레퍼런스는 Inter weight 500 을 쓰지만, **한글은 500 으로 크게 키우면 획이 가늘어져
- *   힘이 빠진다.** 라틴 폰트의 500 과 한글 폰트의 500 은 시각 두께가 다르다.
- *   그래서 한글 제목은 700~800 을 쓰고, 자간(-0.05~-0.06em)과 행간(0.98)만 레퍼런스를 따른다.
- *   숫자·영문 라벨은 tabular-nums 로 자리를 고정한다.
+ *   무엇을 바꿨나 — 내용은 한 글자도 안 바꿨다. 그릇만 바꿨다.
+ *     · 면: 흰 캔버스 + light-band(베이지) 교대. 다른 진료 페이지와 같은 리듬.
+ *     · 카드: rounded-2xl + 실선(border-brand-200/70). 유리·그림자 없음.
+ *     · 막대: 금색 → 고동(clay-700) / 실선색(brand-300). 밝은 면에 금색을 채우지 않는다
+ *       — 금색은 어두운 면 안의 강조에만 쓴다는 오너 규칙(2026-09-02).
+ *     · 두 방법: **카드 두 장 → 칸 두 개.** 한 장이 1,500px 이었고 그 안에 카드가 또
+ *       들어 있었다(카드 속 카드). 칸은 실선 하나로 나누고, 안의 세 덩어리는 위 실선으로
+ *       구분한다. '알아 두실 점' 만 옅게 칠한 상자로 남긴다 — 한계는 눈에 띄어야 한다.
+ *     · 번호: '가능한 조건' 의 01/02/03 은 뺐다(순서가 뜻이 없다). 색 맞추기의 번호는
+ *       남긴다 — 그 구획의 요지가 '순서' 다.
+ *     · 자간 -0.05em → -0.02em. 사이트 전체가 -0.02~-0.03 이다.
+ *     · 회색 마감 띠 삭제. 다른 페이지에 없는 장식이었다.
+ *
+ * ⚠️ 유리 카드·50px 모서리로 되돌리지 말 것. 이 페이지만 튀던 원인이다.
+ * ⚠️ 막대에 금색을 다시 칠하지 말 것 — 밝은 면이다.
  *
  * ★ 내용 원칙 — 기존 홈페이지의 특징 목록은 마케팅 문구라 **판단 근거가 없다**(오너 지적).
  *   원문 사실은 전부 살리되, 삭제량·재료·조건·한계를 함께 적는다. 임상 수치는 표준 지식이고
@@ -68,6 +81,9 @@ const DOC_IMAGE = {
 /** 막대 길이 기준 — 가장 큰 삭제량(1.5mm)을 100% 로 둔다. */
 const MAX_MM = 1.5;
 
+/** 작은 소제목 — 칸 안의 세 덩어리 머리. 같은 역할은 같은 글자로. */
+const SUB = 'text-[13.5px] font-black tracking-[0.06em] text-clay-700';
+
 export default function CrownProsthesisPage() {
   const t = treatmentBySlug('crown-prosthesis');
   if (!t) throw new Error('crown-prosthesis 진료 데이터 없음 — lib/treatments.ts');
@@ -75,7 +91,7 @@ export default function CrownProsthesisPage() {
   const related = t.relatedSymptoms.map(symptomBySlug).filter(Boolean);
 
   return (
-    <div className="bg-paper text-inkw">
+    <div className="bg-wine-bg text-ink">
       <JsonLd
         data={[
           breadcrumbSchema(TRAIL),
@@ -101,8 +117,6 @@ export default function CrownProsthesisPage() {
       {/*
         머리말 — 진료과목 아홉 곳이 같은 부품을 쓴다 (2026-09-01 오너 지시).
         ⚠️ 여기서 손으로 다시 그리지 말 것. 모양은 components/TreatmentShell.tsx 에서 바꾼다.
-        ⚠️ 사진 없는 크림색 머리말로 되돌리지 말 것 — 같은 메뉴 안에서 이 페이지만
-           다른 사이트처럼 보였던 원인이다.
       */}
       <TreatmentHero
         trail={TRAIL}
@@ -142,81 +156,81 @@ export default function CrownProsthesisPage() {
         ★★ 삭제량 비교 — 이 페이지의 임팩트 자리 ★★
           두 방법의 가장 큰 차이는 색도 재료도 아니고 **얼마나 깎느냐** 다. 글자로 적으면
           0.3 과 1.5 의 차이가 안 느껴져서, 막대가 실제 비율대로 자라게 한다(.bar-grow).
+          이 페이지에서 움직임을 '연출' 하는 자리는 여기 하나다.
         ⚠️ 수치는 범위로만 적는다. 단일 값은 모든 케이스에 그 값이 적용되는 것처럼 읽힌다.
+        ⚠️ 막대 색 — 라미네이트는 고동(clay-700), 크라운은 실선색(brand-300). 짙고 옅음이
+           '덜 깎는 쪽' 을 가리킨다. 금색을 칠하지 말 것(밝은 면).
       */}
-      <section className="border-y border-wine-line bg-paper-2 py-24 lg:py-32">
+      <section className="py-24 lg:py-32">
         <Container>
-          <h2 className="display-sm focus-in max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] tracking-[-0.05em]">
+          <h2 className="display-sm reveal max-w-[13em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
             같은 앞니라도 깎는 두께가 세 배까지 차이 납니다
           </h2>
 
-          <div className="mt-16 space-y-12">
+          <div className="reveal-stack mt-14 divide-y divide-wine-line border-y border-wine-line">
             {METHODS.map((m) => (
-              <div key={m.key}>
-                <div className="flex flex-wrap items-baseline justify-between gap-4">
-                  <p className="text-[19px] font-bold">{m.name}</p>
-                  <p className="text-[16px] text-stone">{m.reduction.label}</p>
+              <div
+                key={m.key}
+                className="reveal grid gap-4 py-8 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end sm:gap-10"
+              >
+                <div>
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <p className="text-[19px] font-black tracking-[-0.01em] text-ink">{m.name}</p>
+                    <p className="text-[15px] text-ink-soft">{m.reduction.label}</p>
+                  </div>
+                  <div className="mt-4 h-8 w-full overflow-hidden rounded-[6px] bg-brand-100">
+                    <span
+                      className={`bar-grow h-full rounded-[6px] ${m.key === 'veneer' ? 'bg-clay-700' : 'bg-brand-300'}`}
+                      style={{ ['--w' as string]: `${(m.reduction.max / MAX_MM) * 100}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="mt-4 h-11 w-full overflow-hidden rounded-full bg-parchment">
-                  <span
-                    className={`bar-grow h-full rounded-full ${m.key === 'veneer' ? 'bg-grass' : 'bg-coral'}`}
-                    style={{ ['--w' as string]: `${(m.reduction.max / MAX_MM) * 100}%` }}
-                  />
-                </div>
-                <p className="mt-4 text-[clamp(26px,3vw,38px)] leading-none font-extrabold tracking-[-0.04em] tabular-nums">
+                <p className="text-[clamp(28px,3vw,40px)] leading-none font-extrabold tracking-[-0.03em] text-ink tabular-nums sm:min-w-[6.5em] sm:text-right">
                   {m.reduction.min}–{m.reduction.max}
-                  <span className="ml-2 text-[17px] font-bold text-stone">mm</span>
+                  <span className="ml-1.5 text-[16px] font-bold text-ink-soft">mm</span>
                 </p>
               </div>
             ))}
           </div>
 
-          <p className="mt-14 max-w-[38em] text-[18px] leading-[1.7] text-stone">
+          <p className="mt-10 max-w-[38em] text-[17.5px] leading-[1.9] text-twilight">
             <Sentences text="깎은 치아 구조는 돌아오지 않습니다. 그래서 덜 깎는 방법이 가능한지부터 확인하고, 그것으로 버티지 못하는 자리에만 더 깎는 방법을 씁니다." />
           </p>
         </Container>
       </section>
 
-      {/* 사진 */}
-      <Container className="pt-20 lg:pt-28">
-        <div className="card-edge img-in reveal overflow-hidden rounded-[64px]">
-          <div className="relative aspect-[3/1]">
-            <Image
-              src="/img/clinic/aes-consult.webp"
-              alt="상담실에서 원장이 모니터를 함께 보며 환자에게 보철 치료 계획을 설명하는 모습."
-              fill
-              priority
-              sizes="(min-width: 1320px) 1256px, 100vw"
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </Container>
-
       {/* ── 두 방법: 조건과 한계까지 ────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="light-band border-y border-wine-line py-24 lg:py-32">
         <Container>
-          <h2 className="display-sm reveal max-w-[12em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] tracking-[-0.05em]">
-            무엇이 가능한지는 남은 치아가 정합니다
+          <h2 className="display-sm reveal max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
+            남은 치아 상태에 따라 가능한 방법이 갈립니다
           </h2>
 
-          <div className="mt-16 grid gap-6 lg:grid-cols-2">
-            {METHODS.map((m) => (
-              <article key={m.key} className="rounded-[50px] card-glass p-8 sm:p-11">
-                <div className="flex items-center gap-3">
-                  <span
-                    aria-hidden
-                    className={`h-3 w-3 rounded-full ${m.key === 'veneer' ? 'bg-grass' : 'bg-coral'}`}
-                  />
-                  <p className="text-[16px] font-bold text-stone">{m.tag}</p>
-                </div>
-                <h3 className="display-sm mt-6 text-[clamp(28px,4.2vw,46px)] leading-[1.08] tracking-[-0.05em]">
+          {/*
+            ★ 카드 두 장이 아니라 **칸 두 개**다. 실선 하나로 나눈다(띠의 세로 구분선과 같은 말).
+              카드로 감싸면 한 장이 1,500px 이 되고, 그 안의 '알아 두실 점' 이 카드 속 카드가 된다.
+            ⚠️ 좁은 화면에서는 위아래로 쌓이며 위 실선으로 나뉜다.
+          */}
+          <div className="mt-14 grid gap-14 lg:grid-cols-2 lg:gap-0">
+            {METHODS.map((m, i) => (
+              <article
+                key={m.key}
+                className={
+                  i === 0
+                    ? 'lg:pr-14'
+                    : 'border-t border-wine-line pt-14 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-14'
+                }
+              >
+                <p className={SUB}>{m.tag}</p>
+                <h3 className="display-sm mt-4 text-[clamp(26px,3vw,36px)] leading-[1.15] tracking-[-0.02em] text-ink">
                   {m.name}
                 </h3>
-                <p className="mt-6 text-[18px] leading-[1.65]"><Sentences text={m.def} /></p>
+                <p className="mt-5 max-w-[30em] text-[17.5px] leading-[1.85] text-twilight">
+                  <Sentences text={m.def} />
+                </p>
 
-                <div className="card-edge mt-10 img-in overflow-hidden rounded-[36px]">
-                  <div className="relative aspect-[16/10]">
+                <div className="img-in reveal mt-8 overflow-hidden rounded-[20px] border border-brand-200 bg-parchment p-2">
+                  <div className="card-edge relative aspect-[16/10] overflow-hidden rounded-[13px]">
                     <Image
                       src={m.key === 'veneer' ? '/img/clinic/aes-veneer.webp' : '/img/clinic/aes-chairside.webp'}
                       alt={
@@ -225,42 +239,46 @@ export default function CrownProsthesisPage() {
                           : '진료실에서 원장과 진료 보조 인력이 벽에 걸린 파노라마 영상을 보며 진료하는 모습.'
                       }
                       fill
-                      sizes="(min-width: 1024px) 560px, 100vw"
+                      sizes="(min-width: 1024px) 600px, 100vw"
                       className="object-cover"
                     />
                   </div>
                 </div>
 
-                {/* 조건 — 원문에 없던 판단 근거. 이 카드에서 가장 중요한 부분이다. */}
-                <p className="mt-10 text-[14px] font-bold tracking-[0.06em] text-stone">가능한 조건</p>
-                <ul className="mt-5 space-y-5">
-                  {m.requires.map((r, i) => (
-                    <li key={r} className="flex gap-4">
-                      <span className="mt-[5px] text-[14px] font-bold text-stone tabular-nums">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                      <span className="text-[17.5px] leading-[1.65]">{r}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* 조건 — 원문에 없던 판단 근거. 이 칸에서 가장 중요한 부분이다. */}
+                <div className="mt-10 border-t border-wine-line pt-7">
+                  <p className={SUB}>가능한 조건</p>
+                  <ul className="mt-4 divide-y divide-wine-line">
+                    {m.requires.map((r) => (
+                      <li key={r} className="py-4 text-[16.5px] leading-[1.85] text-twilight">
+                        <Sentences text={r} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-                <p className="mt-10 text-[14px] font-bold tracking-[0.06em] text-stone">이런 경우에 검토합니다</p>
-                <ul className="mt-5 space-y-3">
-                  {m.indications.map((v) => (
-                    <li key={v} className="flex gap-3 text-[17.5px] leading-[1.6]">
-                      <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-inkw" />
-                      {v}
-                    </li>
-                  ))}
-                </ul>
+                <div className="mt-8 border-t border-wine-line pt-7">
+                  <p className={SUB}>이런 경우에 검토합니다</p>
+                  <ul className="mt-4 space-y-2.5">
+                    {m.indications.map((v) => (
+                      <li key={v} className="flex gap-3 text-[16.5px] leading-[1.7] text-twilight">
+                        <span aria-hidden className="mt-[11px] h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700" />
+                        <span><Sentences text={v} /></span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-                {/* ⚠️ 한계 — 지우지 말 것. 이것이 빠지면 광고문이 된다. */}
-                <div className="mt-10 rounded-[28px] bg-paper p-7">
-                  <p className="text-[14px] font-bold tracking-[0.06em] text-stone">알아 두실 점</p>
-                  <ul className="mt-4 space-y-3">
+                {/*
+                  ⚠️ 한계 — 지우지 말 것. 이것이 빠지면 광고문이 된다.
+                  ★ 이 덩어리만 옅게 칠한다 — 충치 페이지의 주의 상자와 같은 그릇이다.
+                */}
+                <div className="mt-8 rounded-2xl border border-clay-600/40 bg-clay-400/[0.07] p-6 ring-1 ring-clay-400/10 ring-inset">
+                  <p className={SUB}>알아 두실 점</p>
+                  <ul className="mt-3 space-y-2.5">
                     {m.limits.map((l) => (
-                      <li key={l} className="text-[17px] leading-[1.65] text-inkw">
-                        {l}
+                      <li key={l} className="text-[16px] leading-[1.8] text-ink">
+                        <Sentences text={l} />
                       </li>
                     ))}
                   </ul>
@@ -272,23 +290,25 @@ export default function CrownProsthesisPage() {
       </section>
 
       {/* ── 재료 ────────────────────────────────────────────────────── */}
-      <section className="border-y border-wine-line bg-paper-2 py-24 lg:py-32">
+      <section className="py-24 lg:py-32">
         <Container>
-          <h2 className="display-sm reveal max-w-[12em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] tracking-[-0.05em]">
+          <h2 className="display-sm reveal max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
             자리마다 유리한 재료가 다릅니다
           </h2>
-          <p className="reveal mt-8 max-w-[36em] text-[18px] leading-[1.7] text-stone">
+          <p className="reveal mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
             <Sentences text="앞니는 빛이 통과하는 정도가, 어금니는 씹는 힘을 견디는 강도가 먼저입니다. 하나로 정해 두면 한쪽이 손해를 봅니다." />
           </p>
 
-          <ul className="reveal-stack mt-16 grid gap-6 lg:grid-cols-3">
+          <ul className="reveal-stack mt-12 grid gap-5 lg:grid-cols-3">
             {MATERIALS.map((m) => (
-              <li key={m.name} className="reveal rounded-[50px] card-glass p-8 sm:p-10">
-                <p className="text-[14px] font-bold tracking-[0.06em] text-stone"><Sentences text={m.where} /></p>
-                <h3 className="display-sm mt-5 text-[26px] leading-[1.1] tracking-[-0.04em]">
+              <li key={m.name} className="reveal rounded-2xl border border-brand-200/70 bg-parchment p-7">
+                <p className={SUB}>{m.where}</p>
+                <h3 className="mt-3 text-[22px] leading-[1.25] font-black tracking-[-0.02em] text-ink">
                   {m.name}
                 </h3>
-                <p className="mt-5 text-[17.5px] leading-[1.65]"><Sentences text={m.body} /></p>
+                <p className="mt-4 text-[16.5px] leading-[1.85] text-twilight">
+                  <Sentences text={m.body} />
+                </p>
               </li>
             ))}
           </ul>
@@ -296,18 +316,18 @@ export default function CrownProsthesisPage() {
       </section>
 
       {/* ── 색 맞추기 ───────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="light-band border-y border-wine-line py-24 lg:py-32">
         <Container>
           <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
             <div className="lg:sticky lg:top-32 lg:self-start">
-              <h2 className="display-sm reveal max-w-[9em] text-[clamp(28px,4.2vw,46px)] leading-[1.06] tracking-[-0.05em]">
-                색은 마지막이 아니라 순서의 문제입니다
+              <h2 className="display-sm reveal max-w-[10em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
+                보철 색은 순서를 지켜야 맞출 수 있습니다
               </h2>
-              <p className="reveal mt-8 max-w-[26em] text-[18px] leading-[1.7] text-stone">
+              <p className="reveal mt-8 max-w-[26em] text-[17.5px] leading-[1.9] text-twilight">
                 <Sentences text="보철은 나중에 색이 변하지 않습니다. 그래서 무엇을 먼저 하느냐가 결과를 가릅니다." />
               </p>
-              <div className="card-edge img-in reveal mt-12 overflow-hidden rounded-[64px]">
-                <div className="relative aspect-[4/3]">
+              <div className="img-in reveal mt-10 overflow-hidden rounded-[20px] border border-brand-200 bg-parchment p-2">
+                <div className="card-edge relative aspect-[4/3] overflow-hidden rounded-[13px]">
                   <Image
                     src="/img/clinic/aes-scanner.webp"
                     alt="진료실 구강 스캐너 화면에 위아래 치열의 3차원 스캔 데이터가 표시되어 있다."
@@ -319,16 +339,17 @@ export default function CrownProsthesisPage() {
               </div>
             </div>
 
-            <ol className="reveal-stack space-y-4">
+            {/* ★ 번호를 남긴다 — 이 구획의 요지가 '순서' 다. 번호가 곧 내용이다. */}
+            <ol className="reveal-stack divide-y divide-wine-line border-y border-wine-line">
               {SHADE_STEPS.map((s) => (
-                <li key={s.n} className="reveal rounded-[50px] card-glass p-8 sm:p-10">
-                  <div className="flex items-baseline gap-4">
-                    <span className="text-[15px] font-bold text-stone tabular-nums">{s.n}</span>
-                    <h3 className="display-sm text-[21px] leading-[1.25] tracking-[-0.03em]">
-                      {s.t}
-                    </h3>
+                <li key={s.n} className="reveal grid gap-3 py-7 sm:grid-cols-[3em_minmax(0,1fr)] sm:gap-6">
+                  <span className="text-[14px] font-black tracking-[0.04em] text-clay-700 tabular-nums">{s.n}</span>
+                  <div>
+                    <h3 className="text-[20px] leading-[1.35] font-black tracking-[-0.02em] text-ink">{s.t}</h3>
+                    <p className="mt-3 max-w-[32em] text-[16.5px] leading-[1.85] text-twilight">
+                      <Sentences text={s.d} />
+                    </p>
                   </div>
-                  <p className="mt-4 text-[17.5px] leading-[1.7] text-inkw">{s.d}</p>
                 </li>
               ))}
             </ol>
@@ -340,16 +361,16 @@ export default function CrownProsthesisPage() {
         ── 부작용과 한계 ────────────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 이 구간이 빠지면 페이지 전체가 광고문이 된다.
       */}
-      <section className="border-y border-wine-line bg-paper-2 py-24 lg:py-32">
+      <section className="py-24 lg:py-32">
         <Container>
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
-            <h2 className="display-sm reveal text-[clamp(28px,4.2vw,46px)] leading-[1.06] tracking-[-0.05em]">
-              미리 아셔야 할 것
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
+            <h2 className="display-sm reveal text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
+              치료 전에 알아 두실 점
             </h2>
-            <ul className="reveal-stack space-y-5">
+            <ul className="reveal-stack divide-y divide-wine-line border-y border-wine-line">
               {RISKS.map((r) => (
-                <li key={r} className="reveal border-b border-hairline pb-5 text-[17.5px] leading-[1.65] last:border-0 last:pb-0">
-                  {r}
+                <li key={r} className="reveal py-5 text-[17px] leading-[1.8] text-twilight">
+                  <Sentences text={r} />
                 </li>
               ))}
             </ul>
@@ -358,100 +379,91 @@ export default function CrownProsthesisPage() {
       </section>
 
       {/* ── 마무리 ──────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32">
+      <section className="light-band border-y border-wine-line py-24 lg:py-32">
         <Container>
-          <div className="rounded-[50px] card-glass p-8 sm:p-14">
-            <h2 className="display-sm focus-in max-w-[11em] text-[clamp(28px,4.2vw,46px)] leading-[1.08] tracking-[-0.05em]">
-              덜 깎고도 되는지부터 봅니다
-            </h2>
-            <p className="mt-7 max-w-[34em] text-[18px] leading-[1.7] text-stone">
-              <Sentences text="남은 치아의 양과 무는 힘, 잇몸 상태를 먼저 확인한 뒤에 어떤 방법이 가능한지 말씀드립니다. 씹는 기능과 잇몸을 정리하는 것이 색과 모양보다 앞섭니다." />
-            </p>
+          <h2 className="display-sm reveal max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
+            덜 깎는 방법이 가능한지 먼저 봅니다
+          </h2>
+          <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
+            <Sentences text="남은 치아의 양과 무는 힘, 잇몸 상태를 먼저 확인한 뒤에 어떤 방법이 가능한지 말씀드립니다. 씹는 기능과 잇몸을 정리하는 것이 색과 모양보다 앞섭니다." />
+          </p>
 
-            {journey ? (
-              <dl className="mt-12 flex flex-wrap gap-x-16 gap-y-6 border-t border-inkw pt-8">
-                <div>
-                  <dt className="text-[16px] text-stone">내원 횟수</dt>
-                  <dd className="mt-2 text-[clamp(26px,3vw,38px)] leading-none font-extrabold tracking-[-0.04em] tabular-nums">
-                    {journey.visits}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-[16px] text-stone">치료 기간</dt>
-                  <dd className="mt-2 text-[clamp(26px,3vw,38px)] leading-none font-extrabold tracking-[-0.04em] tabular-nums">
-                    {journey.duration}
-                  </dd>
-                </div>
-              </dl>
-            ) : null}
+          {journey ? (
+            <dl className="mt-10 flex flex-wrap gap-x-14 gap-y-5">
+              <div>
+                <dt className="text-[14.5px] font-medium text-ink-soft">내원 횟수</dt>
+                <dd className="mt-2 text-[clamp(26px,3vw,36px)] leading-none font-extrabold tracking-[-0.03em] text-ink tabular-nums">
+                  {journey.visits}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[14.5px] font-medium text-ink-soft">치료 기간</dt>
+                <dd className="mt-2 text-[clamp(26px,3vw,36px)] leading-none font-extrabold tracking-[-0.03em] text-ink tabular-nums">
+                  {journey.duration}
+                </dd>
+              </div>
+            </dl>
+          ) : null}
 
-            <div className="mt-12 flex flex-wrap gap-3">
-              {/* 이 시스템에서 가장 강한 색 — 서비스 단위 행동에만 쓴다. */}
-              <a
-                href={CLINIC.booking.naver}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 rounded-full bg-dusk px-8 py-4 text-[17px] font-semibold text-parchment transition-colors hover:bg-twilight"
-              >
-                진료 예약하기
-                <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-parchment" />
-              </a>
-              <a
-                href={CLINIC.phoneHref}
-                className="inline-flex items-center gap-3 rounded-full border border-inkw px-8 py-4 text-[16px] font-bold text-inkw transition-colors hover:bg-paper"
-              >
-                {CLINIC.phone}
-              </a>
-            </div>
-
-            <div className="mt-14 grid gap-8 border-t border-hairline pt-10 sm:grid-cols-2 lg:grid-cols-4">
-              {/*
-                ⚠️ 라미네이트 링크를 지우지 말 것 (2026-09-02) — 이 페이지는 **둘 중 무엇을
-                   고를지**를 다루고, 라미네이트 하나를 깊게 보는 문서는 따로 있다.
-                   서로를 안 가리키면 비교만 보고 상세는 못 본 사람이 생긴다.
-              */}
-              <Link href="/treatment/laminate" className="group">
-                <p className="text-[16px] text-stone">자세히 보기</p>
-                <p className="mt-2 text-[18px] font-bold">
-                  <span className="border-b border-inkw pb-0.5 transition-colors group-hover:border-grass">
-                    라미네이트
-                  </span>
-                </p>
-              </Link>
-              <Link href="/faq#crown-prosthesis" className="group">
-                <p className="text-[16px] text-stone">자주 묻는 질문</p>
-                <p className="mt-2 text-[18px] font-bold">
-                  <span className="border-b border-inkw pb-0.5 transition-colors group-hover:border-grass">
-                    많이 묻는 것 {t.qa.length}가지
-                  </span>
-                </p>
-              </Link>
-              {/* ⚠️ 2개다 — 위에 라미네이트 링크가 들어와 네 칸이 찼다(3개면 한 줄이 밀린다). */}
-              {related.slice(0, 2).map((s) => (
-                <Link key={s!.slug} href={`/insight/symptom/${s!.slug}`} className="group">
-                  <p className="text-[16px] text-stone">관련 증상</p>
-                  <p className="mt-2 text-[18px] font-bold">
-                    <span className="border-b border-inkw pb-0.5 transition-colors group-hover:border-grass">
-                      {s!.title}
-                    </span>
-                  </p>
-                </Link>
-              ))}
-            </div>
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            <a
+              href={CLINIC.booking.naver}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
+            >
+              진료 예약하기 <span aria-hidden>→</span>
+            </a>
+            <a
+              href={CLINIC.phoneHref}
+              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-ink hover:text-wine-bg"
+            >
+              {CLINIC.phone}
+            </a>
           </div>
+
+          {/*
+            ⚠️ 라미네이트 링크를 지우지 말 것 (2026-09-02) — 이 페이지는 **둘 중 무엇을
+               고를지**를 다루고, 라미네이트 하나를 깊게 보는 문서는 따로 있다.
+               서로를 안 가리키면 비교만 보고 상세는 못 본 사람이 생긴다.
+            ⚠️ 관련 증상은 2개다 — 라미네이트 · 문답과 합쳐 네 칸이 찬다(3개면 한 줄이 밀린다).
+          */}
+          <div className="mt-20 grid gap-8 border-t border-wine-line pt-12 sm:grid-cols-2 lg:grid-cols-4">
+            <Link href="/treatment/laminate" className="group">
+              <p className="text-[14.5px] font-medium text-ink-soft">자세히 보기</p>
+              <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
+                라미네이트 <span aria-hidden>→</span>
+              </p>
+            </Link>
+            <Link href="/faq#crown-prosthesis" className="group">
+              <p className="text-[14.5px] font-medium text-ink-soft">자주 묻는 질문</p>
+              <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
+                많이 묻는 것 {t.qa.length}가지 <span aria-hidden>→</span>
+              </p>
+            </Link>
+            {related.slice(0, 2).map((s) => (
+              <Link key={s!.slug} href={`/insight/symptom/${s!.slug}`} className="group">
+                <p className="text-[14.5px] font-medium text-ink-soft">관련 증상</p>
+                <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
+                  {s!.title} <span aria-hidden>→</span>
+                </p>
+              </Link>
+            ))}
+          </div>
+
+          {/*
+            ⚠️ 발행 정보·근거·고지를 **마무리 구획 안에** 둔다(라미네이트 페이지와 같은 자리).
+               셋 다 지금은 null 을 돌려주는 부품이라(components/article.tsx · ui.tsx),
+               별도 Container 로 감싸 여백을 주면 **아무것도 없는 흰 띠 128px** 이 마무리 띠와
+               푸터 사이에 남는다(2026-09-03 실측). 다시 켜지면 여기서 그대로 나타난다.
+          */}
+          <div className="mt-16 max-w-[46em]">
+            <ArticleMeta path={PATH} />
+          </div>
+          <References items={REFS_TREATMENT} />
+          <MedicalNotice extra={NO_GUARANTEE_NOTE} />
         </Container>
       </section>
-
-      <Container className="pb-20">
-        <div className="max-w-[46em]">
-          <ArticleMeta path={PATH} />
-        </div>
-        <References items={REFS_TREATMENT} />
-        <MedicalNotice extra={NO_GUARANTEE_NOTE} />
-      </Container>
-
-      {/* 닫는 띠 — 이 시스템의 마감. */}
-      <div aria-hidden className="h-16 bg-sun sm:h-20" />
     </div>
   );
 }

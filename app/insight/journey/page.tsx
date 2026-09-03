@@ -41,10 +41,10 @@ export default function JourneyIndexPage() {
         photo="corridor"
         eyebrow="치료 여정"
         title="몇 번 오고 얼마나 걸리는지 미리 알려드립니다"
-        desc="치료가 길어지는 이유는 대부분 시술이 아니라 기다리는 시간입니다. 어디서 기다리게 되는지 알면 일정을 세우기가 훨씬 쉬워집니다."
+        desc="치료가 길어지는 이유는 대부분 시술 시간이 아니라 아무는 것을 기다리는 시간입니다. 어느 단계에서 기다리게 되는지 아시면 일정을 잡기가 수월합니다."
       />
 
-      <Container className="py-12 lg:py-16">
+      <Container className="py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">
@@ -56,21 +56,21 @@ export default function JourneyIndexPage() {
             <Link
               key={j.slug}
               href={`/insight/journey/${j.slug}`}
-              className="group flex h-full flex-col rounded-xl border border-brand-200/70 card-glass p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+              className="group flex h-full flex-col rounded-2xl border border-brand-200/70 bg-parchment p-7 transition-colors hover:border-brand-300"
             >
-              <span className="inline-flex w-fit rounded-full bg-brand-100 px-3.5 py-1.5 text-[13.5px] font-black text-brand-700">
+              <span className="inline-flex w-fit rounded-full bg-clay-tint px-3.5 py-1.5 text-[13.5px] font-black text-clay-700">
                 {j.treatment}
               </span>
-              <h2 className="display-sm mt-4 text-[18px] text-ink group-hover:text-brand-700">
+              <h2 className="display-sm mt-4 text-[18px] text-ink transition-colors group-hover:text-clay-700">
                 {j.question}
               </h2>
               <p className="mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft"><Sentences text={j.answer} /></p>
 
               <div className="mt-5 flex flex-wrap gap-2 border-t border-wine-line pt-4">
-                <span className="rounded-full border border-brand-200 px-3 py-1.5 text-[13.5px] font-bold text-brand-700">
+                <span className="rounded-full border border-brand-300 px-3 py-1.5 text-[13.5px] font-bold text-ink-soft">
                   내원 {j.visits}
                 </span>
-                <span className="rounded-full border border-brand-200 px-3 py-1.5 text-[13.5px] font-bold text-brand-700">
+                <span className="rounded-full border border-brand-300 px-3 py-1.5 text-[13.5px] font-bold text-ink-soft">
                   {j.duration}
                 </span>
               </div>

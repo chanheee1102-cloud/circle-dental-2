@@ -40,7 +40,7 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
           <Link
             key={s.slug}
             href={`/about/special/${s.slug}`}
-            className={`group card-edge flex overflow-hidden rounded-2xl border border-brand-200/70 card-glass shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)] ${
+            className={`group card-edge flex overflow-hidden rounded-2xl border border-brand-200/70 bg-parchment transition-colors hover:border-brand-300 ${
               wide ? 'flex-col sm:col-span-2 sm:flex-row' : 'flex-col'
             }`}
           >
@@ -64,13 +64,13 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
             </div>
 
             <div className={`flex flex-1 flex-col p-7 ${wide ? 'sm:justify-center' : ''}`}>
-              <h3 className="display-sm text-[20px] leading-[1.35] text-ink group-hover:text-brand-700">
+              <h3 className="display-sm text-[20px] leading-[1.35] text-ink transition-colors group-hover:text-clay-700">
                 {bindKo(s.title)}
               </h3>
               <p className="mt-3.5 line-clamp-3 text-[15.5px] leading-[1.8] text-ink-soft">
                 {bindKo(s.body)}
               </p>
-              <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-bold text-brand-700">
+              <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-bold text-clay-700">
                 자세히 보기
                 <span
                   aria-hidden

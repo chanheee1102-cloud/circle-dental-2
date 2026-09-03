@@ -200,7 +200,10 @@ export function SiteHeader() {
                 'border-b border-white/16 bg-[linear-gradient(180deg,rgba(23,23,26,0.30),rgba(23,23,26,0.10))] backdrop-blur-[7px] backdrop-brightness-[0.76] backdrop-saturate-150'
               : // ⚠️ 흐림을 줄이지 말 것 — 어두운 글자는 밝기를 눌러도 안 지워지므로,
                 //    옅은 면 + 약한 흐림이면 본문이 헤더 글자와 겹쳐 읽힌다(실제로 겪었다).
-                'border-b border-charcoal/25 bg-[linear-gradient(180deg,rgba(254,255,252,0.90),rgba(254,255,252,0.78))] backdrop-blur-[40px] backdrop-saturate-[1.6] shadow-[0_10px_24px_-18px_rgba(43,30,20,0.35)]'
+                /* ★ 2026-09-03 — 순백(254,255,252) → brand-50(248,243,234). 캔버스가 흰색이 된 뒤로
+                //   순백 유리는 흰 페이지 위에서 '띠' 로 안 읽혔다. 베이지 한 단이 경계를 만든다.
+                //   흐림·채도는 그대로다(아래 ⚠️). */
+                'border-b border-charcoal/20 bg-[linear-gradient(180deg,rgba(248,243,234,0.92),rgba(248,243,234,0.80))] backdrop-blur-[40px] backdrop-saturate-[1.6] shadow-[0_8px_20px_-16px_rgba(43,30,20,0.28)]'
           }`}
         >
           {/* ⚠️ 띠는 화면 폭, 내용은 본문 폭 — 안쪽 상자만 max-w 를 진다. */}
@@ -264,6 +267,25 @@ export function SiteHeader() {
         >
           {NAV.map((item) => {
             const open = openMenu === item.label;
+            /*
+             * ★ 현재 위치 (2026-09-03) — 어느 묶음 안에 있는지 띠에서 보이게 한다.
+             *   전에는 표시가 없어서 하위 페이지 스무 곳을 오가도 헤더가 늘 같았다.
+             *   자식 주소로 먼저 맞추고(하위 페이지가 자식에 걸린다), 없으면 묶음 주소로.
+             * ⚠️ startsWith 로 뭉뚱그리지 말 것 — '/treatment' 는 자연치아살리기 묶음의
+             *    '전체 진료과목' 이고, '/treatment/implant/…' 는 임플란트 묶음이다.
+             */
+            /*
+             * ⚠️⚠️ 접두사 매칭은 **두 단계 이상 주소에만** (2026-09-03 실측) ⚠️⚠️
+             *   '전체 진료과목' 의 주소가 '/treatment' 라서 startsWith 로 재면 진료 페이지
+             *   전부가 자연치아살리기 묶음에도 걸렸다 — 라미네이트 페이지에서 밑줄이 두 개
+             *   떴다. 한 단계짜리 허브 주소(/treatment, /insight)는 정확히 같을 때만 잡고,
+             *   '/treatment/implant/…' '/insight/symptom/…' 처럼 하위 경로를 거느리는
+             *   두 단계 주소만 접두사로 잡는다.
+             */
+            const under = (href: string) =>
+              pathname === href ||
+              (href.split('/').filter(Boolean).length >= 2 && pathname.startsWith(href + '/'));
+            const here = (item.children ?? []).some((c) => under(c.href)) || pathname === item.href;
             return (
               <div
                 key={item.href}
@@ -285,14 +307,27 @@ export function SiteHeader() {
                   data-nav-trigger=""
                   onFocus={() => setOpenMenu(item.children ? item.label : null)}
                   aria-expanded={item.children ? open : undefined}
-                  className={`relative inline-flex items-center gap-1 rounded-full px-4 py-2.5 text-[18px] font-bold transition-colors xl:px-5 ${
+                  aria-current={here ? 'true' : undefined}
+                  /*
+                    ★ 현재 묶음은 글자 밑에 2px 고동 줄 하나. 알약 안쪽(bottom-1.5)에 두어
+                      hover 배경과 겹쳐도 지저분하지 않다.
+                    ★ focus-visible 링 — 키보드로 다니는 사람에게 지금 어디에 있는지 보인다.
+                      마우스 클릭에는 안 뜬다(focus-visible).
+                  */
+                  className={`relative inline-flex items-center gap-1 rounded-full px-4 py-2.5 text-[18px] font-bold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-clay-700/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-50 xl:px-5 ${
+                    here
+                      ? 'after:absolute after:inset-x-4 after:bottom-1.5 after:h-[2px] after:rounded-full after:bg-clay-700 xl:after:inset-x-5'
+                      : ''
+                  } ${
                     overHero
                       ? open
                         ? 'bg-white/14 text-white'
                         : 'text-white hover:text-white'
                       : open
                         ? 'bg-charcoal/8 text-charcoal'
-                        : 'text-charcoal hover:text-clay-700'
+                        : here
+                          ? 'text-clay-700'
+                          : 'text-charcoal hover:text-clay-700'
                   }`}
                 >
                   {item.label}
@@ -330,7 +365,7 @@ export function SiteHeader() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="예약하기 — 네이버 예약 새 창으로 열기"
-            className="hidden shrink-0 items-center gap-1.5 rounded-full bg-clay-700 px-5 py-2.5 text-[15px] font-bold text-white transition-opacity hover:opacity-90 lg:inline-flex"
+            className="hidden shrink-0 items-center gap-1.5 rounded-full bg-clay-700 px-5 py-2.5 text-[15px] font-bold text-white transition-opacity outline-none hover:opacity-90 focus-visible:ring-2 focus-visible:ring-clay-700/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-50 lg:inline-flex"
           >
             예약하기
             <span aria-hidden>→</span>
@@ -338,13 +373,15 @@ export function SiteHeader() {
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-[8px] border sm:h-11 sm:w-11 lg:hidden ${
+            /* ⚠️ ☰ ✕ 같은 유니코드 글리프로 되돌리지 말 것 — 글꼴마다 굵기·크기가 달라
+               같은 헤더 안의 SVG 화살표(예약하기)와 획 두께가 안 맞는다. */
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-full border outline-none focus-visible:ring-2 focus-visible:ring-clay-700/60 sm:h-11 sm:w-11 lg:hidden ${
               overHero ? 'border-white/40 text-white' : 'border-wine-line text-charcoal'
             }`}
             aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
             aria-expanded={mobileOpen}
           >
-            <span className="text-lg leading-none">{mobileOpen ? '✕' : '☰'}</span>
+            <BurgerIcon open={mobileOpen} />
           </button>
           </div>
         </div>
@@ -422,7 +459,10 @@ export function SiteHeader() {
                          여기서 또 표시하면 지금 없앤 그 중복이 되살아난다.
                     */}
                     <ul className="space-y-3">
-                      {kids.map((c) => (
+                      {kids.map((c) => {
+                        /* ★ 지금 보고 있는 페이지는 판 안에서도 짙게 — 어디 있는지 두 번 말해 준다. */
+                        const current = pathname === c.href;
+                        return (
                         <li key={c.href}>
                           {/* ⚠️ 바깥 링크는 새 창 — lib/nav.ts 의 external 표시를 그대로 따른다. */}
                           <Link
@@ -430,7 +470,10 @@ export function SiteHeader() {
                             target={'external' in c && c.external ? '_blank' : undefined}
                             rel={'external' in c && c.external ? 'noopener noreferrer' : undefined}
                             onClick={() => setOpenMenu(null)}
-                            className="block text-[16.5px] whitespace-nowrap text-ink-soft transition-colors hover:text-ink"
+                            aria-current={current ? 'page' : undefined}
+                            className={`block text-[16.5px] whitespace-nowrap underline-offset-[5px] decoration-brand-300 transition-colors outline-none hover:text-ink hover:underline focus-visible:text-ink focus-visible:underline ${
+                              current ? 'font-bold text-ink' : 'text-ink-soft'
+                            }`}
                           >
                             {c.label}
                             {'external' in c && c.external ? (
@@ -438,7 +481,8 @@ export function SiteHeader() {
                             ) : null}
                           </Link>
                         </li>
-                      ))}
+                        );
+                      })}
                     </ul>
                   </nav>
                 );
@@ -463,14 +507,14 @@ export function SiteHeader() {
                 rel="noopener noreferrer"
                 onClick={() => setMobileOpen(false)}
                 aria-label="예약하기 — 네이버 예약 새 창으로 열기"
-                className="inline-flex items-center justify-center rounded-[8px] bg-dusk px-4 py-3.5 text-[16px] font-semibold text-parchment"
+                className="inline-flex items-center justify-center rounded-full bg-ink px-4 py-3.5 text-[16px] font-semibold text-wine-bg"
               >
                 예약하기
               </a>
               <a
                 href={CLINIC.phoneHref}
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex items-center justify-center gap-2 rounded-[8px] border border-ink/40 card-glass px-4 py-3.5 text-[16px] font-semibold text-charcoal"
+                className="inline-flex items-center justify-center gap-2 rounded-full border-[1.5px] border-ink/60 px-4 py-3.5 text-[16px] font-semibold text-ink"
               >
                 <PhoneIcon />
                 {CLINIC.phone}
@@ -514,7 +558,7 @@ export function SiteHeader() {
                             <Link
                               href={item.href}
                               onClick={() => setMobileOpen(false)}
-                              className="flex items-center gap-2 py-2.5 text-[15px] font-black text-ash"
+                              className="flex items-center gap-2 py-2.5 text-[15px] font-black text-clay-700"
                             >
                               전체 보기
                               <span aria-hidden>→</span>
@@ -533,7 +577,7 @@ export function SiteHeader() {
                                   {c.label}
                                 </span>
                                 {c.desc && (
-                                  <span className="mt-0.5 block text-[13.5px] text-ash">
+                                  <span className="mt-0.5 block text-[13.5px] text-ink-soft">
                                     <Sentences text={c.desc} />
                                   </span>
                                 )}
@@ -583,6 +627,19 @@ function Chevron({ open = false }: { open?: boolean }) {
       className={`transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
     >
       <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** 햄버거 ↔ 닫기 — 획 두께 1.9 로 Chevron 과 맞춘다. */
+function BurgerIcon({ open }: { open: boolean }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden focusable="false">
+      {open ? (
+        <path d="M4 4l10 10M14 4 4 14" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+      ) : (
+        <path d="M3 5h12M3 9h12M3 13h12" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+      )}
     </svg>
   );
 }

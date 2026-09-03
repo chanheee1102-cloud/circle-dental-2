@@ -74,7 +74,9 @@ export const NAV: NavItem[] = [
     href: '/treatment/implant',
     children: [
       { label: '임플란트', href: '/treatment/implant', desc: '치아를 뽑았거나 빠진 자리' },
-      { label: '크라운 · 보철', href: '/treatment/crown-prosthesis', desc: '깨졌거나 크게 파인 치아' },
+      /* ⚠️ '크라운 · 보철' 을 여기 다시 넣지 말 것 (2026-09-03 오너: "두개 페이지가 똑같은데") —
+         심미치료 묶음의 '심미보철' 과 **같은 페이지**(/treatment/crown-prosthesis)였다.
+         한 페이지가 메뉴 두 곳에 다른 이름으로 걸리면 서로 다른 페이지인 줄 알고 둘 다 눌러 본다. */
     ],
   },
   {

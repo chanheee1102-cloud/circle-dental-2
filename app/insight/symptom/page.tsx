@@ -38,7 +38,7 @@ export default function SymptomIndexPage() {
         desc="어떤 치료가 필요한지는 검사와 진단의 결과이고, 출발점은 지금 느끼시는 증상입니다. 아픈 자리와 느낌으로 먼저 찾아보세요."
       />
 
-      <Container className="py-12 lg:py-16">
+      <Container className="py-16 lg:py-20">
 
         {/* ⚠️ 도입 삽화를 되살리지 말 것 (2026-09-01 오너) — 목록이 2단 유리 카드라
             사람 사진 없이도 '자료' 로 읽히지 않는다. 큰 사진은 목록을 화면 아래로 민다. */}
@@ -58,11 +58,11 @@ export default function SymptomIndexPage() {
             <Link
               key={s.slug}
               href={`/insight/symptom/${s.slug}`}
-              className="group block h-full rounded-2xl border border-wine-line card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
+              className="group block h-full rounded-2xl border border-brand-200/70 bg-parchment p-6 transition-colors hover:border-brand-300"
             >
               <div className="flex items-start justify-between gap-5">
                 <div className="min-w-0">
-                  <h2 className="text-[18px] font-black leading-snug text-ink group-hover:text-brand-700 sm:text-[19px]">
+                  <h2 className="text-[18px] font-black leading-snug text-ink transition-colors group-hover:text-clay-700 sm:text-[19px]">
                     {s.title}
                   </h2>
                   {/* 목록에서도 즉답 첫 문장을 보여 준다 — 클릭 전에 답의 방향을 알 수 있게. */}
@@ -72,7 +72,7 @@ export default function SymptomIndexPage() {
                 </div>
                 <span
                   aria-hidden
-                  className="mt-1 shrink-0 text-brand-500 transition-transform group-hover:translate-x-1"
+                  className="mt-1 shrink-0 text-clay-700 transition-transform group-hover:translate-x-1"
                 >
                   →
                 </span>

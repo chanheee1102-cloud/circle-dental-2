@@ -204,9 +204,7 @@ export default function LaminatePage() {
               </h2>
               <ul className="reveal-stack mt-10 divide-y divide-wine-line border-y border-wine-line">
                 {VENEER.indications.map((v) => (
-                  <li key={v} className="reveal py-6 text-[17px] leading-[1.85] text-twilight">
-                    {v}
-                  </li>
+                  <li key={v} className="reveal py-6 text-[17px] leading-[1.85] text-twilight"><Sentences text={v} /></li>
                 ))}
               </ul>
             </div>
@@ -238,13 +236,13 @@ export default function LaminatePage() {
         </Container>
       </section>
 
-      {/* ── 05 한계 · 미리 아셔야 할 것 ──────────────────────────── */}
+      {/* ── 05 한계 · 치료 전에 알아 두실 점 ──────────────────────────── */}
       {/* ⚠️⚠️ 이 구획을 지우지 말 것 — 의료법 제56조. 되돌릴 수 없는 치료다. */}
       <section className="py-24 lg:py-32">
         <Container>
           <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
             <h2 className="display-sm max-w-[12em] text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
-              미리 아셔야 할 것
+              치료 전에 알아 두실 점
             </h2>
             <div>
               <ul className="reveal-stack divide-y divide-wine-line border-y border-wine-line">
@@ -322,7 +320,7 @@ export default function LaminatePage() {
             <Link href="/treatment/crown-prosthesis" className="group">
               <p className="text-[14.5px] font-medium text-ink-soft">함께 보기</p>
               <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
-                심미보철 — 깎는 양 비교 <span aria-hidden>→</span>
+                심미보철에서 깎는 양 비교하기 <span aria-hidden>→</span>
               </p>
             </Link>
             <Link href="/treatment/whitening" className="group">

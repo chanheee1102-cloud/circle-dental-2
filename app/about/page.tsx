@@ -84,7 +84,7 @@ const ABOUT_QA = [
     q: '어떤 공간에서 진료하나요?',
     /* ⚠️ 답은 아래 사진 열두 장의 alt 에서만 가져왔다(lib/assets.ts interior).
        확인되지 않은 시설·장비를 여기에 적지 말 것. */
-    a: '상담실과 진료실, 소독실을 홈페이지에서 미리 보실 수 있습니다. 상담 부스와 진료실은 유리 파티션으로 칸을 나눠 두었고, 진료 기구는 멸균 포장한 것을 소독기에서 꺼내 씁니다.',
+    a: '상담 부스와 진료실은 유리 파티션으로 칸을 나눠 두었고, 진료 기구는 멸균 포장한 것을 소독기에서 꺼내 씁니다.',
   },
   {
     q: '진료시간은 어떻게 되나요?',
@@ -162,19 +162,19 @@ export default function AboutPage() {
         ⚠️ 자격 목록에 체크 동그라미를 되살리지 말 것(2026-09-01 오너). 사실을 적은 줄이라
            장식이 필요 없고, 그 장식이 '어디서나 보는 화면' 을 만드는 지점이다.
       */}
-      <section className="bg-parchment py-16 lg:py-24">
+      <section className="bg-parchment py-24 lg:py-32">
         <Container className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-16">
           <div className="w-full max-w-[580px]">
             <SectionHead
               eyebrow="의료진"
               title={
                 <>
-                  대학병원 교수출신{' '}
+                  경희대 외래교수인 대표원장을 포함해{' '}
                   <br />
-                  대표원장님과 의료진
+                  세 사람 모두 전문의입니다
                 </>
               }
-              desc="손끝의 숙련도에 따라 결과가 달라지는 치과 진료, 10년 이상 경력의 교수출신 대표원장님과 보건복지부인증 전문의들로만 구성된 의료진이 한차원 높은 의료서비스를 제공합니다."
+              desc="손끝의 숙련도에 따라 결과가 달라지는 치과 진료, 10년 이상 경력의 교수출신 대표원장님과 보건복지부인증 전문의들로만 구성된 의료진이 개인 맞춤형 진료를 제공합니다."
             />
 
             <ul className="mt-9 border-t border-brand-200/80">
@@ -182,16 +182,14 @@ export default function AboutPage() {
                 <li
                   key={c}
                   className="border-b border-brand-200/80 py-3.5 text-[16px] leading-[1.7] text-ink-soft"
-                >
-                  {c}
-                </li>
+                ><Sentences text={c} /></li>
               ))}
             </ul>
 
             {/* ⚠️ 그라데이션 버튼으로 되돌리지 말 것 — 이 사이트의 버튼은 단색 아니면 테두리다. */}
             <Link
               href="/about/doctors"
-              className="mt-9 inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/70 px-7 py-3.5 text-[16.5px] font-bold text-ink transition-colors hover:bg-ink hover:text-parchment"
+              className="mt-9 inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/70 px-7 py-3.5 text-[16.5px] font-bold text-ink transition-colors hover:bg-ink hover:text-wine-bg"
             >
               의료진 자세히 보기 <span aria-hidden>→</span>
             </Link>
@@ -216,14 +214,14 @@ export default function AboutPage() {
       </section>
 
       {/* 특별함 7 — 원문 그대로 */}
-      <section className="py-20 lg:py-28">
+      <section className="py-24 lg:py-32">
         <Container>
           {/* ⚠️ 제목에 개수를 박지 말 것 — '다섯 가지' 라면서 7개였다(2026-09-01 오너 지적).
               항목이 바뀔 때마다 거짓말이 된다. */}
           <SectionHead
             eyebrow="동그라미치과만의 특별함"
             title="동그라미치과는 무엇이 다른가요?"
-            desc="누가 보는지, 무엇으로 보는지, 오시기 편한지 — 병원을 고를 때 실제로 궁금한 것들입니다. 각 항목을 누르면 어떤 장비와 방법을 쓰는지 자세히 보실 수 있습니다."
+            desc="병원을 고를 때 실제로 궁금한 것은 누가 보는지, 무엇으로 보는지, 오시기 편한지입니다. 항목마다 어떤 장비와 방법을 쓰는지 적어 두었습니다."
           />
           <div className="mt-12">
             <SpecialGrid eager />
@@ -237,12 +235,12 @@ export default function AboutPage() {
         ★ 사진 열두 장의 설명(alt)은 이 사이트가 가진 몇 안 되는 1차 자료다. 지우지 말 것.
       */}
       {/* ⚠️ 어두운 면으로 되돌리지 말 것 — 밝은 진료실 사진 열두 장이 이 구획의 주인공이다. */}
-      <section className="light-band py-20 lg:py-28">
+      <section className="light-band py-24 lg:py-32">
         <Container>
           <SectionHead
             eyebrow="진료환경"
             title="편안한 진료를 위한 공간"
-            desc="상담실과 진료실, 소독실을 미리 보실 수 있습니다."
+            desc="상담실과 진료실, 소독실 사진입니다."
           />
           <div className="mt-10">
             <InteriorGallery />

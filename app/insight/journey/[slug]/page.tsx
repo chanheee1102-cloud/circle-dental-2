@@ -114,21 +114,21 @@ export default async function JourneyDetailPage({
              인용 가치가 떨어진다. 답은 본문 첫 자리에 한 번만 둔다.
         */}
         <PageHero trail={trail} photo="corridor" eyebrow="치료 여정" title={j.question} />
-        <Container className="py-12 lg:py-16">
+        <Container className="py-16 lg:py-20">
 
-          <div className="mt-8 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 card-glass p-6 shadow-[var(--shadow-soft)]">
+          <div className="mt-8 max-w-[64ch] rounded-2xl border border-brand-200/70 bg-parchment p-6">
             <p className="text-[18px] leading-[1.85] text-ink"><Sentences text={j.answer} /></p>
           </div>
 
           <dl className="mt-9 grid max-w-2xl gap-px overflow-hidden rounded-xl border border-brand-200/70 bg-brand-200/70 sm:grid-cols-2">
             <div className="bg-parchment px-6 py-5">
-              <dt className="text-[13.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
+              <dt className="text-[13.5px] font-black tracking-[0.06em] text-clay-700">
                 내원 횟수
               </dt>
               <dd className="mt-2 text-[19px] font-black text-ink">{j.visits}</dd>
             </div>
             <div className="bg-parchment px-6 py-5">
-              <dt className="text-[13.5px] font-black tracking-[0.16em] text-brand-500 uppercase">
+              <dt className="text-[13.5px] font-black tracking-[0.06em] text-clay-700">
                 전체 기간
               </dt>
               <dd className="mt-2 text-[19px] font-black text-ink">{j.duration}</dd>
@@ -152,37 +152,34 @@ export default async function JourneyDetailPage({
           </div>
         </Container>
 
-        <section className="border-y border-brand-200/80 bg-parchment py-14">
+        <section className="border-y border-brand-200/80 bg-parchment py-16 lg:py-20">
           <Container>
             <h2
               id={headingId('회차별로 하는 일')}
-              className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]"
+              className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink"
             >
               회차별로 하는 일
             </h2>
-            <ol className="relative mt-10 space-y-0 border-l-2 border-brand-200 pl-8">
+            <ol className="mt-10 divide-y divide-wine-line border-y border-wine-line">
               {j.steps.map((st, i) => (
-                <li key={st.label} className="relative pb-8 last:pb-0">
-                  <span
-                    aria-hidden
-                    className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-parchment text-[13.5px] font-black text-brand-600"
-                  >
-                    {i + 1}
+                <li key={st.label} className="grid gap-3 py-7 sm:grid-cols-[3em_minmax(0,1fr)] sm:gap-6">
+                  <span aria-hidden className="text-[14px] font-black tracking-[0.04em] text-clay-700 tabular-nums">
+                    {String(i + 1).padStart(2, '0')}
                   </span>
-                  <h3 className="text-[18px] font-black text-ink">{st.label}</h3>
-                  <p className="mt-2 max-w-[64ch] text-[16px] leading-relaxed text-ink-soft">
-                    {st.what}
-                  </p>
+                  <div>
+                    <h3 className="text-[19px] leading-[1.35] font-black tracking-[-0.02em] text-ink">{st.label}</h3>
+                    <p className="mt-2 max-w-[32em] text-[16.5px] leading-[1.85] text-twilight"><Sentences text={st.what} /></p>
+                  </div>
                 </li>
               ))}
             </ol>
           </Container>
         </section>
 
-        <Container className="py-14">
+        <Container className="py-16 lg:py-20">
           <h2
             id={headingId('이럴 때 더 걸립니다')}
-            className="display-sm scroll-mt-28 text-[22px] text-ink"
+            className="scroll-mt-28 display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink"
           >
             이럴 때 더 걸립니다
           </h2>
@@ -193,10 +190,10 @@ export default async function JourneyDetailPage({
             {j.variables.map((v) => (
               <li
                 key={v}
-                className="flex gap-3 rounded-xl border border-wine-line card-glass px-5 py-4 text-[15.5px] leading-relaxed text-ink-soft"
+                className="flex gap-3 rounded-2xl border border-brand-200/70 bg-parchment px-5 py-4 text-[15.5px] leading-relaxed text-twilight"
               >
-                <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-500" />
-                {v}
+                <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700" />
+                <span><Sentences text={v} /></span>
               </li>
             ))}
           </ul>
@@ -204,7 +201,7 @@ export default async function JourneyDetailPage({
           {treatment && (
             <Link
               href={`/treatment/${treatment.slug}`}
-              className="mt-9 inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-7 py-3.5 text-[16.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
+              className="mt-9 inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
             >
               {treatment.name} 진료 안내 <span aria-hidden>→</span>
             </Link>

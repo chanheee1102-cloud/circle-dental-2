@@ -140,7 +140,14 @@ const EM_PER_CHAR = 0.72;
  *   버킷 오차가 그보다 커서, 앞 마디를 **내림**으로 짧게 보고 기준을 0.50 으로 낮춰야
  *   둘이 정확히 갈린다. 올림 + 0.55 로 두면 /faq 가 새어 나가 668px 칸에 364px 이 빈다.
  */
-const CLAUSE_FILL = 0.5;
+/*
+ * ★ 0.50 → 0.40 (2026-09-03 오너: "최대한 쉼표나 마침표 뒤에서 줄바꿈").
+ *   위 실측의 /faq 사례(앞 마디 46%)가 이제 통과한다 — 앞 줄이 절반 조금 못 되게 차도
+ *   쉼표에서 끊는다. 그 대신 앞 줄이 40% 미만이면 여전히 포기한다(그건 '휑함' 이다).
+ * ⚠️ 이 값을 바꾸면 globals.css 의 data-x 규칙 목록(14·29·43·58·72·86·101em)도 같이 바꿀 것.
+ *    값은 round(n × 0.72 / FILL), n = 8·16·…·56.
+ */
+const CLAUSE_FILL = 0.4;
 
 /**
  * 버킷 간격(자). 8자마다 한 단계씩 올린다.
@@ -563,11 +570,11 @@ export function Breadcrumb({
  */
 export function QABlock({ items }: { items: Array<{ q: string; a: string }> }) {
   return (
-    <div className="reveal-stack mx-auto grid max-w-4xl gap-4">
+    <div className="reveal-stack mx-auto max-w-4xl divide-y divide-wine-line border-y border-wine-line">
       {items.map((it) => (
         <article
           key={it.q}
-          className="card-glass rounded-[18px] border border-mist p-7 sm:p-8"
+          className="reveal py-7 sm:py-8"
         >
           <h2
             id={headingId(it.q)}
@@ -592,11 +599,11 @@ export function QABlock({ items }: { items: Array<{ q: string; a: string }> }) {
  */
 export function NeedsInfo({ label, note }: { label: string; note: string }) {
   return (
-    <div className="rounded-2xl border border-dashed border-gold-400/70 bg-gold-400/8 p-5">
-      <p className="flex items-center gap-2 text-[14px] font-black text-gold-600">
+    <div className="rounded-2xl border border-dashed border-clay-600/40 bg-clay-tint p-5">
+      <p className="flex items-center gap-2 text-[14px] font-black text-clay-700">
         <span
           aria-hidden
-          className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gold-500 text-[13.5px] text-white"
+          className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-clay-700 text-[13.5px] text-white"
         >
           !
         </span>
@@ -648,53 +655,48 @@ function MedicalNoticeHidden({ extra, tone = 'light' }: { extra?: string; tone?:
 
 /** 페이지 하단 전환 블록. */
 export function ContactCta({
-  title = '증상이 애매할 때가 확인하기 가장 좋은 시점입니다',
-  desc = '아직 아프지 않은 단계에서 확인하면 선택지가 많습니다. 전화로 상태를 먼저 말씀해 주세요.',
+  title = '아직 아프지 않을 때 오시면 선택지가 더 많습니다',
+  desc = '증상이 애매해도 괜찮습니다. 전화로 상태를 먼저 말씀해 주시면 언제 오시는 것이 좋을지 함께 정합니다.',
 }: {
   title?: string;
   desc?: string;
 }) {
   return (
-    // ⚠️ 아래 여백(pb)을 지우지 말 것 — 없으면 카드가 푸터에 바로 붙는다(2026-09-01 오너).
-    <Container className="reveal mt-24 pb-20">
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-600 to-brand-800 px-8 py-14 text-white shadow-[var(--shadow-lift)] sm:px-14">
-        {/* 겹친 원 — 히어로와 같은 모티프로 페이지 양끝을 묶는다. */}
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -right-20 -top-24 h-[380px] w-[380px] rounded-full border border-white/15" />
-          <div className="absolute -right-4 top-[-10%] h-[220px] w-[220px] rounded-full bg-white/5" />
-          <div className="absolute -bottom-32 left-[-6%] h-[300px] w-[300px] rounded-full bg-gold-400/10 blur-2xl" />
+    /*
+     * ★★ 2026-09-03 — 그라디언트 판 + 장식 원 세 개 + 금색 흐림 → 사이트의 마무리 띠 ★★
+     *   이 부품이 하위 페이지 23곳의 맨 아래에 똑같이 박혀 있었다. 사이트가 하양·베이지·고동으로
+     *   바뀐 뒤에도 여기만 갈색 그라디언트에 흰 글자, 들썩이는 버튼(hover:-translate-y-1),
+     *   shadow-lg 였다 — 페이지마다 "마지막 화면이 다른 사이트" 였다.
+     *   지금은 라미네이트·심미보철의 마무리와 같은 그릇이다: 베이지 띠, 제목, 한 문단, 버튼 둘.
+     * ⚠️ 그라디언트·장식 원·그림자 버튼으로 되돌리지 말 것.
+     * ★ '오시는 길' 이 아니라 '예약하기' 다 (2026-08-14 운영자) — 여기까지 읽고 내려온 사람에게
+     *   필요한 다음 걸음은 위치가 아니라 시간을 잡는 것이다. 위치는 푸터와 상단 메뉴에 있다.
+     * ★ 외부 도메인이라 새 창 + rel="noopener".
+     */
+    <section className="light-band reveal border-t border-wine-line py-24 lg:py-32">
+      <Container>
+        <h2 className="display-sm text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink max-w-[14em]">{title}</h2>
+        <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
+          <Sentences text={desc} />
+        </p>
+        <div className="mt-10 flex flex-wrap items-center gap-3">
+          <a
+            href={CLINIC.booking.naver}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
+          >
+            진료 예약하기 <span aria-hidden>→</span>
+          </a>
+          <a
+            href={CLINIC.phoneHref}
+            className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg tabular-nums"
+          >
+            {CLINIC.phone}
+          </a>
         </div>
-        <div className="relative max-w-xl">
-          <h2 className="display-sm text-[26px] sm:text-[33px]">{title}</h2>
-          <p className="mt-5 text-[17px] leading-[1.85] text-brand-100/90">
-            <Sentences text={desc} tone="dark" />
-          </p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <a
-              href={CLINIC.phoneHref}
-              className="inline-flex items-center gap-2 rounded-full bg-parchment px-8 py-4 text-[18px] font-black text-brand-700 shadow-lg transition-transform hover:-translate-y-1"
-            >
-              {CLINIC.phone}
-            </a>
-            {/*
-              ★ '오시는 길' 이 아니라 '예약하기' 다 (2026-08-14 운영자).
-                여기까지 읽고 내려온 사람에게 필요한 다음 걸음은 위치가 아니라 **시간을 잡는 것**이다.
-                위치는 이미 푸터와 상단 메뉴 양쪽에 있다.
-              ★ 외부 도메인이라 새 창 + rel="noopener" — 없으면 열린 창이 window.opener 로
-                이 페이지를 조작할 수 있다.
-            */}
-            <a
-              href={CLINIC.booking.naver}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-white/45 px-8 py-4 text-[17.5px] font-bold text-white transition-all hover:-translate-y-1 hover:bg-white/10"
-            >
-              예약하기
-            </a>
-          </div>
-        </div>
-      </div>
-    </Container>
+      </Container>
+    </section>
   );
 }
 
@@ -722,34 +724,27 @@ export function CardLink({
   as?: 'h2' | 'h3' | 'h4';
 }) {
   return (
+    /*
+     * ⚠️ 유리(card-glass)·그림자·hover 들썩임·번지는 원으로 되돌리지 말 것 (2026-09-03).
+     *    사이트의 카드는 실선 + 베이지 한 장이다. 겹겹이 효과를 얹으면 그것만으로 '만든 티' 가 난다.
+     */
     <Link
       href={href}
-      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-brand-200/70 card-glass p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+      className="group flex h-full flex-col rounded-2xl border border-brand-200/70 bg-parchment p-7 transition-colors hover:border-brand-300"
     >
-      {/* 호버 시 번지는 원 — 카드에 깊이를 준다. 장식이므로 스크린리더에서 숨긴다. */}
-      <div
-        aria-hidden
-        className="absolute -right-14 -top-14 h-32 w-32 rounded-full bg-brand-50 transition-transform duration-500 group-hover:scale-[1.8]"
-      />
       {tag && (
-        <span className="relative mb-3.5 inline-flex w-fit rounded-full bg-brand-100 px-3.5 py-1.5 text-[13.5px] font-black text-brand-700">
+        <span className="mb-3.5 inline-flex w-fit rounded-full bg-clay-tint px-3.5 py-1.5 text-[13.5px] font-black text-clay-700">
           {tag}
         </span>
       )}
-      <Heading className="display-sm relative text-[18px] text-ink group-hover:text-brand-700">
+      <Heading className="display-sm text-[19px] leading-[1.35] text-ink transition-colors group-hover:text-clay-700">
         {title}
       </Heading>
-      <p className="relative mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft">
+      <p className="mt-3 flex-1 text-[15.5px] leading-[1.8] text-twilight">
         <Sentences text={desc} />
       </p>
-      <span className="relative mt-5 inline-flex items-center gap-2 text-[14.5px] font-black text-brand-700">
-        자세히 보기
-        <span
-          aria-hidden
-          className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-[13.5px] transition-all group-hover:bg-brand-500 group-hover:text-white"
-        >
-          →
-        </span>
+      <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-black text-clay-700">
+        자세히 보기 <span aria-hidden>→</span>
       </span>
     </Link>
   );

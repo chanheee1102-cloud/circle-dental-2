@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { CLINIC } from '@/lib/clinic';
 import { DOCTORS } from '@/lib/doctors';
 import { allPosts, postBySlug } from '@/lib/blog';
-import { Container, ContactCta, Breadcrumb } from '@/components/ui';
+import { Container, ContactCta, Breadcrumb, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, og, medicalWebPageSchema } from '@/lib/seo';
 
@@ -96,7 +96,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <h1 className="display-sm mt-4 max-w-[20em] text-[clamp(28px,3.6vw,44px)] leading-[1.25] tracking-[-0.02em] text-ink">
           {post.title}
         </h1>
-        <p className="mt-6 max-w-[46em] text-[18px] leading-[1.9] text-twilight">{post.summary}</p>
+        <p className="mt-6 max-w-[46em] text-[18px] leading-[1.9] text-twilight"><Sentences text={post.summary} /></p>
 
         {/*
           ⚠️ 본문 모양은 globals.css 의 .blog-body 가 정한다. 여기서 자식마다 클래스를 주려

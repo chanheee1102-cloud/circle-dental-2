@@ -144,7 +144,7 @@ export default async function TreatmentPage({ params }: { params: Promise<{ slug
       </Container>
 
       <ContactCta
-        title={`${t.name}, 지금 상태부터 확인해 보세요`}
+        title={`${t.name} 방법은 지금 상태를 확인한 뒤에 정합니다`}
         desc="같은 이름의 치료라도 상태에 따라 방법과 기간이 달라집니다. 검사로 확인한 뒤에 무엇이 필요한지 말씀드립니다."
       />
     </>

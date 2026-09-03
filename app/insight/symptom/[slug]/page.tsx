@@ -93,7 +93,7 @@ export default async function SymptomDetailPage({
              인용 가치가 떨어진다. 답은 본문 첫 자리에 한 번만 둔다.
         */}
         <PageHero trail={trail} photo="room" eyebrow="증상" title={s.title} />
-        <Container className="py-12 lg:py-16">
+        <Container className="py-16 lg:py-20">
 
           {/*
             즉답(왼쪽) + 목차(오른쪽)를 한 줄에.
@@ -101,7 +101,7 @@ export default async function SymptomDetailPage({
             ⚠️ 즉답은 AI 가 인용하는 자리다. 제목 바로 아래에서 답이 끝나야 한다.
           */}
           <div className="mt-8 grid items-start gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-            <div className="rounded-[18px] border-l-[3px] border-clay-400 card-glass p-7">
+            <div className="rounded-2xl border border-brand-200/70 bg-parchment p-7">
               <p className="text-[13px] font-black tracking-[0.14em] text-clay-600">한 줄 답</p>
               <p className="mt-4 text-[18px] leading-[1.85] text-ink">
                 <Sentences text={s.answer} />
@@ -153,16 +153,16 @@ export default async function SymptomDetailPage({
           <div className="mt-10 grid gap-5 lg:grid-cols-2">
             <aside
               aria-label="지금 병원에 가야 하는 신호"
-              className="h-full rounded-[18px] border border-clay-400/45 bg-clay-400/10 p-7"
+              className="h-full rounded-2xl border border-clay-600/40 bg-clay-400/[0.07] ring-1 ring-clay-400/10 ring-inset p-7"
             >
               <p className="flex items-center gap-2.5 text-[13px] font-black tracking-[0.14em] text-clay-600">
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-clay-400" />
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-clay-700" />
                 지금 병원에 가야 하는 신호
               </p>
               <ul className="mt-4 space-y-2.5">
                 {s.urgent.slice(0, 3).map((u) => (
                   <li key={u} className="flex gap-3 text-[16px] leading-[1.75] text-ink">
-                    <span aria-hidden className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-400" />
+                    <span aria-hidden className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700" />
                     <span>{u}</span>
                   </li>
                 ))}
@@ -171,9 +171,9 @@ export default async function SymptomDetailPage({
 
             <aside
               aria-label="흔한 원인"
-              className="h-full rounded-[18px] border border-brand-200/70 card-glass p-7"
+              className="h-full rounded-2xl border border-brand-200/70 bg-parchment p-7"
             >
-              <p className="text-[13px] font-black tracking-[0.14em] text-brand-600">흔한 원인</p>
+              <p className="text-[13px] font-black tracking-[0.14em] text-clay-700">흔한 원인</p>
               <ul className="mt-4 flex flex-wrap gap-2">
                 {s.causes.map((c) => (
                   <li
@@ -189,7 +189,7 @@ export default async function SymptomDetailPage({
         </Container>
 
         {/* 응급 신호를 원인보다 먼저 둔다 — 지금 병원에 가야 할 사람이 아래까지 안 읽고 나갈 수 있다. */}
-        <section className="border-y border-gold-400/40 bg-gold-400/8 py-12">
+        <section className="border-y border-clay-600/30 bg-clay-400/[0.07] py-14">
           <Container>
             <h2
               id={headingId('어떤 경우에 미루면 안 되나요?')}
@@ -197,7 +197,7 @@ export default async function SymptomDetailPage({
             >
               <span
                 aria-hidden
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gold-500 text-[15px] font-black text-white"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-clay-700 text-[15px] font-black text-white"
               >
                 !
               </span>{' '}
@@ -206,24 +206,24 @@ export default async function SymptomDetailPage({
             <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
               {s.urgent.map((u) => (
                 <li key={u} className="flex gap-2.5 text-[16px] leading-relaxed text-ink-soft">
-                  <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-500" />
-                  {u}
+                  <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700" />
+                  <span><Sentences text={u} /></span>
                 </li>
               ))}
             </ul>
             <a
               href={CLINIC.phoneHref}
-              className="mt-7 inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-3 text-[16.5px] font-black text-white transition-colors hover:bg-brand-600"
+              className="mt-7 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 text-[16.5px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
             >
               {CLINIC.phone} 로 전화
             </a>
           </Container>
         </section>
 
-        <Container className="py-14">
+        <Container className="py-16 lg:py-20">
           <h2
             id={headingId('왜 이런 증상이 생기나요?')}
-            className="scroll-mt-28 text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]"
+            className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink"
           >
             왜 이런 증상이 생기나요?
           </h2>
@@ -232,7 +232,7 @@ export default async function SymptomDetailPage({
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {s.causes.map((c) => (
-              <div key={c.name} className="rounded-2xl border border-wine-line card-glass p-6">
+              <div key={c.name} className="rounded-2xl border border-brand-200/70 bg-parchment p-6">
                 <h3 className="text-[17.5px] font-black text-ink">{c.name}</h3>
                 <p className="mt-2.5 text-[15.5px] leading-relaxed text-ink-soft"><Sentences text={c.detail} /></p>
               </div>
@@ -240,11 +240,11 @@ export default async function SymptomDetailPage({
           </div>
         </Container>
 
-        <section className="border-t border-wine-line bg-parchment py-14">
+        <section className="border-t border-wine-line bg-parchment py-16 lg:py-20">
           <Container>
             <h2
               id={headingId('오기 전에 해볼 수 있는 것이 있나요?')}
-              className="scroll-mt-28 text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]"
+              className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink"
             >
               오기 전에 해볼 수 있는 것이 있나요?
             </h2>
@@ -256,11 +256,11 @@ export default async function SymptomDetailPage({
                 <li key={c} className="flex gap-3 text-[16.5px] leading-relaxed text-ink-soft">
                   <span
                     aria-hidden
-                    className="mt-1.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-brand-300 text-[13.5px] text-brand-600"
+                    className="mt-1.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-clay-600/50 text-[13.5px] text-clay-700"
                   >
                     ✓
                   </span>
-                  {c}
+                  <span><Sentences text={c} /></span>
                 </li>
               ))}
             </ul>
@@ -279,10 +279,10 @@ export default async function SymptomDetailPage({
             여기는 그 원인을 **읽으러 갈 곳**이라 역할이 겹치지 않는다.
         */}
         {conditions.length > 0 && (
-          <Container className="py-14">
+          <Container className="py-16 lg:py-20">
             <h2
               id={headingId('어떤 질환일 수 있나요')}
-              className="scroll-mt-28 text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]"
+              className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink"
             >
               어떤 질환일 수 있나요?
             </h2>
@@ -294,9 +294,9 @@ export default async function SymptomDetailPage({
                 <Link
                   key={c.slug}
                   href={`/insight/condition/${c.slug}`}
-                  className="group rounded-2xl border border-wine-line card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
+                  className="group rounded-2xl border border-brand-200/70 bg-parchment p-6 transition-colors hover:border-brand-300"
                 >
-                  <h3 className="text-[18px] font-black text-ink group-hover:text-brand-700">
+                  <h3 className="text-[18px] font-black text-ink transition-colors group-hover:text-clay-700">
                     {c.name}
                   </h3>
                   <p className="mt-2.5 text-[15px] leading-relaxed text-ink-soft"><Sentences text={c.definition} /></p>
@@ -307,8 +307,8 @@ export default async function SymptomDetailPage({
         )}
 
         {treatments.length > 0 && (
-          <Container className="py-14">
-            <h2 className="text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]">
+          <Container className="py-16 lg:py-20">
+            <h2 className="display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
               어떤 치료로 이어지나요?
             </h2>
             <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -316,12 +316,12 @@ export default async function SymptomDetailPage({
                 <Link
                   key={t!.slug}
                   href={`/treatment/${t!.slug}`}
-                  className="group rounded-2xl border border-wine-line card-glass p-6 transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/5"
+                  className="group rounded-2xl border border-brand-200/70 bg-parchment p-6 transition-colors hover:border-brand-300"
                 >
-                  <h3 className="text-[18px] font-black text-ink group-hover:text-brand-700">
+                  <h3 className="text-[18px] font-black text-ink transition-colors group-hover:text-clay-700">
                     {t!.name}
                   </h3>
-                  <p className="mt-2.5 text-[15px] leading-relaxed text-ink-soft">{t!.summary}</p>
+                  <p className="mt-2.5 text-[15px] leading-relaxed text-ink-soft"><Sentences text={t!.summary} /></p>
                 </Link>
               ))}
             </div>

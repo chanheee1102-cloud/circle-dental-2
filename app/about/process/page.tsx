@@ -123,7 +123,7 @@ export default function ProcessPage() {
         <ol className="space-y-4 lg:space-y-5">
           {FLOW.map((f) => (
             <li key={f.n} className="step-in">
-              <article className="card-glass card-edge rounded-[22px] p-7 sm:p-9 lg:p-10">
+              <article className="rounded-[22px] border border-brand-200/70 bg-parchment p-7 sm:p-9 lg:p-10">
                 <div className="grid gap-y-4 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)] lg:items-baseline lg:gap-x-12">
                   <h2 className="flex items-baseline gap-4">
                     <span
@@ -166,7 +166,7 @@ export default function ProcessPage() {
       */}
       <section className="light-band py-16 lg:py-20">
         <Container>
-          <h2 className="display-sm text-[clamp(23px,2.4vw,30px)] text-ink">첫 방문 전 자주 묻는 것</h2>
+          <h2 className="display-sm text-[clamp(23px,2.4vw,30px)] text-ink">첫 방문 전에 자주 받는 질문</h2>
           <ol className="mt-11 space-y-10 lg:space-y-12">
             {FIRST_VISIT_QA.map((qa, i) => (
               <li key={qa.q} className="reveal">
@@ -202,7 +202,7 @@ export default function ProcessPage() {
           </h2>
           <div>
             <p className="text-[17px] leading-[1.9] text-twilight">
-              진료시간과 위치는 내원 안내에서, 예약은 아래 채널로 확인하실 수 있습니다.
+              진료시간과 위치는 내원 안내 페이지에 있고, 예약은 아래 연락처로 하실 수 있습니다.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <a
@@ -210,7 +210,7 @@ export default function ProcessPage() {
                 /* ⚠️ bg-parchment 로 되돌리지 말 것 — 어두운 서브페이지에서 parchment 는 어두운 값이라
                    글자와 같은 색이 된다(2026-09-02 실측 1.04:1). 그 조합은 진료 페이지의
                    bg-night 안(어두운 섬)에서만 밝게 뒤집힌다. 여기는 섬이 아니다. */
-                className="rounded-full bg-clay-600 px-6 py-3 text-[16.5px] font-black text-wine-bg transition-opacity hover:opacity-90"
+                className="rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
               >
                 {CLINIC.phone}
               </a>
@@ -218,7 +218,7 @@ export default function ProcessPage() {
                 href={CLINIC.booking.naver}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border-[1.5px] border-ink/60 px-6 py-3 text-[16.5px] font-bold text-ink transition-colors hover:bg-ink hover:text-parchment"
+                className="rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg"
               >
                 네이버 예약
               </a>
@@ -226,13 +226,13 @@ export default function ProcessPage() {
                 href={CLINIC.booking.kakao}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border-[1.5px] border-ink/60 px-6 py-3 text-[16.5px] font-bold text-ink transition-colors hover:bg-ink hover:text-parchment"
+                className="rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg"
               >
                 카카오톡 상담
               </a>
               <Link
                 href="/visit"
-                className="rounded-full border-[1.5px] border-ink/60 px-6 py-3 text-[16.5px] font-bold text-ink transition-colors hover:bg-ink hover:text-parchment"
+                className="rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg"
               >
                 오시는 길
               </Link>

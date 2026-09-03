@@ -27,7 +27,7 @@ const CHANNELS = [
     external: false,
     best: '지금 아프거나 급할 때',
     detail:
-      '증상을 직접 말씀하시면 그날 오셔야 하는 상황인지 먼저 판단해 드립니다. 진료 중에는 연결이 늦어질 수 있습니다.',
+      '증상을 말씀해 주시면 그날 오셔야 하는 상황인지 함께 확인합니다. 진료 중에는 연결이 늦어질 수 있습니다.',
   },
   {
     key: 'naver',
@@ -80,7 +80,7 @@ export default function VisitPage() {
         desc={`${CLINIC.nearestStation} 인근이며, ${CLINIC.serviceArea.slice(0, 4).join(' · ')} 에서 오십니다.`}
       />
 
-      <Container className="py-12 lg:py-16">
+      <Container className="py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">
@@ -89,8 +89,8 @@ export default function VisitPage() {
 
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
           {/* 위치 */}
-          <div className="rounded-2xl border border-wine-line card-glass p-8">
-            <h2 className="text-[18px] font-black text-ink">어디에 있나요?</h2>
+          <div className="rounded-2xl border border-brand-200/70 bg-parchment p-8">
+            <h2 className="display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">어디에 있나요?</h2>
             <dl className="mt-6 space-y-5">
               <div>
                 <dt className="text-[13.5px] font-black tracking-[0.14em] text-ink-muted uppercase">주소</dt>
@@ -104,7 +104,7 @@ export default function VisitPage() {
                 <dd className="mt-2">
                   <a
                     href={CLINIC.phoneHref}
-                    className="text-[22px] font-black text-brand-700 hover:underline"
+                    className="text-[22px] font-black text-clay-700 hover:underline"
                   >
                     {CLINIC.phone}
                   </a>
@@ -123,7 +123,7 @@ export default function VisitPage() {
                 </dt>
                 <dd className="mt-2 flex flex-wrap items-center gap-2">
                   <span className="text-[16.5px] font-bold text-ink">{CLINIC.parking.type}</span>
-                  <span className="rounded-full bg-brand-100 px-3 py-1 text-[13.5px] font-black text-brand-700">
+                  <span className="rounded-full bg-clay-tint px-3 py-1 text-[13.5px] font-black text-clay-700">
                     {CLINIC.parking.fee}
                   </span>
                 </dd>
@@ -139,7 +139,7 @@ export default function VisitPage() {
                 href={CLINIC.booking.naver}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border border-brand-200 px-5 py-2.5 text-[15px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+                className="rounded-full border-[1.5px] border-ink/60 px-5 py-2.5 text-[15px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg"
               >
                 네이버 예약
               </a>
@@ -147,7 +147,7 @@ export default function VisitPage() {
                 href={CLINIC.booking.kakao}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border border-brand-200 px-5 py-2.5 text-[15px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+                className="rounded-full border-[1.5px] border-ink/60 px-5 py-2.5 text-[15px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg"
               >
                 카카오톡 상담
               </a>
@@ -155,8 +155,8 @@ export default function VisitPage() {
           </div>
 
           {/* 진료시간 */}
-          <div className="rounded-2xl border border-wine-line card-glass p-8">
-            <h2 className="text-[18px] font-black text-ink">언제 진료하나요?</h2>
+          <div className="rounded-2xl border border-brand-200/70 bg-parchment p-8">
+            <h2 className="display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">언제 진료하나요?</h2>
             <div className="mt-6">
               <ul className="divide-y divide-wine-line">
                 {UNVERIFIED.hours.display.map((h) => (
@@ -170,7 +170,7 @@ export default function VisitPage() {
                     <span className="text-right text-[16.5px] text-ink-soft">
                       {h.time}
                       {h.note && (
-                        <span className="ml-2 rounded-full bg-gold-500/15 px-2 py-0.5 text-[13.5px] font-black text-gold-600">
+                        <span className="ml-2 rounded-full bg-clay-tint px-2 py-0.5 text-[13.5px] font-black text-clay-700">
                           <Sentences text={h.note} />
                         </span>
                       )}
@@ -183,7 +183,7 @@ export default function VisitPage() {
               </p>
               <a
                 href={CLINIC.phoneHref}
-                className="mt-6 inline-flex rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-3 text-[16.5px] font-black text-white shadow-[var(--shadow-btn)] transition-transform hover:-translate-y-1"
+                className="mt-6 inline-flex rounded-full bg-ink px-7 py-3.5 text-[16.5px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
               >
                 {CLINIC.phone}
               </a>
@@ -199,21 +199,21 @@ export default function VisitPage() {
             읽는 사람에게 넘기는 셈이다.
         */}
         <div className="mt-14">
-          <h2 id={headingId('어떻게 연락하면 되나요')} className="display-sm scroll-mt-28 text-[22px] text-ink">
+          <h2 id={headingId('어떻게 연락하면 되나요')} className="scroll-mt-28 display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
             어떻게 연락하면 되나요?
           </h2>
           <ul className="mt-6 grid gap-4 lg:grid-cols-3">
             {CHANNELS.map((c) => (
               <li
                 key={c.key}
-                className="h-full rounded-[18px] border border-brand-200/70 card-glass p-6"
+                className="h-full rounded-2xl border border-brand-200/70 bg-parchment p-6"
               >
                 <p className="text-[13px] font-black tracking-[0.14em] text-clay-600">{c.best}</p>
                 <p className="display-sm mt-3.5 text-[19px] text-ink">{c.name}</p>
                 <a
                   href={c.href}
                   {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                  className="mt-2 inline-flex font-bold text-brand-700 underline underline-offset-4"
+                  className="mt-2 inline-flex font-bold text-clay-700 underline underline-offset-4"
                 >
                   {c.value}
                 </a>
@@ -227,9 +227,9 @@ export default function VisitPage() {
 
         {/* 지도 — 확대·축소·드래그 가능. 아래에 네이버·카카오 길찾기 버튼이 함께 붙는다. */}
         <div className="mt-8">
-          <h2 className="display-sm text-[22px] text-ink">어떻게 찾아가나요?</h2>
+          <h2 className="display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">어떻게 찾아가나요?</h2>
           <p className="mt-2.5 text-[15.5px] leading-relaxed text-ink-soft">
-            <Sentences text="길찾기는 아래 네이버 지도나 카카오맵 버튼을 눌러 주세요. 대중교통 경로와 로드뷰까지 함께 확인하실 수 있습니다." />
+            <Sentences text="아래 네이버 지도나 카카오맵 버튼으로 길찾기를 하실 수 있습니다. 대중교통 경로와 로드뷰도 함께 보실 수 있습니다." />
           </p>
           <div className="mt-6">
             <ClinicMap height={460} />

@@ -2392,24 +2392,20 @@ blockquote {
   }
 }
 
-/* 앞 줄이 덜 찼을 때는 쉼표 줄바꿈을 포기한다 — 위 주석의 data-x. */
-@container (min-width: 12em) {
-  .clause[data-x='12'] {
+/* 앞 줄이 덜 찼을 때는 쉼표 줄바꿈을 포기한다 — 위 주석의 data-x.
+   ⚠️ 값은 components/ui.tsx 의 CLAUSE_FILL(0.40) 과 한 쌍 — round(n×0.72/0.40), n=8·16·…·56. */
+@container (min-width: 14em) {
+  .clause[data-x='14'] {
     display: inline;
   }
 }
-@container (min-width: 23em) {
-  .clause[data-x='23'] {
+@container (min-width: 29em) {
+  .clause[data-x='29'] {
     display: inline;
   }
 }
-@container (min-width: 35em) {
-  .clause[data-x='35'] {
-    display: inline;
-  }
-}
-@container (min-width: 46em) {
-  .clause[data-x='46'] {
+@container (min-width: 43em) {
+  .clause[data-x='43'] {
     display: inline;
   }
 }
@@ -2418,13 +2414,18 @@ blockquote {
     display: inline;
   }
 }
-@container (min-width: 69em) {
-  .clause[data-x='69'] {
+@container (min-width: 72em) {
+  .clause[data-x='72'] {
     display: inline;
   }
 }
-@container (min-width: 81em) {
-  .clause[data-x='81'] {
+@container (min-width: 86em) {
+  .clause[data-x='86'] {
+    display: inline;
+  }
+}
+@container (min-width: 101em) {
+  .clause[data-x='101'] {
     display: inline;
   }
 }

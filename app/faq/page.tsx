@@ -57,11 +57,11 @@ export default function FaqPage() {
         trail={TRAIL}
         photo="consult"
         eyebrow="자주 묻는 질문"
-        title="많이 들어오는 질문을 모았습니다"
+        title="자주 받는 질문에 답해 드립니다"
         desc="궁금한 점을 정리해 오시면 진료실에서 더 깊은 이야기를 할 수 있습니다. 여기에 없는 것은 전화로 물어보셔도 됩니다."
       />
 
-      <Container className="py-12 lg:py-16">
+      <Container className="py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">
@@ -70,7 +70,7 @@ export default function FaqPage() {
 
         {/* 병원 운영 관련 */}
         <section className="mt-14">
-          <h2 className="text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]">
+          <h2 className="display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             내원·예약
           </h2>
           <div className="mt-7 divide-y divide-wine-line border-t border-wine-line">
@@ -84,7 +84,7 @@ export default function FaqPage() {
           <div className="mt-7 flex flex-wrap gap-3">
             <a
               href={CLINIC.phoneHref}
-              className="rounded-full bg-gradient-to-b from-brand-500 to-brand-600 px-6 py-3 text-[16.5px] font-black text-white shadow-[var(--shadow-btn)]"
+              className="rounded-full bg-ink px-7 py-3.5 text-[16.5px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
             >
               {CLINIC.phone}
             </a>
@@ -92,7 +92,7 @@ export default function FaqPage() {
               href={CLINIC.booking.naver}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full btn-pane border px-6 py-3 text-[16.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+              className="rounded-full border-[1.5px] border-ink/60 px-6 py-3 text-[16.5px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg"
             >
               네이버 예약
             </a>
@@ -100,7 +100,7 @@ export default function FaqPage() {
               href={CLINIC.booking.kakao}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full btn-pane border px-6 py-3 text-[16.5px] font-bold text-brand-700 transition-colors hover:bg-brand-50"
+              className="rounded-full border-[1.5px] border-ink/60 px-6 py-3 text-[16.5px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg"
             >
               카카오톡 상담
             </a>
@@ -113,12 +113,12 @@ export default function FaqPage() {
           /* 진료 페이지에서 /faq#<slug> 로 들어온다 — id 를 지우면 그 링크가 죽는다. */
           <section key={t.slug} id={t.slug} className="mt-16 scroll-mt-28">
             <div className="flex flex-wrap items-baseline gap-3">
-              <h2 className="text-[22px] font-black tracking-[-0.02em] text-ink sm:text-[26px]">
+              <h2 className="display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
                 {t.name}
               </h2>
               <Link
                 href={`/treatment/${t.slug}`}
-                className="text-[15px] font-bold text-brand-700 hover:underline"
+                className="text-[15px] font-bold text-clay-700 hover:underline"
               >
                 진료 안내 보기 →
               </Link>

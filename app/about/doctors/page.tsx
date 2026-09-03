@@ -190,7 +190,7 @@ export default function DoctorsPage() {
                      회갈색이라 강조로 안 읽힌다.
                 */}
                 <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                  <h2 className="display text-[clamp(32px,3.4vw,46px)] leading-[1.15] tracking-[0.02em] text-ink">
+                  <h2 className="display text-[clamp(32px,3.4vw,46px)] leading-[1.15] tracking-[-0.01em] text-ink">
                     {d.name}
                   </h2>
                   {/* ⚠️ '동그라미치과' 를 다시 붙이지 말 것 (2026-09-01 오너) — 페이지 전체가
@@ -244,9 +244,7 @@ export default function DoctorsPage() {
                         <li
                           key={c}
                           className="text-[17px] leading-[1.7] text-twilight lg:break-inside-avoid lg:py-1"
-                        >
-                          {c}
-                        </li>
+                        ><Sentences text={c} /></li>
                       ))}
                     </ul>
                   </div>
@@ -256,9 +254,7 @@ export default function DoctorsPage() {
                       <Label>학회활동</Label>
                       <ul className="mt-4 space-y-2">
                         {d.societies.map((s) => (
-                          <li key={s} className="text-[17px] leading-[1.7] text-twilight">
-                            {s}
-                          </li>
+                          <li key={s} className="text-[17px] leading-[1.7] text-twilight"><Sentences text={s} /></li>
                         ))}
                       </ul>
                     </div>
@@ -349,7 +345,7 @@ export default function DoctorsPage() {
         ⚠️ 관찰자를 새로 만들지 말 것. 레이아웃에 하나뿐인 RevealScript 가 .seq 를 이미 본다.
       */}
       <Container className="py-16">
-        <div className="seq overflow-hidden rounded-2xl border border-brand-200/70 card-glass shadow-[var(--shadow-soft)]">
+        <div className="seq overflow-hidden rounded-2xl border border-brand-200/70 bg-parchment">
           <div className="grid gap-0 lg:grid-cols-2">
             <div className="p-8 lg:p-10">
               <p className="seq-fade eyebrow-chip text-clay-600" style={{ ['--d' as string]: '0ms' }}>

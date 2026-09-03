@@ -150,7 +150,7 @@ export function InteriorGallery() {
               {n === i && (
                 <span
                   aria-hidden
-                  className="absolute inset-0 rounded-[8px] shadow-[inset_0_0_0_2px_var(--color-signal)]"
+                  className="absolute inset-0 rounded-[8px] shadow-[inset_0_0_0_2px_var(--color-clay-700)]"
                 />
               )}
             </button>

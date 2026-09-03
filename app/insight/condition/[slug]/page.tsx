@@ -121,7 +121,7 @@ export default async function ConditionDetailPage({
              인용 가치가 떨어진다. 답은 본문 첫 자리에 한 번만 둔다.
         */}
         <PageHero trail={trail} photo="consult" eyebrow="질환" title={c.name} />
-        <Container className="py-12 lg:py-16">
+        <Container className="py-16 lg:py-20">
           <p className="mt-3 text-[16.5px] font-semibold text-ink-muted">{c.aka.join(' · ')}</p>
 
           <div className="mt-8 max-w-[70ch]">
@@ -159,11 +159,11 @@ export default async function ConditionDetailPage({
           */}
           <h2
             id={headingId(`${c.name}이란 무엇인가요`)}
-            className="mt-10 scroll-mt-28 text-[20px] font-black text-ink sm:text-[23px]"
+            className="mt-10 scroll-mt-28 display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink"
           >
             {c.name}이란 무엇인가요?
           </h2>
-          <div className="mt-4 max-w-[64ch] rounded-2xl border-l-[3px] border-brand-500 card-glass p-6 shadow-[var(--shadow-soft)]">
+          <div className="mt-4 max-w-[64ch] rounded-2xl border border-brand-200/70 bg-parchment p-6">
             <p className="text-[17.5px] leading-[1.85] text-ink"><Sentences text={c.definition} /></p>
           </div>
 
@@ -171,11 +171,11 @@ export default async function ConditionDetailPage({
         </Container>
 
         {/* 증상 · 원인 */}
-        <section className="border-y border-brand-200/80 bg-parchment py-14">
+        <section className="border-y border-brand-200/80 bg-parchment py-16 lg:py-20">
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
-                <h2 id={headingId('이런 증상이 나타납니다')} className="display-sm scroll-mt-28 text-[22px] text-ink">
+                <h2 id={headingId('이런 증상이 나타납니다')} className="scroll-mt-28 display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
                   이런 증상이 나타납니다
                 </h2>
                 <ul className="mt-6 space-y-3">
@@ -183,15 +183,15 @@ export default async function ConditionDetailPage({
                     <li key={s} className="flex gap-3 text-[16.5px] leading-relaxed text-ink-soft">
                       <span
                         aria-hidden
-                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-400"
+                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700"
                       />
-                      {s}
+                      <span><Sentences text={s} /></span>
                     </li>
                   ))}
                 </ul>
               </div>
               <div>
-                <h2 id={headingId('원인과 위험 요인')} className="display-sm scroll-mt-28 text-[22px] text-ink">
+                <h2 id={headingId('원인과 위험 요인')} className="scroll-mt-28 display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
                   원인과 위험 요인
                 </h2>
                 <ul className="mt-6 space-y-3">
@@ -199,9 +199,9 @@ export default async function ConditionDetailPage({
                     <li key={s} className="flex gap-3 text-[16.5px] leading-relaxed text-ink-soft">
                       <span
                         aria-hidden
-                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-500"
+                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-700"
                       />
-                      {s}
+                      <span><Sentences text={s} /></span>
                     </li>
                   ))}
                 </ul>
@@ -211,32 +211,31 @@ export default async function ConditionDetailPage({
         </section>
 
         {/* 진행 단계 — '언제 가야 하나'를 스스로 가늠하게 해 준다. */}
-        <Container className="py-14">
-          <h2 id={headingId('방치하면 이렇게 진행합니다')} className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]">
+        <Container className="py-16 lg:py-20">
+          <h2 id={headingId('방치하면 이렇게 진행합니다')} className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             방치하면 이렇게 진행합니다
           </h2>
-          <ol className="relative mt-10 space-y-0 border-l-2 border-brand-200 pl-8">
+          <ol className="mt-10 divide-y divide-wine-line border-y border-wine-line">
             {c.stages.map((st, i) => (
-              <li key={st.step} className="relative pb-8 last:pb-0">
-                <span
-                  aria-hidden
-                  className="absolute -left-[41px] top-0 flex h-[34px] w-[34px] items-center justify-center rounded-full border-2 border-brand-300 bg-wine-bg text-[13.5px] font-black text-brand-600"
-                >
-                  {i + 1}
+              <li key={st.step} className="grid gap-3 py-7 sm:grid-cols-[3em_minmax(0,1fr)] sm:gap-6">
+                <span aria-hidden className="text-[14px] font-black tracking-[0.04em] text-clay-700 tabular-nums">
+                  {String(i + 1).padStart(2, '0')}
                 </span>
-                <h3 className="text-[18px] font-black text-ink">{st.step}</h3>
-                <p className="mt-2 max-w-[64ch] text-[16px] leading-relaxed text-ink-soft">{st.what}</p>
+                <div>
+                  <h3 className="text-[19px] leading-[1.35] font-black tracking-[-0.02em] text-ink">{st.step}</h3>
+                  <p className="mt-2 max-w-[32em] text-[16.5px] leading-[1.85] text-twilight"><Sentences text={st.what} /></p>
+                </div>
               </li>
             ))}
           </ol>
         </Container>
 
         {/* 치료 · 예방 */}
-        <section className="border-y border-brand-200/80 bg-brand-50/40 py-14">
+        <section className="light-band border-y border-wine-line py-16 lg:py-20">
           <Container>
             <div className="grid gap-12 lg:grid-cols-2">
               <div>
-                <h2 id={headingId('일반적인 치료 방향')} className="display-sm scroll-mt-28 text-[22px] text-ink">
+                <h2 id={headingId('일반적인 치료 방향')} className="scroll-mt-28 display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
                   일반적인 치료 방향
                 </h2>
                 <p className="mt-5 max-w-[62ch] text-[16.5px] leading-[1.85] text-ink-soft">
@@ -244,7 +243,7 @@ export default async function ConditionDetailPage({
                 </p>
               </div>
               <div>
-                <h2 id={headingId('예방과 관리')} className="display-sm scroll-mt-28 text-[22px] text-ink">
+                <h2 id={headingId('예방과 관리')} className="scroll-mt-28 display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
                   예방과 관리
                 </h2>
                 <ul className="mt-5 space-y-3">
@@ -252,11 +251,11 @@ export default async function ConditionDetailPage({
                     <li key={p} className="flex gap-3 text-[16px] leading-relaxed text-ink-soft">
                       <span
                         aria-hidden
-                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-brand-400 text-[13.5px] text-brand-600"
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-clay-600/50 text-[13.5px] text-clay-700"
                       >
                         ✓
                       </span>
-                      {p}
+                      <span><Sentences text={p} /></span>
                     </li>
                   ))}
                 </ul>
@@ -266,8 +265,8 @@ export default async function ConditionDetailPage({
         </section>
 
         {/* FAQ */}
-        <Container className="py-14">
-          <h2 id={headingId('자주 묻는 질문')} className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]">
+        <Container className="py-16 lg:py-20">
+          <h2 id={headingId('자주 묻는 질문')} className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             자주 묻는 질문
           </h2>
           <div className="mt-8 divide-y divide-wine-line border-t border-wine-line">
@@ -282,23 +281,23 @@ export default async function ConditionDetailPage({
 
         {/* 연결 */}
         {(symptoms.length > 0 || treatments.length > 0) && (
-          <section className="border-t border-brand-200/80 bg-parchment py-14">
+          <section className="border-t border-brand-200/80 bg-parchment py-16 lg:py-20">
             <Container>
               <div className="grid gap-10 lg:grid-cols-2">
                 {symptoms.length > 0 && (
                   <div>
-                    <h2 className="text-[19px] font-black text-ink">관련 증상</h2>
+                    <h2 className="display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">관련 증상</h2>
                     <div className="mt-5 space-y-2.5">
                       {symptoms.map((s) => (
                         <Link
                           key={s!.slug}
                           href={`/insight/symptom/${s!.slug}`}
-                          className="group flex items-center justify-between gap-3 rounded-xl border border-wine-line px-5 py-3.5 transition-colors hover:border-brand-300 hover:bg-brand-50"
+                          className="group flex items-center justify-between gap-3 rounded-2xl border border-brand-200/70 px-5 py-3.5 transition-colors hover:border-brand-300 hover:bg-parchment"
                         >
-                          <span className="text-[15.5px] font-bold text-ink group-hover:text-brand-700">
+                          <span className="text-[15.5px] font-bold text-ink transition-colors group-hover:text-clay-700">
                             {s!.title}
                           </span>
-                          <span aria-hidden className="text-brand-500">
+                          <span aria-hidden className="text-clay-700">
                             →
                           </span>
                         </Link>
@@ -308,18 +307,18 @@ export default async function ConditionDetailPage({
                 )}
                 {treatments.length > 0 && (
                   <div>
-                    <h2 className="text-[19px] font-black text-ink">관련 진료</h2>
+                    <h2 className="display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">관련 진료</h2>
                     <div className="mt-5 space-y-2.5">
                       {treatments.map((t) => (
                         <Link
                           key={t!.slug}
                           href={`/treatment/${t!.slug}`}
-                          className="group flex items-center justify-between gap-3 rounded-xl border border-wine-line px-5 py-3.5 transition-colors hover:border-brand-300 hover:bg-brand-50"
+                          className="group flex items-center justify-between gap-3 rounded-2xl border border-brand-200/70 px-5 py-3.5 transition-colors hover:border-brand-300 hover:bg-parchment"
                         >
-                          <span className="text-[15.5px] font-bold text-ink group-hover:text-brand-700">
+                          <span className="text-[15.5px] font-bold text-ink transition-colors group-hover:text-clay-700">
                             {t!.name}
                           </span>
-                          <span aria-hidden className="text-brand-500">
+                          <span aria-hidden className="text-clay-700">
                             →
                           </span>
                         </Link>

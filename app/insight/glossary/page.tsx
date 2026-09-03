@@ -75,17 +75,17 @@ export default function GlossaryPage() {
         trail={TRAIL}
         photo="booth"
         eyebrow="용어 사전"
-        title="어렵게 들린 말은 여기서 찾아보세요"
-        desc="진료실에서 쓰는 말이 어렵게 들리는 것은 당연합니다. 자주 나오는 용어만 한두 문장으로 풀어 두었으니 설명을 들으실 때 옆에 두고 보세요."
+        title="진료실에서 듣는 말을 짧게 풀어 두었습니다"
+        desc="진료실에서 쓰는 용어가 어렵게 들리는 것은 당연합니다. 자주 나오는 말을 한두 문장으로 풀어 두었으니 설명을 들으실 때 함께 보시면 됩니다."
       />
 
-      <Container className="py-12 lg:py-16">
+      <Container className="py-16 lg:py-20">
 
         <dl className="mt-12 grid gap-3 sm:grid-cols-2">
           {GLOSSARY.map((t) => (
             <div
               key={t.term}
-              className="rounded-2xl border border-wine-line card-glass p-6 transition-colors hover:border-brand-200"
+              className="rounded-2xl border border-brand-200/70 bg-parchment p-6"
             >
               {/*
                 ★★ <abbr title> 로 감싼다 (2026-08-14) ★★
@@ -117,7 +117,7 @@ export default function GlossaryPage() {
                 {t.related && (
                   <Link
                     href={`/treatment/${t.related}`}
-                    className="mt-2.5 inline-flex items-center gap-1.5 text-[14.5px] font-bold text-brand-700 underline underline-offset-4"
+                    className="mt-2.5 inline-flex items-center gap-1.5 text-[14.5px] font-bold text-clay-700 underline underline-offset-4"
                   >
                     관련 진료 보기
                     <span aria-hidden>→</span>
@@ -141,7 +141,7 @@ export default function GlossaryPage() {
 
       <ContactCta
         title="설명이 이해되지 않으면 다시 물어보셔도 됩니다"
-        desc="같은 내용을 다른 말로 설명드립니다. 이해하지 못한 채 동의하는 치료는 없어야 합니다."
+        desc="같은 내용을 다른 말로 다시 설명드립니다. 이해되지 않은 상태로 치료를 시작하지 않으셔도 됩니다."
       />
     </>
   );

@@ -99,7 +99,7 @@ export function TreatmentHero({
           {eyebrow}
         </p>
 
-        <h1 className="line-rise reveal display-sm mx-auto mt-7 max-w-[16em] text-[clamp(32px,5.4vw,62px)] leading-[1.14] tracking-[-0.035em] text-parchment">
+        <h1 className="line-rise reveal display-sm mx-auto mt-7 max-w-[16em] text-[clamp(32px,5.4vw,62px)] leading-[1.14] tracking-[-0.03em] text-parchment">
           {/*
             ⚠️ 줄 끝의 공백 한 칸을 지우지 말 것 (2026-09-01) — 제목을 줄마다 span 으로
               쪼개면 기계가 읽는 문자열이 '어떤 경우에어떤 진료를' 처럼 붙어 버린다.
@@ -181,7 +181,7 @@ export function TreatmentStrip({
                 {f.t}
               </p>
               {f.d && (
-                <p className="mt-3.5 max-w-[24em] text-[17px] leading-[1.8] text-twilight">{f.d}</p>
+                <p className="mt-3.5 max-w-[24em] text-[17px] leading-[1.8] text-twilight"><Sentences text={f.d} /></p>
               )}
             </li>
           ))}

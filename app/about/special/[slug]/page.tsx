@@ -109,18 +109,18 @@ export default async function SpecialDetailPage({
         {/* ⚠️ 눈썹을 넘기지 말 것 — 사진 위 작은 글자는 밝은 사진에서 먼저 깨진다. */}
         <AboutHero trail={trail} photo="sterile" title={s.title} />
         {/* 히어로 — 사진을 크게 */}
-        <Container className="py-10 lg:py-12">
+        <Container className="py-16 lg:py-20">
           <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
             <div>
               <div className="flex items-center gap-4">
                 <span
                   aria-hidden
-                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-[var(--shadow-btn)]"
+                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-brand-200/70 bg-parchment text-clay-700"
                 >
                   <StrengthIcon name={s.key} />
                 </span>
                 <div>
-                  <p className="text-[13.5px] font-black tracking-[0.16em] text-brand-500">
+                  <p className="text-[13.5px] font-black tracking-[0.06em] text-clay-700">
                     {s.eyebrow}
                   </p>
                   <p className="text-[26px] font-black leading-none text-ink-muted">{s.no}</p>
@@ -136,7 +136,7 @@ export default async function SpecialDetailPage({
               </div>
             </div>
 
-            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-[var(--shadow-lift)] lg:aspect-[16/11]">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-brand-200 lg:aspect-[16/11]">
               <Image
                 src={s.image}
                 alt={s.alt}
@@ -150,13 +150,12 @@ export default async function SpecialDetailPage({
         </Container>
 
         {/* 용어 풀이 — 일반적인 치과 지식 */}
-        <section className="border-y border-brand-200/80 bg-parchment py-16">
+        <section className="border-y border-brand-200/80 bg-parchment py-16 lg:py-20">
           <Container>
-            <p className="text-[13.5px] font-black tracking-[0.2em] text-brand-500 uppercase">
-              알아 두면 좋은 것
-            </p>
+            <p className="eyebrow-chip text-clay-700">함께 알아 두시면 좋은 내용</p>
             <div className="mb-10 max-w-[70ch]">
-              <KeyPoints items={[s.body, ...s.context.slice(0, 2).map((c) => c.h + ' — ' + c.p.slice(0, 70) + '…')]} />
+              {/* ⚠️ 'h — 본문 70자…' 로 되돌리지 말 것 — 대시로 이어 붙인 조각을 문장 중간에서 자르는 요약이었다. 질문형 소제목만 든다. */}
+              <KeyPoints items={[s.body, ...s.context.slice(0, 2).map((c) => c.h)]} />
             </div>
             <div className="mb-10 max-w-[70ch]">
               <TableOfContents items={[...s.context.map((c) => c.h), '자주 묻는 질문']} />
@@ -174,8 +173,8 @@ export default async function SpecialDetailPage({
           </Container>
         </section>
 
-        <Container className="py-14">
-          <h2 id={headingId('자주 묻는 질문')} className="display-sm scroll-mt-28 text-[24px] text-ink sm:text-[28px]">
+        <Container className="py-16 lg:py-20">
+          <h2 id={headingId('자주 묻는 질문')} className="scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             자주 묻는 질문
           </h2>
           <div className="mt-8 divide-y divide-wine-line border-t border-wine-line">
@@ -190,15 +189,15 @@ export default async function SpecialDetailPage({
         </Container>
 
         {/* 다른 특별함 */}
-        <section className="border-t border-brand-200/80 bg-brand-50/40 py-14">
+        <section className="light-band border-t border-wine-line py-16 lg:py-20">
           <Container>
-            <h2 className="text-[20px] font-black text-ink">동그라미치과만의 특별함</h2>
+            <h2 className="display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">동그라미치과만의 특별함</h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {others.map((o) => (
                 <Link
                   key={o.slug}
                   href={`/about/special/${o.slug}`}
-                  className="group overflow-hidden rounded-2xl border border-brand-200/70 card-glass transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+                  className="group overflow-hidden rounded-2xl border border-brand-200/70 bg-parchment transition-colors hover:border-brand-300"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <Image
@@ -209,7 +208,7 @@ export default async function SpecialDetailPage({
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
-                  <p className="px-5 py-4 text-[15.5px] font-black text-ink group-hover:text-brand-700">
+                  <p className="px-5 py-4 text-[15.5px] font-black text-ink transition-colors group-hover:text-clay-700">
                     {o.title}
                   </p>
                 </Link>

@@ -68,8 +68,8 @@ export function TreatmentLanding({
             key={b.label}
             className={
               tinted
-                ? 'border-y border-wine-line bg-wine-soft py-16 lg:py-24'
-                : 'py-16 lg:py-24'
+                ? 'border-y border-wine-line bg-wine-soft py-24 lg:py-32'
+                : 'py-24 lg:py-32'
             }
           >
             <Container>
@@ -256,7 +256,7 @@ export function TreatmentLanding({
 
               {/* 가로로 긴 원본은 띠로 쓴다 — 4:3 으로 자르면 내용이 통째로 잘린다. */}
               {b.band ? (
-                <div className="reveal img-in mt-12 overflow-hidden rounded-[22px] border border-brand-200/80 bg-brand-900">
+                <div className="reveal img-in mt-12 overflow-hidden rounded-[22px] border border-brand-200/80 bg-parchment">
                   {/* ⚠️ 3:1 고정이면 원본 비율이 다른 띠가 잘린다. */}
                   <div className="relative" style={{ aspectRatio: b.band.ratio ?? '3 / 1' }}>
                     <Image
@@ -278,7 +278,7 @@ export function TreatmentLanding({
 
       {/* 진행 순서 */}
       {journey && (
-        <section className="border-y border-wine-line bg-wine-soft py-16 lg:py-24">
+        <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
           <Container>
             <div className="grid gap-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
               <div className="lg:sticky lg:top-40 lg:self-start">
@@ -314,7 +314,7 @@ export function TreatmentLanding({
                         <h3 className="display-sm text-[17.5px] tracking-[-0.01em] text-ink">
                           {st.label}
                         </h3>
-                        <p className="mt-2 text-[15.5px] leading-[1.8] text-ink-soft">{st.what}</p>
+                        <p className="mt-2 text-[15.5px] leading-[1.8] text-ink-soft"><Sentences text={st.what} /></p>
                       </div>
                     </div>
                   </Card>
@@ -339,17 +339,17 @@ export function TreatmentLanding({
            내용을 주장하는 꼴이라 검색엔진이 무시하거나 감점한다. 되살리려면 둘을 같이 옮길 것.
       */}
       {t.qa.length ? (
-        <section className="py-16 lg:py-24">
+        <section className="py-24 lg:py-32">
           <Container>
             <Link href={`/faq#${t.slug}`} className="reveal group block">
-              <Card className="flex flex-wrap items-center justify-between gap-6 p-8 transition-all group-hover:border-clay-400 group-hover:shadow-[var(--shadow-lift)]">
+              <Card className="flex flex-wrap items-center justify-between gap-6 p-8 transition-colors group-hover:border-brand-300">
                 <div>
                   <p className="text-[13.5px] font-black text-clay-700">자주 묻는 질문</p>
                   <p className="mt-2.5 text-[19px] font-black tracking-[-0.015em] text-ink">
                     {t.name}에 대해 많이 묻는 것 {t.qa.length}가지
                   </p>
                   <p className="mt-2 text-[15.5px] leading-[1.8] text-ink-soft">
-                    기간과 횟수, 통증, 보험 적용까지 한자리에 모아 두었습니다.
+                    기간과 횟수, 통증, 보험 적용을 모아 두었습니다.
                   </p>
                 </div>
                 <span className="shrink-0 text-[16px] font-black text-clay-700">
@@ -363,19 +363,19 @@ export function TreatmentLanding({
 
       {/* 주의사항 — 원문에 있는 진료만 렌더된다. */}
       {page.aftercare && (
-        <section className="border-y border-wine-line bg-wine-soft py-16 lg:py-24">
+        <section className="border-y border-wine-line bg-wine-soft py-24 lg:py-32">
           <Container>
             <SectionHead
               id="주의사항"
               n={String(page.blocks.length + (journey ? 2 : 1)).padStart(2, '0')}
               label={page.aftercare.title}
-              title="이 며칠이 결과를 좌우합니다"
+              title="치료 뒤 며칠은 이렇게 지내시면 됩니다"
             />
             <ol className="reveal-stack mt-12 grid gap-5 sm:grid-cols-2">
               {page.aftercare.items.map((a, i) => (
                 <Card as="li" key={a} className="reveal flex gap-4 p-6">
                   <NumChip n={String(i + 1).padStart(2, '0')} />
-                  <p className="text-[16px] leading-[1.85] text-ink-soft">{a}</p>
+                  <p className="text-[16px] leading-[1.85] text-ink-soft"><Sentences text={a} /></p>
                 </Card>
               ))}
             </ol>
@@ -385,17 +385,17 @@ export function TreatmentLanding({
 
       {/* 관련 증상 */}
       {related.length > 0 && (
-        <section className="py-16 lg:py-24">
+        <section className="py-24 lg:py-32">
           <Container>
-            <h2 className="display-sm reveal text-[19px] tracking-[-0.01em] text-ink">
-              이런 증상이라면 함께 보세요
+            <h2 className="reveal display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
+              이런 증상도 함께 봅니다
             </h2>
             <div className="reveal mt-6 flex flex-wrap gap-2.5">
               {related.map((s) => (
                 <Link
                   key={s.slug}
                   href={`/insight/symptom/${s.slug}`}
-                  className="rounded-full btn-pane border px-5 py-2.5 text-[15.5px] font-bold text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                  className="rounded-full border border-brand-300 bg-parchment px-5 py-2.5 text-[15.5px] font-bold text-ink-soft transition-colors hover:border-ink hover:text-ink"
                 >
                   {s.title}
                 </Link>

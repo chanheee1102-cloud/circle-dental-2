@@ -21,8 +21,8 @@ const TRAIL = [
 ];
 
 const BADGE: Record<string, string> = {
-  insurance: 'bg-brand-100 text-brand-700',
-  partial: 'bg-gold-400/20 text-gold-600',
+  insurance: 'bg-clay-tint text-clay-700',
+  partial: 'bg-brand-100 text-ink',
   private: 'bg-wine-soft text-ink-soft',
 };
 
@@ -76,10 +76,10 @@ export default function CostPage() {
         photo="consult"
         eyebrow="비용 가이드"
         title="같은 치료라도 비용이 갈리는 이유가 있습니다"
-        desc="건강보험이 되는 부분과 안 되는 부분이 나뉘고, 그 경계가 최종 비용을 가장 크게 좌우합니다. 무엇이 어디에 해당하는지 미리 보고 오세요."
+        desc="건강보험이 적용되는 부분과 그렇지 않은 부분이 나뉘고, 그 경계가 최종 비용을 가장 크게 좌우합니다. 어떤 항목이 어디에 해당하는지 아래에 정리해 두었습니다."
       />
 
-      <Container className="py-12 lg:py-16">
+      <Container className="py-16 lg:py-20">
 
         <div className="mt-9 max-w-[70ch]">
           <ArticleMeta path="/insight/cost" />
@@ -99,11 +99,11 @@ export default function CostPage() {
         */}
         <h2
           id={headingId('치과 치료비는 얼마인가요')}
-          className="mt-12 scroll-mt-28 text-[22px] font-black text-ink sm:text-[26px]"
+          className="mt-12 scroll-mt-28 display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink"
         >
           치과 치료비는 얼마인가요?
         </h2>
-        <div className="mt-4 max-w-[68ch] rounded-2xl border-l-[3px] border-brand-500 card-glass p-6 shadow-[var(--shadow-soft)]">
+        <div className="mt-4 max-w-[68ch] rounded-2xl border border-brand-200/70 bg-parchment p-6">
           <p className="text-[18px] leading-[1.85] text-ink">
             같은 이름의 치료라도 <strong className="font-black">건강보험이 적용되는지</strong>에
             따라 부담이 크게 갈립니다. 급여 항목은 전국 어느 치과에서나 정해진 기준을 따르고
@@ -129,7 +129,7 @@ export default function CostPage() {
               }개, 조건부 적용이 ${COST_TOPICS.filter((c) => c.covered === 'partial').length}개,
               비급여가 ${COST_TOPICS.filter((c) => c.covered === 'private').length}개입니다.`,
               '같은 치료라도 보험이 되는 부분과 안 되는 부분이 나뉘고, 그 경계가 최종 비용을 가장 크게 좌우합니다.',
-              '검사 없이 나온 금액은 견적이 아닙니다 — 어떤 항목이 필요한지 정해져야 비용이 나옵니다.',
+              '어떤 항목이 몇 개 필요한지 검사로 정해져야 비용을 말씀드릴 수 있습니다.',
             ]}
           />
         </div>
@@ -150,7 +150,7 @@ export default function CostPage() {
               치과 진료 항목별 건강보험 적용 여부와 비용을 가르는 요인
             </caption>
             <thead>
-              <tr className="bg-brand-50/70">
+              <tr className="bg-parchment">
                 <th scope="col" className="px-6 py-4 text-[14px] font-black text-ink">
                   항목
                 </th>
@@ -166,7 +166,7 @@ export default function CostPage() {
               {COST_TOPICS.map((c) => (
                 <tr key={c.slug} className="border-t border-wine-line">
                   <th scope="row" className="px-6 py-4 align-top text-[15.5px] font-bold text-ink">
-                    <a href={`#${c.slug}`} className="hover:text-brand-700 hover:underline">
+                    <a href={`#${c.slug}`} className="hover:text-clay-700 hover:underline">
                       {c.title}
                     </a>
                   </th>
@@ -191,14 +191,14 @@ export default function CostPage() {
             <article
               key={c.slug}
               id={c.slug}
-              className="scroll-mt-28 rounded-2xl border border-wine-line card-glass p-7"
+              className="scroll-mt-28 rounded-2xl border border-brand-200/70 bg-parchment p-7"
             >
               <span
                 className={`inline-flex rounded-full px-3 py-1 text-[13.5px] font-black ${BADGE[c.covered]}`}
               >
                 {COST_LABEL[c.covered]}
               </span>
-              <h2 className="mt-4 text-[19px] font-black leading-snug tracking-[-0.01em] text-ink sm:text-[21px]">
+              <h2 className="mt-4 text-[20px] leading-[1.35] font-black tracking-[-0.02em] text-ink">
                 {c.title}
               </h2>
               {/* 즉답 */}
@@ -231,7 +231,7 @@ export default function CostPage() {
       </Container>
 
       <ContactCta
-        title="검사 없이 나온 금액은 견적이 아닙니다"
+        title="비용은 검사로 필요한 항목이 정해진 뒤에 말씀드립니다"
         desc="구강 상태를 확인해야 어떤 항목이 필요한지 정해지고, 그래야 비용을 말씀드릴 수 있습니다."
       />
     </>

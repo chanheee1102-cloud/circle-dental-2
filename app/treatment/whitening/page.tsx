@@ -213,8 +213,8 @@ export default function WhiteningPage() {
           <Counter n="01" total="05" dark />
           <div className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-20">
             <div>
-              <h2 className="display-sm max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.1] tracking-[-0.012em] text-ink">
-                미백제가 닿을 곳과 닿으면 안 될 곳을 먼저 나눕니다.
+              <h2 className="display-sm max-w-[13em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
+                미백제가 잇몸에 닿지 않도록 먼저 격리합니다
               </h2>
               <div className="mt-10 max-w-[32em] space-y-6 text-[18px] leading-[1.7] font-normal tracking-[-0.001em] text-ink-soft">
                 {ISOLATION_BODY.map((p) => (
@@ -243,8 +243,8 @@ export default function WhiteningPage() {
       <section className="border-t border-brand-200/70 py-24 lg:py-32">
         <Container>
           <Counter n="02" total="05" dark />
-          <h2 className="display-sm mt-10 max-w-[12em] text-[clamp(28px,4.2vw,46px)] leading-[1.1] tracking-[-0.012em] text-ink">
-            다섯 단계로 진행합니다.
+          <h2 className="display-sm mt-10 max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
+            미백은 다섯 단계로 진행합니다
           </h2>
 
           <ol className="reveal-stack mt-16 divide-y divide-wine-line border-y border-brand-200/70">
@@ -254,9 +254,7 @@ export default function WhiteningPage() {
                 <h3 className="display-sm text-[24px] leading-[1.2] tracking-[-0.006em] text-ink">
                   {s.t}
                 </h3>
-                <p className="max-w-[36em] text-[18px] leading-[1.65] font-normal text-ink-soft">
-                  {s.d}
-                </p>
+                <p className="max-w-[36em] text-[18px] leading-[1.65] font-normal text-ink-soft"><Sentences text={s.d} /></p>
               </li>
             ))}
           </ol>
@@ -264,12 +262,12 @@ export default function WhiteningPage() {
       </section>
 
       {/* ── 03 제품 — 밝은 면으로 뒤집는다 ─────────────────────────── */}
-      <section className="border-y border-brand-200/70 bg-bone py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 light-band py-24 lg:py-32">
         <Container>
           <Counter n="03" total="05" />
           <div className="mt-10 flex flex-wrap items-end justify-between gap-8">
-            <h2 className="display-sm max-w-[13em] text-[clamp(28px,4.2vw,46px)] leading-[1.1] tracking-[-0.012em] text-ink">
-              오스템 BeauTis 미백 솔루션을 사용합니다.
+            <h2 className="display-sm max-w-[13em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
+              오스템 BeauTis 미백 솔루션을 사용합니다
             </h2>
             <p className={`${MONO} flex items-center gap-2.5 text-[14px] text-ink-soft`}>
               <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-clay-600" />
@@ -279,8 +277,8 @@ export default function WhiteningPage() {
 
           <div className="mt-16 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
             {/* 제품 컷 — 원본 625x404. 카드 폭 안에서만 쓰고 늘리지 않는다. */}
-            <div className="rounded-[40px] card-glass p-10">
-              <div className="card-edge img-in reveal overflow-hidden rounded-2xl bg-tissue">
+            <div className="rounded-[20px] border border-brand-200 bg-parchment p-2">
+              <div className="card-edge img-in reveal overflow-hidden rounded-[13px] bg-wine-bg">
                 <div className="relative aspect-[16/10]">
                   <Image
                     src="/img/clinic/wh-kit.webp"
@@ -295,25 +293,23 @@ export default function WhiteningPage() {
 
             <ul className="grid gap-6 sm:grid-cols-2">
               {PRODUCT_POINTS.map((p) => (
-                <li key={p.t} className="rounded-[20px] border border-brand-200/70 card-glass p-8">
+                <li key={p.t} className="rounded-2xl border border-brand-200/70 bg-parchment p-8">
                   <p className={LABEL}>{p.k}</p>
                   <h3 className="display-sm mt-4 text-[24px] leading-[1.2] tracking-[-0.006em] text-ink">
                     {p.t}
                   </h3>
-                  <p className="mt-4 text-[18px] leading-[1.6] font-normal text-ink-soft">{p.d}</p>
+                  <p className="mt-4 text-[18px] leading-[1.6] font-normal text-ink-soft"><Sentences text={p.d} /></p>
                 </li>
               ))}
             </ul>
           </div>
 
           {/* 적응증 — 원문 3가지. */}
-          <div className="mt-16 rounded-[40px] bg-tissue p-10 sm:p-14">
+          <div className="mt-16 rounded-2xl border border-brand-200/70 bg-parchment p-8 sm:p-12">
             <p className={LABEL}>이런 분들께 권합니다</p>
-            <ul className="mt-8 divide-y divide-lichen border-y border-brand-200/70">
+            <ul className="mt-8 divide-y divide-wine-line border-y border-brand-200/70">
               {INDICATIONS.map((v) => (
-                <li key={v} className="py-6 text-[20px] leading-[1.4] font-normal tracking-[-0.006em] text-ink">
-                  {v}
-                </li>
+                <li key={v} className="py-6 text-[20px] leading-[1.4] font-normal tracking-[-0.006em] text-ink"><Sentences text={v} /></li>
               ))}
             </ul>
           </div>
@@ -324,8 +320,8 @@ export default function WhiteningPage() {
       <section className="py-24 lg:py-32">
         <Container>
           <Counter n="04" total="05" dark />
-          <h2 className="display-sm mt-10 max-w-[12em] text-[clamp(28px,4.2vw,46px)] leading-[1.1] tracking-[-0.012em] text-ink">
-            모든 어두움이 미백으로 밝아지지는 않습니다.
+          <h2 className="display-sm mt-10 max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
+            모든 어두움이 미백으로 밝아지지는 않습니다
           </h2>
           <p className="mt-8 max-w-[34em] text-[18px] leading-[1.7] font-normal text-ink-soft">
             <Sentences text="미백제는 법랑질 안에 스며든 착색 분자를 분해합니다. 그래서 어두움이 어디서 왔는지에 따라 듣는 정도가 다르고, 아예 다른 방법이 필요한 경우도 있습니다." />
@@ -333,16 +329,14 @@ export default function WhiteningPage() {
 
           <div className="mt-16 grid gap-6 lg:grid-cols-2">
             {WORKS_ON.map((g, gi) => (
-              <div key={g.label} className="rounded-[20px] border border-brand-200/70 p-9">
+              <div key={g.label} className="rounded-2xl border border-brand-200/70 bg-parchment p-8">
                 <p className={`${LABEL} flex items-center gap-2.5`}>
                   {gi === 0 ? <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-clay-600" /> : null}
                   {g.label}
                 </p>
                 <ul className="mt-8 divide-y divide-wine-line border-y border-brand-200/70">
                   {g.items.map((it) => (
-                    <li key={it} className="py-5 text-[17.5px] leading-[1.6] font-normal text-ink">
-                      {it}
-                    </li>
+                    <li key={it} className="py-5 text-[17.5px] leading-[1.6] font-normal text-ink"><Sentences text={it} /></li>
                   ))}
                 </ul>
               </div>
@@ -358,29 +352,27 @@ export default function WhiteningPage() {
         ── 05 미리 아셔야 할 것 ────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 미백은 개인차와 재착색이 큰 처치다.
       */}
-      <section className="border-y border-brand-200/70 bg-bone py-24 lg:py-32">
+      <section className="border-y border-brand-200/70 light-band py-24 lg:py-32">
         <Container>
           <Counter n="05" total="05" />
           <div className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
-            <h2 className="display-sm text-[clamp(28px,4.2vw,46px)] leading-[1.1] tracking-[-0.012em] text-ink">
-              미리 아셔야 할 것.
+            <h2 className="display-sm text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
+              미백 전에 알아 두실 점
             </h2>
-            <ul className="divide-y divide-lichen border-y border-brand-200/70">
+            <ul className="divide-y divide-wine-line border-y border-brand-200/70">
               {RISKS.map((r) => (
-                <li key={r} className="py-6 text-[18px] leading-[1.65] font-normal text-ink-soft">
-                  {r}
-                </li>
+                <li key={r} className="py-6 text-[18px] leading-[1.65] font-normal text-ink-soft"><Sentences text={r} /></li>
               ))}
             </ul>
           </div>
 
-          <div className="mt-16 rounded-[40px] card-glass p-10 sm:p-14">
+          <div className="mt-16 rounded-2xl border border-brand-200/70 bg-parchment p-8 sm:p-12">
             <p className={LABEL}>미백 후 며칠</p>
             <ul className="mt-8 grid gap-x-12 gap-y-6 sm:grid-cols-2">
               {AFTERCARE.map((a) => (
                 <li key={a} className="flex gap-4 text-[17.5px] leading-[1.6] font-normal text-ink">
                   <span aria-hidden className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-clay-600" />
-                  {a}
+                  <span><Sentences text={a} /></span>
                 </li>
               ))}
             </ul>
@@ -391,7 +383,7 @@ export default function WhiteningPage() {
       {/* ── 마무리 ──────────────────────────────────────────────────── */}
       <section className="py-24 lg:py-32">
         <Container>
-          <h2 className="display-sm focus-in max-w-[12em] text-[clamp(28px,4.2vw,46px)] leading-[1.08] tracking-[-0.02em] text-ink">
+          <h2 className="display-sm focus-in max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
             변색의 원인에 따라 미백 방법이 달라집니다
           </h2>
           <p className="mt-10 max-w-[34em] text-[18px] leading-[1.7] font-normal text-ink-soft">
@@ -402,7 +394,7 @@ export default function WhiteningPage() {
             <ArrowBtn href={CLINIC.booking.naver} label="진료 예약하기" external />
             <a
               href={CLINIC.phoneHref}
-              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-brand-100"
+              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-ink hover:text-wine-bg"
             >
               {CLINIC.phone}
             </a>
@@ -430,22 +422,19 @@ export default function WhiteningPage() {
               </Link>
             ))}
           </div>
+
+          {/*
+            ⚠️ 발행 정보·근거·고지를 마무리 구획 **안에** 둔다 (2026-09-03). 전에는 순검정 띠
+               (bg-void)에 따로 담았는데 셋 다 null 을 돌려주는 부품이라 **아무것도 없는
+               검은 띠 128px** 이 푸터 위에 남아 있었다. 다시 켜지면 여기서 그대로 나타난다.
+          */}
+          <div className="mt-16 max-w-[46em]">
+            <ArticleMeta path={PATH} />
+          </div>
+          <References items={REFS_TREATMENT} />
+          <MedicalNotice extra={NO_GUARANTEE_NOTE} />
         </Container>
       </section>
-
-      {/* 검토자·출처·고지 — 순검정 면. 이 시스템에서 검정은 마감을 뜻한다. */}
-      <div className="bg-void py-16">
-        <Container>
-          {/* ⚠️ 글자색만 덮지 말 것 — 카드 배경이 흰색이라 크림 글자가 사라진다(겪은 일). */}
-          <div className="max-w-[46em]">
-            <ArticleMeta path={PATH} tone="dark" />
-          </div>
-          <div className="mt-10">
-            <References items={REFS_TREATMENT} tone="dark" />
-            <MedicalNotice extra={NO_GUARANTEE_NOTE} tone="dark" />
-          </div>
-        </Container>
-      </div>
     </div>
   );
 }

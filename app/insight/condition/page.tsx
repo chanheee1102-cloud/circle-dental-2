@@ -47,11 +47,11 @@ export default function ConditionIndexPage() {
         trail={TRAIL}
         photo="room"
         eyebrow="질환 사전"
-        title="들으신 병명이 무엇인지부터 말씀드립니다"
+        title="진료실에서 들으신 병명이 무엇인지 설명드립니다"
         desc="같은 병명이라도 진행 단계와 남은 조직에 따라 치료가 갈립니다. 병명을 이미 들으셨다면 여기서 시작해 보세요."
       />
 
-      <Container className="py-12 lg:py-16">
+      <Container className="py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
         <div className="mt-8 max-w-[70ch]">
@@ -63,14 +63,14 @@ export default function ConditionIndexPage() {
             <Link
               key={c.slug}
               href={`/insight/condition/${c.slug}`}
-              className="group flex h-full flex-col rounded-xl border border-brand-200/70 card-glass p-7 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:border-brand-400 hover:shadow-[var(--shadow-lift)]"
+              className="group flex h-full flex-col rounded-2xl border border-brand-200/70 bg-parchment p-7 transition-colors hover:border-brand-300"
             >
               <div className="flex flex-wrap items-baseline gap-2">
-                <h2 className="display-sm text-[19px] text-ink group-hover:text-brand-700">{c.name}</h2>
+                <h2 className="display-sm text-[19px] text-ink transition-colors group-hover:text-clay-700">{c.name}</h2>
                 <span className="text-[14px] font-semibold text-ink-muted">{c.aka.join(' · ')}</span>
               </div>
               <p className="mt-3 flex-1 text-[15.5px] leading-[1.8] text-ink-soft"><Sentences text={c.definition} /></p>
-              <span className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-black text-brand-700">
+              <span className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-black text-clay-700">
                 자세히 보기
                 <span aria-hidden className="transition-transform group-hover:translate-x-1">
                   →

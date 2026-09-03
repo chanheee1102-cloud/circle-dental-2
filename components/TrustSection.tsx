@@ -43,7 +43,7 @@ export function TrustSection() {
       <Container>
         <dl className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {TRUST_STATS.map((s, i) => (
-            <div key={s.label} className="card-glass card-edge overflow-hidden rounded-[18px] px-7 py-8">
+            <div key={s.label} className="rounded-2xl border border-brand-200/70 bg-parchment px-7 py-8">
               <Reveal delay={(i % 4) * 40}>
                 <dt className="text-[14px] leading-snug font-bold text-ink-muted">{s.label}</dt>
                 <dd className="display mt-3 text-[clamp(30px,3vw,40px)] tracking-[-0.01em] text-clay-600">
@@ -66,7 +66,7 @@ export function TrustSection() {
             인증과 자격은 어디서 받았나요?
           </h2>
           <p className="mt-4 max-w-[62ch] text-[16.5px] leading-[1.8] text-twilight">
-            <Sentences text="발급처를 함께 적었습니다. &lsquo;수료증 4건&rsquo;은 인상이지만 &lsquo;세계근관치료학회가 준 수료증&rsquo;은 확인할 수 있는 사실입니다." />
+            <Sentences text="아래 자격과 인증은 발급처를 함께 적었습니다. 어디서 받은 것인지까지 확인하실 수 있습니다." />
           </p>
 
           {/*
@@ -155,7 +155,7 @@ export function TrustSection() {
       <Container className="py-10">
         <Link
           href="/about/doctors"
-          className="group inline-flex items-center gap-2 border-b-[1.5px] border-clay-600/50 pb-1 text-[16px] font-bold text-clay-600 transition-colors hover:border-clay-600"
+          className="group inline-flex items-center gap-2 text-[17px] font-bold text-ink transition-colors hover:text-clay-600"
         >
           인증패 · 논문 실물 사진 보기{' '}
           <span aria-hidden className="transition-transform group-hover:translate-x-1">

@@ -15,11 +15,11 @@ import { breadcrumbSchema, abs, og } from '@/lib/seo';
  */
 export const metadata: Metadata = {
   title: '블로그',
-  description: `${CLINIC.name}이 진료하면서 자주 받는 질문과 알아 두면 좋은 것들을 정리해 올립니다.`,
+  description: `${CLINIC.name}이 진료하면서 자주 받는 질문과 알아 두시면 좋은 내용을 정리해 올립니다.`,
   alternates: { canonical: '/insight/blog' },
   openGraph: og({
     title: `블로그 | ${CLINIC.name}`,
-    description: '진료하면서 자주 받는 질문과 알아 두면 좋은 것들.',
+    description: '진료하면서 자주 받는 질문과 알아 두시면 좋은 내용을 적습니다.',
     path: '/insight/blog',
   }),
 };
@@ -66,10 +66,10 @@ export default function BlogIndexPage() {
         photo="booth"
         eyebrow="블로그"
         title="진료하면서 자주 받는 질문을 정리합니다"
-        desc="상담실에서 짧게 지나간 이야기를 글로 남깁니다. 읽고 오시면 진료실에서 같은 설명을 다시 듣지 않아도 됩니다."
+        desc="상담 중에 짧게밖에 말씀드리지 못한 내용을 글로 남깁니다. 읽고 오시면 진료실에서 다음 이야기부터 하실 수 있습니다."
       />
 
-      <Container className="py-16 lg:py-20">
+      <Container className="py-24 lg:py-32">
         {posts.length === 0 ? (
           /* ⚠️ 이 자리를 지우지 말 것 — 첫 글을 올리기 전까지 방문자가 보는 화면이다. */
           <p className="max-w-[46em] text-[17px] leading-[1.9] text-ink-soft">
