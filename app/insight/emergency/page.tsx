@@ -214,7 +214,7 @@ export default function EmergencyPage() {
                    색 띠까지 같이 줄어 카드가 잘린 것처럼 보인다. 그래서 안쪽 span 에 준다.
                 ⚠️ em 단위여야 한다. ch 는 한글에서 절반으로 계산된다(이 세션에서 겪었다).
               */}
-              <p className="border-t border-wine-line bg-wine-bg/60 px-7 py-4 text-[14.5px] leading-relaxed text-ink-soft">
+              <p className="border-t border-wine-line bg-wine-bg/60 px-7 py-4 text-[15px] leading-relaxed text-ink-soft">
                 <span className="block max-w-[44em]"><Sentences text={c.note} /></span>
               </p>
             </article>

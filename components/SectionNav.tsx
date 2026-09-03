@@ -49,7 +49,12 @@ export function SectionNav({ items }: { items: Array<{ id: string; label: string
   if (items.length < 3) return null;
 
   return (
-    <div className="sticky top-[60px] z-40 flex justify-center px-4 sm:top-[78px]">
+    /*
+      ⚠️ 붙는 높이는 **줄어든 헤더 높이**와 같아야 한다 — SiteHeader 의 scrolled 값
+         h-[60px] sm:h-[74px] 이다(78px 로 두면 sm 에서 4px 틈이 벌어져 본문이 비친다).
+         헤더 높이를 바꾸면 여기도 함께 바꿀 것. 둘은 한 쌍이다.
+    */
+    <div className="sticky top-[60px] z-40 flex justify-center px-4 sm:top-[74px]">
       {/*
         ⚠️ 배경을 bg-white 로 되돌리지 말 것 (2026-08-31) — 어두운 서브페이지에서
            이 막대만 흰색으로 남아 글자가 1.29:1 이 됐다(실측). parchment 는 색 이름이라

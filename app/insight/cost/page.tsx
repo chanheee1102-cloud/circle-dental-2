@@ -177,7 +177,8 @@ export default function CostPage() {
               {COST_TOPICS.map((c) => (
                 <tr key={c.slug} className="border-t border-wine-line">
                   <th scope="row" className="px-6 py-4 align-top text-[15.5px] font-bold text-ink">
-                    <a href={`#${c.slug}`} className="hover:text-clay-700 hover:underline">
+                    {/* ⚠️ inline-block py-1 — 표 안 링크가 19px 라 손가락으로 누르기 어려웠다(실측). */}
+                    <a href={`#${c.slug}`} className="inline-block py-1 hover:text-clay-700 hover:underline">
                       {c.title}
                     </a>
                   </th>

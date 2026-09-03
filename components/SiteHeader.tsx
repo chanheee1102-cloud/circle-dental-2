@@ -227,7 +227,13 @@ export function SiteHeader() {
                좁은 화면은 알약이 화면 폭을 다 쓰므로 워드마크를 그대로 둔다.
             ⚠️ 링크와 aria-label 은 양쪽 다 같다 — 마크만 보여도 병원명은 읽힌다.
           */}
-          <Link href="/" aria-label={`${CLINIC.name} 홈`} className="transition-opacity hover:opacity-80">
+          {/* ⚠️ min-h-11(44px)을 빼지 말 것 — 로고 그림이 38px 라 그대로 두면 탭 영역이
+              38px 다(실측). 화면에 보이는 크기는 그대로이고 누를 수 있는 높이만 넓힌다. */}
+          <Link
+            href="/"
+            aria-label={`${CLINIC.name} 홈`}
+            className="inline-flex min-h-11 items-center transition-opacity hover:opacity-80"
+          >
             <LogoLockup tone={overHero ? 'light' : 'brand'} />
           </Link>
         </div>

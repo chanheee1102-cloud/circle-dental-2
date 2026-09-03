@@ -20,6 +20,7 @@ import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
 import { SectionHead, Card, GlassCard, HighlightPanel, NumChip } from '@/components/saas';
 import { ComparisonTable } from '@/components/ComparisonTable';
 import { JsonLd } from '@/components/JsonLd';
+import { SectionNav } from '@/components/SectionNav';
 import { ArticleMeta, References, charCount } from '@/components/article';
 import { REFS_CONDITION } from '@/lib/references';
 import {
@@ -159,6 +160,25 @@ export default function ImplantPage() {
         ]}
       />
 
+      {/*
+        ★★ 구간 이동 막대 (2026-09-03) ★★
+          휴대폰에서 20,139px 로 이 사이트에서 가장 긴 페이지다. 여덟 구간을 순서대로
+          지나야만 원하는 곳에 닿았다.
+        ⚠️ 목록의 id 는 아래 SectionHead 의 id 와 **글자 그대로** 같아야 한다. 하나라도
+           어긋나면 그 칸만 조용히 아무 데도 안 간다.
+      */}
+      <SectionNav
+        items={[
+          { id: '디지털-방식', label: '디지털 방식' },
+          { id: '시술-방법', label: '시술 방법' },
+          { id: '방식-비교', label: '방식 비교' },
+          { id: '치료-증례', label: '치료 증례' },
+          { id: '진료-원칙', label: '진료 원칙' },
+          { id: '진행-순서', label: '진행 순서' },
+          { id: '주의사항', label: '주의사항' },
+        ]}
+      />
+
       {/* 01 — 내 얘기인가 */}
       <section className="py-16 sm:py-24 lg:py-32">
         <Container>
@@ -293,7 +313,7 @@ export default function ImplantPage() {
           </div>
 
           {/* ⚠️ 이 단서를 지우지 말 것 — 카드 두 장만 두면 '디지털이 항상 낫다' 로 읽힌다. */}
-          <p className="reveal mt-8 max-w-[74ch] text-[14.5px] leading-[1.9] text-ink-muted">
+          <p className="reveal mt-8 max-w-[74ch] text-[15px] leading-[1.9] text-ink-muted">
             <Sentences text={IMPLANT_COMPARE.note} />
           </p>
         </Container>
@@ -463,7 +483,7 @@ export default function ImplantPage() {
             </div>
 
             {journey.variables.length ? (
-              <p className="reveal mt-12 max-w-[74ch] text-[14.5px] leading-[1.9] text-ink-muted">
+              <p className="reveal mt-12 max-w-[74ch] text-[15px] leading-[1.9] text-ink-muted">
                 <Sentences text={`기간이 늘어나는 경우도 있습니다. ${journey.variables.join(' ')}`} />
               </p>
             ) : null}

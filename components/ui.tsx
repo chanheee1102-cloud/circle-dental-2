@@ -512,7 +512,9 @@ export function Breadcrumb({
      */
     <nav
       aria-label="현재 위치"
-      className={`flex flex-wrap items-center gap-1.5 text-[14px] ${
+      /* ⚠️ py-1.5 는 탭 영역이다 — 14px 글자만 두면 높이가 20px 라 손가락으로 누르기
+         어렵다(WCAG 2.5.8 은 24px 를 최소로 본다). 보이는 것은 그대로다. */
+      className={`flex flex-wrap items-center gap-1.5 py-1.5 text-[14px] ${
         dark ? 'text-parchment' : 'text-ink-soft'
       }`}
     >
@@ -521,7 +523,9 @@ export function Breadcrumb({
           {i > 0 && <span aria-hidden>›</span>}
           {i === trail.length - 1 ? (
             <span
-              className={`font-semibold ${dark ? 'text-parchment' : 'text-ink-soft'}`}
+              /* ⚠️ py-1 은 탭 영역이다 — 14px 글자만 두면 높이가 21px 다(실측).
+                 보이는 크기는 그대로이고 누를 수 있는 높이만 24px 로 넓힌다. */
+              className={`inline-block px-1.5 py-1 font-semibold ${dark ? 'text-parchment' : 'text-ink-soft'}`}
               aria-current="page"
             >
               {t.name}
@@ -529,7 +533,8 @@ export function Breadcrumb({
           ) : (
             <Link
               href={t.path}
-              className={`transition-colors ${dark ? 'hover:text-parchment' : 'hover:text-brand-700'}`}
+              /* ⚠️ py-1 — 위 aria-current 항목과 같은 이유(탭 영역 24px). */
+              className={`inline-block px-1.5 py-1 transition-colors ${dark ? 'hover:text-parchment' : 'hover:text-brand-700'}`}
             >
               {t.name}
             </Link>

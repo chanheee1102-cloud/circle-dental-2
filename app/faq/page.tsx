@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { TREATMENTS } from '@/lib/treatments';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
 import { CLINIC_QA } from '@/lib/faq';
+import { SectionNav } from '@/components/SectionNav';
 import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo';
@@ -61,6 +62,21 @@ export default function FaqPage() {
         desc="궁금한 점을 정리해 오시면 진료실에서 더 깊은 이야기를 할 수 있습니다. 여기에 없는 것은 전화로 물어보셔도 됩니다."
       />
 
+      {/*
+        ★★ 구간 이동 막대 (2026-09-03) ★★
+          이 페이지는 휴대폰에서 19,590px — 스무 화면이 넘는다. 임플란트 문답을 보러 온
+          사람이 거기 닿으려면 열 갈래를 지나야 했다. 막대 하나로 한 번에 간다.
+        ⚠️ 문답을 접지 말 것 — 접으면 훑어 읽기가 죽고, 이 사이트에 없던 방식이 하나 생긴다.
+           길이가 문제가 아니라 **가는 길**이 문제였다.
+        ⚠️ 목록은 화면의 제목과 **같은 순서·같은 말**이어야 한다. 아래 map 과 한 쌍이다.
+      */}
+      <SectionNav
+        items={[
+          { id: 'clinic', label: '내원·예약' },
+          ...TREATMENTS.filter((t) => t.qa.length > 0).map((t) => ({ id: t.slug, label: t.name })),
+        ]}
+      />
+
       <Container className="py-12 sm:py-16 lg:py-20">
 
         {/* 발행·수정일과 검토자 — 기계와 사람이 같은 값을 보게 한다. */}
@@ -69,7 +85,8 @@ export default function FaqPage() {
         </div>
 
         {/* 병원 운영 관련 */}
-        <section className="mt-14">
+        {/* ⚠️ id·scroll-mt 를 지우지 말 것 — 위 이동 막대가 이 자리를 가리킨다. */}
+        <section id="clinic" className="mt-14 scroll-mt-32">
           <h2 className="display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             내원·예약
           </h2>
@@ -111,14 +128,14 @@ export default function FaqPage() {
         {/* 치료별 — 원본은 treatments.ts */}
         {TREATMENTS.filter((t) => t.qa.length > 0).map((t) => (
           /* 진료 페이지에서 /faq#<slug> 로 들어온다 — id 를 지우면 그 링크가 죽는다. */
-          <section key={t.slug} id={t.slug} className="mt-16 scroll-mt-28">
+          <section key={t.slug} id={t.slug} className="mt-16 scroll-mt-32">
             <div className="flex flex-wrap items-baseline gap-3">
               <h2 className="display-sm text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
                 {t.name}
               </h2>
               <Link
                 href={`/treatment/${t.slug}`}
-                className="text-[15px] font-bold text-clay-700 hover:underline"
+                className="inline-block py-1 text-[15px] font-bold text-clay-700 hover:underline"
               >
                 진료 안내 보기 →
               </Link>

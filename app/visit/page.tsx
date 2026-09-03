@@ -127,7 +127,7 @@ export default function VisitPage() {
                     {CLINIC.parking.fee}
                   </span>
                 </dd>
-                <dd className="mt-2 text-[14.5px] leading-relaxed text-ink-muted">
+                <dd className="mt-2 text-[15px] leading-relaxed text-ink-muted">
                   <Sentences text={CLINIC.parking.note} />
                 </dd>
               </div>

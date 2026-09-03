@@ -186,7 +186,7 @@ export function HoursStrip() {
           걷어냈었다. 지금은 운영자 요청으로 되살리되 **한계를 함께 적는 조건**이다.
           이 문장이 없으면 쉬는 날 "진료 중" 하나가 환자를 헛걸음시킨다.
       */}
-      <p className="mt-2 text-[14.5px] leading-[1.8] text-ink-soft">
+      <p className="mt-2 text-[15px] leading-[1.8] text-ink-soft">
         공휴일·임시 휴진은 이 표시에 반영되지 않습니다. 방문 전{' '}
         <a href={CLINIC.phoneHref} className="font-bold text-ink underline underline-offset-4">
           {CLINIC.phone}
