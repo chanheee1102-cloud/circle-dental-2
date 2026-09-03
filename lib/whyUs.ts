@@ -95,17 +95,17 @@ export const WHY_US: WhyUsGroup[] = [
       {
         title: '구강스캐너 · 네비게이션 임플란트',
         body: '구강스캐너로 뜬 모형을 바탕으로 네비게이션 임플란트 시술을 제공합니다.',
-        source: 'lib/clinic.ts STRENGTHS.digital — "구강스캐너를 활용한 네비게이션 임플란트 시술 제공"',
+        source: 'lib/clinic.ts STRENGTHS.digital — "구강스캐너로 심을 위치를 미리 계획하는 네비게이션 임플란트"',
       },
       {
         title: '통증을 줄이는 마취',
-        body: '도포마취제와 마취가글, 통증을 줄여 주는 마취 장비를 함께 사용합니다.',
+        body: '도포마취제와 마취 가글, 통증을 줄여 주는 마취 장비를 함께 씁니다.',
         source: `lib/clinic.ts STRENGTHS.pain — "${strength('pain').slice(0, 30)}…"`,
       },
       {
         title: '엄격한 위생관리',
         body: '전 직원 대상 교육과 매일 배치되는 위생관리 담당자를 통해 관리합니다.',
-        source: 'lib/clinic.ts STRENGTHS.hygiene — "전 직원대상 교육과 매일 위생관리 담당자"',
+        source: 'lib/clinic.ts STRENGTHS.hygiene — "전 직원 대상 교육과 위생관리 담당자의 매일 확인"',
       },
     ],
   },

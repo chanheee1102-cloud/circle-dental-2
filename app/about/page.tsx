@@ -12,7 +12,7 @@ import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: '동그라미의 특별함',
+  title: '동그라미치과의 특별함',
   description:
     '고양시 덕양구 화정동 동그라미치과의원. 자연 그대로의 치아를 최대한 살리는 것이 진료 철학이며, 임플란트는 마지막 선택이 될 수 있도록 합니다. 10년 이상 경력의 대학병원 교수 출신 대표원장이 진료합니다.',
   alternates: { canonical: '/about' },
@@ -100,7 +100,7 @@ export default function AboutPage() {
         data={[
           breadcrumbSchema(TRAIL),
           medicalWebPageSchema({
-            title: '동그라미의 특별함',
+            title: '동그라미치과의 특별함',
             description: ABOUT_QA[0].a,
             path: '/about',
           }),
@@ -175,7 +175,7 @@ export default function AboutPage() {
                   세 사람 모두 전문의입니다
                 </>
               }
-              desc="손끝의 숙련도에 따라 결과가 달라지는 치과 진료, 10년 이상 경력의 교수출신 대표원장님과 보건복지부인증 전문의들로만 구성된 의료진이 개인 맞춤형 진료를 제공합니다."
+              desc="손끝의 숙련도에 따라 결과가 달라지는 치과 치료, 10년 이상 경력의 교수 출신 대표원장과 보건복지부인증 전문의로만 구성된 의료진이 진료합니다."
             />
 
             <ul className="mt-9 border-t border-brand-200/80">
@@ -220,7 +220,7 @@ export default function AboutPage() {
           {/* ⚠️ 제목에 개수를 박지 말 것 — '다섯 가지' 라면서 7개였다(2026-09-01 오너 지적).
               항목이 바뀔 때마다 거짓말이 된다. */}
           <SectionHead
-            eyebrow="동그라미치과만의 특별함"
+            eyebrow="동그라미치과의 특별함"
             title="동그라미치과는 무엇이 다른가요?"
             desc="병원을 고를 때 실제로 궁금한 것은 누가 보는지, 무엇으로 보는지, 오시기 편한지입니다. 항목마다 어떤 장비와 방법을 쓰는지 적어 두었습니다."
           />

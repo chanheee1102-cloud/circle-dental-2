@@ -205,7 +205,7 @@ export default function HomePage() {
  *      가장자리가 뭉갠다(globals.css .on-photo 주석).
  *
  * ★★ 카피는 circle-dental.co.kr 1번 슬라이드 원문 그대로다 ★★
- *   ⚠️ '10년 이상 경력의 대학 병원 출신 의료진' 은 병원 자기 문구다. 우리 데이터
+ *   ⚠️ '10년 이상 경력의 대학병원 출신 의료진' 은 병원 자기 문구다. 우리 데이터
  *      (lib/doctors.ts)로 확인되는 것은 '통합치의학과 전문의 3인 / 경희대 외래교수' 까지다.
  *
  * ⚠️ 음수 위쪽 여백(68/94)은 SiteHeader 의 **전체 높이**와 같아야 한다.
@@ -265,7 +265,7 @@ function Hero() {
         {/* 원문 1번 슬라이드의 윗줄. */}
         {/* ⚠️ text-white/90 으로 되돌리지 말 것 — 영상 밝은 프레임에서 4.16:1 로 미달했다(실측). */}
         <p className="enter on-photo text-[16.5px] leading-[1.7] font-medium text-white sm:text-[18px]">
-          10년 이상 경력의 대학 병원 출신 의료진, 디지털 의료장비 활용
+          10년 이상 경력의 대학병원 출신 의료진, 디지털 의료장비 활용
         </p>
 
         {/*

@@ -50,10 +50,10 @@ export const CONCERNS: Concern[] = [
     quote: '치과가 무서워서 계속 미뤄왔어요.',
     topic: '치과가 무서워서',
     answer:
-      '그 마음 충분히 이해합니다. 저희는 주사를 놓기 전에 도포마취제와 마취가글로 감각을 먼저 줄이고, 통증을 줄여 주는 마취 장비를 함께 씁니다.',
+      '그 마음 충분히 이해합니다. 저희는 주사를 놓기 전에 도포마취제와 마취 가글로 감각을 먼저 줄이고, 통증을 줄여 주는 마취 장비를 함께 씁니다.',
     href: '/about/special/pain-control',
     cta: '통증을 줄이는 방법',
-    source: 'lib/clinic.ts STRENGTHS.pain — 도포마취제·마취가글·마취 장비 (원본 홈페이지 표기)',
+    source: 'lib/clinic.ts STRENGTHS.pain — 도포마취제·마취 가글·마취 장비 (원본 홈페이지 표기)',
   },
   {
     quote: '과잉진료 당할까 봐 걱정돼요.',

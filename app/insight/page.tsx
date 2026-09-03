@@ -10,7 +10,7 @@ import { CONDITIONS } from '@/lib/conditions';
 export const metadata: Metadata = {
   title: '미리 알아두기',
   description:
-    '증상으로 찾기, 치료 여정, 비용 가이드, 용어 사전, 응급 상황 안내. 진료실에서 다 담기 어려운 배경 설명을 정리했습니다.',
+    '증상으로 찾기, 질환 사전, 치료 여정, 비용 가이드, 용어 사전, 응급 상황 안내. 진료실에서 다 담기 어려운 배경 설명을 정리했습니다.',
   alternates: { canonical: '/insight' },
 };
 

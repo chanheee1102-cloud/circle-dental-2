@@ -145,13 +145,15 @@ export const NAV: NavItem[] = [
   },
 ];
 
-/** 사이트맵·푸터가 함께 쓰는 평탄화 목록. */
+/** 사이트맵이 쓰는 평탄화 목록 (푸터는 자기 목록을 따로 가진다). */
 export function flatNavPaths(): string[] {
   const out = new Set<string>(['/']);
   for (const item of NAV) {
     out.add(item.href);
     /* ⚠️ 바깥 링크는 넣지 말 것 — 남의 도메인 주소가 우리 사이트맵에 실린다. */
-    for (const c of item.children ?? []) if (!c.external) out.add(c.href);
+    /* ⚠️ '#매복-사랑니' 같은 조각 주소도 넣지 말 것 — 검색엔진은 조각을 떼고 보므로
+       사이트맵에 같은 페이지가 세 번 실린다(2026-09-03 실측: wisdom-tooth 가 3줄). */
+    for (const c of item.children ?? []) if (!c.external) out.add(c.href.split('#')[0]);
   }
   return [...out];
 }

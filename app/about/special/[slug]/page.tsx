@@ -191,7 +191,7 @@ export default async function SpecialDetailPage({
         {/* 다른 특별함 */}
         <section className="light-band border-t border-wine-line py-12 sm:py-16 lg:py-20">
           <Container>
-            <h2 className="display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">동그라미치과만의 특별함</h2>
+            <h2 className="display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">동그라미치과의 특별함</h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {others.map((o) => (
                 <Link
