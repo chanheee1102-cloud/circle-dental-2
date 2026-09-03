@@ -48,7 +48,7 @@ export function AboutHero({
   position?: string;
 }) {
   return (
-    <section className="relative isolate -mt-[68px] flex min-h-[80vh] flex-col justify-end overflow-hidden bg-wine-deep pt-[68px] text-parchment sm:-mt-[94px] sm:pt-[94px]">
+    <section className="relative isolate -mt-[68px] flex min-h-[clamp(600px,76vh,800px)] flex-col justify-end overflow-hidden bg-wine-deep pt-[68px] text-parchment sm:-mt-[94px] sm:pt-[94px]">
       {/*
         ⚠️ alt 를 채우지 말 것 — 이 사진은 장식이다. 뜻은 아래 제목이 전부 진다.
         ⚠️ filter 로 밝기를 올리지 말 것. 덮개 값이 이 사진의 원래 밝기를 전제로 잡혀 있다.
@@ -64,9 +64,9 @@ export function AboutHero({
         style={{ objectPosition: position }}
       />
       {/* 아래에서 위로 — 글이 앉는 아래 절반만 덮고 위 절반은 사진 그대로 둔다. */}
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_top,rgba(30,28,25,0.82)_0%,rgba(30,28,25,0.78)_30%,rgba(30,28,25,0.74)_50%,rgba(30,28,25,0.20)_70%,rgba(30,28,25,0.02)_100%)]" />
+      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_top,rgba(30,28,25,0.77)_0%,rgba(30,28,25,0.73)_30%,rgba(30,28,25,0.68)_50%,rgba(30,28,25,0.18)_70%,rgba(30,28,25,0.02)_100%)]" />
       {/* 왼쪽에서 오른쪽으로 한 겹 더 — 글 줄이 긴 쪽만 받쳐 준다. */}
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_right,rgba(30,28,25,0.40)_0%,rgba(30,28,25,0.18)_46%,rgba(30,28,25,0)_76%)]" />
+      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_right,rgba(30,28,25,0.36)_0%,rgba(30,28,25,0.16)_46%,rgba(30,28,25,0)_76%)]" />
 
       <Container className="relative pb-16 lg:pb-24">
         <Breadcrumb trail={trail} tone="dark" />

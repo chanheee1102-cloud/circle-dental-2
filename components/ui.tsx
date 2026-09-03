@@ -415,7 +415,7 @@ export function PageHero({
 }) {
   return (
     <section className={`relative isolate -mt-[68px] overflow-hidden pt-[68px] sm:-mt-[94px] sm:pt-[94px] ${
-      photo ? 'flex min-h-[58vh] items-center bg-night sm:min-h-[62vh]' : ''
+      photo ? 'flex min-h-[clamp(460px,58vh,640px)] items-center bg-night' : ''
     }`}>
       {/* ⚠️ 사진이 없는 페이지는 min-h 도 어두운 면도 걸지 않는다 — 빈 화면이 반 페이지 남는다. */}
       {/*
@@ -439,7 +439,7 @@ export function PageHero({
             className="absolute inset-0"
             style={{
               backgroundImage:
-                'radial-gradient(80% 64% at 50% 42%, rgba(30,28,25,0.52) 0%, rgba(30,28,25,0.82) 62%, rgba(30,28,25,0.93) 100%)',
+                'radial-gradient(80% 64% at 50% 42%, rgba(30,28,25,0.47) 0%, rgba(30,28,25,0.76) 62%, rgba(30,28,25,0.88) 100%)',
             }}
           />
           <div
@@ -447,7 +447,7 @@ export function PageHero({
             className="absolute inset-0"
             style={{
               backgroundImage:
-                'linear-gradient(to bottom, rgba(30,28,25,0.70) 0%, rgba(30,28,25,0.46) 38%, rgba(30,28,25,0.88) 100%)',
+                'linear-gradient(to bottom, rgba(30,28,25,0.64) 0%, rgba(30,28,25,0.40) 38%, rgba(30,28,25,0.82) 100%)',
             }}
           />
         </>
@@ -464,7 +464,7 @@ export function PageHero({
         </div>
 
         <p
-          className={`eyebrow-chip mt-8 justify-center ${photo ? 'text-clay-300' : 'text-clay-700'}`}
+          className={`eyebrow-chip mt-8 justify-center ${photo ? 'text-clay-200' : 'text-clay-700'}`}
         >
           {eyebrow}
         </p>
@@ -515,7 +515,7 @@ export function Breadcrumb({
     <nav
       aria-label="현재 위치"
       className={`flex flex-wrap items-center gap-1.5 text-[14px] ${
-        dark ? 'text-parchment/75' : 'text-ink-soft'
+        dark ? 'text-parchment' : 'text-ink-soft'
       }`}
     >
       {trail.map((t, i) => (

@@ -145,7 +145,17 @@ export default function DoctorsPage() {
         <ArticleMeta path="/about/doctors" />
       </Container>
 
-      <section className="mt-14 border-t border-brand-200/80">
+      {/*
+        ⚠️⚠️ mt-14 를 되살리지 말 것 (2026-09-02 오너: "사진이 저 선까지 꽉차야
+           되는거 아니야?") ⚠️⚠️
+           히어로 사진은 원래도 제 상자를 꽉 채우고 있었다. 문제는 여기였다 —
+           이 구획이 위로 56px 을 비우고 그 **끝에** 테두리를 그어서, 사진과 선
+           사이에 흰 띠가 남았다. 사진이 덜 내려온 것처럼 보인 것이 그 띠다.
+           (진료 페이지는 히어로 바로 밑이 베이지 띠라 그 틈이 없다 — 그래서 그쪽만
+            '꽉 차' 보였다.)
+        ★ 선은 남긴다. 사진 밑변에 붙어 히어로가 끝나는 자리를 짚어 준다.
+      */}
+      <section className="border-t border-brand-200/80">
         {DOCTORS.map((d, i) => (
           <article key={d.slug} id={d.slug} className="step-in scroll-mt-28 border-b border-brand-200/80">
             {/*

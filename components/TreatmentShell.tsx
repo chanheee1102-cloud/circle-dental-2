@@ -73,14 +73,14 @@ export function TreatmentHero({
         aria-hidden
         className="absolute inset-0"
         style={{
-          backgroundImage: `radial-gradient(80% 64% at 50% 38%, rgba(${SCRIM},0.5) 0%, rgba(${SCRIM},0.82) 62%, rgba(${SCRIM},0.93) 100%)`,
+          backgroundImage: `radial-gradient(80% 64% at 50% 38%, rgba(${SCRIM},0.45) 0%, rgba(${SCRIM},0.76) 62%, rgba(${SCRIM},0.88) 100%)`,
         }}
       />
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(${SCRIM},0.72) 0%, rgba(${SCRIM},0.46) 38%, rgba(${SCRIM},0.88) 100%)`,
+          backgroundImage: `linear-gradient(to bottom, rgba(${SCRIM},0.66) 0%, rgba(${SCRIM},0.40) 38%, rgba(${SCRIM},0.82) 100%)`,
         }}
       />
       {/* 위에서 스미는 금빛 — 강조색은 금색 하나뿐이다. 다른 색을 가져오지 말 것. */}
@@ -95,7 +95,7 @@ export function TreatmentHero({
           <Breadcrumb trail={trail} tone="dark" />
         </div>
 
-        <p className="enter text-[13.5px] font-black text-clay-300" style={{ animationDelay: '40ms' }}>
+        <p className="enter text-[13.5px] font-black text-clay-200" style={{ animationDelay: '40ms' }}>
           {eyebrow}
         </p>
 
