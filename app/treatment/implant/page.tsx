@@ -393,7 +393,7 @@ export default function ImplantPage() {
               <Card as="li" key={s.title} className="reveal p-7">
                 <NumChip n={String(i + 1).padStart(2, '0')} />
                 <h3 className="display-sm mt-5 text-[18px] tracking-[-0.01em] text-ink">{s.title}</h3>
-                <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={s.body} /></p>
+                <p className="min-w-0 flex-1 mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={s.body} /></p>
               </Card>
             ))}
           </ul>
@@ -553,7 +553,7 @@ export default function ImplantPage() {
                 {IMPLANT_AFTERCARE.map((a, i) => (
                   <li key={a} className="reveal flex gap-4">
                     <NumChip n={String(i + 1).padStart(2, '0')} />
-                    <p className="text-[16.5px] leading-[1.85] text-ink-soft"><Sentences text={a} /></p>
+                    <p className="min-w-0 flex-1 text-[16.5px] leading-[1.85] text-ink-soft"><Sentences text={a} /></p>
                   </li>
                 ))}
               </ol>

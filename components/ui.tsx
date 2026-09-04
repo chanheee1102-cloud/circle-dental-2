@@ -232,7 +232,15 @@ function Clauses({ text, tone }: { text: string; tone: 'light' | 'dark' }) {
          *   한 줄에 하나씩 서는 표가 된다(홈 진료 카드에서 실제로 그렇게 됐다).
          *   앞뒤 마디가 **둘 다 8자 이상**일 때만 절로 본다. 짧은 쪽이 하나라도 있으면 목록이다.
          */
-        const isClause = !!prev && prev.length >= CLAUSE_STEP && c.length >= CLAUSE_STEP;
+        /*
+         * ★★ 나열문은 끊지 않는다 (2026-09-04 오너: "사랑니 발치를 진료합니다. 줄바꿈 하지말고 위로") ★★
+         *   '자연치아살리기(…), 임플란트, 심미치료(…), 사랑니 발치를 진료합니다.' 처럼 쉼표가
+         *   여러 개면 그건 **절이 아니라 목록**이다. 목록을 한 줄씩 끊으면 문장이 아니라 표가 된다.
+         * ⚠️ 기준은 쉼표 셋(마디 넷) 이상이다. 둘까지는 '앞 절, 뒤 절' 인 경우가 대부분이다.
+         */
+        const isList = parts.length >= 4;
+        const isClause =
+          !isList && !!prev && prev.length >= CLAUSE_STEP && c.length >= CLAUSE_STEP;
         /*
          * ★★ 앞 줄이 얼마나 찼는지는 **직전 마디 하나가 아니라 지금까지 쌓인 전부**다
          *    (2026-09-03 실측) ★★
