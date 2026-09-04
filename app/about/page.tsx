@@ -268,9 +268,17 @@ export default function AboutPage() {
         ⚠️ 카드로 되돌리지 말 것 — 두 줄짜리 사실에 상자를 씌우면 특별함 카드와 같은 무게가 된다.
         ★ 띠(light-band)로 감싸 '본문이 아니라 기록' 이라는 것을 면으로 말한다.
       */}
-      <section className="light-band border-y border-wine-line py-12 lg:py-14">
+      {/*
+        ★ 다른 구획과 같은 결로 (2026-09-04 오너: "여기도 다른 세션처럼 통일해. 저 사회공헌 문구도
+          왜 여기만 밑에 있어?"). 이 페이지의 다른 구획은 전부 **눈썹이 위, 내용이 아래**다.
+          여기만 눈썹을 왼쪽 칸에 두고 items-baseline 을 걸어 놓아서, 오른쪽 첫 글줄(사진 아래
+          캡션)의 밑선에 눈썹이 따라 내려갔다 — 그래서 혼자 바닥에 붙어 보였다.
+        ⚠️ items-baseline 을 다시 걸지 말 것. 오른쪽 칸의 첫 글이 사진 아래로 내려가는 순간
+           눈썹도 같이 내려간다.
+      */}
+      <section className="light-band border-y border-wine-line py-14 lg:py-20">
         <Container>
-          <div className="reveal grid items-baseline gap-x-14 gap-y-6 lg:grid-cols-[10rem_minmax(0,1fr)]">
+          <div className="reveal">
             <p className="eyebrow-chip text-clay-700">사회공헌</p>
             {/*
               ★★ 사진을 되살렸다 (2026-09-04 오너: "첫번째 사진을 두번째 사진에 넣기") ★★
@@ -281,7 +289,7 @@ export default function AboutPage() {
                  사실이라 AI 검색이 신뢰 근거로 읽는다. 사진은 더한 것이지 대신한 것이 아니다.
               ⚠️ 순서를 바꾸지 말 것 — 첫째가 봉사 현장, 둘째가 방송 장면이고 아래 글도 그 순서다.
             */}
-            <div className="grid gap-x-14 gap-y-8 sm:grid-cols-2">
+            <div className="mt-8 grid gap-x-14 gap-y-8 sm:grid-cols-2">
               {[
                 { photo: OUTREACH_PHOTO, text: OUTREACH[0] },
                 { photo: OUTREACH_BROADCAST, text: OUTREACH[1] },
