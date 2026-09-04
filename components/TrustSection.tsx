@@ -125,8 +125,13 @@ export function TrustSection() {
 
       {/* ── 논문 · 언론 — 두 칸 ── */}
       <section className="reveal border-t border-brand-200/80">
-        <Container className="grid gap-12 py-12 lg:grid-cols-2 lg:gap-16 lg:py-16">
-          <div>
+        {/*
+          ⚠️ items-stretch + flex-col + 사진에 mt-auto — 왼쪽 글이 오른쪽보다 길어서
+             사진 두 장이 서로 다른 높이에서 시작하고 있었다(2026-09-04 오너: "둘다 사진 높이 맞추고 싶은데").
+             사진 크기는 이미 같으므로(6:5 · 420px) 밑선을 맞추면 윗선도 맞는다.
+        */}
+        <Container className="grid items-stretch gap-12 py-12 lg:grid-cols-2 lg:gap-16 lg:py-16">
+          <div className="flex flex-col">
             <h2
               id={headingId('학술 활동이 있나요')}
               className="display-sm scroll-mt-28 text-[clamp(22px,2.3vw,28px)] text-ink"
@@ -153,7 +158,7 @@ export function TrustSection() {
                  나란한 두 칸의 사진 크기가 어긋난다.
               ⚠️ object-contain — 논문 지면을 잘라내면 무엇인지 알 수 없다. 남는 자리는 면으로 채운다.
             */}
-            <div className="mt-7 w-full max-w-[420px] overflow-hidden rounded-xl border border-brand-200/70 bg-brand-100">
+            <div className="mt-auto w-full max-w-[420px] overflow-hidden rounded-xl border border-brand-200/70 bg-brand-100 pt-7">
               <div className="relative aspect-[6/5]">
                 <Image
                   src={PUBLICATION_DETAIL.image}
@@ -167,7 +172,7 @@ export function TrustSection() {
           </div>
 
           {MEDIA_APPEARANCES.length > 0 && (
-            <div>
+            <div className="flex flex-col">
               <h2
                 id={headingId('방송에 나온 적이 있나요')}
                 className="display-sm scroll-mt-28 text-[clamp(22px,2.3vw,28px)] text-ink"
@@ -194,7 +199,7 @@ export function TrustSection() {
                    Vimeo 플레이어를 통째로 내려받는다. 누를 때까지는 사진 한 장이다.
                 ⚠️ 왼쪽 논문 상자와 같은 6:5 · 420px 다. 바꾸려면 둘을 같이 바꿀 것.
               */}
-              <div className="mt-7 w-full max-w-[420px]">
+              <div className="mt-auto w-full max-w-[420px] pt-7">
                 <VideoFacade
                   embedSrc={OUTREACH_VIDEO.embed}
                   poster={OUTREACH_BROADCAST.src}

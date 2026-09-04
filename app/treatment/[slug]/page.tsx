@@ -143,10 +143,11 @@ export default async function TreatmentPage({ params }: { params: Promise<{ slug
         <MedicalNotice extra={NO_GUARANTEE_NOTE} />
       </Container>
 
-      <ContactCta
-        title={`${t.name} 방법은 지금 상태를 확인한 뒤에 정합니다`}
-        desc="같은 이름의 치료라도 상태에 따라 방법과 기간이 달라집니다. 검사로 확인한 뒤에 무엇이 필요한지 말씀드립니다."
-      />
+      {/*
+        ⚠️ 마무리 전환 블록을 여기 다시 넣지 말 것 (2026-09-04 오너: "여기 중복되잖아").
+           components/TreatmentLanding.tsx 가 이미 TreatmentClosing 을 낸다 — 둘을 같이 두면
+           한 페이지 아래쪽에 예약 단추가 두 벌 연달아 나온다. 문구는 그쪽으로 옮겼다.
+      */}
     </>
   );
 }

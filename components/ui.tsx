@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { IMG } from '@/lib/assets';
 import { CLINIC, MEDICAL_DISCLAIMER } from '@/lib/clinic';
 import { headingId } from '@/components/article';
+import { BookingButtons } from '@/components/BrandIcons';
 
 /**
  * 페이지 폭을 한 곳에서 통제한다. 페이지마다 max-w 를 따로 적으면 반드시 어긋난다.
@@ -678,29 +679,20 @@ export function ContactCta({
           ⚠️ items-end — 단추 밑선을 설명 마지막 줄에 맞춘다. items-center 로 바꾸면 단추가 떠 보인다.
           ⚠️ basis 를 지우지 말 것 — 좁은 화면에서 줄을 바꾸는 대신 글 칸이 눌려 한 어절씩 쌓인다.
         */}
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-10">
-        <div className="min-w-0 flex-1 basis-[26rem]">
-        <h2 className="display-sm max-w-[14em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">{title}</h2>
+        <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-end">
+        <div className="min-w-0">
+        <p className="eyebrow-chip text-clay-700">예약 · 상담</p>
+        <h2 className="display-sm mt-5 max-w-[14em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">{title}</h2>
         <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
           <Sentences text={desc} />
         </p>
         </div>
-        <div className="flex shrink-0 flex-wrap items-center gap-3">
-          <a
-            href={CLINIC.booking.naver}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
-          >
-            진료 예약하기 <span aria-hidden>→</span>
-          </a>
-          <a
-            href={CLINIC.phoneHref}
-            className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg tabular-nums"
-          >
-            {CLINIC.phone}
-          </a>
-        </div>
+        <BookingButtons
+          phone={CLINIC.phone}
+          phoneHref={CLINIC.phoneHref}
+          kakao={CLINIC.booking.kakao}
+          naver={CLINIC.booking.naver}
+        />
         </div>
       </Container>
     </section>

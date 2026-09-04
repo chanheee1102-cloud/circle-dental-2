@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { CLINIC } from '@/lib/clinic';
 import { Container, Sentences } from '@/components/ui';
+import { BookingButtons } from '@/components/BrandIcons';
 
 /**
  * **진료 페이지 마무리** — 제목 · 설명 · 예약 단추 · 이어지는 곳 네 갈래.
@@ -51,32 +52,28 @@ export function TreatmentClosing({
         />
       )}
       <Container className="relative">
-        {/* ⚠️ items-end — 단추 밑선을 설명 마지막 줄에 맞춘다. items-center 로 바꾸면 단추가 떠 보인다. */}
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-10">
-          <div className="min-w-0 flex-1 basis-[26rem]">
-            <h2 className="reveal display-sm max-w-[14em] text-[clamp(26px,3.8vw,44px)] leading-[1.16] tracking-[-0.025em] text-ink">
+        {/*
+          ⚠️ lg:items-end — 단추 더미 밑선을 설명 마지막 줄에 맞춘다. items-center 로 바꾸면
+             글이 짧은 페이지에서 단추가 공중에 뜬 것처럼 보인다.
+          ⚠️ 오른쪽 칸을 26rem 으로 **고정**한다. fr 로 두면 페이지마다 제목 길이에 따라
+             단추 폭이 달라져 페이지를 옮길 때마다 단추가 늘었다 줄었다 한다.
+        */}
+        <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-end">
+          <div className="min-w-0">
+            <p className="reveal eyebrow-chip text-clay-700">예약 · 상담</p>
+            <h2 className="reveal display-sm mt-5 max-w-[14em] text-[clamp(26px,3.8vw,44px)] leading-[1.16] tracking-[-0.025em] text-ink">
               {title}
             </h2>
             <p className="reveal mt-7 max-w-[34em] text-[17.5px] leading-[1.9] text-twilight">
               <Sentences text={lead} />
             </p>
           </div>
-          <div className="reveal flex shrink-0 flex-wrap gap-3">
-            <a
-              href={CLINIC.booking.naver}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
-            >
-              진료 예약하기 <span aria-hidden>→</span>
-            </a>
-            <a
-              href={CLINIC.phoneHref}
-              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-ink hover:text-wine-bg"
-            >
-              {CLINIC.phone}
-            </a>
-          </div>
+          <BookingButtons
+            phone={CLINIC.phone}
+            phoneHref={CLINIC.phoneHref}
+            kakao={CLINIC.booking.kakao}
+            naver={CLINIC.booking.naver}
+          />
         </div>
 
         {links.length > 0 && (

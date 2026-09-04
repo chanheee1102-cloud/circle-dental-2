@@ -411,6 +411,11 @@ export function TreatmentLanding({
         ⚠️ 다시 두 구획으로 쪼개지 말 것.
       */}
       <TreatmentClosing
+        /* ⚠️ 이 문구는 예전에 app/treatment/[slug]/page.tsx 의 ContactCta 가 갖고 있던 것이다.
+              그쪽을 지우고 여기로 옮겼다 — 두 곳이 각각 마무리를 내서 한 페이지에 예약 단추가
+              **두 벌** 나오고 있었다(2026-09-04 오너: "여기 중복되잖아"). */
+        title={`${t.name} 방법은 지금 상태를 확인한 뒤에 정합니다`}
+        lead="같은 이름의 치료라도 상태에 따라 방법과 기간이 달라집니다. 검사로 확인한 뒤에 무엇이 필요한지 말씀드립니다."
         links={[
           ...(t.qa.length
             ? [
