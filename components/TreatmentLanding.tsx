@@ -38,8 +38,20 @@ export function TreatmentLanding({
 }) {
 
   /* AI 사진이 한 장이라도 쓰였는지 — 고지를 렌더할지 정한다. */
+  /*
+   * ⚠️⚠️ 항목 카드 사진(items[].image)도 함께 본다 (2026-09-04) ⚠️⚠️
+   *   카드마다 사진을 붙일 수 있게 되면서, figure 만 보던 이 검사가 **AI 사진을 놓쳤다.**
+   *   놓치면 고지가 안 붙고, 그 순간 AI 그림이 원내 사진으로 읽힌다(의료법 제56조).
+   * ⚠️ 경로로 판정한다 — /img/ai 아래면 AI 다. 새 폴더를 만들면 여기도 함께 고칠 것.
+   */
   const usesAi =
-    page.hero.ai || page.blocks.some((b) => b.figure?.ai);
+    page.hero.ai ||
+    page.blocks.some(
+      (b) =>
+        b.figure?.ai ||
+        b.items?.some((it) => it.image?.startsWith('/img/ai/')) ||
+        b.steps?.some((st) => st.image?.startsWith('/img/ai/')),
+    );
 
   return (
     <>
@@ -213,25 +225,74 @@ export function TreatmentLanding({
                   </Card>
                   <ul className="reveal-stack grid gap-5 sm:grid-cols-2">
                   {b.items.map((it, k) => (
-                    <Card as="li" key={it.title} className="reveal p-7">
-                      <NumChip n={String(k + 1).padStart(2, '0')} />
+                    <Card as="li" key={it.title} className="reveal flex h-full flex-col overflow-hidden p-0">
+                      {/*
+                        ★ 항목에 사진이 있으면 카드 맨 위에 (2026-09-04 오너: "카드별로 사진 넣자").
+                        ⚠️ 사진이 없는 구간도 같은 부품을 쓴다 — 조건부다. 빈 상자를 그리지 말 것.
+                        ⚠️ 사진이 붙으면 카드 여백을 p-0 으로 두고 글 쪽에만 준다. 안 그러면
+                           사진 둘레에 흰 테두리가 생긴다.
+                      */}
+                      {it.image && (
+                        <div className="relative aspect-[3/2] bg-brand-100">
+                          <Image
+                            src={it.image}
+                            alt={it.alt ?? ''}
+                            fill
+                            sizes="(min-width: 1024px) 320px, (min-width: 640px) 46vw, 92vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="flex flex-1 flex-col p-7">
+                      {/*
+                        ⚠️ self-start 로 **칩만** 붙잡는다. 부모에 items-start 를 주면 글까지 함께
+                           줄어들어 한 어절씩 눌린다(2026-09-04 실측: 눌린 글 7 → 15).
+                      */}
+                      <span className="self-start">
+                        <NumChip n={String(k + 1).padStart(2, '0')} />
+                      </span>
                       <h3 className="display-sm mt-5 text-[18px] tracking-[-0.01em] text-ink">
                         {it.title}
                       </h3>
                       <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={it.body} /></p>
+                    </div>
                     </Card>
                   ))}
                   </ul>
                 </div>
               ) : b.items ? (
-                <ul className="reveal-stack mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                /* ⚠️ 사진이 있으면 두 칸이다 — 석 줄로 두면 카드가 320px 밑으로 내려가
+                      3:2 사진의 높이가 200px 도 안 된다. 사진 없는 구간은 그대로 석 줄. */
+                <ul className={`reveal-stack mt-12 grid gap-5 sm:grid-cols-2 ${
+                  b.items.some((x) => x.image) ? 'lg:grid-cols-2' : 'lg:grid-cols-3'
+                }`}>
                   {b.items.map((it, k) => (
-                    <Card as="li" key={it.title} className="reveal p-7">
-                      <NumChip n={String(k + 1).padStart(2, '0')} />
+                    <Card as="li" key={it.title} className="reveal flex h-full flex-col overflow-hidden p-0">
+                      {/* ★ 항목 사진 — 카드 맨 위 (2026-09-04). 없는 구간도 있으므로 조건부다. */}
+                      {it.image && (
+                        <div className="relative aspect-[3/2] bg-brand-100">
+                          <Image
+                            src={it.image}
+                            alt={it.alt ?? ''}
+                            fill
+                            sizes="(min-width: 1024px) 480px, (min-width: 640px) 46vw, 92vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="flex flex-1 flex-col p-7">
+                      {/*
+                        ⚠️ self-start 로 **칩만** 붙잡는다. 부모에 items-start 를 주면 글까지 함께
+                           줄어들어 한 어절씩 눌린다(2026-09-04 실측: 눌린 글 7 → 15).
+                      */}
+                      <span className="self-start">
+                        <NumChip n={String(k + 1).padStart(2, '0')} />
+                      </span>
                       <h3 className="display-sm mt-5 text-[18px] tracking-[-0.01em] text-ink">
                         {it.title}
                       </h3>
                       <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={it.body} /></p>
+                    </div>
                     </Card>
                   ))}
                 </ul>
@@ -392,7 +453,9 @@ export function TreatmentLanding({
               {page.aftercare.items.map((a, i) => (
                 <Card as="li" key={a} className="reveal flex gap-4 p-6">
                   <NumChip n={String(i + 1).padStart(2, '0')} />
-                  <p className="text-[16px] leading-[1.85] text-ink-soft"><Sentences text={a} /></p>
+                  {/* ⚠️ min-w-0 flex-1 — 없으면 글이 어절 폭으로 눌려 한 줄에 한 어절씩 쌓인다.
+                         (2026-09-04 실측: 임플란트 '수술 후 주의사항' 03번이 그랬다) */}
+                  <p className="min-w-0 flex-1 text-[16px] leading-[1.85] text-ink-soft"><Sentences text={a} /></p>
                 </Card>
               ))}
             </ol>

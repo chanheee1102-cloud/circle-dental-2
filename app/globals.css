@@ -2369,8 +2369,53 @@ blockquote {
   display: block;
 }
 
+@container (min-width: 4em) {
+  .clause[data-fit='4'] {
+    display: inline;
+  }
+}
+@container (min-width: 5em) {
+  .clause[data-fit='5'] {
+    display: inline;
+  }
+}
+@container (min-width: 6em) {
+  .clause[data-fit='6'] {
+    display: inline;
+  }
+}
 @container (min-width: 7em) {
   .clause[data-fit='7'] {
+    display: inline;
+  }
+}
+@container (min-width: 8em) {
+  .clause[data-fit='8'] {
+    display: inline;
+  }
+}
+@container (min-width: 9em) {
+  .clause[data-fit='9'] {
+    display: inline;
+  }
+}
+@container (min-width: 10em) {
+  .clause[data-fit='10'] {
+    display: inline;
+  }
+}
+@container (min-width: 11em) {
+  .clause[data-fit='11'] {
+    display: inline;
+  }
+}
+@container (min-width: 12em) {
+  .clause[data-fit='12'] {
+    display: inline;
+  }
+}
+@container (min-width: 13em) {
+  .clause[data-fit='13'] {
     display: inline;
   }
 }
@@ -2379,8 +2424,63 @@ blockquote {
     display: inline;
   }
 }
+@container (min-width: 15em) {
+  .clause[data-fit='15'] {
+    display: inline;
+  }
+}
+@container (min-width: 16em) {
+  .clause[data-fit='16'] {
+    display: inline;
+  }
+}
+@container (min-width: 17em) {
+  .clause[data-fit='17'] {
+    display: inline;
+  }
+}
+@container (min-width: 18em) {
+  .clause[data-fit='18'] {
+    display: inline;
+  }
+}
+@container (min-width: 19em) {
+  .clause[data-fit='19'] {
+    display: inline;
+  }
+}
 @container (min-width: 20em) {
   .clause[data-fit='20'] {
+    display: inline;
+  }
+}
+@container (min-width: 21em) {
+  .clause[data-fit='21'] {
+    display: inline;
+  }
+}
+@container (min-width: 22em) {
+  .clause[data-fit='22'] {
+    display: inline;
+  }
+}
+@container (min-width: 23em) {
+  .clause[data-fit='23'] {
+    display: inline;
+  }
+}
+@container (min-width: 24em) {
+  .clause[data-fit='24'] {
+    display: inline;
+  }
+}
+@container (min-width: 25em) {
+  .clause[data-fit='25'] {
+    display: inline;
+  }
+}
+@container (min-width: 26em) {
+  .clause[data-fit='26'] {
     display: inline;
   }
 }
@@ -2389,8 +2489,68 @@ blockquote {
     display: inline;
   }
 }
+@container (min-width: 28em) {
+  .clause[data-fit='28'] {
+    display: inline;
+  }
+}
+@container (min-width: 29em) {
+  .clause[data-fit='29'] {
+    display: inline;
+  }
+}
+@container (min-width: 30em) {
+  .clause[data-fit='30'] {
+    display: inline;
+  }
+}
+@container (min-width: 31em) {
+  .clause[data-fit='31'] {
+    display: inline;
+  }
+}
+@container (min-width: 32em) {
+  .clause[data-fit='32'] {
+    display: inline;
+  }
+}
+@container (min-width: 33em) {
+  .clause[data-fit='33'] {
+    display: inline;
+  }
+}
 @container (min-width: 34em) {
   .clause[data-fit='34'] {
+    display: inline;
+  }
+}
+@container (min-width: 35em) {
+  .clause[data-fit='35'] {
+    display: inline;
+  }
+}
+@container (min-width: 36em) {
+  .clause[data-fit='36'] {
+    display: inline;
+  }
+}
+@container (min-width: 37em) {
+  .clause[data-fit='37'] {
+    display: inline;
+  }
+}
+@container (min-width: 38em) {
+  .clause[data-fit='38'] {
+    display: inline;
+  }
+}
+@container (min-width: 39em) {
+  .clause[data-fit='39'] {
+    display: inline;
+  }
+}
+@container (min-width: 40em) {
+  .clause[data-fit='40'] {
     display: inline;
   }
 }
@@ -2399,8 +2559,63 @@ blockquote {
     display: inline;
   }
 }
+@container (min-width: 42em) {
+  .clause[data-fit='42'] {
+    display: inline;
+  }
+}
+@container (min-width: 43em) {
+  .clause[data-fit='43'] {
+    display: inline;
+  }
+}
+@container (min-width: 44em) {
+  .clause[data-fit='44'] {
+    display: inline;
+  }
+}
+@container (min-width: 45em) {
+  .clause[data-fit='45'] {
+    display: inline;
+  }
+}
+@container (min-width: 46em) {
+  .clause[data-fit='46'] {
+    display: inline;
+  }
+}
+@container (min-width: 47em) {
+  .clause[data-fit='47'] {
+    display: inline;
+  }
+}
 @container (min-width: 48em) {
   .clause[data-fit='48'] {
+    display: inline;
+  }
+}
+@container (min-width: 49em) {
+  .clause[data-fit='49'] {
+    display: inline;
+  }
+}
+@container (min-width: 50em) {
+  .clause[data-fit='50'] {
+    display: inline;
+  }
+}
+@container (min-width: 51em) {
+  .clause[data-fit='51'] {
+    display: inline;
+  }
+}
+@container (min-width: 52em) {
+  .clause[data-fit='52'] {
+    display: inline;
+  }
+}
+@container (min-width: 53em) {
+  .clause[data-fit='53'] {
     display: inline;
   }
 }
@@ -2409,8 +2624,68 @@ blockquote {
     display: inline;
   }
 }
+@container (min-width: 55em) {
+  .clause[data-fit='55'] {
+    display: inline;
+  }
+}
+@container (min-width: 56em) {
+  .clause[data-fit='56'] {
+    display: inline;
+  }
+}
+@container (min-width: 57em) {
+  .clause[data-fit='57'] {
+    display: inline;
+  }
+}
+@container (min-width: 58em) {
+  .clause[data-fit='58'] {
+    display: inline;
+  }
+}
+@container (min-width: 59em) {
+  .clause[data-fit='59'] {
+    display: inline;
+  }
+}
+@container (min-width: 60em) {
+  .clause[data-fit='60'] {
+    display: inline;
+  }
+}
 @container (min-width: 61em) {
   .clause[data-fit='61'] {
+    display: inline;
+  }
+}
+@container (min-width: 62em) {
+  .clause[data-fit='62'] {
+    display: inline;
+  }
+}
+@container (min-width: 63em) {
+  .clause[data-fit='63'] {
+    display: inline;
+  }
+}
+@container (min-width: 64em) {
+  .clause[data-fit='64'] {
+    display: inline;
+  }
+}
+@container (min-width: 65em) {
+  .clause[data-fit='65'] {
+    display: inline;
+  }
+}
+@container (min-width: 66em) {
+  .clause[data-fit='66'] {
+    display: inline;
+  }
+}
+@container (min-width: 67em) {
+  .clause[data-fit='67'] {
     display: inline;
   }
 }
@@ -2419,8 +2694,68 @@ blockquote {
     display: inline;
   }
 }
+@container (min-width: 69em) {
+  .clause[data-fit='69'] {
+    display: inline;
+  }
+}
+@container (min-width: 70em) {
+  .clause[data-fit='70'] {
+    display: inline;
+  }
+}
+@container (min-width: 71em) {
+  .clause[data-fit='71'] {
+    display: inline;
+  }
+}
+@container (min-width: 72em) {
+  .clause[data-fit='72'] {
+    display: inline;
+  }
+}
+@container (min-width: 73em) {
+  .clause[data-fit='73'] {
+    display: inline;
+  }
+}
+@container (min-width: 74em) {
+  .clause[data-fit='74'] {
+    display: inline;
+  }
+}
 @container (min-width: 75em) {
   .clause[data-fit='75'] {
+    display: inline;
+  }
+}
+@container (min-width: 76em) {
+  .clause[data-fit='76'] {
+    display: inline;
+  }
+}
+@container (min-width: 77em) {
+  .clause[data-fit='77'] {
+    display: inline;
+  }
+}
+@container (min-width: 78em) {
+  .clause[data-fit='78'] {
+    display: inline;
+  }
+}
+@container (min-width: 79em) {
+  .clause[data-fit='79'] {
+    display: inline;
+  }
+}
+@container (min-width: 80em) {
+  .clause[data-fit='80'] {
+    display: inline;
+  }
+}
+@container (min-width: 81em) {
+  .clause[data-fit='81'] {
     display: inline;
   }
 }
@@ -2429,8 +2764,63 @@ blockquote {
     display: inline;
   }
 }
+@container (min-width: 83em) {
+  .clause[data-fit='83'] {
+    display: inline;
+  }
+}
+@container (min-width: 84em) {
+  .clause[data-fit='84'] {
+    display: inline;
+  }
+}
+@container (min-width: 85em) {
+  .clause[data-fit='85'] {
+    display: inline;
+  }
+}
+@container (min-width: 86em) {
+  .clause[data-fit='86'] {
+    display: inline;
+  }
+}
+@container (min-width: 87em) {
+  .clause[data-fit='87'] {
+    display: inline;
+  }
+}
 @container (min-width: 88em) {
   .clause[data-fit='88'] {
+    display: inline;
+  }
+}
+@container (min-width: 89em) {
+  .clause[data-fit='89'] {
+    display: inline;
+  }
+}
+@container (min-width: 90em) {
+  .clause[data-fit='90'] {
+    display: inline;
+  }
+}
+@container (min-width: 91em) {
+  .clause[data-fit='91'] {
+    display: inline;
+  }
+}
+@container (min-width: 92em) {
+  .clause[data-fit='92'] {
+    display: inline;
+  }
+}
+@container (min-width: 93em) {
+  .clause[data-fit='93'] {
+    display: inline;
+  }
+}
+@container (min-width: 94em) {
+  .clause[data-fit='94'] {
     display: inline;
   }
 }
@@ -2439,13 +2829,128 @@ blockquote {
     display: inline;
   }
 }
+@container (min-width: 96em) {
+  .clause[data-fit='96'] {
+    display: inline;
+  }
+}
+@container (min-width: 97em) {
+  .clause[data-fit='97'] {
+    display: inline;
+  }
+}
+@container (min-width: 98em) {
+  .clause[data-fit='98'] {
+    display: inline;
+  }
+}
+@container (min-width: 99em) {
+  .clause[data-fit='99'] {
+    display: inline;
+  }
+}
+@container (min-width: 100em) {
+  .clause[data-fit='100'] {
+    display: inline;
+  }
+}
+@container (min-width: 101em) {
+  .clause[data-fit='101'] {
+    display: inline;
+  }
+}
 @container (min-width: 102em) {
   .clause[data-fit='102'] {
     display: inline;
   }
 }
+@container (min-width: 103em) {
+  .clause[data-fit='103'] {
+    display: inline;
+  }
+}
+@container (min-width: 104em) {
+  .clause[data-fit='104'] {
+    display: inline;
+  }
+}
+@container (min-width: 105em) {
+  .clause[data-fit='105'] {
+    display: inline;
+  }
+}
+@container (min-width: 106em) {
+  .clause[data-fit='106'] {
+    display: inline;
+  }
+}
+@container (min-width: 107em) {
+  .clause[data-fit='107'] {
+    display: inline;
+  }
+}
+@container (min-width: 108em) {
+  .clause[data-fit='108'] {
+    display: inline;
+  }
+}
 @container (min-width: 109em) {
   .clause[data-fit='109'] {
+    display: inline;
+  }
+}
+@container (min-width: 110em) {
+  .clause[data-fit='110'] {
+    display: inline;
+  }
+}
+@container (min-width: 111em) {
+  .clause[data-fit='111'] {
+    display: inline;
+  }
+}
+@container (min-width: 112em) {
+  .clause[data-fit='112'] {
+    display: inline;
+  }
+}
+@container (min-width: 113em) {
+  .clause[data-fit='113'] {
+    display: inline;
+  }
+}
+@container (min-width: 114em) {
+  .clause[data-fit='114'] {
+    display: inline;
+  }
+}
+@container (min-width: 115em) {
+  .clause[data-fit='115'] {
+    display: inline;
+  }
+}
+@container (min-width: 116em) {
+  .clause[data-fit='116'] {
+    display: inline;
+  }
+}
+@container (min-width: 117em) {
+  .clause[data-fit='117'] {
+    display: inline;
+  }
+}
+@container (min-width: 118em) {
+  .clause[data-fit='118'] {
+    display: inline;
+  }
+}
+@container (min-width: 119em) {
+  .clause[data-fit='119'] {
+    display: inline;
+  }
+}
+@container (min-width: 120em) {
+  .clause[data-fit='120'] {
     display: inline;
   }
 }

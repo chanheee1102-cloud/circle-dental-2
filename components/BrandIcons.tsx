@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 /**
  * **브랜드 마크 세 개** — 전화 · 카카오 · 네이버.
  *
@@ -7,6 +9,20 @@
  *    맞춘다고 바꾸지 말 것 — 색이 곧 '어디로 가는가' 이고, 바꾸면 알아볼 수 없다.
  * ⚠️ 전화 마크만 currentColor 다. 이건 브랜드가 아니라 우리 아이콘이라 놓이는 면을 따른다.
  */
+export function PinIcon({ size = 22 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none" aria-hidden>
+      <path
+        d="M10 17.5s5.6-4.6 5.6-9a5.6 5.6 0 1 0-11.2 0c0 4.4 5.6 9 5.6 9Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <circle cx="10" cy="8.4" r="2" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
 export function PhoneIcon({ size = 22 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" fill="none" aria-hidden>
@@ -68,50 +84,48 @@ export function BookingButtons({
   phoneHref: string;
   kakao: string;
   naver: string;
-  /** 놓이는 면 — 어두운 면에서는 전화 원을 밝게 뒤집는다. */
+  /** 놓이는 면 — 어두운 면에서는 우리 색 원을 밝게 뒤집는다. */
   tone?: 'light' | 'dark';
 }) {
   const dot =
-    'group flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-full text-center transition-transform duration-300 hover:-translate-y-1';
+    'group flex aspect-square w-full flex-col items-center justify-center gap-1.5 rounded-full text-center transition-transform duration-300 hover:-translate-y-1';
+  const own = tone === 'dark' ? 'bg-parchment text-dusk' : 'bg-ink text-wine-bg';
   return (
-    <div className="reveal w-full">
-      <div className="mx-auto grid max-w-[27rem] grid-cols-3 gap-3 sm:gap-4">
-        <a
-          href={phoneHref}
-          aria-label={`전화 ${phone}`}
-          className={`${dot} ${tone === 'dark' ? 'bg-parchment text-dusk' : 'bg-ink text-wine-bg'}`}
-        >
-          <PhoneIcon size={26} />
-          <span className="text-[14.5px] font-bold">전화상담</span>
-        </a>
-        <a
-          href={kakao}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`${dot} bg-[#FEE500] text-[#191600]`}
-        >
-          <KakaoIcon size={26} />
-          <span className="text-[14.5px] font-bold">카카오톡</span>
-        </a>
-        <a
-          href={naver}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`${dot} bg-[#03C75A] text-white`}
-        >
-          <NaverIcon size={26} />
-          <span className="text-[14.5px] font-bold">네이버예약</span>
-        </a>
-      </div>
-      {/* 번호는 원 아래 한 줄 — 원 안에 넣으면 글자가 너무 작아진다. 이 줄도 누르면 걸린다. */}
-      <a
-        href={phoneHref}
-        className={`mx-auto mt-5 block max-w-[27rem] text-center text-[19px] font-black tracking-[-0.01em] tabular-nums transition-colors ${
-          tone === 'dark' ? 'text-parchment hover:text-white' : 'text-ink hover:text-clay-600'
-        }`}
-      >
-        {phone}
+    /*
+      ⚠️ 넷을 한 줄에 둔다 (2026-09-04 오너: "map 버튼 추가해서 버튼 4개로"). 좁은 화면에서도
+         줄을 바꾸지 않는다 — 세로로 쌓으면 원이 화면 폭만큼 커져 우스워진다.
+      ⚠️ gap 을 넓히지 말 것 — 오너가 "간격이 너무 넓다" 고 한 자리다. 원 사이는 좁게 붙이고
+         칸 폭이 남으면 **원이 커지게** 둔다(aspect-square + w-full).
+      ⚠️ 번호 줄은 뺐다 (오너: "번호는 지워 밑에"). 전화 원이 그 역할을 하고,
+         번호는 푸터·내원 안내·하단 고정 바에 이미 세 번 있다.
+    */
+    <div className="reveal grid w-full grid-cols-4 gap-2.5 sm:gap-3">
+      <a href={phoneHref} aria-label={`전화 ${phone}`} className={`${dot} ${own}`}>
+        <PhoneIcon size={24} />
+        <span className="text-[13.5px] font-bold">전화상담</span>
       </a>
+      <a
+        href={kakao}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${dot} bg-[#FEE500] text-[#191600]`}
+      >
+        <KakaoIcon size={24} />
+        <span className="text-[13.5px] font-bold">카카오톡</span>
+      </a>
+      <a
+        href={naver}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${dot} bg-[#03C75A] text-white`}
+      >
+        <NaverIcon size={24} />
+        <span className="text-[13.5px] font-bold">네이버예약</span>
+      </a>
+      <Link href="/visit" className={`${dot} ${own}`}>
+        <PinIcon size={24} />
+        <span className="text-[13.5px] font-bold">오시는 길</span>
+      </Link>
     </div>
   );
 }
