@@ -736,7 +736,8 @@ export function CardLink({
       <Heading className="display-sm text-[19px] leading-[1.35] text-ink transition-colors group-hover:text-clay-700">
         {title}
       </Heading>
-      <p className="mt-3 flex-1 text-[15.5px] leading-[1.8] text-twilight">
+      {/* ⚠️ min-w-0 — flex-1 만 있으면 min-width:auto 가 남아 어절 폭으로 눌린다. */}
+      <p className="mt-3 min-w-0 flex-1 text-[15.5px] leading-[1.8] text-twilight">
         <Sentences text={desc} />
       </p>
       <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-black text-clay-700">

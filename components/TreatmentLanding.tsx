@@ -310,7 +310,9 @@ export function TreatmentLanding({
                   <Card as="li" key={st.label} className="reveal p-6">
                     <div className="flex items-start gap-4">
                       <NumChip n={String(i + 1).padStart(2, '0')} />
-                      <div>
+                      {/* ⚠️ min-w-0 flex-1 을 지우지 말 것 — 없으면 이 칸이 어절 하나 폭으로 눌려
+                             '염증이 / 얼마나 / 가라앉았는지' 처럼 한 줄에 한 어절씩 쌓인다(실측 폭 61px). */}
+                      <div className="min-w-0 flex-1">
                         <h3 className="display-sm text-[17.5px] tracking-[-0.01em] text-ink">
                           {st.label}
                         </h3>

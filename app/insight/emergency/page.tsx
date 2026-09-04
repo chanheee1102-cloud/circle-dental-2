@@ -147,7 +147,10 @@ export default function EmergencyPage() {
 
         {/* 전화 안내를 맨 위에 둔다 — 급한 사람이 아래까지 읽지 않는다. */}
         <div className="mt-8 flex flex-wrap items-center gap-4 rounded-2xl border border-clay-600/40 bg-clay-400/[0.07] ring-1 ring-clay-400/10 ring-inset px-7 py-6 text-ink">
-          <div className="min-w-0 flex-1">
+          {/* ⚠️ basis 를 지우지 말 것 — flex-wrap 인데 basis 가 없으면 줄을 바꾸는 대신 이 칸이
+                 105px 까지 줄어들어 글이 한 어절씩 쌓인다(390px 실측). basis 가 있어야 전화 단추가
+                 아랫줄로 내려간다. */}
+          <div className="min-w-0 flex-1 basis-[18rem]">
             <p className="text-[16px] font-black">지금 상황을 먼저 말씀해 주세요</p>
             <p className="mt-1 text-[14.5px] text-twilight">
               바로 오셔야 하는 상황인지 함께 확인하고, 그동안 하실 수 있는 조치를 말씀드립니다.

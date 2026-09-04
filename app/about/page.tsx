@@ -3,6 +3,7 @@ import { ArticleMeta, headingId } from '@/components/article';
 import Link from 'next/link';
 import Image from 'next/image';
 import { OUTREACH, CREDENTIALS } from '@/lib/clinic';
+import { OUTREACH_PHOTO, OUTREACH_BROADCAST } from '@/lib/doctors';
 import { IMG } from '@/lib/assets';
 import { Container, SectionHead, ContactCta, Sentences, bindKo } from '@/components/ui';
 import { AboutHero } from '@/components/AboutHero';
@@ -238,11 +239,12 @@ export default function AboutPage() {
       {/* ⚠️ 어두운 면으로 되돌리지 말 것 — 밝은 진료실 사진 열두 장이 이 구획의 주인공이다. */}
       <section className="light-band py-16 sm:py-24 lg:py-32">
         <Container>
-          <SectionHead
-            eyebrow="진료환경"
-            title="동그라미치과 내부 둘러보기"
-            desc="상담실과 진료실, 소독실 사진입니다."
-          />
+          {/*
+            ⚠️ desc 를 되살리지 말 것 (2026-09-04 오너) — '상담실과 진료실, 소독실 사진입니다' 는
+               바로 아래 사진 열두 장이 이미 말하는 것이라 한 줄을 더 읽게 할 뿐이었다.
+               사진의 설명은 썸네일 alt 로 문서에 그대로 남는다(components/InteriorGallery.tsx).
+          */}
+          <SectionHead eyebrow="진료환경" title="동그라미치과 내부 둘러보기" />
           <div className="mt-10">
             <InteriorGallery />
           </div>
@@ -270,11 +272,34 @@ export default function AboutPage() {
         <Container>
           <div className="reveal grid items-baseline gap-x-14 gap-y-6 lg:grid-cols-[10rem_minmax(0,1fr)]">
             <p className="eyebrow-chip text-clay-700">사회공헌</p>
-            <div className="grid gap-x-14 gap-y-4 sm:grid-cols-2">
-              {OUTREACH.map((o) => (
-                <p key={o} className="text-[16.5px] leading-[1.8] text-twilight">
-                  <Sentences text={o} />
-                </p>
+            {/*
+              ★★ 사진을 되살렸다 (2026-09-04 오너: "첫번째 사진을 두번째 사진에 넣기") ★★
+                기존 홈페이지는 이 두 활동을 **사진 두 장**으로 보여 주고 아래에 한 줄씩 달았다.
+                우리는 글 두 줄만 남겨 뒀는데, 봉사와 방송은 '했다' 는 말보다 **찍힌 장면**이 근거다.
+                사진 자산은 lib/doctors.ts 에 이미 있었다(OUTREACH_PHOTO · OUTREACH_BROADCAST).
+              ⚠️ 글을 지우고 사진만 두지 말 것 — 십수년 봉사와 방송 기록은 제3자가 확인할 수 있는
+                 사실이라 AI 검색이 신뢰 근거로 읽는다. 사진은 더한 것이지 대신한 것이 아니다.
+              ⚠️ 순서를 바꾸지 말 것 — 첫째가 봉사 현장, 둘째가 방송 장면이고 아래 글도 그 순서다.
+            */}
+            <div className="grid gap-x-14 gap-y-8 sm:grid-cols-2">
+              {[
+                { photo: OUTREACH_PHOTO, text: OUTREACH[0] },
+                { photo: OUTREACH_BROADCAST, text: OUTREACH[1] },
+              ].map(({ photo, text }) => (
+                <figure key={photo.src}>
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-clay-tint">
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt}
+                      fill
+                      sizes="(min-width: 640px) 44vw, 92vw"
+                      className="object-cover"
+                    />
+                  </div>
+                  <figcaption className="mt-4 text-[16.5px] leading-[1.8] text-twilight">
+                    <Sentences text={text} />
+                  </figcaption>
+                </figure>
               ))}
             </div>
           </div>

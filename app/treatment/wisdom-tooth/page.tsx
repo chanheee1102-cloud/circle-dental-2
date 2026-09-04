@@ -339,7 +339,8 @@ export default function WisdomToothPage() {
                   <span className={`${LABEL} shrink-0 pt-1 text-[13.5px] text-ink-soft`}>
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <div>
+                  {/* ⚠️ min-w-0 flex-1 — 없으면 글이 어절 폭으로 눌린다(실측 61px · 3.3자/줄). */}
+                  <div className="min-w-0 flex-1">
                     <p className="display-sm text-[18px] leading-[1.3] text-clay-600">{v.k}</p>
                     <p className="mt-2.5 text-[17.5px] leading-[1.65] font-normal text-ink/85"><Sentences text={v.v} /></p>
                   </div>

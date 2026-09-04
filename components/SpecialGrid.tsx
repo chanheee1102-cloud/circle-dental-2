@@ -67,7 +67,8 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
               <h3 className="display-sm text-[20px] leading-[1.35] text-ink transition-colors group-hover:text-clay-700">
                 {bindKo(s.title)}
               </h3>
-              <p className="mt-3.5 line-clamp-3 text-[15.5px] leading-[1.8] text-ink-soft">
+              {/* ⚠️ min-w-0 — 없으면 좁은 칸에서 글이 어절 폭으로 눌린다. */}
+              <p className="mt-3.5 min-w-0 line-clamp-3 text-[15.5px] leading-[1.8] text-ink-soft">
                 {bindKo(s.body)}
               </p>
               <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-bold text-clay-700">

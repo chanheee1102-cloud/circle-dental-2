@@ -1,6 +1,7 @@
-import Link from 'next/link';
+import Image from 'next/image';
 import { TRUST_STATS, CREDENTIAL_ROWS, MEDIA_APPEARANCES } from '@/lib/trustSignals';
-import { PUBLICATION_DETAIL } from '@/lib/doctors';
+import { PUBLICATION_DETAIL, OUTREACH_BROADCAST } from '@/lib/doctors';
+import { CredentialFan } from '@/components/CredentialFan';
 import { Container, Sentences } from '@/components/ui';
 import { Reveal } from '@/components/Reveal';
 import { headingId } from '@/components/article';
@@ -107,6 +108,16 @@ export function TrustSection() {
               </tbody>
             </table>
           </div>
+
+          {/*
+            ★★ 표 아래에 인증패 **실물**을 건다 (2026-09-04 오너: "여기다가 사진 한번더") ★★
+              표는 '무엇을 어디서 받았는가' 를 글로 적은 것이고, 사진은 그것이 실제로 있다는 증거다.
+              근거 페이지의 첫 문장이 "병원이 스스로 좋다고 말하는 것은 근거가 아닙니다" 이므로,
+              제3자가 준 물건이 화면에 보이는 것이 이 페이지의 논리를 완성한다.
+            ⚠️ href={null} — 이 사진들의 목적지가 예전에는 의료진 페이지였지만, 이제 여기에
+               바로 있으므로 링크로 감싸지 않는다. 감싸면 같은 화면을 가리키는 막다른 링크가 된다.
+          */}
+          <CredentialFan href={null} />
         </Container>
       </section>
 
@@ -129,6 +140,19 @@ export function TrustSection() {
                 {PUBLICATION_DETAIL.authors}
               </span>
             </p>
+            {/*
+              ⚠️ 세로형(768×800)을 쓴다 — 가로 배너는 왼쪽이 흐린 여백이라 그 위에 글을 얹을 때만
+                 쓸모가 있다(lib/doctors.ts 주석). 여기는 글 아래에 놓는 자리라 세로형이 맞다.
+              ⚠️ 잘라내지 않는다(width/height 그대로) — 학술지 지면이 잘리면 무엇인지 알 수 없다.
+            */}
+            <Image
+              src={PUBLICATION_DETAIL.image}
+              alt="국제 학술지에 실린 발표 논문 지면"
+              width={768}
+              height={800}
+              sizes="(min-width: 1024px) 320px, 60vw"
+              className="mt-7 w-full max-w-[320px] rounded-xl border border-brand-200/70"
+            />
           </div>
 
           {MEDIA_APPEARANCES.length > 0 && (
@@ -147,22 +171,27 @@ export function TrustSection() {
                   </li>
                 ))}
               </ul>
+              {/*
+                ⚠️ 이 사진은 사회공헌 구획(/about)에서도 쓴다 — 같은 장면이지만 역할이 다르다.
+                   거기서는 '봉사를 했다' 는 기록이고, 여기서는 '방송에 나왔다' 는 근거다.
+              */}
+              <Image
+                src={OUTREACH_BROADCAST.src}
+                alt={OUTREACH_BROADCAST.alt}
+                width={499}
+                height={415}
+                sizes="(min-width: 1024px) 360px, 60vw"
+                className="mt-7 w-full max-w-[360px] rounded-xl border border-brand-200/70"
+              />
             </div>
           )}
         </Container>
       </section>
 
-      <Container className="py-10">
-        <Link
-          href="/about/doctors"
-          className="group inline-flex items-center gap-2 text-[17px] font-bold text-ink transition-colors hover:text-clay-600"
-        >
-          인증패 · 논문 실물 사진 보기{' '}
-          <span aria-hidden className="transition-transform group-hover:translate-x-1">
-            →
-          </span>
-        </Link>
-      </Container>
+      {/*
+        ⚠️ '인증패 · 논문 실물 사진 보기 →' 링크를 뺐다 (2026-09-04) — 사진이 바로 위에 있으므로
+           같은 것을 보러 다른 페이지로 보내는 길이 됐다. 되살리려면 위 사진들을 먼저 빼야 한다.
+      */}
     </>
   );
 }

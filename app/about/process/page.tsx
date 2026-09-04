@@ -167,24 +167,46 @@ export default function ProcessPage() {
       <section className="light-band py-12 sm:py-16 lg:py-20">
         <Container>
           <h2 className="display-sm text-[clamp(23px,2.4vw,30px)] text-ink">첫 방문 전에 자주 받는 질문</h2>
-          <ol className="mt-11 space-y-10 lg:space-y-12">
+          {/*
+            ★★ 다섯 문답을 **접는다** (2026-09-04 오너: "FAQ 처럼 접는걸로") ★★
+              다섯 답이 모두 펼쳐져 있어 이 구획 하나가 화면 두 개를 넘었다. 질문만 보이면
+              자기 것을 찾아 그것만 펴게 된다 — 홈 문답(components/HomeFaqSection.tsx)과 같은 결이다.
+            ⚠️ `<details>` 로 짜다 — 자바스크립트 없이 브라우저가 여닫고, **접혀 있어도 답은 문서에
+               그대로 있다.** 클릭해야 나타나는 방식으로 바꾸면 검색·AI 가 답을 못 읽는다.
+            ⚠️ 질문은 계속 h3 다 — 문답 구조가 이 페이지가 인용되는 이유이고, faqSchema 와도 짝이다.
+            ⚠️ 첫 항목만 열어 둔다(open) — 전부 접히면 '내용이 없는 구획' 처럼 보인다.
+            ⚠️ list-none 과 ::-webkit-details-marker 숨김을 지우지 말 것 — 기본 삼각형이 같이 나온다.
+          */}
+          <ol className="mt-11 divide-y divide-wine-line border-y border-wine-line">
             {FIRST_VISIT_QA.map((qa, i) => (
               <li key={qa.q} className="reveal">
-                <h3 className="flex gap-3.5">
-                  <span
-                    aria-hidden
-                    className="display shrink-0 text-[17px] leading-[1.55] tabular-nums text-clay-600"
-                  >
-                    Q{i + 1}
-                  </span>
-                  <span className="text-[clamp(17px,1.8vw,20px)] leading-snug font-black text-ink">
-                    {qa.q}
-                  </span>
-                </h3>
-                {/* ⚠️ 들여쓰기 값을 바꾸려면 위 번호 폭도 함께 볼 것 — 답이 질문 글자와 어긋난다. */}
-                <p className="mt-3 max-w-[64ch] pl-[2.4rem] text-[17px] leading-[1.9] text-twilight">
-                  <Sentences text={qa.a} />
-                </p>
+                <details className="group" open={i === 0}>
+                  <summary className="cursor-pointer list-none py-6 [&::-webkit-details-marker]:hidden">
+                    <h3 className="flex items-start gap-3.5">
+                      <span
+                        aria-hidden
+                        className="display mt-0.5 shrink-0 text-[17px] leading-[1.55] tabular-nums text-clay-600"
+                      >
+                        Q{i + 1}
+                      </span>
+                      <span className="min-w-0 flex-1 text-[clamp(17px,1.8vw,20px)] leading-snug font-black text-ink transition-colors group-hover:text-clay-600">
+                        {qa.q}
+                      </span>
+                      {/* 두 글리프를 갈아 끼우지 않는다 — 글꼴에 따라 폭이 달라져 줄이 흔들린다. */}
+                      <span
+                        aria-hidden
+                        className="relative mt-2 h-3.5 w-3.5 shrink-0 text-clay-600 transition-transform duration-300 group-open:rotate-45"
+                      >
+                        <span className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-current" />
+                        <span className="absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-current" />
+                      </span>
+                    </h3>
+                  </summary>
+                  {/* ⚠️ 들여쓰기 값을 바꾸려면 위 번호 폭도 함께 볼 것 — 답이 질문 글자와 어긋난다. */}
+                  <p className="max-w-[64ch] pb-7 pl-[2.4rem] text-[17px] leading-[1.9] text-twilight">
+                    <Sentences text={qa.a} />
+                  </p>
+                </details>
               </li>
             ))}
           </ol>
@@ -192,54 +214,13 @@ export default function ProcessPage() {
       </section>
 
       {/*
-        방문 안내 — ⚠️ 그라데이션 버튼으로 되돌리지 말 것 (오너 지시, 사이트 전체 규칙).
-        이 사이트의 버튼은 단색 아니면 테두리다.
+        ★★ '동그라미치과의원 방문 안내' 블록을 통째로 뺐다 (2026-09-04 오너: "이 구획 통째로") ★★
+          전화·네이버·카카오·오시는 길 네 단추가 바로 아래 <ContactCta /> 에 **똑같이** 있었다.
+          한 화면에서 같은 네 단추를 두 번 보여 주고 있었던 셈이다.
+        ⚠️ MedicalNotice 는 남긴다 — 의료법 고지라 페이지마다 있어야 한다.
+        ⚠️ 되살리려면 아래 ContactCta 를 대신 빼야 한다. 둘을 같이 두지 말 것.
       */}
       <Container className="py-14">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-12">
-          <h2 className="display-sm text-[clamp(19px,2vw,24px)] text-ink">
-            동그라미치과의원 방문 안내
-          </h2>
-          <div>
-            <p className="text-[17px] leading-[1.9] text-twilight">
-              진료시간과 위치는 내원 안내 페이지에 있고, 예약은 아래 연락처로 하실 수 있습니다.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <a
-                href={CLINIC.phoneHref}
-                /* ⚠️ bg-parchment 로 되돌리지 말 것 — 어두운 서브페이지에서 parchment 는 어두운 값이라
-                   글자와 같은 색이 된다(2026-09-02 실측 1.04:1). 그 조합은 진료 페이지의
-                   bg-night 안(어두운 섬)에서만 밝게 뒤집힌다. 여기는 섬이 아니다. */
-                className="rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
-              >
-                {CLINIC.phone}
-              </a>
-              <a
-                href={CLINIC.booking.naver}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg"
-              >
-                네이버 예약
-              </a>
-              <a
-                href={CLINIC.booking.kakao}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg"
-              >
-                카카오톡 상담
-              </a>
-              <Link
-                href="/visit"
-                className="rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold text-ink transition-colors hover:bg-ink hover:text-wine-bg"
-              >
-                오시는 길
-              </Link>
-            </div>
-          </div>
-        </div>
-
         <MedicalNotice />
       </Container>
 

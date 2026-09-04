@@ -358,7 +358,8 @@ export default function CavityPage() {
                       <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-clay-tint text-[11.5px] font-black text-clay-600">
                         {r.n}
                       </span>
-                      <div>
+                      {/* ⚠️ min-w-0 flex-1 — 없으면 증례 설명이 한 줄에 한 어절씩 쌓인다(2026-09-04 오너 지적). */}
+                      <div className="min-w-0 flex-1">
                         <p className="text-[16px] font-black text-ink">{r.t}</p>
                         <p className="mt-1.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={r.d} /></p>
                       </div>

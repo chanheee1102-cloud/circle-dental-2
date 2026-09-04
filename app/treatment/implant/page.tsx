@@ -235,7 +235,8 @@ export default function ImplantPage() {
                 <Card key={b.title} className="p-7">
                   <div className="flex items-start gap-4">
                     <NumChip n={i + 1} />
-                    <div>
+                    {/* ⚠️ min-w-0 flex-1 — 없으면 글이 어절 폭으로 눌린다. */}
+                    <div className="min-w-0 flex-1">
                       <h3 className="display-sm text-[18px] tracking-[-0.01em] text-ink">{b.title}</h3>
                       <p className="mt-2.5 text-[15.5px] leading-[1.85] text-ink-soft"><Sentences text={b.body} /></p>
                     </div>
@@ -470,7 +471,8 @@ export default function ImplantPage() {
                   <Card as="li" key={st.label} className="reveal p-6">
                     <div className="flex items-start gap-4">
                       <NumChip n={String(i + 1).padStart(2, '0')} />
-                      <div>
+                      {/* ⚠️ min-w-0 flex-1 — 없으면 글이 어절 폭으로 눌린다. */}
+                      <div className="min-w-0 flex-1">
                         <h3 className="display-sm text-[17.5px] tracking-[-0.01em] text-ink">
                           {st.label}
                         </h3>

@@ -420,7 +420,8 @@ function PillarSection() {
                   <h3 className="display-sm text-[22px] text-ink sm:text-[24px]">
                     {p.name}
                   </h3>
-                  <p className="mt-3.5 flex-1 text-[15.5px] leading-[1.75] text-ink-soft">
+                  {/* ⚠️ min-w-0 — flex-1 만으로는 안 줄어든다(min-width:auto 가 남는다). */}
+                  <p className="mt-3.5 min-w-0 flex-1 text-[15.5px] leading-[1.75] text-ink-soft">
                     <Sentences text={p.copy} />
                   </p>
                   {/*
