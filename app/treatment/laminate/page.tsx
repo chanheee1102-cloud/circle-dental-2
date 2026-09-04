@@ -17,6 +17,7 @@ import {
   imageObjectSchema,
   withLocality,
 } from '@/lib/seo';
+import { TreatmentClosing } from '@/components/TreatmentClosing';
 
 /**
  * 라미네이트 — 심미보철에서 **꺼내 온** 전용 페이지.
@@ -297,68 +298,19 @@ export default function LaminatePage() {
       </section>
 
       {/* ── 마무리 ───────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-24 lg:py-32">
-        <Container>
-          <h2 className="display-sm max-w-[13em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
-            깎는 양부터 정하고 시작합니다
-          </h2>
-          <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
-            <Sentences text="앞면만 덮을지, 전체를 씌울지는 남은 법랑질과 맞물림이 정합니다. 두 방법을 나란히 두고 보시려면 심미보철 페이지에서 삭제량 비교를 보실 수 있습니다." />
-          </p>
-
-          <div className="mt-12 flex flex-wrap items-center gap-3">
-            <a
-              href={CLINIC.booking.naver}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
-            >
-              진료 예약하기 <span aria-hidden>→</span>
-            </a>
-            <a
-              href={CLINIC.phoneHref}
-              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-ink hover:text-wine-bg"
-            >
-              {CLINIC.phone}
-            </a>
-          </div>
-
-          {/*
-            ⚠️ 심미보철 링크를 지우지 말 것 — 두 페이지는 역할이 갈려 있어서, 서로를 가리키지
-               않으면 '라미네이트만 보고 크라운은 못 본' 사람이 생긴다.
-          */}
-          <div className="mt-20 grid gap-8 border-t border-wine-line pt-12 sm:grid-cols-2 lg:grid-cols-4">
-            <Link href="/treatment/crown-prosthesis" className="group">
-              <p className="text-[14.5px] font-medium text-ink-soft">함께 보기</p>
-              <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
-                심미보철에서 깎는 양 비교하기 <span aria-hidden>→</span>
-              </p>
-            </Link>
-            <Link href="/treatment/whitening" className="group">
-              <p className="text-[14.5px] font-medium text-ink-soft">함께 보기</p>
-              <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
-                치아미백 <span aria-hidden>→</span>
-              </p>
-            </Link>
-            {related.slice(0, 2).map((sym) =>
-              sym ? (
-                <Link key={sym.slug} href={`/insight/symptom/${sym.slug}`} className="group">
-                  <p className="text-[14.5px] font-medium text-ink-soft">증상으로 찾기</p>
-                  <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
-                    {sym.short} <span aria-hidden>→</span>
-                  </p>
-                </Link>
-              ) : null,
-            )}
-          </div>
-
-          <div className="mt-16 max-w-[46em]">
-            <ArticleMeta path={PATH} />
-          </div>
-          <References items={REFS_TREATMENT} />
-          <MedicalNotice extra={NO_GUARANTEE_NOTE} />
-        </Container>
-      </section>
+      {/*
+        ⚠️ 이 마무리를 페이지 안에 다시 풀어 쓰지 말 것 (2026-09-04) — 일곱 페이지가 각자 복사본을
+           갖고 있어서 충치만 단추가 오른쪽이고 나머지는 왼쪽이었다. 부품은 components/TreatmentClosing.tsx.
+      */}
+      <TreatmentClosing
+        title="깎는 양부터 정하고 시작합니다"
+        lead="앞면만 덮을지, 전체를 씌울지는 남은 법랑질과 맞물림이 정합니다. 두 방법을 나란히 두고 보시려면 심미보철 페이지에서 삭제량 비교를 보실 수 있습니다."
+        links={[
+          { label: '함께 보기', title: '심미보철에서 깎는 양 비교하기', href: '/treatment/crown-prosthesis' },
+          { label: '함께 보기', title: '치아미백', href: '/treatment/whitening' },
+          ...related.slice(0, 2).map((s) => ({ label: '증상으로 찾기', title: s!.title, href: `/insight/symptom/${s!.slug}` })),
+        ]}
+      />
     </>
   );
 }

@@ -19,6 +19,7 @@ import {
   imageObjectSchema,
   withLocality,
 } from '@/lib/seo';
+import { TreatmentClosing } from '@/components/TreatmentClosing';
 
 /**
  * 심미보철 — 라미네이트와 올세라믹 크라운을 **깎는 양**으로 가르는 비교 문서.
@@ -384,91 +385,19 @@ export default function CrownProsthesisPage() {
       </section>
 
       {/* ── 마무리 ──────────────────────────────────────────────────── */}
-      <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
-        <Container>
-          <h2 className="display-sm reveal max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
-            덜 깎는 방법이 가능한지 먼저 봅니다
-          </h2>
-          <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
-            <Sentences text="남은 치아의 양과 무는 힘, 잇몸 상태를 먼저 확인한 뒤에 어떤 방법이 가능한지 말씀드립니다. 씹는 기능과 잇몸을 정리하는 것이 색과 모양보다 앞섭니다." />
-          </p>
-
-          {journey ? (
-            <dl className="mt-10 flex flex-wrap gap-x-14 gap-y-5">
-              <div>
-                <dt className="text-[14.5px] font-medium text-ink-soft">내원 횟수</dt>
-                <dd className="mt-2 text-[clamp(26px,3vw,36px)] leading-none font-extrabold tracking-[-0.03em] text-ink tabular-nums">
-                  {journey.visits}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-[14.5px] font-medium text-ink-soft">치료 기간</dt>
-                <dd className="mt-2 text-[clamp(26px,3vw,36px)] leading-none font-extrabold tracking-[-0.03em] text-ink tabular-nums">
-                  {journey.duration}
-                </dd>
-              </div>
-            </dl>
-          ) : null}
-
-          <div className="mt-10 flex flex-wrap items-center gap-3">
-            <a
-              href={CLINIC.booking.naver}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
-            >
-              진료 예약하기 <span aria-hidden>→</span>
-            </a>
-            <a
-              href={CLINIC.phoneHref}
-              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-ink hover:text-wine-bg"
-            >
-              {CLINIC.phone}
-            </a>
-          </div>
-
-          {/*
-            ⚠️ 라미네이트 링크를 지우지 말 것 (2026-09-02) — 이 페이지는 **둘 중 무엇을
-               고를지**를 다루고, 라미네이트 하나를 깊게 보는 문서는 따로 있다.
-               서로를 안 가리키면 비교만 보고 상세는 못 본 사람이 생긴다.
-            ⚠️ 관련 증상은 2개다 — 라미네이트 · 문답과 합쳐 네 칸이 찬다(3개면 한 줄이 밀린다).
-          */}
-          <div className="mt-20 grid gap-8 border-t border-wine-line pt-12 sm:grid-cols-2 lg:grid-cols-4">
-            <Link href="/treatment/laminate" className="group">
-              <p className="text-[14.5px] font-medium text-ink-soft">자세히 보기</p>
-              <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
-                라미네이트 <span aria-hidden>→</span>
-              </p>
-            </Link>
-            <Link href="/faq#crown-prosthesis" className="group">
-              <p className="text-[14.5px] font-medium text-ink-soft">자주 묻는 질문</p>
-              <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
-                많이 묻는 것 {t.qa.length}가지 <span aria-hidden>→</span>
-              </p>
-            </Link>
-            {related.slice(0, 2).map((s) => (
-              <Link key={s!.slug} href={`/insight/symptom/${s!.slug}`} className="group">
-                <p className="text-[14.5px] font-medium text-ink-soft">관련 증상</p>
-                <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
-                  {s!.title} <span aria-hidden>→</span>
-                </p>
-              </Link>
-            ))}
-          </div>
-
-          {/*
-            ⚠️ 발행 정보·근거·고지를 **마무리 구획 안에** 둔다(라미네이트 페이지와 같은 자리).
-               셋 다 지금은 null 을 돌려주는 부품이라(components/article.tsx · ui.tsx),
-               별도 Container 로 감싸 여백을 주면 **아무것도 없는 흰 띠 128px** 이 마무리 띠와
-               푸터 사이에 남는다(2026-09-03 실측). 다시 켜지면 여기서 그대로 나타난다.
-          */}
-          <div className="mt-16 max-w-[46em]">
-            <ArticleMeta path={PATH} />
-          </div>
-          <References items={REFS_TREATMENT} />
-          <MedicalNotice extra={NO_GUARANTEE_NOTE} />
-        </Container>
-      </section>
+      {/*
+        ⚠️ 이 마무리를 페이지 안에 다시 풀어 쓰지 말 것 (2026-09-04) — 일곱 페이지가 각자 복사본을
+           갖고 있어서 충치만 단추가 오른쪽이고 나머지는 왼쪽이었다. 부품은 components/TreatmentClosing.tsx.
+      */}
+      <TreatmentClosing
+        title="덜 깎는 방법이 가능한지 먼저 봅니다"
+        lead="남은 치아의 양과 무는 힘, 잇몸 상태를 먼저 확인한 뒤에 어떤 방법이 가능한지 말씀드립니다. 씹는 기능과 잇몸을 정리하는 것이 색과 모양보다 앞섭니다."
+        links={[
+          { label: '자세히 보기', title: '라미네이트', href: '/treatment/laminate' },
+          { label: '자주 묻는 질문', title: `많이 묻는 것 ${t.qa.length}가지`, href: '/faq#crown-prosthesis' },
+          ...related.slice(0, 2).map((s) => ({ label: '관련 증상', title: s!.title, href: `/insight/symptom/${s!.slug}` })),
+        ]}
+      />
     </div>
   );
 }

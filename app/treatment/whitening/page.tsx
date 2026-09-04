@@ -26,6 +26,7 @@ import {
   imageObjectSchema,
   withLocality,
 } from '@/lib/seo';
+import { TreatmentClosing } from '@/components/TreatmentClosing';
 
 /**
  * 치아미백 — 실험실(Integrated Biosciences) 시스템으로 만든 페이지.
@@ -391,60 +392,19 @@ export default function WhiteningPage() {
       </section>
 
       {/* ── 마무리 ──────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-24 lg:py-32">
-        <Container>
-          <h2 className="display-sm focus-in max-w-[12em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
-            변색의 원인에 따라 미백 방법이 달라집니다
-          </h2>
-          <p className="mt-10 max-w-[34em] text-[18px] leading-[1.7] font-normal text-ink-soft">
-            <Sentences text="같은 누런색이라도 겉에 쌓인 것인지, 안쪽에서 온 것인지에 따라 방법이 달라집니다. 보철물이 있는 경우에는 색이 어긋나지 않도록 순서를 먼저 정합니다." />
-          </p>
-
-          <div className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-5">
-            <ArrowBtn href={CLINIC.booking.naver} label="진료 예약하기" external />
-            <a
-              href={CLINIC.phoneHref}
-              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-ink hover:text-wine-bg"
-            >
-              {CLINIC.phone}
-            </a>
-          </div>
-
-          <div className="mt-20 grid gap-8 border-t border-brand-200/70 pt-12 sm:grid-cols-2 lg:grid-cols-4">
-            <Link href="/faq#whitening" className="group">
-              <p className={`${MONO} text-[14px] font-bold text-ink-soft`}>FAQ</p>
-              <p className="mt-3 text-[18px] leading-[1.4] font-normal text-ink transition-colors group-hover:text-clay-600">
-                많이 묻는 것 {t.qa.length}가지
-              </p>
-            </Link>
-            <Link href="/treatment/crown-prosthesis" className="group">
-              <p className="text-[14.5px] font-medium text-ink-soft">함께 보기</p>
-              <p className="mt-3 text-[18px] leading-[1.4] font-normal text-ink transition-colors group-hover:text-clay-600">
-                심미보철
-              </p>
-            </Link>
-            {related.slice(0, 2).map((s) => (
-              <Link key={s!.slug} href={`/insight/symptom/${s!.slug}`} className="group">
-                <p className="text-[14.5px] font-medium text-ink-soft">증상</p>
-                <p className="mt-3 text-[18px] leading-[1.4] font-normal text-ink transition-colors group-hover:text-clay-600">
-                  {s!.title}
-                </p>
-              </Link>
-            ))}
-          </div>
-
-          {/*
-            ⚠️ 발행 정보·근거·고지를 마무리 구획 **안에** 둔다 (2026-09-03). 전에는 순검정 띠
-               (bg-void)에 따로 담았는데 셋 다 null 을 돌려주는 부품이라 **아무것도 없는
-               검은 띠 128px** 이 푸터 위에 남아 있었다. 다시 켜지면 여기서 그대로 나타난다.
-          */}
-          <div className="mt-16 max-w-[46em]">
-            <ArticleMeta path={PATH} />
-          </div>
-          <References items={REFS_TREATMENT} />
-          <MedicalNotice extra={NO_GUARANTEE_NOTE} />
-        </Container>
-      </section>
+      {/*
+        ⚠️ 이 마무리를 페이지 안에 다시 풀어 쓰지 말 것 (2026-09-04) — 일곱 페이지가 각자 복사본을
+           갖고 있어서 충치만 단추가 오른쪽이고 나머지는 왼쪽이었다. 부품은 components/TreatmentClosing.tsx.
+      */}
+      <TreatmentClosing
+        title="변색의 원인에 따라 미백 방법이 달라집니다"
+        lead="같은 누런색이라도 겉에 쌓인 것인지, 안쪽에서 온 것인지에 따라 방법이 달라집니다. 보철물이 있는 경우에는 색이 어긋나지 않도록 순서를 먼저 정합니다."
+        links={[
+          { label: '자주 묻는 질문', title: `많이 묻는 것 ${t.qa.length}가지`, href: '/faq#whitening' },
+          { label: '함께 보기', title: '심미보철', href: '/treatment/crown-prosthesis' },
+          ...related.slice(0, 2).map((s) => ({ label: '관련 증상', title: s!.title, href: `/insight/symptom/${s!.slug}` })),
+        ]}
+      />
     </div>
   );
 }

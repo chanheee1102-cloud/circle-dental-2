@@ -18,6 +18,7 @@ import {
   imageObjectSchema,
   withLocality,
 } from '@/lib/seo';
+import { TreatmentClosing } from '@/components/TreatmentClosing';
 
 /**
  * 사랑니 발치 — 다크룸(ORYZO) 시스템으로 만든 페이지.
@@ -461,52 +462,18 @@ export default function WisdomToothPage() {
       </section>
 
       {/* ── 마무리 ──────────────────────────────────────────────────── */}
-      <section className="pb-16 sm:pb-24 lg:pb-32">
-        <Container>
-          <div className="border-t border-wine-line pt-14">
-            <h2 className="display-sm focus-in max-w-[14em] text-[clamp(28px,4.2vw,46px)] leading-[1.12] tracking-[-0.02em] text-ink">
-              빼야 하는 사랑니인지 먼저 확인합니다
-            </h2>
-            <p className="mt-8 max-w-[32em] text-[clamp(16px,1.5vw,20px)] leading-[1.55] font-normal text-ink-soft">
-              <Sentences text="누운 각도와 신경관까지의 거리에 따라 방법과 회복이 달라집니다. 사진으로 위치를 확인한 뒤에 뺄지 지켜볼지 함께 정합니다." />
-            </p>
-
-            <div className="mt-12 flex flex-wrap items-center gap-3">
-              <a
-                href={CLINIC.booking.naver}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
-              >
-                진료 예약하기
-              </a>
-              <a
-                href={CLINIC.phoneHref}
-                className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-ink hover:text-wine-bg"
-              >
-                {CLINIC.phone}
-              </a>
-            </div>
-
-            <div className="mt-20 grid gap-8 border-t border-wine-line pt-12 sm:grid-cols-2 lg:grid-cols-4">
-              <Link href="/faq#wisdom-tooth" className="group">
-                <p className={`${LABEL} text-[14.5px] text-ink-soft`}>FAQ</p>
-                <p className="mt-3 text-[18px] leading-[1.4] font-normal text-ink underline decoration-cork underline-offset-4 transition-colors group-hover:decoration-ember">
-                  많이 묻는 것 {t.qa.length}가지
-                </p>
-              </Link>
-              {related.slice(0, 3).map((s) => (
-                <Link key={s!.slug} href={`/insight/symptom/${s!.slug}`} className="group">
-                  <p className={`${LABEL} text-[14.5px] text-ink-soft`}>관련 증상</p>
-                  <p className="mt-3 text-[18px] leading-[1.4] font-normal text-ink underline decoration-cork underline-offset-4 transition-colors group-hover:decoration-ember">
-                    {s!.title}
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </Container>
-      </section>
+      {/*
+        ⚠️ 이 마무리를 페이지 안에 다시 풀어 쓰지 말 것 (2026-09-04) — 일곱 페이지가 각자 복사본을
+           갖고 있어서 충치만 단추가 오른쪽이고 나머지는 왼쪽이었다. 부품은 components/TreatmentClosing.tsx.
+      */}
+      <TreatmentClosing
+        title="빼야 하는 사랑니인지 먼저 확인합니다"
+        lead="누운 각도와 신경관까지의 거리에 따라 방법과 회복이 달라집니다. 사진으로 위치를 확인한 뒤에 뺄지 지켜볼지 함께 정합니다."
+        links={[
+          { label: '자주 묻는 질문', title: `많이 묻는 것 ${t.qa.length}가지`, href: '/faq#wisdom-tooth' },
+          ...related.slice(0, 3).map((s) => ({ label: '관련 증상', title: s!.title, href: `/insight/symptom/${s!.slug}` })),
+        ]}
+      />
 
       {/* 검토자·출처·고지 */}
       <div className="border-t border-wine-line py-14">

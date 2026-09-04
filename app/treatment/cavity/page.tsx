@@ -19,6 +19,7 @@ import {
   imageObjectSchema,
   withLocality,
 } from '@/lib/seo';
+import { TreatmentClosing } from '@/components/TreatmentClosing';
 
 /**
  * 충치치료 — 어두운 제품 페이지.
@@ -416,58 +417,19 @@ export default function CavityPage() {
       </section>
 
       {/* ── 마무리 ─────────────────────────────────────────────────── */}
-      <section className="relative isolate overflow-hidden py-16 sm:py-24 lg:py-32">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(46%_60%_at_50%_120%,rgba(201,116,78,0.30)_0%,transparent_66%)]"
-        />
-        <Container className="relative">
-          <div className="flex flex-wrap items-end justify-between gap-10">
-            <div>
-              <h2 className="reveal display-sm max-w-[14em] text-[clamp(28px,4.2vw,46px)] leading-[1.2] tracking-[-0.03em] text-ink">
-                신경을 살릴 수 있는 상태인지 먼저 확인합니다
-              </h2>
-              <p className="reveal mt-6 max-w-[32em] text-[17px] leading-[1.9] text-ink-soft">
-                <Sentences text="같은 깊이라도 신경의 노출 정도와 감염 상태에 따라 방법이 달라집니다. 검사로 확인한 뒤에 무엇이 가능한지 말씀드립니다." />
-              </p>
-            </div>
-            <div className="reveal flex flex-wrap gap-3">
-              <a
-                href={CLINIC.booking.naver}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-wine-bg px-8 py-4 text-[17px] font-semibold text-dusk transition-colors hover:bg-mist"
-              >
-                진료 예약하기 <span aria-hidden>→</span>
-              </a>
-              <a
-                href={CLINIC.phoneHref}
-                className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-brand-100"
-              >
-                {CLINIC.phone}
-              </a>
-            </div>
-          </div>
-
-          {/* 이어지는 곳 — 어두운 면 위의 조용한 링크 줄. */}
-          <div className="mt-16 grid gap-4 border-t border-brand-200/70 pt-10 sm:grid-cols-2 lg:grid-cols-4">
-            <Link href="/faq#cavity" className="reveal group">
-              <p className="text-[13.5px] font-black text-clay-600">자주 묻는 질문</p>
-              <p className="mt-2 text-[16.5px] font-black text-ink group-hover:text-clay-600">
-                충치치료에 대해 많이 묻는 것 {t.qa.length}가지 <span aria-hidden>→</span>
-              </p>
-            </Link>
-            {related.slice(0, 3).map((s) => (
-              <Link key={s!.slug} href={`/insight/symptom/${s!.slug}`} className="reveal group">
-                <p className="text-[13.5px] font-black text-clay-600">관련 증상</p>
-                <p className="mt-2 text-[16.5px] font-black text-ink group-hover:text-clay-600">
-                  {s!.title} <span aria-hidden>→</span>
-                </p>
-              </Link>
-            ))}
-          </div>
-        </Container>
-      </section>
+      {/*
+        ⚠️ 이 마무리를 페이지 안에 다시 풀어 쓰지 말 것 (2026-09-04) — 일곱 페이지가 각자 복사본을
+           갖고 있어서 충치만 단추가 오른쪽이고 나머지는 왼쪽이었다. 부품은 components/TreatmentClosing.tsx.
+      */}
+      <TreatmentClosing
+        glow
+        title="신경을 살릴 수 있는 상태인지 먼저 확인합니다"
+        lead="같은 깊이라도 신경의 노출 정도와 감염 상태에 따라 방법이 달라집니다. 검사로 확인한 뒤에 무엇이 가능한지 말씀드립니다."
+        links={[
+          { label: '자주 묻는 질문', title: `충치치료에 대해 많이 묻는 것 ${t.qa.length}가지`, href: '/faq#cavity' },
+          ...related.slice(0, 3).map((s) => ({ label: '관련 증상', title: s!.title, href: `/insight/symptom/${s!.slug}` })),
+        ]}
+      />
 
       {/*
         ⚠️ 이 페이지는 루트가 조각(fragment)이라 배경이 없는 구간은 **밝은 body** 위에 놓인다.

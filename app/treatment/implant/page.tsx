@@ -30,6 +30,7 @@ import {
   og,
   imageObjectSchema,
 } from '@/lib/seo';
+import { TreatmentClosing } from '@/components/TreatmentClosing';
 
 /**
  * 임플란트 — 랜딩 페이지.
@@ -614,38 +615,15 @@ export default function ImplantPage() {
       </Container>
 
       {/* 그래서 뭘 하면 되나 */}
-      <section className="pb-24">
-        <Container>
-          <Card lift className="reveal px-8 py-14 sm:px-12">
-            <div className="flex flex-wrap items-end justify-between gap-10">
-              <div>
-                <h2 className="display-sm max-w-[20em] text-[clamp(21px,2.6vw,30px)] leading-[1.3] tracking-[-0.02em] text-ink">
-                  임플란트를 심을 수 있는 상태인지 먼저 확인합니다
-                </h2>
-                <p className="mt-5 max-w-[50ch] text-[16.5px] leading-[1.9] text-ink-soft">
-                  <Sentences text="뼈의 양과 잇몸 상태에 따라 방법과 기간이 달라집니다. 검사로 확인한 뒤에 무엇이 필요한지 말씀드립니다." />
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <a
-                  href={CLINIC.booking.naver}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
-                >
-                  진료 예약하기 <span aria-hidden>→</span>
-                </a>
-                <a
-                  href={CLINIC.phoneHref}
-                  className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-ink hover:text-wine-bg"
-                >
-                  {CLINIC.phone}
-                </a>
-              </div>
-            </div>
-          </Card>
-        </Container>
-      </section>
+      {/*
+        ⚠️ 이 마무리를 페이지 안에 다시 풀어 쓰지 말 것 (2026-09-04) — 일곱 페이지가 각자 복사본을
+           갖고 있어서 충치만 단추가 오른쪽이고 나머지는 왼쪽이었다. 부품은 components/TreatmentClosing.tsx.
+      */}
+      <TreatmentClosing
+        title="임플란트를 심을 수 있는 상태인지 먼저 확인합니다"
+        lead="뼈의 양과 잇몸 상태에 따라 방법과 기간이 달라집니다. 검사로 확인한 뒤에 무엇이 필요한지 말씀드립니다."
+        links={[]}
+      />
     </>
   );
 }

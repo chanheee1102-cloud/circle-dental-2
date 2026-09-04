@@ -14,6 +14,7 @@ import {
   og,
   withLocality,
 } from '@/lib/seo';
+import { TreatmentClosing } from '@/components/TreatmentClosing';
 
 /**
  * 발치 즉시 식립 · 임플란트 재수술 — **한 페이지**.
@@ -283,60 +284,19 @@ export default function ExtractionAndRetreatmentPage() {
       </section>
 
       {/* ── 마무리 ─────────────────────────────────────────────────── */}
-      <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
-        <Container>
-          <h2 className="display-sm reveal max-w-[13em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
-            남은 뼈를 먼저 확인합니다
-          </h2>
-          <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
-            <Sentences text="바로 심을 수 있는지도, 다시 심을 수 있는지도 남은 뼈와 잇몸이 정합니다. 사진으로 확인한 뒤에 어떤 방법이 가능한지 말씀드립니다." />
-          </p>
-
-          <div className="mt-10 flex flex-wrap items-center gap-3">
-            <a
-              href={CLINIC.booking.naver}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-[17px] font-semibold text-wine-bg transition-opacity hover:opacity-90"
-            >
-              진료 예약하기 <span aria-hidden>→</span>
-            </a>
-            <a
-              href={CLINIC.phoneHref}
-              className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/60 px-8 py-4 text-[17px] font-semibold tabular-nums text-ink transition-colors hover:bg-ink hover:text-wine-bg"
-            >
-              {CLINIC.phone}
-            </a>
-          </div>
-
-          <div className="mt-20 grid gap-8 border-t border-wine-line pt-12 sm:grid-cols-2 lg:grid-cols-3">
-            <Link href="/treatment/implant" className="group">
-              <p className="text-[14.5px] font-medium text-ink-soft">먼저 보기</p>
-              <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
-                임플란트 — 방법과 기간 <span aria-hidden>→</span>
-              </p>
-            </Link>
-            <Link href="/treatment/implant/bone-graft" className="group">
-              <p className="text-[14.5px] font-medium text-ink-soft">함께 보기</p>
-              <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
-                뼈이식 <span aria-hidden>→</span>
-              </p>
-            </Link>
-            <Link href="/insight/journey/implant" className="group">
-              <p className="text-[14.5px] font-medium text-ink-soft">기간이 궁금하면</p>
-              <p className="mt-3 text-[18px] leading-[1.4] text-ink transition-colors group-hover:text-clay-600">
-                몇 번 오고 얼마나 걸리나요 <span aria-hidden>→</span>
-              </p>
-            </Link>
-          </div>
-
-          <div className="mt-16 max-w-[46em]">
-            <ArticleMeta path={PATH} />
-          </div>
-          <References items={REFS_TREATMENT} />
-          <MedicalNotice extra={NO_GUARANTEE_NOTE} />
-        </Container>
-      </section>
+      {/*
+        ⚠️ 이 마무리를 페이지 안에 다시 풀어 쓰지 말 것 (2026-09-04) — 일곱 페이지가 각자 복사본을
+           갖고 있어서 충치만 단추가 오른쪽이고 나머지는 왼쪽이었다. 부품은 components/TreatmentClosing.tsx.
+      */}
+      <TreatmentClosing
+        title="남은 뼈를 먼저 확인합니다"
+        lead="바로 심을 수 있는지도, 다시 심을 수 있는지도 남은 뼈와 잇몸이 정합니다. 사진으로 확인한 뒤에 어떤 방법이 가능한지 말씀드립니다."
+        links={[
+          { label: '먼저 보기', title: '임플란트 — 방법과 기간', href: '/treatment/implant' },
+          { label: '함께 보기', title: '뼈이식', href: '/treatment/implant/bone-graft' },
+          { label: '기간이 궁금하면', title: '몇 번 오고 얼마나 걸리나요', href: '/insight/journey/implant' },
+        ]}
+      />
     </div>
   );
 }
