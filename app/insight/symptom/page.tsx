@@ -53,33 +53,50 @@ export default function SymptomIndexPage() {
              한 줄에 76자가 됐다(실측). 한글에서 편한 한 줄은 35~45자다.
           ⚠️ h-full 을 지우지 말 것 — 없으면 좌우 두 카드의 높이가 서로 달라진다.
         */}
-        <div className="mt-12 grid gap-3 lg:grid-cols-2">
+        {/*
+          ★★ 카드를 **눌러서 펴는 것**으로 바꿨다 (2026-09-04 오너: "각각 클릭하면 펼쳐져서 나오게끔") ★★
+            전에는 카드마다 답을 통째로 깔아 두어 스무 장이 화면 여러 개를 채웠다. 이제 제목만
+            늘어서고, 궁금한 것만 펴서 읽은 뒤 자세히 보기로 넘어간다.
+          ⚠️ 안의 링크는 **접혀 있어도 문서에 그대로 있다** — details 는 내용을 지우지 않는다.
+             자바스크립트로 갈아 끼우지 말 것. 그러면 검색·AI 가 스무 갈래를 못 읽고,
+             증상 상세 스무 페이지가 이 목록에서 고아가 된다.
+
+          ★★ 답에는 Sentences 를 쓰지 않는다 (2026-09-04 오너: "너무 쉼표랑 마침표로 해서 그런거같아") ★★
+            Sentences 는 문장마다 span.block 을 낸다. 본문 폭에서는 읽기 좋지만 카드 폭에서는
+            쉼표마다 줄이 갈려 글이 계단처럼 보인다. 여기서는 그냥 흐르게 둔다.
+          ⚠️ 그리고 그 block 자식 때문에 line-clamp-2 가 **아예 동작하지 않고 있었다** — 두 줄로
+             줄이려던 것이 전문 노출로 이어졌다. 지금은 접기가 그 역할을 한다.
+        */}
+        <ul className="mt-12 grid gap-3 lg:grid-cols-2">
           {SYMPTOMS.map((s) => (
-            <Link
-              key={s.slug}
-              href={`/insight/symptom/${s.slug}`}
-              className="group block h-full rounded-2xl border border-brand-200/70 bg-parchment p-6 transition-colors hover:border-brand-300"
-            >
-              <div className="flex items-start justify-between gap-5">
-                <div className="min-w-0">
-                  <h2 className="text-[18px] font-black leading-snug text-ink transition-colors group-hover:text-clay-700 sm:text-[19px]">
+            <li key={s.slug}>
+              <details className="group h-full rounded-2xl border border-brand-200/70 bg-parchment transition-colors open:border-brand-300 hover:border-brand-300">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-5 p-6 [&::-webkit-details-marker]:hidden">
+                  <h2 className="min-w-0 flex-1 text-[18px] leading-snug font-black text-ink transition-colors group-hover:text-clay-700 sm:text-[19px]">
                     {s.title}
                   </h2>
-                  {/* 목록에서도 즉답 첫 문장을 보여 준다 — 클릭 전에 답의 방향을 알 수 있게. */}
-                  <p className="mt-2.5 line-clamp-2 text-[15.5px] leading-relaxed text-ink-soft">
-                    <Sentences text={s.answer} />
-                  </p>
+                  {/* 두 글리프를 갈아 끼우지 않는다 — 글꼴에 따라 폭이 달라져 줄이 흔들린다. */}
+                  <span
+                    aria-hidden
+                    className="relative mt-2 h-3.5 w-3.5 shrink-0 text-clay-700 transition-transform duration-300 group-open:rotate-45"
+                  >
+                    <span className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-current" />
+                    <span className="absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-current" />
+                  </span>
+                </summary>
+                <div className="px-6 pb-6">
+                  <p className="text-[15.5px] leading-[1.85] text-ink-soft">{s.answer}</p>
+                  <Link
+                    href={`/insight/symptom/${s.slug}`}
+                    className="mt-4 inline-flex items-center gap-1.5 text-[15px] font-black text-clay-700 hover:underline"
+                  >
+                    자세히 보기 <span aria-hidden>→</span>
+                  </Link>
                 </div>
-                <span
-                  aria-hidden
-                  className="mt-1 shrink-0 text-clay-700 transition-transform group-hover:translate-x-1"
-                >
-                  →
-                </span>
-              </div>
-            </Link>
+              </details>
+            </li>
           ))}
-        </div>
+        </ul>
 
         <MedicalNotice />
       </Container>

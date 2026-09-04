@@ -333,7 +333,7 @@ export default function WisdomToothPage() {
             </h2>
           </div>
 
-          <div className="mt-14 grid gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-20">
+          <div className="mt-14 grid items-start gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-20">
             <ol className="divide-y divide-wine-line border-y border-wine-line">
               {IMPACTED.map((v, i) => (
                 <li key={v.k} className="flex gap-6 py-8">
@@ -354,8 +354,16 @@ export default function WisdomToothPage() {
                  3:4 비율을 고정해 두면 목록보다 길어져 아래로 삐져나온다.
                  넓은 화면에서는 비율을 풀고 칸 높이를 그대로 쓴다(h-full).
             */}
-            <div className="img-in reveal overflow-hidden rounded-xl lg:h-full">
-              <div className="relative aspect-[3/4] lg:aspect-auto lg:h-full">
+            {/*
+              ★★ 목록 높이에 맞춰 늘리지 않는다 (2026-09-04 오너: "저 줄에 맞춰서 커진거같은데 축소해서") ★★
+                lg:h-full 이라 왼쪽 목록만큼 늘어났고, 3:2 가로 원본이 1:1 에 가까운 상자를
+                채우느라 좌우가 잘려 확대돼 보였다(실측 620×616 = 1.01, 원본은 1.50).
+              ★ 원본 비율 그대로 두고 위에 붙인다(self-start) + 스크롤을 따라 붙어 있게(sticky).
+                잘리는 곳이 0 이고, 옆 목록이 길어도 아래가 비지 않는다. 잇몸 페이지와 같은 규칙이다.
+              ⚠️ lg:h-full 로 되돌리지 말 것 — 그 순간 다시 잘린다.
+            */}
+            <div className="img-in reveal self-start overflow-hidden rounded-xl lg:sticky lg:top-28">
+              <div className="relative aspect-[3/2]">
                 <Image
                   src="/img/clinic/wisdom-surgery.webp"
                   alt="무영등 아래에서 기구를 들고 발치를 진행하는 손의 근접 사진."
