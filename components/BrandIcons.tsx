@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { LogoLockup } from '@/components/Logo';
 
 /**
  * **브랜드 마크 세 개** — 전화 · 카카오 · 네이버.
@@ -89,80 +88,66 @@ export function BookingButtons({
   tone?: 'light' | 'dark';
 }) {
   /*
-   * ★★ 동그라미 → **네모 카드** (2026-09-04 오너: "CTA 버튼 카드 형태로 해줘 네모 형태로") ★★
-   *   원은 이름과 맞아떨어졌지만 글자를 넣을 자리가 좁아 이름을 줄여 써야 했다.
-   *   네모는 같은 폭에서 글자가 더 들어가고, 옆 문구 덩어리와 높이를 맞추기도 쉽다.
-   * ⚠️ **한 줄 넷**이다 (2026-09-04 오너: "카드 그냥 한줄로 네개 해 … 가로 길이 더 길게. 여백 별로
-   *    안남기게"). 그래서 오른쪽 칸을 26rem 에서 넓혔다 — TreatmentClosing·ContactCta 의 격자에서
-   *    오른쪽 비율을 키웠으니 **거기와 한 쌍**이다. 한쪽만 되돌리면 카드가 다시 좁아진다.
-   * ⚠️ 전화와 오시는 길은 **색이 달라야 한다** — 둘 다 우리 색(ink)으로 두었더니 나란히 있는
-   *    같은 단추로 보였다. 오시는 길은 clay-600(구릿빛)이다.
-   * ⚠️ 높이를 aspect 로 박지 말 것 — 여백(py)이 정하게 둔다. 글자 크기가 바뀌어도 따라온다.
-   * ⚠️ 브랜드 색(카카오 #FEE500 · 네이버 #03C75A)은 규정 색이다. 팔레트에 맞춘다고 바꾸지 말 것.
-   * ⚠️ 카카오 노랑 위 글자는 검정이다 — 흰 글자면 1.7:1 로 안 읽힌다.
+   * ★★ 세로 넉 줄, 한 줄에 하나 (2026-09-04 오너: "로고 없애고, 버튼 하나당 한줄씩해서 세로로 네줄로") ★★
+   *   한 줄 넷이던 판은 카드가 157px 로 좁아 이름이 접히고 화살표도 못 넣었다.
+   *   세로로 쌓으면 카드가 오른쪽 칸 폭을 다 쓰므로 이름·화살표가 여유 있게 들어간다.
+   * ⚠️ 로고는 뺐다 — 넉 줄이 위쪽 빈자리를 이미 채운다. 다시 넣으면 오른쪽이 답답해진다.
+   * ⚠️ 순서를 바꾸지 말 것 — 전화가 맨 위다. 급한 사람이 먼저 닿아야 하는 것이 전화이고,
+   *    나머지는 시간을 정해서 쓰는 길이다(app/visit/page.tsx 의 안내와 같은 순서).
+   * ⚠️ 오시는 길만 **테두리형**이다. 전화와 같은 단색으로 두면 나란히 선 두 갈색이 같은 단추로
+   *    보인다(clay-600 은 ink 와 거의 같은 갈색이라 채워도 구별이 안 된다 — 실제로 해 보고 바꿨다).
+   * ⚠️ 브랜드 색은 규정 색이다. 카카오 노랑 위 글자는 검정 — 흰 글자면 1.7:1 로 안 읽힌다.
    */
-  const card =
-    'group flex w-full items-center justify-center gap-2.5 rounded-2xl px-3 py-5 text-center transition-transform duration-300 hover:-translate-y-1';
+  const row =
+    'group flex w-full items-center gap-3 rounded-2xl px-6 py-[18px] text-[16.5px] font-bold transition-transform duration-300 hover:-translate-y-0.5';
   const own = tone === 'dark' ? 'bg-parchment text-dusk' : 'bg-ink text-wine-bg';
-  /*
-   * ⚠️ 화살표를 뺐다 — 한 줄 넷이 되면서 카드가 157px 이 됐고, 화살표가 25px 를 먹어
-   *    '네이버 예약' 이 두 줄로 접혔다(2026-09-04 실측). 넷을 두 줄로 되돌리면 그때 다시 붙일 것.
-   * ⚠️ whitespace-nowrap 을 지우지 말 것 — 지우면 좁은 칸에서 이름이 다시 접힌다.
-   */
+  const arrow = (
+    <span
+      aria-hidden
+      className="ml-auto shrink-0 opacity-70 transition-transform group-hover:translate-x-1"
+    >
+      →
+    </span>
+  );
   return (
-    <div className="reveal w-full">
-      {/*
-        ★ 단추 위에 로고를 둔다 (2026-09-04 오너: "여기에 버튼 위에 동그라미치과의원 이런 로고나
-          병원명일도 넣을까 여백이 너무 큰데"). 오른쪽 칸이 아래쪽 정렬(items-end)이라 단추 위가
-          통째로 비어 있었다. 그 자리를 다른 글로 채우면 말이 늘지만, 로고는 **이미 아는 것**을
-          한 번 더 보여 주는 것이라 읽을 거리를 늘리지 않고 자리만 채운다.
-        ⚠️ 병원명을 글자로 또 쓰지 말 것 — 로고 그림 안에 이미 '동그라미치과의원 CIRCLE DENTAL
-           CLINIC' 이 들어 있고, alt 로도 나간다. 옆에 또 쓰면 같은 이름이 화면에 두 번이다.
-        ⚠️ 좁은 화면에서는 감춘다 — 거기서는 단추가 두 줄이라 위가 비지 않는다.
-      */}
-      <div className="mb-7 hidden justify-end lg:flex">
-        <LogoLockup />
-      </div>
-      <div className="grid w-full grid-cols-2 gap-3 lg:grid-cols-4">
-      <a href={phoneHref} aria-label={`전화 ${phone}`} className={`${card} ${own}`}>
+    <div className="reveal flex w-full flex-col gap-3">
+      <a href={phoneHref} aria-label={`전화 ${phone}`} className={`${row} ${own}`}>
         <PhoneIcon size={22} />
-        <span className="whitespace-nowrap text-[14.5px] font-bold">전화 상담</span>
+        <span className="whitespace-nowrap">전화 상담</span>
+        {arrow}
       </a>
       <a
         href={kakao}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${card} bg-[#FEE500] text-[#191600]`}
+        className={`${row} bg-[#FEE500] text-[#191600]`}
       >
         <KakaoIcon size={22} />
-        <span className="whitespace-nowrap text-[14.5px] font-bold">카카오톡</span>
+        <span className="whitespace-nowrap">카카오톡 상담</span>
+        {arrow}
       </a>
       <a
         href={naver}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${card} bg-[#03C75A] text-white`}
+        className={`${row} bg-[#03C75A] text-white`}
       >
         <NaverIcon size={22} />
-        <span className="whitespace-nowrap text-[14.5px] font-bold">네이버 예약</span>
+        <span className="whitespace-nowrap">네이버 예약</span>
+        {arrow}
       </a>
       <Link
         href="/visit"
-        /*
-          ⚠️ 오시는 길만 **테두리형**이다. 전화와 같은 단색으로 두면 나란히 선 두 갈색이
-             같은 단추로 보인다(clay-600 은 ink 와 거의 같은 갈색이라 채워도 구별이 안 된다).
-             이 사이트의 단추는 '단색 아니면 테두리' 이므로 테두리가 규칙 안이다.
-        */
-        className={`${card} border-[1.5px] ${
+        className={`${row} border-[1.5px] ${
           tone === 'dark'
             ? 'border-parchment/70 text-parchment'
             : 'border-ink/45 text-ink hover:bg-ink hover:text-wine-bg'
         }`}
       >
         <PinIcon size={22} />
-        <span className="whitespace-nowrap text-[14.5px] font-bold">오시는 길</span>
+        <span className="whitespace-nowrap">오시는 길</span>
+        {arrow}
       </Link>
-      </div>
     </div>
   );
 }
