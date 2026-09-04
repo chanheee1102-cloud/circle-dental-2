@@ -15,6 +15,7 @@ import {
   withLocality,
 } from '@/lib/seo';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
+import { FailureCauseChart } from '@/components/FailureCauseChart';
 
 /**
  * 발치 즉시 식립 · 임플란트 재수술 — **한 페이지**.
@@ -223,6 +224,15 @@ export default function ExtractionAndRetreatmentPage() {
               <p className="reveal mt-8 max-w-[30em] text-[17.5px] leading-[1.9] text-twilight">
                 <Sentences text={REDO.what} />
               </p>
+              {/*
+                ★ 재수술 원인 그래프 (2026-09-04 오너: "왼쪽 임플란트 주위염은 모션 넣어줘").
+                  그림이 아니라 컴포넌트다 — 숫자가 픽셀에 갇히지 않고, 한글이 깨지지 않으며,
+                  막대가 자라는 움직임을 CSS 로 준다.
+                ⚠️ 숫자와 출처를 임의로 바꾸지 말 것(components/FailureCauseChart.tsx 머리말).
+              */}
+              <div className="mt-10">
+                <FailureCauseChart />
+              </div>
               {/*
                 ⚠️ 임플란트주위염의 원인·단계·예방을 여기 옮겨 적지 말 것 — 질환 사전이 갖고 있다.
                    같은 내용이 두 곳에 있으면 검색이 어느 쪽을 고를지 헷갈린다.
