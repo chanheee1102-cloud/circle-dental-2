@@ -5,6 +5,7 @@ import { Container, PageHero, Sentences } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema } from '@/lib/seo';
+import { PhoneIcon, KakaoIcon, NaverIcon } from '@/components/BrandIcons';
 
 export const metadata: Metadata = {
   title: '오시는 길·진료시간',
@@ -206,6 +207,32 @@ export default function VisitPage() {
                 key={c.key}
                 className="h-full rounded-2xl border border-brand-200/70 bg-parchment p-6"
               >
+                {/*
+                  ★ 브랜드 마크와 색을 얹는다 (2026-09-04 오너: "전화 네이버 카카오 색 넣고 로고도 넣어서
+                    가시성 띄워줘"). 석 장이 글자만으로 늘어서 있어 어느 것이 무엇인지 읽어야 알았다.
+                    색과 마크는 읽기 전에 알아보게 한다.
+                  ⚠️ 카드 전체를 브랜드 색으로 칠하지 말 것 — 노랑·초록 판이 나란히 서면 이 페이지만
+                     사이트에서 튄다. 색은 **원 하나**에만 둔다(마무리 CTA 의 동그라미와 같은 규칙).
+                  ⚠️ 카카오 노랑 위의 글자는 검정이다. 흰 글자를 얹으면 1.7:1 로 안 읽힌다.
+                */}
+                <span
+                  aria-hidden
+                  className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full ${
+                    c.key === 'naver'
+                      ? 'bg-[#03C75A] text-white'
+                      : c.key === 'kakao'
+                        ? 'bg-[#FEE500] text-[#191600]'
+                        : 'bg-ink text-wine-bg'
+                  }`}
+                >
+                  {c.key === 'naver' ? (
+                    <NaverIcon size={22} />
+                  ) : c.key === 'kakao' ? (
+                    <KakaoIcon size={22} />
+                  ) : (
+                    <PhoneIcon size={22} />
+                  )}
+                </span>
                 <p className="text-[13px] font-black tracking-[0.14em] text-clay-600">{c.best}</p>
                 <p className="display-sm mt-3.5 text-[19px] text-ink">{c.name}</p>
                 <a

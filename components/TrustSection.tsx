@@ -141,12 +141,12 @@ export function TrustSection() {
             <p className="mt-4 text-[16.5px] leading-[1.8] text-twilight">
               대표원장이 공저자로 참여한 논문이 국제 학술지에 실려 있습니다.
             </p>
-            <p className="mt-5 border-l-2 border-clay-600/45 pl-5 text-[16px] leading-[1.7] text-ink">
-              {PUBLICATION_DETAIL.title}
-              <span className="mt-2 block text-[14.5px] text-ink-soft">
-                {PUBLICATION_DETAIL.authors}
-              </span>
-            </p>
+            {/*
+              ⚠️ 논문 제목·저자 줄을 뺐다 (2026-09-04 오너: "이거 문구 뺴자"). 영문 제목 두 줄과
+                 저자 일곱 명은 환자가 읽을 것이 아니고, 바로 아래 지면 사진이 같은 것을 보여 준다.
+              ⚠️ lib/doctors.ts 의 PUBLICATION_DETAIL 은 그대로 둔다 — 의료진 페이지와 홈이 쓴다.
+                 그쪽에는 한국어 풀이(relevanceKo)까지 있어 읽을거리가 된다.
+            */}
             {/*
               ⚠️ 세로형(768×800)을 쓴다 — 가로 배너는 왼쪽이 흐린 여백이라 그 위에 글을 얹을 때만
                  쓸모가 있다(lib/doctors.ts 주석). 여기는 글 아래에 놓는 자리라 세로형이 맞다.

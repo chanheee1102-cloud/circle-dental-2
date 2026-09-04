@@ -42,15 +42,20 @@ export function NaverIcon({ size = 22 }: { size?: number }) {
 }
 
 /**
- * **마무리 예약 단추 석 장** — 전화 · 카카오톡 · 네이버.
+ * **마무리 예약 — 동그라미 세 개.**
  *
- * ★★ 이고운치과 참고 (2026-09-04 오너: "이고운 참고해서 오른쪽에 CTA 버튼 이쁘게 넣어봐") ★★
- *   전에는 알약 단추 둘이 글 아래에 나란히 붙어 있어서, 넓은 화면에서 오른쪽 절반이 비었다.
- *   가로로 꽉 찬 단추를 오른쪽에 세로로 쌓으면 그 자리가 채워지고, 무엇이 있는지도 한눈에 보인다.
- * ⚠️ 그라데이션을 넣지 말 것 — 이 사이트의 단추는 단색 아니면 테두리다(사이트 전체 규칙).
- *    브랜드 색은 단색이므로 규칙 안이다. 참고한 화면의 주황 그라데이션 **배경**은 가져오지 않았다.
- * ⚠️ 순서를 바꾸지 말 것 — 전화가 맨 위다. 급한 사람이 먼저 닿아야 하는 것이 전화이고,
- *    나머지 둘은 '시간을 정해서' 쓰는 길이다(app/visit/page.tsx 의 안내와 같은 순서).
+ * ★★ 왜 원형인가 (2026-09-04 오너: "너무 똑같잖아. 우리는 동그라미 세개 가로로 나타내자") ★★
+ *   직전 판은 참고한 화면(이고운치과)의 '가로로 긴 단추 세 줄' 을 그대로 옮겨 놓은 것이었다.
+ *   보기는 멀쩡한데 남의 화면이다. 이 병원의 이름이 **동그라미**이고 로고도 원이므로,
+ *   같은 세 갈래를 원 세 개로 늘어놓으면 그것만으로 이 병원의 것이 된다.
+ *
+ * ⚠️ aspect-square + w-full — 크기를 px 로 박지 말 것. 오른쪽 칸 폭에 맞춰 원이 늘어나야
+ *    "여백 안 남게" 가 유지된다(오너 지시). 고정 크기로 두면 칸이 넓어질 때 오른쪽이 빈다.
+ * ⚠️ 세 개는 한 줄이다 — grid-cols-3 을 좁은 화면에서도 유지한다. 세로로 쌓으면 다시
+ *    '남의 화면' 이 되고, 원이 화면 폭만큼 커져 우스워진다.
+ * ⚠️ 전화번호는 원 안에 넣지 않는다 — 원 안에서 11자리는 글자가 8px 로 내려간다.
+ *    원 아래 한 줄로 두고, 그 줄도 누르면 걸리게 한다.
+ * ⚠️ 브랜드 색(카카오 #FEE500 · 네이버 #03C75A)은 규정 색이다. 팔레트에 맞춘다고 바꾸지 말 것.
  */
 export function BookingButtons({
   phone,
@@ -63,51 +68,49 @@ export function BookingButtons({
   phoneHref: string;
   kakao: string;
   naver: string;
-  /** 놓이는 면 — 어두운 면에서는 전화 단추를 밝게 뒤집는다. */
+  /** 놓이는 면 — 어두운 면에서는 전화 원을 밝게 뒤집는다. */
   tone?: 'light' | 'dark';
 }) {
-  const row =
-    'group flex w-full items-center justify-between gap-4 rounded-2xl px-6 py-[18px] text-[17px] font-bold transition-opacity hover:opacity-90';
-  const arrow = (
-    <span aria-hidden className="shrink-0 transition-transform group-hover:translate-x-1">
-      →
-    </span>
-  );
+  const dot =
+    'group flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-full text-center transition-transform duration-300 hover:-translate-y-1';
   return (
-    <div className="reveal flex w-full flex-col gap-3">
+    <div className="reveal w-full">
+      <div className="mx-auto grid max-w-[27rem] grid-cols-3 gap-3 sm:gap-4">
+        <a
+          href={phoneHref}
+          aria-label={`전화 ${phone}`}
+          className={`${dot} ${tone === 'dark' ? 'bg-parchment text-dusk' : 'bg-ink text-wine-bg'}`}
+        >
+          <PhoneIcon size={26} />
+          <span className="text-[14.5px] font-bold">전화상담</span>
+        </a>
+        <a
+          href={kakao}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${dot} bg-[#FEE500] text-[#191600]`}
+        >
+          <KakaoIcon size={26} />
+          <span className="text-[14.5px] font-bold">카카오톡</span>
+        </a>
+        <a
+          href={naver}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${dot} bg-[#03C75A] text-white`}
+        >
+          <NaverIcon size={26} />
+          <span className="text-[14.5px] font-bold">네이버예약</span>
+        </a>
+      </div>
+      {/* 번호는 원 아래 한 줄 — 원 안에 넣으면 글자가 너무 작아진다. 이 줄도 누르면 걸린다. */}
       <a
         href={phoneHref}
-        className={`${row} ${tone === 'dark' ? 'bg-parchment text-dusk' : 'bg-ink text-wine-bg'}`}
+        className={`mx-auto mt-5 block max-w-[27rem] text-center text-[19px] font-black tracking-[-0.01em] tabular-nums transition-colors ${
+          tone === 'dark' ? 'text-parchment hover:text-white' : 'text-ink hover:text-clay-600'
+        }`}
       >
-        <span className="flex min-w-0 items-center gap-3">
-          <PhoneIcon />
-          <span className="tabular-nums">전화 {phone}</span>
-        </span>
-        {arrow}
-      </a>
-      <a
-        href={kakao}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${row} bg-[#FEE500] text-[#191600]`}
-      >
-        <span className="flex min-w-0 items-center gap-3">
-          <KakaoIcon />
-          카카오톡 상담
-        </span>
-        {arrow}
-      </a>
-      <a
-        href={naver}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${row} bg-[#03C75A] text-white`}
-      >
-        <span className="flex min-w-0 items-center gap-3">
-          <NaverIcon />
-          네이버 예약
-        </span>
-        {arrow}
+        {phone}
       </a>
     </div>
   );
