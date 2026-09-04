@@ -29,13 +29,15 @@ export interface ClosingLink {
 }
 
 export function TreatmentClosing({
-  title,
-  lead,
+  title = '아직 아프지 않을 때 오시면 선택지가 더 많습니다',
+  lead = '증상이 애매해도 괜찮습니다. 전화로 상태를 먼저 말씀해 주시면 언제 오시는 것이 좋을지 함께 정합니다.',
   links,
   glow = false,
 }: {
-  title: string;
-  lead: string;
+  /* ⚠️ 기본값은 ContactCta 와 같은 문구다 — 진료 공용 화면(TreatmentLanding)이 그대로 쓴다.
+        새 문구를 만들지 말 것. 이미 검토를 거친 문장이다. */
+  title?: string;
+  lead?: string;
   links: ClosingLink[];
   /** 충치 페이지처럼 아래에서 번지는 빛을 깔지 — 어두운 결 페이지에서만 쓴다. */
   glow?: boolean;

@@ -6,6 +6,7 @@ import type { Journey } from '@/lib/insight';
 import { Container, Sentences } from '@/components/ui';
 import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
 import { SectionHead, Card, NumChip } from '@/components/saas';
+import { TreatmentClosing } from '@/components/TreatmentClosing';
 
 /**
  * 진료 랜딩 페이지 — 임플란트에서 만든 언어를 나머지 진료가 함께 쓰는 틀.
@@ -191,7 +192,16 @@ export function TreatmentLanding({
                   <Card lift className="reveal img-in self-start overflow-hidden lg:sticky lg:top-28">
                     {/* ⚠️ 3:2 는 원본(1536×1024) 비율 그대로다 — 잘리는 곳이 0 이라 확대돼 보이지 않는다.
                            4:5 로 두면 3:2 원본의 좌우가 크게 잘려 나가 "확대됨" 으로 보인다(2026-09-04 실측). */}
-                    <div className="relative aspect-[3/2] bg-brand-100">
+                    {/*
+                      ★ 4:3 — 원본(3:2)에서 좌우를 11%만 덜어낸다 (2026-09-04).
+                        3:2 그대로 두면 옆 카드 두 줄보다 180px 짧아 아래가 비고,
+                        칸 높이에 맞춰 늘리면(1:1) 좌우가 32% 잘려 "확대됨" 으로 보인다.
+                        11% 는 눈에 걸리지 않으면서 빈자리를 절반으로 줄이는 선이다.
+                      ⚠️ 카드 수가 늘면(치주 6장) 다시 벌어진다. 그때는 사진이 아니라
+                         **카드 수**를 손볼 것 — 세로 사진이 없어서 사진으로는 못 맞춘다.
+                         (figure 사진 8장이 전부 가로 1.50 이상이고 절반은 실제 병원 사진이라 교체 불가)
+                    */}
+                    <div className="relative aspect-[4/3] bg-brand-100">
                       <Image
                         src={b.figure.src}
                         alt={b.figure.alt}
@@ -367,28 +377,6 @@ export function TreatmentLanding({
         ⚠️ 함께 옮긴 것: FAQPage 구조화 데이터. 화면에서 뺐는데 스키마만 남기면 보이지 않는
            내용을 주장하는 꼴이라 검색엔진이 무시하거나 감점한다. 되살리려면 둘을 같이 옮길 것.
       */}
-      {t.qa.length ? (
-        <section className="py-16 sm:py-24 lg:py-32">
-          <Container>
-            <Link href={`/faq#${t.slug}`} className="reveal group block">
-              <Card className="flex flex-wrap items-center justify-between gap-6 p-8 transition-colors group-hover:border-brand-300">
-                <div>
-                  <p className="text-[13.5px] font-black text-clay-700">자주 묻는 질문</p>
-                  <p className="mt-2.5 text-[19px] font-black tracking-[-0.015em] text-ink">
-                    {t.name}에 대해 많이 묻는 것 {t.qa.length}가지
-                  </p>
-                  <p className="mt-2 text-[15.5px] leading-[1.8] text-ink-soft">
-                    기간과 횟수, 통증, 보험 적용을 모아 두었습니다.
-                  </p>
-                </div>
-                <span className="shrink-0 text-[16px] font-black text-clay-700">
-                  전체 보기 <span aria-hidden>→</span>
-                </span>
-              </Card>
-            </Link>
-          </Container>
-        </section>
-      ) : null}
 
       {/* 주의사항 — 원문에 있는 진료만 렌더된다. */}
       {page.aftercare && (
@@ -412,27 +400,34 @@ export function TreatmentLanding({
         </section>
       )}
 
-      {/* 관련 증상 */}
-      {related.length > 0 && (
-        <section className="py-16 sm:py-24 lg:py-32">
-          <Container>
-            <h2 className="reveal display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
-              이런 증상도 함께 봅니다
-            </h2>
-            <div className="reveal mt-6 flex flex-wrap gap-2.5">
-              {related.map((s) => (
-                <Link
-                  key={s.slug}
-                  href={`/insight/symptom/${s.slug}`}
-                  className="rounded-full border border-brand-300 bg-parchment px-5 py-2.5 text-[15.5px] font-bold text-ink-soft transition-colors hover:border-ink hover:text-ink"
-                >
-                  {s.title}
-                </Link>
-              ))}
-            </div>
-          </Container>
-        </section>
-      )}
+      {/*
+        ★★ '자주 묻는 질문' 카드와 '이런 증상도 함께 봅니다' 알약을 **마무리 하나로 합쳤다**
+           (2026-09-04 오너: "이렇게 링크 계쏙 넣는거야? 필요 없으면 없애고 싶어") ★★
+          링크 자체는 지우지 않았다 — 이 넷이 증상 상세·문답으로 가는 길이고, 없애면 그 페이지들이
+          목록에서만 닿는 곳이 된다. 문제는 링크가 아니라 **자리** 였다: 네 줄짜리 링크를
+          py-32 짜리 큰 구획 **두 개**에 나눠 담아 그 사이가 통째로 비어 보였다.
+        ★ 덤 — 이 페이지들에는 마무리 전환 블록이 아예 없었다. 이제 다른 진료 페이지와 같은
+          모양의 예약 단추가 붙는다(components/TreatmentClosing.tsx).
+        ⚠️ 다시 두 구획으로 쪼개지 말 것.
+      */}
+      <TreatmentClosing
+        links={[
+          ...(t.qa.length
+            ? [
+                {
+                  label: '자주 묻는 질문',
+                  title: `${t.name}에 대해 많이 묻는 것 ${t.qa.length}가지`,
+                  href: `/faq#${t.slug}`,
+                },
+              ]
+            : []),
+          ...related.slice(0, 3).map((s) => ({
+            label: '관련 증상',
+            title: s!.title,
+            href: `/insight/symptom/${s!.slug}`,
+          })),
+        ]}
+      />
 
       {/*
         ⚠️⚠️ AI 사진 고지 — 지우지 말 것 ⚠️⚠️
