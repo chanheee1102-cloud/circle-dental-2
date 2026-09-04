@@ -18,6 +18,8 @@ import {
   withLocality,
 } from '@/lib/seo';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
+import { CautionSection } from '@/components/CautionSection';
+import Image from 'next/image';
 
 /**
  * 라미네이트 — 심미보철에서 **꺼내 온** 전용 페이지.
@@ -153,13 +155,33 @@ export default function LaminatePage() {
       {/* ── 01 무엇인가 ─────────────────────────────────────────── */}
       <section className="py-16 sm:py-24 lg:py-32">
         <Container>
-          <p className="eyebrow-chip text-clay-700">라미네이트란</p>
-          <h2 className="display-sm reveal mt-5 max-w-[16em] text-[clamp(26px,3.6vw,40px)] leading-[1.2] tracking-[-0.02em] text-ink">
-            {VENEER.def}
-          </h2>
-          <p className="reveal mt-8 max-w-[46em] text-[17.5px] leading-[1.9] text-twilight">
-            <Sentences text={t.intro} />
-          </p>
+          {/*
+            ★ 2단으로 (2026-09-04 오너: "여기도 문구 조금 줄이고, 오른쪽에 사진 넣어줘").
+              제목이 넉 줄이나 되고 오른쪽 절반이 통째로 비어 있었다.
+            ⚠️ 사진은 3:2 원본 비율 그대로다 — 세로로 늘리면 좌우가 잘려 확대돼 보인다.
+          */}
+          <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-16">
+            <div className="min-w-0">
+              <p className="eyebrow-chip text-clay-700">라미네이트란</p>
+              <h2 className="display-sm reveal mt-5 max-w-[14em] text-[clamp(26px,3.4vw,38px)] leading-[1.25] tracking-[-0.02em] text-ink">
+                {VENEER.def}
+              </h2>
+              <p className="reveal mt-7 max-w-[34em] text-[17px] leading-[1.9] text-twilight">
+                <Sentences text={t.intro} />
+              </p>
+            </div>
+            <div className="reveal overflow-hidden rounded-2xl border border-brand-200/70 bg-brand-100">
+              <div className="relative aspect-[3/2]">
+                <Image
+                  src="/img/ai/laminate-what.webp"
+                  alt="흰 상판에 놓인 종잇장처럼 얇은 세라믹 라미네이트 세 장과 앞니 모형"
+                  fill
+                  sizes="(min-width: 1024px) 520px, 92vw"
+                  className="object-cover"
+                />
+              </div>
+            </div>
+          </div>
         </Container>
       </section>
 
@@ -182,10 +204,31 @@ export default function LaminatePage() {
             ⚠️ 대가(note)를 빼고 앞줄만 남기지 말 것 — 장점만 다섯 줄 세우면 그게 광고문이다.
                원문에서 못 옮긴 두 줄의 이유는 lib/aestheticPage.ts 에 적어 뒀다.
           */}
-          <ol className="reveal-stack mt-12 grid gap-5 sm:grid-cols-2">
+          {/*
+            ★ 3 + 2 두 줄로 (2026-09-04 오너: "3개 2개로 두줄로 해서 사진 넣고").
+              두 칸 격자에서는 2+2+1 이라 마지막 하나가 왼쪽에 혼자 남았다.
+            ⚠️ 넷째·다섯째는 lg:col-start 로 가운데에 세운다 — 없으면 둘째 줄이 왼쪽에 붙는다.
+            ⚠️ h-full 을 지우지 말 것 — 같은 줄 카드 높이를 이것이 맞춘다.
+          */}
+          <ol className="reveal-stack mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
             {LAMINATE_FEATURES.map((f, i) => (
-              <li key={f.t} className="reveal">
-                <div className="flex h-full flex-col rounded-2xl border border-brand-200/70 bg-parchment p-7 sm:p-8">
+              <li
+                key={f.t}
+                className={`reveal lg:col-span-2 ${i === 3 ? 'lg:col-start-2' : ''}`}
+              >
+                <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-brand-200/70 bg-parchment">
+                  {f.image && (
+                    <div className="relative aspect-[16/9] bg-brand-100">
+                      <Image
+                        src={f.image}
+                        alt={f.alt ?? ''}
+                        fill
+                        sizes="(min-width: 1024px) 400px, (min-width: 640px) 46vw, 92vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-1 flex-col p-7 sm:p-8">
                   <p className="text-[13.5px] font-black tracking-[0.06em] text-clay-700 tabular-nums">
                     {String(i + 1).padStart(2, '0')}
                   </p>
@@ -199,6 +242,7 @@ export default function LaminatePage() {
                   <p className="mt-auto border-l-2 border-brand-300 pt-5 pl-4 text-[15.5px] leading-[1.8] text-ink-soft">
                     <Sentences text={f.note} />
                   </p>
+                </div>
                 </div>
               </li>
             ))}
@@ -225,42 +269,16 @@ export default function LaminatePage() {
 
       {/* ── 05 한계 · 치료 전에 알아 두실 점 ──────────────────────────── */}
       {/* ⚠️⚠️ 이 구획을 지우지 말 것 — 의료법 제56조. 되돌릴 수 없는 치료다. */}
-      <section className="py-16 sm:py-24 lg:py-32">
-        <Container>
-          <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
-            <h2 className="display-sm max-w-[12em] text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
-              치료 전에 알아 두실 점
-            </h2>
-            <div>
-              <ul className="reveal-stack divide-y divide-wine-line border-y border-wine-line">
-                {VENEER.limits.map((l) => (
-                  <li key={l} className="reveal py-6 text-[17px] leading-[1.85] text-twilight">
-                    <Sentences text={l} />
-                  </li>
-                ))}
-                {/*
-                  ★ 번호를 붙였다 (2026-09-04 오너: "번호 붙여줘"). 선으로만 나눠 두면 몇 가지인지
-                    세어야 알 수 있고, 읽다가 어디까지 봤는지도 잃는다.
-                  ⚠️ min-w-0 flex-1 을 지우지 말 것 — 없으면 글이 어절 폭으로 눌린다.
-                */}
-                {RISKS.map((r, i) => (
-                  <li key={r} className="reveal flex gap-4 py-6">
-                    <span
-                      aria-hidden
-                      className="mt-1 shrink-0 text-[13.5px] font-black tracking-[0.06em] text-clay-700 tabular-nums"
-                    >
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <p className="min-w-0 flex-1 text-[17px] leading-[1.85] text-twilight">
-                      <Sentences text={r} />
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </Container>
-      </section>
+      {/*
+        ⚠️ 이 구획을 페이지 안에 다시 풀어 쓰지 말 것 (2026-09-04) — 네 페이지가 각자 손으로 쓴
+           복사본을 갖고 있어서 번호가 있기도 없기도 하고 선 색·여백도 달랐다.
+           부품은 components/CautionSection.tsx 하나다.
+      */}
+      <CautionSection
+        title="치료 전에 알아 두실 점"
+        items={[...VENEER.limits, ...RISKS]}
+        photo={{ src: '/img/ai/laminate-caution.webp', alt: '흰 상판 위에서 빛이 비쳐 보이는 얇은 세라믹 라미네이트 한 장과 야간 장치' }}
+      />
 
       {/* ── 문답 ─────────────────────────────────────────────────── */}
       <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
@@ -268,18 +286,52 @@ export default function LaminatePage() {
           <h2 className="display-sm max-w-[18em] text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
             많이 묻는 것
           </h2>
+          {/*
+            ★★ 문답을 **눌러서 펴는 것**으로 (2026-09-04 오너: "여기도 접고 펴는걸로") ★★
+              다섯 답이 모두 펼쳐져 있어 이 구획 하나가 화면 두 개를 넘었다.
+            ⚠️ <details> 로 짠다 — 자바스크립트 없이 여닫고, **접혀 있어도 답은 문서에 그대로 있다.**
+               클릭해야 나타나는 방식으로 바꾸면 검색·AI 가 답을 못 읽는다. 이 페이지가 인용되는 이유다.
+            ⚠️ 질문은 계속 제목 자리다 — faqSchema 와 짝이다.
+            ⚠️ list-none 과 ::-webkit-details-marker 숨김을 지우지 말 것 — 기본 삼각형이 같이 나온다.
+          */}
+          {/*
+            ★★ 문답을 **눌러서 펴는 것**으로 (2026-09-04 오너: "여기도 접고 펴는걸로") ★★
+              다섯 답이 모두 펼쳐져 있어 이 구획 하나가 화면 두 개를 넘었다.
+            ⚠️ <details> 로 짠다 — 자바스크립트 없이 여닫고, **접혀 있어도 답은 문서에 그대로 있다.**
+               클릭해야 나타나는 방식으로 바꾸면 검색·AI 가 답을 못 읽는다. 이 페이지가 인용되는 이유다.
+            ⚠️ 질문은 계속 제목 자리다 — faqSchema 와 짝이다.
+            ⚠️ list-none 과 ::-webkit-details-marker 숨김을 지우지 말 것 — 기본 삼각형이 같이 나온다.
+          */}
+          {/*
+            ★★ 문답을 **눌러서 펴는 것**으로 (2026-09-04 오너: "여기도 접고 펴는걸로") ★★
+              다섯 답이 모두 펼쳐져 있어 이 구획 하나가 화면 두 개를 넘었다.
+            ⚠️ <details> 로 짠다 — 자바스크립트 없이 여닫고, **접혀 있어도 답은 문서에 그대로 있다.**
+               클릭해야 나타나는 방식으로 바꾸면 검색·AI 가 답을 못 읽는다. 이 페이지가 인용되는 이유다.
+            ⚠️ 질문은 계속 제목 자리다 — faqSchema 와 짝이다.
+            ⚠️ list-none 과 ::-webkit-details-marker 숨김을 지우지 말 것 — 기본 삼각형이 같이 나온다.
+          */}
           <div className="reveal-stack mt-10 divide-y divide-wine-line border-y border-wine-line">
             {t.qa.map((qa, i) => (
-              <div key={qa.q} className="reveal grid gap-4 py-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12">
-                <h3 className="flex gap-3 text-[18px] leading-[1.5] font-black tracking-[-0.02em] text-ink">
-                  {/* ⚠️ 번호와 질문 사이에 공백을 두지 말 것 — React 가 그 자리에 주석 노드를 넣는다. */}
-                  <span aria-hidden className="shrink-0 text-clay-700 tabular-nums">{`Q${i + 1}`}</span>
-                  <span>{qa.q}</span>
-                </h3>
-                <p className="text-[16.5px] leading-[1.9] text-twilight">
+              <details key={qa.q} className="group reveal" open={i === 0}>
+                <summary className="flex cursor-pointer list-none items-start gap-4 py-6 [&::-webkit-details-marker]:hidden">
+                  <span aria-hidden className="mt-0.5 shrink-0 text-[15px] font-black tabular-nums text-clay-700">
+                    Q{i + 1}
+                  </span>
+                  <span className="min-w-0 flex-1 text-[17.5px] leading-snug font-black text-ink transition-colors group-hover:text-clay-600">
+                    {qa.q}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="relative mt-2 h-3.5 w-3.5 shrink-0 text-clay-700 transition-transform duration-300 group-open:rotate-45"
+                  >
+                    <span className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-current" />
+                    <span className="absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-current" />
+                  </span>
+                </summary>
+                <p className="max-w-[48em] pb-7 pl-[2.7rem] text-[16.5px] leading-[1.9] text-twilight">
                   <Sentences text={qa.a} />
                 </p>
-              </div>
+              </details>
             ))}
           </div>
         </Container>

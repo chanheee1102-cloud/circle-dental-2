@@ -19,6 +19,7 @@ import {
   withLocality,
 } from '@/lib/seo';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
+import { CautionSection } from '@/components/CautionSection';
 
 /**
  * 사랑니 발치 — 다크룸(ORYZO) 시스템으로 만든 페이지.
@@ -430,44 +431,16 @@ export default function WisdomToothPage() {
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 발치는 부작용 가능성이 있는 수술이다.
       */}
       {/* ⚠️ id·scroll-mt 를 지우지 말 것 — 메뉴의 '매복사랑니' 가 이 자리를 가리킨다(lib/nav.ts). */}
-      <section id="매복-사랑니" className="scroll-mt-28 border-y border-brand-200/70 bg-parchment py-16 sm:py-24 lg:py-32">
-        <Container>
-          <div className="border-t border-wine-line pt-14">
-            <p className="eyebrow-chip text-clay-700">
-              <span className="eyebrow-n">04</span>
-              알아 두실 점
-            </p>
-            {/*
-              ★★ 제목을 위에 두고 카드를 아래에 편다 (2026-08-31 오너: "너무 밋밋해") ★★
-                전에는 좌우 2단이라 왼쪽 제목 아래가 통째로 비고, 오른쪽 목록만 길게
-                흘러내렸다 — 화면의 절반이 빈 칸이었다. 제목을 폭 전체에 두고 카드를
-                두 줄로 펴면 그 빈 칸이 사라진다.
-              ⚠️⚠️ 이 구간을 지우지 말 것 — 의료법 제56조. 발치는 부작용 가능성이 있는 수술이다.
-              ⚠️ 문장은 원문 그대로다. 부작용 설명을 줄이거나 부드럽게 고치지 말 것.
-            */}
-            <div className="mt-10">
-              <h2 className="display-sm max-w-[16em] text-[clamp(28px,3.9vw,44px)] leading-[1.12] tracking-[-0.02em] text-ink">
-                치료 전에 알아 두실 점
-              </h2>
-              <p className="mt-6 max-w-[38em] text-[17px] leading-[1.7] font-normal text-ink-muted">
-                <Sentences text="발치는 수술입니다. 아래는 실제로 생길 수 있는 일이며, 사람마다 정도가 다릅니다." />
-              </p>
-              <ul className="mt-12 grid gap-6 sm:grid-cols-2">
-                {RISKS.map((r, i) => (
-                  <li key={r}>
-                    <div className="h-full rounded-2xl border border-brand-200/70 bg-parchment p-8">
-                      <p className={`${LABEL} text-[14.5px] text-ink-soft`}>
-                        {String(i + 1).padStart(2, '0')}
-                      </p>
-                      <p className="mt-4 text-[17.5px] leading-[1.65] font-normal text-ink/85"><Sentences text={r} /></p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </Container>
-      </section>
+      {/*
+        ⚠️ 이 구획을 페이지 안에 다시 풀어 쓰지 말 것 (2026-09-04) — 네 페이지가 각자 손으로 쓴
+           복사본을 갖고 있어서 번호가 있기도 없기도 하고 선 색·여백도 달랐다.
+           부품은 components/CautionSection.tsx 하나다.
+      */}
+      <CautionSection
+        title="치료 전에 알아 두실 점"
+        items={RISKS}
+        photo={{ src: '/img/clinic/wisdom-room.webp', alt: '사랑니 발치를 준비한 진료실' }}
+      />
 
       {/* ── 마무리 ──────────────────────────────────────────────────── */}
       {/*

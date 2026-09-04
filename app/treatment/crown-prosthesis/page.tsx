@@ -20,6 +20,7 @@ import {
   withLocality,
 } from '@/lib/seo';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
+import { CautionSection } from '@/components/CautionSection';
 
 /**
  * 심미보철 — 라미네이트와 올세라믹 크라운을 **깎는 양**으로 가르는 비교 문서.
@@ -367,22 +368,16 @@ export default function CrownProsthesisPage() {
         ── 부작용과 한계 ────────────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 이 구간이 빠지면 페이지 전체가 광고문이 된다.
       */}
-      <section className="py-16 sm:py-24 lg:py-32">
-        <Container>
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
-            <h2 className="display-sm reveal text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
-              치료 전에 알아 두실 점
-            </h2>
-            <ul className="reveal-stack divide-y divide-wine-line border-y border-wine-line">
-              {RISKS.map((r) => (
-                <li key={r} className="reveal py-5 text-[17px] leading-[1.8] text-twilight">
-                  <Sentences text={r} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Container>
-      </section>
+      {/*
+        ⚠️ 이 구획을 페이지 안에 다시 풀어 쓰지 말 것 (2026-09-04) — 네 페이지가 각자 손으로 쓴
+           복사본을 갖고 있어서 번호가 있기도 없기도 하고 선 색·여백도 달랐다.
+           부품은 components/CautionSection.tsx 하나다.
+      */}
+      <CautionSection
+        title="치료 전에 알아 두실 점"
+        items={RISKS}
+        photo={{ src: '/img/ai/crown-caution.webp', alt: '흰 상판에 놓인 지르코니아 크라운과 치실, 치간칫솔' }}
+      />
 
       {/* ── 마무리 ──────────────────────────────────────────────────── */}
       {/*

@@ -232,8 +232,10 @@ export function TreatmentLanding({
                         ⚠️ 사진이 붙으면 카드 여백을 p-0 으로 두고 글 쪽에만 준다. 안 그러면
                            사진 둘레에 흰 테두리가 생긴다.
                       */}
+                      {/* ⚠️ 16:9 — 두 칸 격자에서 3:2 는 427px 로 카드가 사진에 잡아먹혔다
+                             (2026-09-04 오너: "카드에 사진은 너무 큰데 줄여줘"). */}
                       {it.image && (
-                        <div className="relative aspect-[3/2] bg-brand-100">
+                        <div className="relative aspect-[16/9] bg-brand-100">
                           <Image
                             src={it.image}
                             alt={it.alt ?? ''}
@@ -263,14 +265,30 @@ export function TreatmentLanding({
               ) : b.items ? (
                 /* ⚠️ 사진이 있으면 두 칸이다 — 석 줄로 두면 카드가 320px 밑으로 내려가
                       3:2 사진의 높이가 200px 도 안 된다. 사진 없는 구간은 그대로 석 줄. */
+                /*
+                  ★ 열 수를 **개수로 나눠떨어지게** 고른다 (2026-09-04 오너: "한줄로 하든지 둘둘 해서
+                    두줄로"). 넷을 석 줄에 깔면 3+1 이 되어 마지막 하나가 왼쪽에 혼자 남는다.
+                  ⚠️ 사진이 있으면 두 칸 고정이다 — 넷으로 두면 카드가 320px 밑으로 내려가
+                     사진 높이가 180px 도 안 된다.
+                */
                 <ul className={`reveal-stack mt-12 grid gap-5 sm:grid-cols-2 ${
-                  b.items.some((x) => x.image) ? 'lg:grid-cols-2' : 'lg:grid-cols-3'
+                  b.items.some((x) => x.image)
+                    ? 'lg:grid-cols-2'
+                    : b.items.length % 3 === 0
+                      ? 'lg:grid-cols-3'
+                      : b.items.length % 4 === 0
+                        ? 'lg:grid-cols-4'
+                        : b.items.length % 2 === 0
+                          ? 'lg:grid-cols-2'
+                          : 'lg:grid-cols-3'
                 }`}>
                   {b.items.map((it, k) => (
                     <Card as="li" key={it.title} className="reveal flex h-full flex-col overflow-hidden p-0">
                       {/* ★ 항목 사진 — 카드 맨 위 (2026-09-04). 없는 구간도 있으므로 조건부다. */}
+                      {/* ⚠️ 16:9 — 두 칸 격자에서 3:2 는 427px 로 카드가 사진에 잡아먹혔다
+                             (2026-09-04 오너: "카드에 사진은 너무 큰데 줄여줘"). */}
                       {it.image && (
-                        <div className="relative aspect-[3/2] bg-brand-100">
+                        <div className="relative aspect-[16/9] bg-brand-100">
                           <Image
                             src={it.image}
                             alt={it.alt ?? ''}

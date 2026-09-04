@@ -27,6 +27,7 @@ import {
   withLocality,
 } from '@/lib/seo';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
+import { CautionSection } from '@/components/CautionSection';
 
 /**
  * 치아미백 — 실험실(Integrated Biosciences) 시스템으로 만든 페이지.
@@ -363,33 +364,17 @@ export default function WhiteningPage() {
         ── 05 미리 아셔야 할 것 ────────────────────────────────────
         ⚠️⚠️ 지우지 말 것 — 의료법 제56조. 미백은 개인차와 재착색이 큰 처치다.
       */}
-      <section className="border-y border-brand-200/70 light-band py-16 sm:py-24 lg:py-32">
-        <Container>
-          <Counter n="05" total="05" />
-          <div className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
-            <h2 className="display-sm text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">
-              미백 전에 알아 두실 점
-            </h2>
-            <ul className="divide-y divide-wine-line border-y border-brand-200/70">
-              {RISKS.map((r) => (
-                <li key={r} className="py-6 text-[18px] leading-[1.65] font-normal text-ink-soft"><Sentences text={r} /></li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="mt-16 rounded-2xl border border-brand-200/70 bg-parchment p-8 sm:p-12">
-            <p className={LABEL}>미백 후 며칠</p>
-            <ul className="mt-8 grid gap-x-12 gap-y-6 sm:grid-cols-2">
-              {AFTERCARE.map((a) => (
-                <li key={a} className="flex gap-4 text-[17.5px] leading-[1.6] font-normal text-ink">
-                  <span aria-hidden className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-clay-600" />
-                  <span className="min-w-0 flex-1"><Sentences text={a} /></span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Container>
-      </section>
+      {/*
+        ⚠️ 이 구획을 페이지 안에 다시 풀어 쓰지 말 것 (2026-09-04) — 네 페이지가 각자 손으로 쓴
+           복사본을 갖고 있어서 번호가 있기도 없기도 하고 선 색·여백도 달랐다.
+           부품은 components/CautionSection.tsx 하나다.
+      */}
+      <CautionSection
+        title="미백 전에 알아 두실 점"
+        items={RISKS}
+        photo={{ src: '/img/ai/whitening-caution.webp', alt: '흰 상판에 펼쳐 놓은 치아 색 견본과 미백 트레이' }}
+        band
+      />
 
       {/* ── 마무리 ──────────────────────────────────────────────────── */}
       {/*

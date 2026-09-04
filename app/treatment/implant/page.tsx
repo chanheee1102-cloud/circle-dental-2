@@ -20,7 +20,6 @@ import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
 import { SectionHead, Card, GlassCard, HighlightPanel, NumChip } from '@/components/saas';
 import { ComparisonTable } from '@/components/ComparisonTable';
 import { JsonLd } from '@/components/JsonLd';
-import { SectionNav } from '@/components/SectionNav';
 import { ArticleMeta, References, charCount } from '@/components/article';
 import { REFS_CONDITION } from '@/lib/references';
 import {
@@ -168,36 +167,18 @@ export default function ImplantPage() {
         ⚠️ 목록의 id 는 아래 SectionHead 의 id 와 **글자 그대로** 같아야 한다. 하나라도
            어긋나면 그 칸만 조용히 아무 데도 안 간다.
       */}
-      <SectionNav
-        items={[
-          { id: '디지털-방식', label: '디지털 방식' },
-          { id: '시술-방법', label: '시술 방법' },
-          { id: '방식-비교', label: '방식 비교' },
-          { id: '치료-증례', label: '치료 증례' },
-          { id: '진료-원칙', label: '진료 원칙' },
-          { id: '진행-순서', label: '진행 순서' },
-          { id: '주의사항', label: '주의사항' },
-        ]}
-      />
+      {/*
+        ⚠️ 목차 알약(SectionNav)을 뺐다 (2026-09-04 오너). 일곱 칸짜리 알약이 화면 위에 붙어 다니는데,
+           이 페이지의 구획 제목이 이미 번호(01~08)를 달고 있어 같은 목차가 두 벌이었다.
+           ⚠️ 부품은 남아 있다 — /faq 가 쓴다.
+      */}
 
       {/* 01 — 내 얘기인가 */}
-      <section className="py-16 sm:py-24 lg:py-32">
-        <Container>
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-center lg:gap-14">
-            <h2 className="reveal display-sm max-w-[20em] text-[clamp(21px,2.6vw,30px)] leading-[1.35] tracking-[-0.02em] text-ink">
-              이런 상태라면 임플란트를 검토합니다
-            </h2>
-            <ul className="reveal-stack grid gap-3 sm:grid-cols-3">
-              {t.whoFor.map((w) => (
-                <Card as="li" key={w} className="reveal flex items-start gap-3 p-5">
-                  <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-clay-500" />
-                  <span className="text-[15.5px] leading-[1.75] font-bold text-ink">{w}</span>
-                </Card>
-              ))}
-            </ul>
-          </div>
-        </Container>
-      </section>
+      {/*
+        ⚠️ '이런 상태라면 임플란트를 검토합니다' 구획을 뺐다 (2026-09-04 오너: "이 사진에 있는 거 전부").
+           세 줄짜리 목록에 py-32 구획 하나를 통째로 쓰고 있었고, 같은 내용을 바로 아래
+           '무엇을 하나' 와 진행 순서가 다시 말한다. 자료(t.whoFor)는 그대로 둔다.
+      */}
 
       {/* 02 — 뭐가 다른가 */}
       <section className="py-16 sm:py-24 lg:py-32">
@@ -571,27 +552,13 @@ export default function ImplantPage() {
         ⚠️ 되살리려면 IMPLANT_TOPICS 를 그대로 쓰면 된다(lib/implantTopics.ts).
       */}
 
-      {/* 관련 증상 */}
-      {related.length > 0 && (
-        <section className="py-16 sm:py-24 lg:py-32">
-          <Container>
-            <h2 className="reveal display-sm text-[clamp(22px,2.4vw,28px)] leading-[1.3] text-ink">
-              이런 증상도 함께 봅니다
-            </h2>
-            <div className="reveal mt-6 flex flex-wrap gap-2.5">
-              {related.map((s) => (
-                <Link
-                  key={s!.slug}
-                  href={`/insight/symptom/${s!.slug}`}
-                  className="rounded-full border border-brand-300 bg-parchment px-5 py-2.5 text-[15.5px] font-bold text-ink-soft transition-colors hover:border-ink hover:text-ink"
-                >
-                  {s!.title}
-                </Link>
-              ))}
-            </div>
-          </Container>
-        </section>
-      )}
+      {/*
+        ⚠️ '이런 증상도 함께 봅니다' 알약 구획을 뺐다 (2026-09-04 오너: "다 없앨 수 있나?
+           AEO GEO SEO 점수 안떨어지는선에서").
+           **링크는 지우지 않았다** — 아래 마무리(TreatmentClosing)의 '관련 증상' 칸이 같은 곳으로 간다.
+           그 링크가 이 진료와 증상 상세를 잇는 길이라, 없애면 답변 엔진이 둘의 관계를 못 읽는다.
+           사라진 것은 py-32 짜리 구획 하나지 링크가 아니다.
+      */}
 
       <Container className="pb-12">
         <div className="max-w-[70ch]">
@@ -609,7 +576,22 @@ export default function ImplantPage() {
       <TreatmentClosing
         title="임플란트를 심을 수 있는 상태인지 먼저 확인합니다"
         lead="뼈의 양과 잇몸 상태에 따라 방법과 기간이 달라집니다. 검사로 확인한 뒤에 무엇이 필요한지 말씀드립니다."
-        links={[]}
+        links={[
+          ...(t.qa.length
+            ? [
+                {
+                  label: '자주 묻는 질문',
+                  title: `임플란트에 대해 많이 묻는 것 ${t.qa.length}가지`,
+                  href: '/faq#implant',
+                },
+              ]
+            : []),
+          ...related.slice(0, 3).map((x) => ({
+            label: '관련 증상',
+            title: x!.title,
+            href: `/insight/symptom/${x!.slug}`,
+          })),
+        ]}
       />
     </>
   );
