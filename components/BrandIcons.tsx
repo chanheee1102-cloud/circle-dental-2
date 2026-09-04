@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { LogoLockup } from '@/components/Logo';
 
 /**
  * **브랜드 마크 세 개** — 전화 · 카카오 · 네이버.
@@ -109,7 +110,20 @@ export function BookingButtons({
    * ⚠️ whitespace-nowrap 을 지우지 말 것 — 지우면 좁은 칸에서 이름이 다시 접힌다.
    */
   return (
-    <div className="reveal grid w-full grid-cols-2 gap-3 lg:grid-cols-4">
+    <div className="reveal w-full">
+      {/*
+        ★ 단추 위에 로고를 둔다 (2026-09-04 오너: "여기에 버튼 위에 동그라미치과의원 이런 로고나
+          병원명일도 넣을까 여백이 너무 큰데"). 오른쪽 칸이 아래쪽 정렬(items-end)이라 단추 위가
+          통째로 비어 있었다. 그 자리를 다른 글로 채우면 말이 늘지만, 로고는 **이미 아는 것**을
+          한 번 더 보여 주는 것이라 읽을 거리를 늘리지 않고 자리만 채운다.
+        ⚠️ 병원명을 글자로 또 쓰지 말 것 — 로고 그림 안에 이미 '동그라미치과의원 CIRCLE DENTAL
+           CLINIC' 이 들어 있고, alt 로도 나간다. 옆에 또 쓰면 같은 이름이 화면에 두 번이다.
+        ⚠️ 좁은 화면에서는 감춘다 — 거기서는 단추가 두 줄이라 위가 비지 않는다.
+      */}
+      <div className="mb-7 hidden justify-end lg:flex">
+        <LogoLockup />
+      </div>
+      <div className="grid w-full grid-cols-2 gap-3 lg:grid-cols-4">
       <a href={phoneHref} aria-label={`전화 ${phone}`} className={`${card} ${own}`}>
         <PhoneIcon size={22} />
         <span className="whitespace-nowrap text-[14.5px] font-bold">전화 상담</span>
@@ -148,6 +162,7 @@ export function BookingButtons({
         <PinIcon size={22} />
         <span className="whitespace-nowrap text-[14.5px] font-bold">오시는 길</span>
       </Link>
+      </div>
     </div>
   );
 }
