@@ -173,21 +173,33 @@ export default function LaminatePage() {
             ⚠️ 대가(note)를 빼고 앞줄만 남기지 말 것 — 장점만 다섯 줄 세우면 그게 광고문이다.
                원문에서 못 옮긴 두 줄의 이유는 lib/aestheticPage.ts 에 적어 뒀다.
           */}
-          <ol className="reveal-stack mt-12 grid gap-x-12 gap-y-10 sm:grid-cols-2">
+          {/*
+            ★★ 카드로 바꿨다 (2026-09-04 오너: "카드형태로 하든지 지금 행, 열, 배치, 안맞음") ★★
+              두 칸 격자에 여백만으로 나눠 뒀더니 칸마다 글 길이가 달라 **행이 어긋났다** —
+              다섯째만 아래에 혼자 남고 왼쪽에 큰 빈자리가 생겼다.
+            ⚠️ h-full 을 지우지 말 것 — 이것이 같은 줄의 카드 높이를 맞춘다(격자 기본값 stretch).
+               없으면 카드마다 높이가 달라 다시 어긋나 보인다.
+            ⚠️ 대가(note)를 빼고 앞줄만 남기지 말 것 — 장점만 다섯 줄 세우면 그게 광고문이다.
+               원문에서 못 옮긴 두 줄의 이유는 lib/aestheticPage.ts 에 적어 뒀다.
+          */}
+          <ol className="reveal-stack mt-12 grid gap-5 sm:grid-cols-2">
             {LAMINATE_FEATURES.map((f, i) => (
               <li key={f.t} className="reveal">
-                <p className="text-[13.5px] font-black tracking-[0.06em] text-clay-700 tabular-nums">
-                  {String(i + 1).padStart(2, '0')}
-                </p>
-                <h3 className="mt-3 text-[20px] leading-[1.4] font-black tracking-[-0.02em] text-ink">
-                  {f.t}
-                </h3>
-                <p className="mt-3 max-w-[26em] text-[16.5px] leading-[1.85] text-twilight">
-                  <Sentences text={f.d} />
-                </p>
-                <p className="mt-3 max-w-[26em] border-l-2 border-brand-300 pl-4 text-[15.5px] leading-[1.8] text-ink-soft">
-                  <Sentences text={f.note} />
-                </p>
+                <div className="flex h-full flex-col rounded-2xl border border-brand-200/70 bg-parchment p-7 sm:p-8">
+                  <p className="text-[13.5px] font-black tracking-[0.06em] text-clay-700 tabular-nums">
+                    {String(i + 1).padStart(2, '0')}
+                  </p>
+                  <h3 className="mt-3 text-[20px] leading-[1.4] font-black tracking-[-0.02em] text-ink">
+                    {f.t}
+                  </h3>
+                  <p className="mt-3 text-[16.5px] leading-[1.85] text-twilight">
+                    <Sentences text={f.d} />
+                  </p>
+                  {/* mt-auto — 대가 줄을 카드 아래에 붙여 카드마다 같은 자리에 오게 한다. */}
+                  <p className="mt-auto border-l-2 border-brand-300 pt-5 pl-4 text-[15.5px] leading-[1.8] text-ink-soft">
+                    <Sentences text={f.note} />
+                  </p>
+                </div>
               </li>
             ))}
           </ol>
@@ -195,58 +207,21 @@ export default function LaminatePage() {
       </section>
 
       {/* ── 03 가능한 조건 · 적합한 경우 ─────────────────────────── */}
-      <section className="py-16 sm:py-24 lg:py-32">
-        <Container>
-          <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
-            <div>
-              <h2 className="display-sm max-w-[14em] text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
-                이 세 가지를 먼저 확인합니다
-              </h2>
-              <ul className="reveal-stack mt-10 divide-y divide-wine-line border-y border-wine-line">
-                {VENEER.requires.map((r) => (
-                  <li key={r} className="reveal py-6 text-[17px] leading-[1.85] text-twilight">
-                    <Sentences text={r} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h2 className="display-sm max-w-[14em] text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
-                이런 경우에 검토합니다
-              </h2>
-              <ul className="reveal-stack mt-10 divide-y divide-wine-line border-y border-wine-line">
-                {VENEER.indications.map((v) => (
-                  <li key={v} className="reveal py-6 text-[17px] leading-[1.85] text-twilight"><Sentences text={v} /></li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </Container>
-      </section>
+      {/*
+        ★ '이 세 가지를 먼저 확인합니다 / 이런 경우에 검토합니다' 두 칸을 뺐다 (2026-09-04 오너: "없애줘").
+          바로 위 01~05 칸이 같은 것을 이미 말하고 있었다 — 삭제량·접착면·무는 힘·색.
+        ⚠️ VENEER.requires / VENEER.indications 자료는 그대로 둔다(lib/aestheticPage.ts).
+           되살릴 때 다시 쓰거나 다른 화면이 가져다 쓸 수 있다.
+      */}
 
       {/* ── 04 색 맞추기 ─────────────────────────────────────────── */}
-      <section className="light-band border-y border-wine-line py-16 sm:py-24 lg:py-32">
-        <Container>
-          <h2 className="display-sm max-w-[18em] text-[clamp(24px,2.8vw,34px)] leading-[1.3] text-ink">
-            색은 이 순서로 맞춥니다
-          </h2>
-          <ol className="reveal-stack mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {SHADE_STEPS.map((s) => (
-              <li key={s.n} className="reveal">
-                <p className="text-[13.5px] font-black tracking-[0.06em] text-clay-700 tabular-nums">
-                  {s.n}
-                </p>
-                <h3 className="mt-3 text-[18.5px] leading-[1.4] font-black tracking-[-0.02em] text-ink">
-                  {s.t}
-                </h3>
-                <p className="mt-3 text-[16px] leading-[1.85] text-twilight">
-                  <Sentences text={s.d} />
-                </p>
-              </li>
-            ))}
-          </ol>
-        </Container>
-      </section>
+      {/*
+        ★ '색은 이 순서로 맞춥니다' 를 뺐다 (2026-09-04 오너: "열한번째 사진 내용이 열두번째랑 같은데
+           한곳에서 삭제하던지"). 같은 SHADE_STEPS 를 심미보철 페이지도 쓰는데, 그쪽은 **구강스캐너
+           사진과 함께** 보여 준다. 사진이 있는 쪽을 남기고 이 넉 칸짜리 사본을 뺐다.
+        ⚠️ 정본은 app/treatment/crown-prosthesis/page.tsx 의 '보철 색은 순서를 지켜야 맞출 수 있습니다' 다.
+           둘을 다시 같이 두지 말 것 — 같은 글이 한 사이트에 두 번 있으면 검색이 어느 쪽을 고를지 헷갈린다.
+      */}
 
       {/* ── 05 한계 · 치료 전에 알아 두실 점 ──────────────────────────── */}
       {/* ⚠️⚠️ 이 구획을 지우지 말 것 — 의료법 제56조. 되돌릴 수 없는 치료다. */}
@@ -263,9 +238,22 @@ export default function LaminatePage() {
                     <Sentences text={l} />
                   </li>
                 ))}
-                {RISKS.map((r) => (
-                  <li key={r} className="reveal py-6 text-[17px] leading-[1.85] text-twilight">
-                    <Sentences text={r} />
+                {/*
+                  ★ 번호를 붙였다 (2026-09-04 오너: "번호 붙여줘"). 선으로만 나눠 두면 몇 가지인지
+                    세어야 알 수 있고, 읽다가 어디까지 봤는지도 잃는다.
+                  ⚠️ min-w-0 flex-1 을 지우지 말 것 — 없으면 글이 어절 폭으로 눌린다.
+                */}
+                {RISKS.map((r, i) => (
+                  <li key={r} className="reveal flex gap-4 py-6">
+                    <span
+                      aria-hidden
+                      className="mt-1 shrink-0 text-[13.5px] font-black tracking-[0.06em] text-clay-700 tabular-nums"
+                    >
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <p className="min-w-0 flex-1 text-[17px] leading-[1.85] text-twilight">
+                      <Sentences text={r} />
+                    </p>
                   </li>
                 ))}
               </ul>

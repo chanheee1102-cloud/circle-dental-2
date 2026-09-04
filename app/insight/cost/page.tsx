@@ -229,11 +229,14 @@ export default function CostPage() {
           ))}
         </div>
 
-        <div className="mt-10">
-          {UNVERIFIED.pricing.verified ? null : (
-            <NeedsInfo label={UNVERIFIED.pricing.label} note={UNVERIFIED.pricing.note} />
-          )}
-        </div>
+        {/*
+          ★ '비급여 진료비 — 확인 필요' 배지를 화면에서 뺐다 (2026-09-04 오너: "없애줘").
+            이것은 우리가 아직 못 채운 값을 **우리에게** 지목하려고 만든 표시인데, 환자가 보는
+            페이지에 그대로 떠 있었다. 방문자에게는 "이 병원은 준비가 덜 됐다" 로만 읽힌다.
+          ⚠️ lib/clinic.ts 의 UNVERIFIED 자료는 **그대로 둔다.** 값이 없다는 사실이 지워지면
+             누군가 임의로 금액을 채울 수 있고, 사실이 아닌 진료비 표시는 의료법 제56조 위반이다.
+             아래 MedicalNotice 가 "정확한 금액은 검사 후" 라고 계속 말하고 있다.
+        */}
 
         <div className="mt-10 max-w-[70ch]">
           <References items={REFS_COST} />
@@ -242,10 +245,12 @@ export default function CostPage() {
         <MedicalNotice extra="비급여 진료비는 병원마다 다르며, 정확한 금액은 검사 후 개별 상태에 따라 안내드립니다. 원내 게시된 비급여 진료비를 함께 확인하실 수 있습니다." />
       </Container>
 
-      <ContactCta
-        title="비용은 검사로 필요한 항목이 정해진 뒤에 말씀드립니다"
-        desc="구강 상태를 확인해야 어떤 항목이 필요한지 정해지고, 그래야 비용을 말씀드릴 수 있습니다."
-      />
+      {/*
+        ★ 마무리 전환 블록을 뺐다 (2026-09-04 오너: "스물한번째 부분도 없애줘").
+          이 페이지는 '무엇이 보험이고 무엇이 아닌가' 를 읽으러 오는 자리다. 읽고 나서 예약으로
+          모는 것보다, 화면 아래 고정 바(components/QuickMenu.tsx)의 전화·예약을 쓰게 두는 편이 낫다.
+        ⚠️ 되살리려면 ContactCta 를 다시 부르면 된다 — 부품은 그대로 있다.
+      */}
     </>
   );
 }

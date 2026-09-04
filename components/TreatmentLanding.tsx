@@ -132,6 +132,21 @@ export function TreatmentLanding({
                           <NumChip n={s.step} />
                         </div>
                         <Card className="flex h-full flex-col p-7">
+                          {/*
+                            ★ 단계 그림이 있으면 제목 위에 둔다 (2026-09-04). 원본 홈페이지가
+                              그림 → 단계 이름 → 설명 순서라 그대로 따른다.
+                            ⚠️ 없는 단계도 있으므로 반드시 조건부다. 빈 상자를 그리지 말 것.
+                          */}
+                          {s.image && (
+                            <Image
+                              src={s.image}
+                              alt={s.alt ?? ''}
+                              width={260}
+                              height={260}
+                              sizes="180px"
+                              className="mx-auto mb-5 h-[132px] w-[132px] object-contain"
+                            />
+                          )}
                           <h3 className="display-sm text-[17.5px] tracking-[-0.01em] text-ink">
                             {s.title}
                           </h3>
@@ -162,9 +177,21 @@ export function TreatmentLanding({
                 ⚠️ 최소 높이를 함께 둔다. 카드가 한 줄뿐인 구간에서는 사진이 너무 납작해진다.
               */}
               {b.items && b.figure && !b.paragraphs ? (
-                <div className="mt-12 grid items-stretch gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-14">
-                  <Card lift className="reveal img-in overflow-hidden">
-                    <div className="relative h-full min-h-[280px] bg-brand-100">
+                <div className="mt-12 grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-14">
+                  {/*
+                    ★★ 사진을 카드 줄 높이까지 늘리지 않는다 (2026-09-04 오너: "크기 너무 확대됨") ★★
+                      전에는 h-full 로 카드 두세 줄(600px 넘음)만큼 늘렸는데, 원본이 3:2 가로라
+                      세로로 긴 상자를 채우려면 좌우가 크게 잘려 나간다 — 확대해 놓은 것처럼 보였다.
+                    ★ 대신 **자기 비율에 가까운 4:5 로 고정하고 위에 붙인다(self-start).**
+                      그리고 스크롤을 따라 붙어 있게(sticky) 해서, 옆 카드가 길어도 아래가 비지 않는다.
+                    ⚠️ h-full 로 되돌리지 말 것 — 그 순간 다시 2.7배로 확대된다(실측).
+                    ⚠️ self-start 없이 sticky 만 주면 동작하지 않는다. 격자 칸이 늘어나 있으면
+                       붙을 여지가 없기 때문이다.
+                  */}
+                  <Card lift className="reveal img-in self-start overflow-hidden lg:sticky lg:top-28">
+                    {/* ⚠️ 3:2 는 원본(1536×1024) 비율 그대로다 — 잘리는 곳이 0 이라 확대돼 보이지 않는다.
+                           4:5 로 두면 3:2 원본의 좌우가 크게 잘려 나가 "확대됨" 으로 보인다(2026-09-04 실측). */}
+                    <div className="relative aspect-[3/2] bg-brand-100">
                       <Image
                         src={b.figure.src}
                         alt={b.figure.alt}

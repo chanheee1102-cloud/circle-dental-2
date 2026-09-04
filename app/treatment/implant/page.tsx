@@ -563,26 +563,13 @@ export default function ImplantPage() {
       </section>
 
       {/* 세부 주제 */}
-      <section className="border-y border-wine-line bg-wine-soft py-16 sm:py-24 lg:py-32">
-        <Container>
-          <SectionHead n="08" label="더 자세히" title="임플란트 주제별로 자세히 보기" />
-          <div className="reveal-stack mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {IMPLANT_TOPICS.map((o) => (
-              <Link key={o.slug} href={`/treatment/implant/${o.slug}`} className="reveal group">
-                <Card className="flex h-full flex-col p-7 transition-colors group-hover:border-brand-300">
-                  <h3 className="display-sm text-[17.5px] tracking-[-0.01em] text-ink group-hover:text-clay-700">
-                    {o.name}
-                  </h3>
-                  <p className="mt-2.5 flex-1 text-[15px] leading-[1.8] text-ink-soft"><Sentences text={o.tagline} /></p>
-                  <span className="mt-6 text-[14.5px] font-black text-clay-700">
-                    자세히 보기 <span aria-hidden>→</span>
-                  </span>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </Container>
-      </section>
+      {/*
+        ★ '08 더 자세히 — 임플란트 주제별로 자세히 보기' 카드 여섯 장을 뺐다 (2026-09-04 오너: "아예 없애줘").
+          같은 여섯 갈래가 **머리말 메뉴(임플란트)** 와 **각 주제 페이지끼리의 연결**에 이미 있었다.
+        ⚠️ 페이지는 그대로 살아 있다 — 사이트맵에도, /treatment/implant 의 본문 링크에도 남아 있어
+           고아가 되지 않는다. 화면에서 카드 여섯 장만 뺀 것이다.
+        ⚠️ 되살리려면 IMPLANT_TOPICS 를 그대로 쓰면 된다(lib/implantTopics.ts).
+      */}
 
       {/* 관련 증상 */}
       {related.length > 0 && (
