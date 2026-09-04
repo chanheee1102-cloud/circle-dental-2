@@ -58,7 +58,7 @@ export function TreatmentClosing({
           ⚠️ 오른쪽 칸을 26rem 으로 **고정**한다. fr 로 두면 페이지마다 제목 길이에 따라
              단추 폭이 달라져 페이지를 옮길 때마다 단추가 늘었다 줄었다 한다.
         */}
-        <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-end">
+        <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end">
           <div className="min-w-0">
             <p className="reveal eyebrow-chip text-clay-700">예약 · 상담</p>
             <h2 className="reveal display-sm mt-5 max-w-[14em] text-[clamp(26px,3.8vw,44px)] leading-[1.16] tracking-[-0.025em] text-ink">

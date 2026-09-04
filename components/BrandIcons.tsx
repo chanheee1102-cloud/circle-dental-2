@@ -91,29 +91,28 @@ export function BookingButtons({
    * ★★ 동그라미 → **네모 카드** (2026-09-04 오너: "CTA 버튼 카드 형태로 해줘 네모 형태로") ★★
    *   원은 이름과 맞아떨어졌지만 글자를 넣을 자리가 좁아 이름을 줄여 써야 했다.
    *   네모는 같은 폭에서 글자가 더 들어가고, 옆 문구 덩어리와 높이를 맞추기도 쉽다.
-   * ⚠️ 2 × 2 다 — 넷을 한 줄로 두면 카드 하나가 98px 로 좁아져 다시 원과 같은 문제가 된다.
-   *    두 줄이면 카드가 200px 폭을 갖고, 두 줄 높이가 옆 제목·설명 덩어리와 맞는다.
+   * ⚠️ **한 줄 넷**이다 (2026-09-04 오너: "카드 그냥 한줄로 네개 해 … 가로 길이 더 길게. 여백 별로
+   *    안남기게"). 그래서 오른쪽 칸을 26rem 에서 넓혔다 — TreatmentClosing·ContactCta 의 격자에서
+   *    오른쪽 비율을 키웠으니 **거기와 한 쌍**이다. 한쪽만 되돌리면 카드가 다시 좁아진다.
+   * ⚠️ 전화와 오시는 길은 **색이 달라야 한다** — 둘 다 우리 색(ink)으로 두었더니 나란히 있는
+   *    같은 단추로 보였다. 오시는 길은 clay-600(구릿빛)이다.
    * ⚠️ 높이를 aspect 로 박지 말 것 — 여백(py)이 정하게 둔다. 글자 크기가 바뀌어도 따라온다.
    * ⚠️ 브랜드 색(카카오 #FEE500 · 네이버 #03C75A)은 규정 색이다. 팔레트에 맞춘다고 바꾸지 말 것.
    * ⚠️ 카카오 노랑 위 글자는 검정이다 — 흰 글자면 1.7:1 로 안 읽힌다.
    */
   const card =
-    'group flex w-full items-center gap-3 rounded-2xl px-5 py-5 text-left transition-transform duration-300 hover:-translate-y-1';
+    'group flex w-full items-center justify-center gap-2.5 rounded-2xl px-3 py-5 text-center transition-transform duration-300 hover:-translate-y-1';
   const own = tone === 'dark' ? 'bg-parchment text-dusk' : 'bg-ink text-wine-bg';
-  const arrow = (
-    <span
-      aria-hidden
-      className="ml-auto shrink-0 text-[15px] opacity-70 transition-transform group-hover:translate-x-1"
-    >
-      →
-    </span>
-  );
+  /*
+   * ⚠️ 화살표를 뺐다 — 한 줄 넷이 되면서 카드가 157px 이 됐고, 화살표가 25px 를 먹어
+   *    '네이버 예약' 이 두 줄로 접혔다(2026-09-04 실측). 넷을 두 줄로 되돌리면 그때 다시 붙일 것.
+   * ⚠️ whitespace-nowrap 을 지우지 말 것 — 지우면 좁은 칸에서 이름이 다시 접힌다.
+   */
   return (
-    <div className="reveal grid w-full grid-cols-2 gap-3">
+    <div className="reveal grid w-full grid-cols-2 gap-3 lg:grid-cols-4">
       <a href={phoneHref} aria-label={`전화 ${phone}`} className={`${card} ${own}`}>
         <PhoneIcon size={22} />
-        <span className="text-[15.5px] font-bold">전화 상담</span>
-        {arrow}
+        <span className="whitespace-nowrap text-[14.5px] font-bold">전화 상담</span>
       </a>
       <a
         href={kakao}
@@ -122,8 +121,7 @@ export function BookingButtons({
         className={`${card} bg-[#FEE500] text-[#191600]`}
       >
         <KakaoIcon size={22} />
-        <span className="text-[15.5px] font-bold">카카오톡</span>
-        {arrow}
+        <span className="whitespace-nowrap text-[14.5px] font-bold">카카오톡</span>
       </a>
       <a
         href={naver}
@@ -132,13 +130,23 @@ export function BookingButtons({
         className={`${card} bg-[#03C75A] text-white`}
       >
         <NaverIcon size={22} />
-        <span className="text-[15.5px] font-bold">네이버 예약</span>
-        {arrow}
+        <span className="whitespace-nowrap text-[14.5px] font-bold">네이버 예약</span>
       </a>
-      <Link href="/visit" className={`${card} ${own}`}>
+      <Link
+        href="/visit"
+        /*
+          ⚠️ 오시는 길만 **테두리형**이다. 전화와 같은 단색으로 두면 나란히 선 두 갈색이
+             같은 단추로 보인다(clay-600 은 ink 와 거의 같은 갈색이라 채워도 구별이 안 된다).
+             이 사이트의 단추는 '단색 아니면 테두리' 이므로 테두리가 규칙 안이다.
+        */
+        className={`${card} border-[1.5px] ${
+          tone === 'dark'
+            ? 'border-parchment/70 text-parchment'
+            : 'border-ink/45 text-ink hover:bg-ink hover:text-wine-bg'
+        }`}
+      >
         <PinIcon size={22} />
-        <span className="text-[15.5px] font-bold">오시는 길</span>
-        {arrow}
+        <span className="whitespace-nowrap text-[14.5px] font-bold">오시는 길</span>
       </Link>
     </div>
   );

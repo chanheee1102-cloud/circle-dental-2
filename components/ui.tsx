@@ -716,7 +716,7 @@ export function ContactCta({
           ⚠️ items-end — 단추 밑선을 설명 마지막 줄에 맞춘다. items-center 로 바꾸면 단추가 떠 보인다.
           ⚠️ basis 를 지우지 말 것 — 좁은 화면에서 줄을 바꾸는 대신 글 칸이 눌려 한 어절씩 쌓인다.
         */}
-        <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-end">
+        <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end">
         <div className="min-w-0">
         <p className="eyebrow-chip text-clay-700">예약 · 상담</p>
         <h2 className="display-sm mt-5 max-w-[14em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">{title}</h2>
