@@ -671,11 +671,21 @@ export function ContactCta({
      */
     <section className="light-band reveal border-t border-wine-line py-16 sm:py-24 lg:py-32">
       <Container>
-        <h2 className="display-sm text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink max-w-[14em]">{title}</h2>
+        {/*
+          ★★ 글은 왼쪽 · 단추는 오른쪽 (2026-09-04 오너: "여기도 오른쪽이 좀 비는데") ★★
+            제목·설명·단추를 전부 왼쪽에 쌓아 두니 넓은 화면에서 오른쪽 절반이 통째로 비었다.
+            진료 페이지 마무리(components/TreatmentClosing.tsx)와 같은 규칙으로 맞춘다.
+          ⚠️ items-end — 단추 밑선을 설명 마지막 줄에 맞춘다. items-center 로 바꾸면 단추가 떠 보인다.
+          ⚠️ basis 를 지우지 말 것 — 좁은 화면에서 줄을 바꾸는 대신 글 칸이 눌려 한 어절씩 쌓인다.
+        */}
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-10">
+        <div className="min-w-0 flex-1 basis-[26rem]">
+        <h2 className="display-sm max-w-[14em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">{title}</h2>
         <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
           <Sentences text={desc} />
         </p>
-        <div className="mt-10 flex flex-wrap items-center gap-3">
+        </div>
+        <div className="flex shrink-0 flex-wrap items-center gap-3">
           <a
             href={CLINIC.booking.naver}
             target="_blank"
@@ -690,6 +700,7 @@ export function ContactCta({
           >
             {CLINIC.phone}
           </a>
+        </div>
         </div>
       </Container>
     </section>

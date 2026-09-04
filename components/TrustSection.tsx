@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import { TRUST_STATS, CREDENTIAL_ROWS, MEDIA_APPEARANCES } from '@/lib/trustSignals';
 import { PUBLICATION_DETAIL, OUTREACH_BROADCAST } from '@/lib/doctors';
+import { OUTREACH_VIDEO } from '@/lib/assets';
+import { VideoFacade } from '@/components/VideoFacade';
 import { CredentialFan } from '@/components/CredentialFan';
 import { Container, Sentences } from '@/components/ui';
 import { Reveal } from '@/components/Reveal';
@@ -145,14 +147,23 @@ export function TrustSection() {
                  쓸모가 있다(lib/doctors.ts 주석). 여기는 글 아래에 놓는 자리라 세로형이 맞다.
               ⚠️ 잘라내지 않는다(width/height 그대로) — 학술지 지면이 잘리면 무엇인지 알 수 없다.
             */}
-            <Image
-              src={PUBLICATION_DETAIL.image}
-              alt="국제 학술지에 실린 발표 논문 지면"
-              width={768}
-              height={800}
-              sizes="(min-width: 1024px) 320px, 60vw"
-              className="mt-7 w-full max-w-[320px] rounded-xl border border-brand-200/70"
-            />
+            {/*
+              ⚠️ 오른쪽 방영 썸네일과 **같은 상자**를 쓴다 (2026-09-04 오너: "규격 맞춰주고").
+                 두 사진의 원본 비율이 달라서(논문 0.96 · 방영 1.20) 각자 최대폭만 주면
+                 나란한 두 칸의 사진 크기가 어긋난다.
+              ⚠️ object-contain — 논문 지면을 잘라내면 무엇인지 알 수 없다. 남는 자리는 면으로 채운다.
+            */}
+            <div className="mt-7 w-full max-w-[420px] overflow-hidden rounded-xl border border-brand-200/70 bg-brand-100">
+              <div className="relative aspect-[6/5]">
+                <Image
+                  src={PUBLICATION_DETAIL.image}
+                  alt="국제 학술지에 실린 발표 논문 지면"
+                  fill
+                  sizes="(min-width: 1024px) 420px, 80vw"
+                  className="object-contain"
+                />
+              </div>
+            </div>
           </div>
 
           {MEDIA_APPEARANCES.length > 0 && (
@@ -175,14 +186,23 @@ export function TrustSection() {
                 ⚠️ 이 사진은 사회공헌 구획(/about)에서도 쓴다 — 같은 장면이지만 역할이 다르다.
                    거기서는 '봉사를 했다' 는 기록이고, 여기서는 '방송에 나왔다' 는 근거다.
               */}
-              <Image
-                src={OUTREACH_BROADCAST.src}
-                alt={OUTREACH_BROADCAST.alt}
-                width={499}
-                height={415}
-                sizes="(min-width: 1024px) 360px, 60vw"
-                className="mt-7 w-full max-w-[360px] rounded-xl border border-brand-200/70"
-              />
+              {/*
+                ★ 방영분은 **영상 썸네일**로 둔다 (2026-09-04 오너: "영상 썸네일 처럼 잘 넣어줘").
+                  방영 장면을 사진으로만 두면 '방송에 나왔다' 는 말의 증거가 정지 화면 한 장뿐이다.
+                  누르면 그 자리에서 방영분이 재생된다(Vimeo 613292079).
+                ⚠️ VideoFacade 를 쓴다 — iframe 을 처음부터 심으면 이 페이지가 볼 때마다
+                   Vimeo 플레이어를 통째로 내려받는다. 누를 때까지는 사진 한 장이다.
+                ⚠️ 왼쪽 논문 상자와 같은 6:5 · 420px 다. 바꾸려면 둘을 같이 바꿀 것.
+              */}
+              <div className="mt-7 w-full max-w-[420px]">
+                <VideoFacade
+                  embedSrc={OUTREACH_VIDEO.embed}
+                  poster={OUTREACH_BROADCAST.src}
+                  posterAlt={OUTREACH_BROADCAST.alt}
+                  label="TV조선 구조신호 시그널 24회 방영분 영상 재생"
+                  ratio="aspect-[6/5]"
+                />
+              </div>
             </div>
           )}
         </Container>

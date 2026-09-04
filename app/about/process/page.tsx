@@ -7,6 +7,7 @@ import { Container, MedicalNotice, ContactCta, Sentences } from '@/components/ui
 import { AboutHero } from '@/components/AboutHero';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema, medicalWebPageSchema, abs } from '@/lib/seo';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: '치과 처음 갈 때 — 무엇을 하고 무엇을 챙기나',
@@ -120,30 +121,52 @@ export default function ProcessPage() {
         ⚠️ 번호(01~05)를 지우지 말 것 — HowTo 구조화 데이터의 순서와 화면이 같은 말을 해야 한다.
       */}
       <Container className="pt-12 pb-16 lg:pt-16 lg:pb-20">
-        <ol className="space-y-4 lg:space-y-5">
-          {FLOW.map((f) => (
-            <li key={f.n} className="step-in">
-              <article className="rounded-[22px] border border-brand-200/70 bg-parchment p-7 sm:p-9 lg:p-10">
-                <div className="grid gap-y-4 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)] lg:items-baseline lg:gap-x-12">
-                  <h2 className="flex items-baseline gap-4">
-                    <span
-                      aria-hidden
-                      className="display text-[clamp(26px,2.8vw,36px)] leading-none tabular-nums text-clay-600"
-                    >
-                      {f.n}
-                    </span>
-                    <span className="display-sm text-[clamp(19px,2vw,24px)] leading-snug text-ink">
-                      {f.t}
-                    </span>
-                  </h2>
-                  <p className="max-w-[62ch] text-[17px] leading-[1.9] text-twilight">
-                    <Sentences text={f.d} />
-                  </p>
-                </div>
-              </article>
-            </li>
-          ))}
-        </ol>
+          {/*
+            ★★ 다섯 단계를 **카드 격자**로 (2026-09-04 오너: "카드 다섯개 형태로 사진 넣어서, 3개 2개로 두줄") ★★
+              가로로 긴 판 다섯 장이 세로로 쌓여 있어 한 화면에 한 단계씩만 보였다. 3+2 로 두면
+              '다섯 단계' 라는 것이 한눈에 들어온다.
+            ⚠️ lg:grid-cols-6 에 각 칸이 2칸씩이다 — 6 = 3×2 이므로 첫 줄에 셋이 딱 맞고,
+               넷째·다섯째는 col-start 로 가운데 정렬한다. grid-cols-3 으로 바꾸면 둘째 줄이 왼쪽에 붙는다.
+            ⚠️ 사진은 설명용이다. 아래 AI 사진 고지를 함께 지우지 말 것(의료법 제56조).
+          */}
+          <ol className="reveal-stack mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
+            {FLOW.map((f, i) => (
+              <li
+                key={f.n}
+                className={`step-in ${
+                  i === 3 ? 'lg:col-span-2 lg:col-start-2' : i === 4 ? 'lg:col-span-2' : 'lg:col-span-2'
+                }`}
+              >
+                <article className="flex h-full flex-col overflow-hidden rounded-[22px] border border-brand-200/70 bg-parchment">
+                  {f.image && (
+                    <div className="relative aspect-[3/2] bg-brand-100">
+                      <Image
+                        src={f.image}
+                        alt={f.alt ?? ''}
+                        fill
+                        sizes="(min-width: 1024px) 400px, (min-width: 640px) 46vw, 92vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-1 flex-col p-6 sm:p-7">
+                    <h2 className="flex items-baseline gap-3">
+                      <span
+                        aria-hidden
+                        className="display text-[22px] leading-none tabular-nums text-clay-600"
+                      >
+                        {f.n}
+                      </span>
+                      <span className="display-sm text-[19px] leading-snug text-ink">{f.t}</span>
+                    </h2>
+                    <p className="mt-3 text-[16px] leading-[1.85] text-twilight">
+                      <Sentences text={f.d} />
+                    </p>
+                  </div>
+                </article>
+              </li>
+            ))}
+          </ol>
       </Container>
 
 
@@ -224,6 +247,18 @@ export default function ProcessPage() {
         <MedicalNotice />
       </Container>
 
+
+      {/*
+        ⚠️⚠️ AI 사진 고지 — 지우지 말 것 ⚠️⚠️
+          위 다섯 단계 사진은 진료 과정을 설명하려고 만든 것이다. 고지가 없으면 원내 사진으로
+          읽히고, 그 순간 확인되지 않은 시설 주장이 된다(의료법 제56조).
+          사진을 실제 진료 사진으로 바꾸면 그때 이 줄을 지운다.
+      */}
+      <Container className="pb-6">
+        <p className="max-w-[52em] text-[13.5px] leading-[1.7] text-ink-muted">
+          <Sentences text="일부 이미지는 진료 과정을 설명하기 위해 만든 것으로 실제 진료 사진이 아닙니다." />
+        </p>
+      </Container>
 
       <ContactCta />
     </>
