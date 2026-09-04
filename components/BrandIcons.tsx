@@ -84,47 +84,61 @@ export function BookingButtons({
   phoneHref: string;
   kakao: string;
   naver: string;
-  /** 놓이는 면 — 어두운 면에서는 우리 색 원을 밝게 뒤집는다. */
+  /** 놓이는 면 — 어두운 면에서는 우리 색 카드를 밝게 뒤집는다. */
   tone?: 'light' | 'dark';
 }) {
-  const dot =
-    'group flex aspect-square w-full flex-col items-center justify-center gap-1.5 rounded-full text-center transition-transform duration-300 hover:-translate-y-1';
+  /*
+   * ★★ 동그라미 → **네모 카드** (2026-09-04 오너: "CTA 버튼 카드 형태로 해줘 네모 형태로") ★★
+   *   원은 이름과 맞아떨어졌지만 글자를 넣을 자리가 좁아 이름을 줄여 써야 했다.
+   *   네모는 같은 폭에서 글자가 더 들어가고, 옆 문구 덩어리와 높이를 맞추기도 쉽다.
+   * ⚠️ 2 × 2 다 — 넷을 한 줄로 두면 카드 하나가 98px 로 좁아져 다시 원과 같은 문제가 된다.
+   *    두 줄이면 카드가 200px 폭을 갖고, 두 줄 높이가 옆 제목·설명 덩어리와 맞는다.
+   * ⚠️ 높이를 aspect 로 박지 말 것 — 여백(py)이 정하게 둔다. 글자 크기가 바뀌어도 따라온다.
+   * ⚠️ 브랜드 색(카카오 #FEE500 · 네이버 #03C75A)은 규정 색이다. 팔레트에 맞춘다고 바꾸지 말 것.
+   * ⚠️ 카카오 노랑 위 글자는 검정이다 — 흰 글자면 1.7:1 로 안 읽힌다.
+   */
+  const card =
+    'group flex w-full items-center gap-3 rounded-2xl px-5 py-5 text-left transition-transform duration-300 hover:-translate-y-1';
   const own = tone === 'dark' ? 'bg-parchment text-dusk' : 'bg-ink text-wine-bg';
+  const arrow = (
+    <span
+      aria-hidden
+      className="ml-auto shrink-0 text-[15px] opacity-70 transition-transform group-hover:translate-x-1"
+    >
+      →
+    </span>
+  );
   return (
-    /*
-      ⚠️ 넷을 한 줄에 둔다 (2026-09-04 오너: "map 버튼 추가해서 버튼 4개로"). 좁은 화면에서도
-         줄을 바꾸지 않는다 — 세로로 쌓으면 원이 화면 폭만큼 커져 우스워진다.
-      ⚠️ gap 을 넓히지 말 것 — 오너가 "간격이 너무 넓다" 고 한 자리다. 원 사이는 좁게 붙이고
-         칸 폭이 남으면 **원이 커지게** 둔다(aspect-square + w-full).
-      ⚠️ 번호 줄은 뺐다 (오너: "번호는 지워 밑에"). 전화 원이 그 역할을 하고,
-         번호는 푸터·내원 안내·하단 고정 바에 이미 세 번 있다.
-    */
-    <div className="reveal grid w-full grid-cols-4 gap-2.5 sm:gap-3">
-      <a href={phoneHref} aria-label={`전화 ${phone}`} className={`${dot} ${own}`}>
-        <PhoneIcon size={24} />
-        <span className="text-[13.5px] font-bold">전화상담</span>
+    <div className="reveal grid w-full grid-cols-2 gap-3">
+      <a href={phoneHref} aria-label={`전화 ${phone}`} className={`${card} ${own}`}>
+        <PhoneIcon size={22} />
+        <span className="text-[15.5px] font-bold">전화 상담</span>
+        {arrow}
       </a>
       <a
         href={kakao}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${dot} bg-[#FEE500] text-[#191600]`}
+        className={`${card} bg-[#FEE500] text-[#191600]`}
       >
-        <KakaoIcon size={24} />
-        <span className="text-[13.5px] font-bold">카카오톡</span>
+        <KakaoIcon size={22} />
+        <span className="text-[15.5px] font-bold">카카오톡</span>
+        {arrow}
       </a>
       <a
         href={naver}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${dot} bg-[#03C75A] text-white`}
+        className={`${card} bg-[#03C75A] text-white`}
       >
-        <NaverIcon size={24} />
-        <span className="text-[13.5px] font-bold">네이버예약</span>
+        <NaverIcon size={22} />
+        <span className="text-[15.5px] font-bold">네이버 예약</span>
+        {arrow}
       </a>
-      <Link href="/visit" className={`${dot} ${own}`}>
-        <PinIcon size={24} />
-        <span className="text-[13.5px] font-bold">오시는 길</span>
+      <Link href="/visit" className={`${card} ${own}`}>
+        <PinIcon size={22} />
+        <span className="text-[15.5px] font-bold">오시는 길</span>
+        {arrow}
       </Link>
     </div>
   );
