@@ -85,7 +85,7 @@ export default function SymptomIndexPage() {
                 </h2>
                 <Link
                   href={`/insight/symptom/${g.slug}`}
-                  className="group inline-flex items-center gap-2 text-[15.5px] font-semibold text-clay-700 hover:underline"
+                  className="group -my-2 inline-flex items-center gap-2 py-2 text-[15.5px] font-semibold text-clay-700 hover:underline"
                 >
                   {symptomsOfGroup(g).length}가지 자세히 보기
                   <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
@@ -113,7 +113,7 @@ export default function SymptomIndexPage() {
                         <p className="text-[15.5px] leading-[1.85] text-ink-soft">{s.answer}</p>
                         <Link
                           href={symptomHref(s.slug)}
-                          className="mt-4 inline-flex items-center gap-1.5 text-[15px] font-black text-clay-700 hover:underline"
+                          className="-mb-2 mt-4 inline-flex items-center gap-1.5 py-2 text-[15px] font-black text-clay-700 hover:underline"
                         >
                           자세히 보기 <span aria-hidden>→</span>
                         </Link>

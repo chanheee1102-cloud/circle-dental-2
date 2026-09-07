@@ -39,8 +39,28 @@ export interface BlogPost {
   summary: string;
   /** 진료 영역 이름과 맞추면 목록에서 묶어 보기 좋다. 없어도 된다. */
   category?: string;
+  /**
+   * 대표 사진 (2026-09-07 오너: "이미지 하나정도씩 캐러셀처럼 넣어서 카드형태로").
+   * public/img/blog/ 아래 경로. 목록 카드·상세 머리·공유 카드(og)에 쓴다. 없으면 제목 카드로 대신한다.
+   * ⚠️ AI 로 만든 그림이면 사람·손·얼굴·글자가 없어야 한다(사이트의 다른 AI 사진과 같은 규칙).
+   */
+  image?: string;
+  /** 사진에 무엇이 찍혔는지. image 가 있으면 반드시 채운다. */
+  imageAlt?: string;
   /** 본문 HTML. h2/h3/p/ul/ol/li/strong/em/a/blockquote/figure/img 정도만 쓴다. */
   html: string;
+}
+
+/**
+ * 오늘 날짜(한국 시간) — 예약 발행의 기준.
+ * ★★ 왜 (2026-09-07 오너: "매달 자동으로 발행") ★★
+ *   글마다 date 를 미리 적어 두면, 그 날짜가 오기 전에는 목록·상세·사이트맵 어디에도 안 실린다.
+ *   날짜가 지나면 저절로 실린다 — 쪽들이 ISR(revalidate) 로 다시 그려지기 때문이다.
+ * ⚠️ 서버 시계는 UTC 다. 한국 자정을 기준으로 삼으려면 +9h 를 더해서 날짜를 잘라야 한다.
+ *    안 그러면 한국 시간 새벽 0~9시에 올린 글이 아홉 시간 늦게 나온다.
+ */
+export function todayKST(): string {
+  return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
 }
 
 const DIR = join(process.cwd(), 'content', 'blog');
@@ -68,7 +88,12 @@ function slugFromFile(file: string): string {
  * ⚠️ 폴더가 없거나 비어 있어도 **터지지 않는다** — 글이 하나도 없는 것은 정상 상태다.
  *    (블로그를 열어 두고 첫 글을 올리기 전까지가 그렇다.)
  */
-export function allPosts(): BlogPost[] {
+export function allPosts(opts: { includeFuture?: boolean } = {}): BlogPost[] {
+  /*
+   * ⚠️ 기본은 **오늘까지의 글만**이다. date 가 미래인 글은 예약 상태라 목록·상세·사이트맵·
+   *    llms.txt 어디에도 안 나간다. 관리자 화면만 includeFuture 로 전부 본다.
+   */
+  const today = todayKST();
   let files: string[];
   try {
     files = readdirSync(DIR).filter((f) => f.toLowerCase().endsWith('.json'));
@@ -88,6 +113,8 @@ export function allPosts(): BlogPost[] {
     const p = raw as Partial<BlogPost>;
     /* 없으면 화면이 이상해지는 값들 — 하나라도 비면 그 글은 싣지 않는다. */
     if (!p.title || !p.date || !p.summary || !p.html) continue;
+    /* 예약 글 — 날짜가 오기 전에는 없는 글이다. */
+    if (!opts.includeFuture && p.date > today) continue;
     posts.push({
       slug: p.slug || slugFromFile(file),
       title: p.title,
@@ -95,6 +122,9 @@ export function allPosts(): BlogPost[] {
       updated: p.updated,
       summary: p.summary,
       category: p.category,
+      /* ⚠️ 사진 경로는 우리 폴더 안에서만 — 바깥 주소를 그대로 그리면 남의 서버가 우리 쪽 그림을 바꿀 수 있다. */
+      image: p.image && p.image.startsWith('/img/') ? p.image : undefined,
+      imageAlt: p.imageAlt,
       html: sanitizeBody(p.html),
     });
   }

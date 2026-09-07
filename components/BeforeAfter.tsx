@@ -81,15 +81,15 @@ export function BeforeAfter({
         className="pointer-events-none absolute inset-y-0 w-px bg-white/90 shadow-[0_0_0_1px_rgba(0,0,0,0.25)]"
         style={{ left: 'var(--x)' }}
       >
-        <span className="absolute top-1/2 left-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-parchment text-[11px] font-black text-ink shadow-[var(--shadow-lift)]">
+        <span className="absolute top-1/2 left-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-parchment text-[13px] font-black text-ink shadow-[var(--shadow-lift)]">
           ↔
         </span>
       </div>
 
-      <span className="pointer-events-none absolute top-3 left-3 rounded-md bg-brand-900/75 px-2 py-1 text-[11px] font-black text-white">
+      <span className="pointer-events-none absolute top-3 left-3 rounded-md bg-brand-900/75 px-2 py-1 text-[13px] font-black text-white">
         {beforeLabel}
       </span>
-      <span className="pointer-events-none absolute top-3 right-3 rounded-md bg-brand-900/75 px-2 py-1 text-[11px] font-black text-white">
+      <span className="pointer-events-none absolute top-3 right-3 rounded-md bg-brand-900/75 px-2 py-1 text-[13px] font-black text-white">
         {afterLabel}
       </span>
 

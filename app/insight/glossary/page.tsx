@@ -122,7 +122,7 @@ export default function GlossaryPage() {
                 {t.related && (
                   <Link
                     href={`/treatment/${t.related}`}
-                    className="mt-2.5 inline-flex items-center gap-1.5 text-[14.5px] font-bold text-clay-700 underline underline-offset-4"
+                    className="-my-2 py-2 mt-2.5 inline-flex items-center gap-1.5 text-[14.5px] font-bold text-clay-700 underline underline-offset-4"
                   >
                     관련 진료 보기
                     <span aria-hidden>→</span>

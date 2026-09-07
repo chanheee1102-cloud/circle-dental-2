@@ -17,7 +17,8 @@ import { SYMPTOM_GROUPS, symptomsOfGroup } from '@/lib/symptoms';
  * ★ 사실만 적는다 — 확인되지 않은 진료시간은 여기서도 뺀다.
  *   AI 가 이 파일을 읽고 잘못된 진료시간을 답하면 환자가 헛걸음한다.
  */
-export const dynamic = 'force-static';
+/* ★ 한 시간마다 다시 만든다 — 예약 글(lib/blog.ts todayKST)이 날짜가 되면 여기에도 실려야 한다. */
+export const revalidate = 3600;
 
 export function GET() {
   const lines: string[] = [];

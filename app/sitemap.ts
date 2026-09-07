@@ -32,6 +32,9 @@ import { DOCTORS } from '@/lib/doctors';
  *   빼도 그만이지만 네이버·빙 등이 참고할 여지가 있어 남겨 둔다.
  *   다만 "이 값을 올리면 순위가 오른다" 는 기대는 하지 말 것.
  */
+/* ★ 한 시간마다 다시 만든다 — 예약 글이 날짜가 되면 사이트맵에도 실려야 한다. */
+export const revalidate = 3600;
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const url = (p: string) => (p === '/' ? CLINIC.url : `${CLINIC.url}${p}`);
 
@@ -69,11 +72,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...entry(`/insight/blog/${p.slug}`, 0.6),
     lastModified: new Date(p.updated ?? p.date),
   }));
-  /*
-   * ⚠️ 증상은 **묶음 7쪽**이다 (2026-09-07). 증상 26개를 낱개 주소로 다시 싣지 말 것 —
-   *    그 주소들은 next.config.ts 에서 301 이라, 사이트맵에 실으면 리다이렉트되는 주소를
-   *    색인해 달라고 내미는 꼴이 된다(구글이 경고로 잡는다).
-   */
   /*
    * ⚠️ 증상은 **묶음 7쪽**이다 (2026-09-07). 증상 26개를 낱개 주소로 다시 싣지 말 것 —
    *    그 주소들은 next.config.ts 에서 301 이라, 사이트맵에 실으면 리다이렉트되는 주소를

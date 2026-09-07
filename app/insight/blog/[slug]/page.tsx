@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
+
+/* ★ ISR — 예약 글이 날짜가 되면 빌드 없이 실린다(app/insight/blog/page.tsx 주석). 미래 글은 그때까지 404 다. */
+export const revalidate = 3600;
 import { CLINIC } from '@/lib/clinic';
 import { DOCTORS } from '@/lib/doctors';
 import { allPosts, postBySlug } from '@/lib/blog';
@@ -38,7 +42,13 @@ export async function generateMetadata({
     title: post.title,
     description: post.summary.slice(0, 155),
     alternates: alt(path),
-    openGraph: og({ title: `${post.title} | ${CLINIC.name}`, description: post.summary.slice(0, 155), path }),
+    openGraph: og({
+      title: `${post.title} | ${CLINIC.name}`,
+      description: post.summary.slice(0, 155),
+      path,
+      /* 대표 사진이 있으면 카카오톡·검색 미리보기에 그 사진이 나간다. 없으면 og() 가 제목 카드를 만든다. */
+      ...(post.image ? { images: [{ url: post.image, alt: post.imageAlt ?? post.title }] } : {}),
+    }),
   };
 }
 
@@ -97,6 +107,18 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           {post.title}
         </h1>
         <p className="mt-6 max-w-[46em] text-[18px] leading-[1.9] text-twilight"><Sentences text={post.summary} /></p>
+
+        {/*
+          대표 사진 — 요약 **다음**에 온다. 먼저 읽혀야 할 것은 제목과 요약이고, 사진은 그 답이
+          무엇에 대한 것인지 붙여 주는 역할이다(증상 쪽과 같은 순서). 3:2 는 생성 원본(1536×1024) 비율.
+        */}
+        {post.image && (
+          <figure className="mt-10 max-w-[56em] overflow-hidden rounded-2xl border border-brand-200/70 bg-brand-100">
+            <div className="relative aspect-[3/2]">
+              <Image src={post.image} alt={post.imageAlt ?? ''} fill priority sizes="(min-width: 1024px) 900px, 100vw" className="object-cover" />
+            </div>
+          </figure>
+        )}
 
         {/*
           ⚠️ 본문 모양은 globals.css 의 .blog-body 가 정한다. 여기서 자식마다 클래스를 주려

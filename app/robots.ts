@@ -14,7 +14,8 @@ import { CLINIC } from '@/lib/clinic';
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: '*', allow: '/' },
+      /* ⚠️ 관리자 화면과 API 는 검색에 안 실린다 — app/admin/layout.tsx 의 noindex 와 한 쌍. */
+      { userAgent: '*', allow: '/', disallow: ['/admin', '/api/'] },
       /*
        * 답변형 AI — 명시적 허용.
        * 목록이 긴 이유: 답변 엔진마다 크롤러 이름이 다르고, 하나라도 빠지면 그 엔진의
