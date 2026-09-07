@@ -4,13 +4,13 @@ import { CLINIC, UNVERIFIED } from '@/lib/clinic';
 import { Container, PageHero, Sentences } from '@/components/ui';
 import { ClinicMap } from '@/components/ClinicMap';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema } from '@/lib/seo';
+import { breadcrumbSchema, alt } from '@/lib/seo';
 import { PhoneIcon, KakaoIcon, NaverIcon } from '@/components/BrandIcons';
 
 export const metadata: Metadata = {
   title: '오시는 길·진료시간',
   description: `${CLINIC.name} 위치와 진료시간. ${CLINIC.address.full}. 전화 ${CLINIC.phone}.`,
-  alternates: { canonical: '/visit' },
+  alternates: alt('/visit'),
 };
 
 const TRAIL = [

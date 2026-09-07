@@ -4,13 +4,13 @@ import Link from 'next/link';
 import { CONDITIONS } from '@/lib/conditions';
 import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema } from '@/lib/seo';
+import { breadcrumbSchema, alt } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '질환 사전',
   description:
     '치주염, 치수염, 드라이소켓, 턱관절장애, 임플란트주위염까지. 진료실에서 들은 병명을 한 문장 정의부터 진행 단계·치료까지 정리했습니다.',
-  alternates: { canonical: '/insight/condition' },
+  alternates: alt('/insight/condition'),
 };
 
 const TRAIL = [

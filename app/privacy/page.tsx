@@ -3,13 +3,13 @@ import { ArticleMeta } from '@/components/article';
 import { CLINIC } from '@/lib/clinic';
 import { Container, NeedsInfo, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, medicalWebPageSchema } from '@/lib/seo';
+import { breadcrumbSchema, medicalWebPageSchema, alt } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '개인정보처리방침',
   description:
     '동그라미치과의원 홈페이지 개인정보처리방침. 이 홈페이지는 문의·예약 양식을 두지 않아 온라인으로 개인정보를 수집하지 않습니다. 내원 시 수집하는 진료 정보의 법정 보존기간과 정보주체의 권리를 안내합니다.',
-  alternates: { canonical: '/privacy' },
+  alternates: alt('/privacy'),
   // 방침 페이지가 진료 페이지보다 앞에 노출되면 검색 품질이 떨어진다.
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
 };

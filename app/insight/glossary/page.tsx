@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { GLOSSARY } from '@/lib/insight';
 import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, abs, articleSchema, medicalWebPageSchema } from '@/lib/seo';
+import { breadcrumbSchema, abs, articleSchema, medicalWebPageSchema, alt, pageImage, imageObjectSchema,
+} from '@/lib/seo';
 import { ArticleMeta, References, charCount } from '@/components/article';
 import { REFS_CONDITION } from '@/lib/references';
 
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
   /* 57자였다 — 있는 사실(용어 수·쓰임)만으로 늘렸다(2026-08-18). */
   description:
     '치수염, 치주낭, 골유착, 드라이소켓, 인레이. 진료실에서 듣는 치과 용어를 한두 문장으로 풀었습니다. 설명을 들을 때 옆에 두고 보시면 무슨 말인지 되묻지 않아도 됩니다.',
-  alternates: { canonical: '/insight/glossary' },
+  alternates: alt('/insight/glossary'),
 };
 
 const TRAIL = [
@@ -67,7 +68,11 @@ export default function GlossaryPage() {
             description: '크라운, 인레이, 치수염처럼 진료실에서 듣는 말을 한두 문장으로 풀었습니다.',
             wordCount: charCount(GLOSSARY.map((t) => t.term + t.def).join('')),
             keywords: GLOSSARY.slice(0, 8).map((t) => t.term),
+            /* ⚠️ 사진이 없는 쪽이라 대표 이미지 스키마가 통째로 없었다(2026-09-07 실측).
+               Article 의 image 는 구글 리치 결과의 필수 항목이다 — 제목 카드를 대표로 세운다. */
+            hasImage: true,
           }),
+          imageObjectSchema({ path: '/insight/glossary', ...pageImage(undefined, '치과 용어 사전 — 동그라미치과의원') }),
         ]}
       />
 

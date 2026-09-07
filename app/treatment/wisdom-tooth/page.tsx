@@ -16,8 +16,7 @@ import {
   articleSchema,
   og,
   imageObjectSchema,
-  withLocality,
-} from '@/lib/seo';
+  withLocality, alt } from '@/lib/seo';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
 import { CautionSection } from '@/components/CautionSection';
 
@@ -79,7 +78,7 @@ const LEAD_PLAIN = plain(LEAD);
 export const metadata: Metadata = {
   title: '사랑니 발치',
   description: META_DESC.slice(0, 155),
-  alternates: { canonical: PATH },
+  alternates: alt(PATH),
   openGraph: og({ title: withLocality('사랑니 발치'), description: META_DESC.slice(0, 155), path: PATH }),
 };
 
@@ -207,6 +206,8 @@ export default function WisdomToothPage() {
             path: PATH,
             about: { type: 'MedicalProcedure', name: '사랑니 발치' },
             image: DOC_IMAGE,
+            /* 화면 링크가 없는 짝 — 기계에게만 알린다(lib/seo.ts related 주석). */
+            ...(journey ? { related: [`/insight/journey/${journey.slug}`] } : {}),
           }),
           imageObjectSchema({ path: PATH, ...DOC_IMAGE }),
           articleSchema({

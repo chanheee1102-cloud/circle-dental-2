@@ -6,7 +6,9 @@ import { treatmentBySlug } from '@/lib/treatments';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, abs , og , imageObjectSchema, pageImage} from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, abs , og , imageObjectSchema, pageImage,
+  alt,
+} from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
 import { REFS_TREATMENT } from '@/lib/references';
 
@@ -34,7 +36,7 @@ export async function generateMetadata({
   return {
     title: j.question,
     description: j.answer.slice(0, 155),
-    alternates: { canonical: `/insight/journey/${j.slug}` },
+    alternates: alt(`/insight/journey/${j.slug}`),
     openGraph: og({
       title: j.question,
       description: j.answer.slice(0, 155),

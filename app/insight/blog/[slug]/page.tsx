@@ -6,7 +6,7 @@ import { DOCTORS } from '@/lib/doctors';
 import { allPosts, postBySlug } from '@/lib/blog';
 import { Container, ContactCta, Breadcrumb, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, abs, og, medicalWebPageSchema } from '@/lib/seo';
+import { breadcrumbSchema, abs, og, medicalWebPageSchema, alt } from '@/lib/seo';
 
 /**
  * 블로그 글 한 편.
@@ -37,7 +37,7 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.summary.slice(0, 155),
-    alternates: { canonical: path },
+    alternates: alt(path),
     openGraph: og({ title: `${post.title} | ${CLINIC.name}`, description: post.summary.slice(0, 155), path }),
   };
 }

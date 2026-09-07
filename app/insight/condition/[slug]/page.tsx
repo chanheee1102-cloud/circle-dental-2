@@ -6,7 +6,9 @@ import {symptomBySlug, symptomHref } from '@/lib/symptoms';
 import { treatmentBySlug } from '@/lib/treatments';
 import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, abs , og , imageObjectSchema, pageImage} from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, abs , og , imageObjectSchema, pageImage,
+  alt,
+} from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, References, charCount, headingId } from '@/components/article';
 import { REFS_CONDITION } from '@/lib/references';
 
@@ -37,7 +39,7 @@ export async function generateMetadata({
     title: `${c.name} (${c.aka[0]})`,
     description,
     keywords: [c.name, ...c.aka],
-    alternates: { canonical: `/insight/condition/${c.slug}` },
+    alternates: alt(`/insight/condition/${c.slug}`),
     openGraph: og({
       title: `${c.name} — ${c.aka[0]}`,
       description,

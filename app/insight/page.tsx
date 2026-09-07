@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
 import { Container, CardLink, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema } from '@/lib/seo';
+import { breadcrumbSchema, alt } from '@/lib/seo';
 import { SYMPTOMS, SYMPTOM_GROUPS } from '@/lib/symptoms';
 import { JOURNEYS, COST_TOPICS, GLOSSARY } from '@/lib/insight';
 import { CONDITIONS } from '@/lib/conditions';
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: '미리 알아두기',
   description:
     '증상으로 찾기, 질환 사전, 치료 여정, 비용 가이드, 용어 사전, 응급 상황 안내. 진료실에서 다 담기 어려운 배경 설명을 정리했습니다.',
-  alternates: { canonical: '/insight' },
+  alternates: alt('/insight'),
 };
 
 const TRAIL = [

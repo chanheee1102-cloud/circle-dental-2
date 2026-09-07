@@ -27,8 +27,7 @@ import {
   medicalWebPageSchema,
   articleSchema,
   og,
-  imageObjectSchema,
-} from '@/lib/seo';
+  imageObjectSchema, alt } from '@/lib/seo';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
 
 /**
@@ -70,7 +69,7 @@ const SUMMARY =
 export const metadata: Metadata = {
   title: TITLE,
   description: SUMMARY.slice(0, 155),
-  alternates: { canonical: PATH },
+  alternates: alt(PATH),
   openGraph: og({ title: `${TITLE} — ${CLINIC.shortName}`, description: SUMMARY.slice(0, 155), path: PATH }),
 };
 
@@ -106,6 +105,8 @@ export default function ImplantPage() {
             path: PATH,
             about: { type: 'MedicalProcedure', name: '임플란트' },
             image: DOC_IMAGE,
+            /* 화면 링크가 없는 짝 — 기계에게만 알린다(lib/seo.ts related 주석). */
+            ...(journey ? { related: [`/insight/journey/${journey.slug}`] } : {}),
           }),
           imageObjectSchema({ path: PATH, ...DOC_IMAGE }),
           articleSchema({

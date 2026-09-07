@@ -10,13 +10,13 @@ import { AboutHero } from '@/components/AboutHero';
 import { SpecialGrid } from '@/components/SpecialGrid';
 import { InteriorGallery } from '@/components/InteriorGallery';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, alt } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '동그라미치과의 특별함',
   description:
     '고양시 덕양구 화정동 동그라미치과의원. 자연 그대로의 치아를 최대한 살리는 것이 진료 철학이며, 임플란트는 마지막 선택이 될 수 있도록 합니다. 10년 이상 경력의 대학병원 교수 출신 대표원장이 진료합니다.',
-  alternates: { canonical: '/about' },
+  alternates: alt('/about'),
 };
 
 const TRAIL = [

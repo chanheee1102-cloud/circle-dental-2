@@ -4,7 +4,7 @@ import { CLINIC } from '@/lib/clinic';
 import { allPosts } from '@/lib/blog';
 import { Container, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, abs, og } from '@/lib/seo';
+import { breadcrumbSchema, abs, og, alt } from '@/lib/seo';
 
 /**
  * 블로그 목록.
@@ -15,8 +15,10 @@ import { breadcrumbSchema, abs, og } from '@/lib/seo';
  */
 export const metadata: Metadata = {
   title: '블로그',
-  description: `${CLINIC.name}이 진료하면서 자주 받는 질문과 알아 두시면 좋은 내용을 정리해 올립니다.`,
-  alternates: { canonical: '/insight/blog' },
+  /* ⚠️ 49자였다(2026-09-07 실측) — 검색 결과 조각이 한 줄로 끝나 무슨 글이 있는지 안 보였다.
+     무엇을 다루는지까지 적어 70~160자 안에 둔다. 화면에는 안 나오는 글이다. */
+  description: `${CLINIC.name}이 진료하면서 자주 받는 질문과 알아 두시면 좋은 내용을 정리해 올립니다. 충치와 잇몸, 임플란트와 사랑니처럼 진료실에서 설명이 길어지는 주제를 글로 풀어 두었습니다.`,
+  alternates: alt('/insight/blog'),
   openGraph: og({
     title: `블로그 | ${CLINIC.name}`,
     description: '진료하면서 자주 받는 질문과 알아 두시면 좋은 내용을 적습니다.',

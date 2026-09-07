@@ -17,8 +17,7 @@ import {
   articleSchema,
   og,
   imageObjectSchema,
-  withLocality,
-} from '@/lib/seo';
+  withLocality, alt } from '@/lib/seo';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
 import { CautionSection } from '@/components/CautionSection';
 
@@ -65,7 +64,7 @@ const LEAD =
 export const metadata: Metadata = {
   title: '심미보철',
   description: LEAD.slice(0, 155),
-  alternates: { canonical: PATH },
+  alternates: alt(PATH),
   openGraph: og({ title: withLocality('심미보철'), description: LEAD.slice(0, 155), path: PATH }),
 };
 
@@ -105,6 +104,8 @@ export default function CrownProsthesisPage() {
             path: PATH,
             about: { type: 'MedicalProcedure', name: '심미보철' },
             image: DOC_IMAGE,
+            /* 화면 링크가 없는 짝 — 기계에게만 알린다(lib/seo.ts related 주석). */
+            ...(journey ? { related: [`/insight/journey/${journey.slug}`] } : {}),
           }),
           imageObjectSchema({ path: PATH, ...DOC_IMAGE }),
           articleSchema({

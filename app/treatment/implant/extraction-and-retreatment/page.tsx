@@ -12,7 +12,7 @@ import {
   articleSchema,
   faqSchema,
   og,
-  withLocality,
+  withLocality, alt, pageImage, imageObjectSchema,
 } from '@/lib/seo';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
 import { FailureCauseChart } from '@/components/FailureCauseChart';
@@ -55,7 +55,7 @@ const META_DESC =
 export const metadata: Metadata = {
   title: '발치 즉시 식립 · 재수술',
   description: META_DESC.slice(0, 155),
-  alternates: { canonical: PATH },
+  alternates: alt(PATH),
   openGraph: og({ title: withLocality('발치 즉시 식립 · 임플란트 재수술'), description: META_DESC.slice(0, 155), path: PATH }),
 };
 
@@ -147,7 +147,11 @@ export default function ExtractionAndRetreatmentPage() {
             description: LEAD,
             wordCount: charCount(LEAD, IMMEDIATE.what + REDO.what),
             keywords: ['발치 즉시 임플란트', '임플란트 재수술', '임플란트 제거', '뼈이식', '임플란트주위염'],
+            /* ⚠️ 사진이 없는 쪽이라 대표 이미지 스키마가 통째로 없었다(2026-09-07 실측).
+               Article 의 image 는 구글 리치 결과의 필수 항목이다 — 제목 카드를 대표로 세운다. */
+            hasImage: true,
           }),
+          imageObjectSchema({ path: PATH, ...pageImage(undefined, '발치 즉시 식립과 임플란트 재수술 — 동그라미치과의원') }),
           faqSchema(QA),
         ]}
       />

@@ -6,14 +6,14 @@ import { CLINIC } from '@/lib/clinic';
 import { Container, MedicalNotice, ContactCta, Sentences } from '@/components/ui';
 import { AboutHero } from '@/components/AboutHero';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema, abs } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, abs, alt } from '@/lib/seo';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: '치과 처음 갈 때 — 무엇을 하고 무엇을 챙기나',
   description:
     '치과 첫 방문에는 문진, 방사선 촬영, 구강 검사, 계획 설명 순으로 진행됩니다. 무엇을 챙겨야 하는지, 복용 중인 약은 왜 알려야 하는지 정리했습니다.',
-  alternates: { canonical: '/about/process' },
+  alternates: alt('/about/process'),
 };
 
 const TRAIL = [

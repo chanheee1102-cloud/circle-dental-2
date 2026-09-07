@@ -3,13 +3,13 @@ import { ArticleMeta } from '@/components/article';
 import { CLINIC } from '@/lib/clinic';
 import { Container, MedicalNotice, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, alt } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '치과 응급 상황 — 지금 해야 할 것',
   description:
     '치아가 빠졌을 때, 부러졌을 때, 밤에 참기 힘들 때. 병원에 도착하기 전 지금 할 수 있는 것과 하면 안 되는 것을 정리했습니다.',
-  alternates: { canonical: '/insight/emergency' },
+  alternates: alt('/insight/emergency'),
 };
 
 const TRAIL = [

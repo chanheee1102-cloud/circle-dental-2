@@ -6,13 +6,13 @@ import { TreatmentHero } from '@/components/TreatmentShell';
 import { IMG } from '@/lib/assets';
 import { CareListSection } from '@/components/CareListSection';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, itemListSchema } from '@/lib/seo';
+import { breadcrumbSchema, itemListSchema, alt } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '진료과목',
   description:
     '동그라미치과의 진료 범위입니다. 임플란트, 신경치료, 잇몸치료, 충치치료, 사랑니 발치, 크라운·보철, 스케일링, 어린이 진료를 봅니다.',
-  alternates: { canonical: '/treatment' },
+  alternates: alt('/treatment'),
 };
 
 const TRAIL = [

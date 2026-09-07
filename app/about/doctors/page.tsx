@@ -7,13 +7,13 @@ import { CredentialFan } from '@/components/CredentialFan';
 import { Container, ContactCta, Sentences } from '@/components/ui';
 import { AboutHero } from '@/components/AboutHero';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, abs, medicalWebPageSchema } from '@/lib/seo';
+import { breadcrumbSchema, abs, medicalWebPageSchema, alt } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '의료진 소개',
   description:
     '동그라미치과의원 의료진 3인. 대표원장 변석호(경희대 치의학전문대학원 외래교수·치의학박사), 김동주 원장, 김인진 원장. 모두 보건복지부인증 통합치의학과 전문의입니다.',
-  alternates: { canonical: '/about/doctors' },
+  alternates: alt('/about/doctors'),
 };
 
 const TRAIL = [

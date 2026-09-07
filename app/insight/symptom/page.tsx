@@ -4,13 +4,13 @@ import Link from 'next/link';
 import { SYMPTOMS, SYMPTOM_GROUPS, symptomsOfGroup, symptomHref } from '@/lib/symptoms';
 import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, alt } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '증상으로 찾기',
   description:
     '이가 시리거나 잇몸에서 피가 날 때, 밤에 욱신거릴 때. 병명을 몰라도 지금 느끼는 증상에서 시작해 가능한 원인과 확인 방법을 정리했습니다.',
-  alternates: { canonical: '/insight/symptom' },
+  alternates: alt('/insight/symptom'),
 };
 
 const TRAIL = [

@@ -5,7 +5,9 @@ import { IMPLANT_TOPICS, implantTopicBySlug } from '@/lib/implantTopics';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage} from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema , og , imageObjectSchema, pageImage,
+  alt,
+} from '@/lib/seo';
 import { TableOfContents, ArticleMeta, References, headingId, charCount } from '@/components/article';
 import { REFS_TREATMENT } from '@/lib/references';
 
@@ -32,7 +34,7 @@ export async function generateMetadata({
   return {
     title: `${t.name} — ${t.tagline}`,
     description: t.answer.slice(0, 155),
-    alternates: { canonical: `/treatment/implant/${t.slug}` },
+    alternates: alt(`/treatment/implant/${t.slug}`),
     openGraph: og({
       title: `임플란트 ${t.name}`,
       description: t.answer.slice(0, 155),

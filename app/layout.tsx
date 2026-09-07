@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
@@ -42,7 +42,18 @@ export const metadata: Metadata = {
   },
   description: CLINIC.description,
   applicationName: CLINIC.name,
-  alternates: { canonical: '/' },
+  /*
+   * ★ hreflang 을 자기 자신에게 건다 (2026-09-07 진단에서 없어서 지적).
+   *   한국어 하나뿐인 사이트라도 'ko-KR 판이 여기' 라고 밝혀 두면, 검색엔진이
+   *   같은 문서의 다른 언어판을 찾다가 엉뚱한 도메인을 짝지을 여지가 사라진다.
+   *   x-default 는 언어가 안 맞는 방문자에게 보여 줄 기본판이다.
+   * ⚠️ 화면에는 아무 영향이 없다 — <head> 안의 기계용 표시다.
+   * ⚠️ 페이지별 alternates.canonical 이 이 값을 덮어쓰지 않는다(languages 는 따로 병합된다).
+   */
+  alternates: {
+    canonical: '/',
+    languages: { 'ko-KR': CLINIC.url, 'x-default': CLINIC.url },
+  },
   openGraph: {
     type: 'website',
     locale: 'ko_KR',
@@ -57,6 +68,16 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
   formatDetection: { telephone: true },
+};
+
+/*
+ * ★ theme-color — 모바일 브라우저 주소창을 사이트 바탕색으로 물들인다 (2026-09-07 진단에서 없어서 지적).
+ *   ⚠️ 값은 헤더가 앉는 바탕(--color-brand-50)과 같아야 한다. 다르면 주소창과 머리말 사이에
+ *      없던 경계선이 생긴다. globals.css 에서 그 값을 바꾸면 여기도 함께 바꿀 것.
+ *   ⚠️ 화면 안쪽은 그대로다 — 브라우저 껍데기 색만 맞춘다.
+ */
+export const viewport: Viewport = {
+  themeColor: '#f8f3ea',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

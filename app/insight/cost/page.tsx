@@ -3,7 +3,8 @@ import { COST_TOPICS, COST_LABEL } from '@/lib/insight';
 import { UNVERIFIED } from '@/lib/clinic';
 import { Container, NeedsInfo, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, articleSchema, medicalWebPageSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, articleSchema, medicalWebPageSchema, alt, pageImage, imageObjectSchema,
+} from '@/lib/seo';
 import { KeyPoints, ArticleMeta, References, charCount, headingId } from '@/components/article';
 import { REFS_COST } from '@/lib/references';
 
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   title: '비용 가이드 — 무엇이 보험이고 무엇이 아닌가',
   description:
     '만 65세 임플란트 보험 조건, 스케일링 연 1회 적용, 신경치료와 크라운의 보험 차이. 치과 비용이 사람마다 달라지는 이유를 설명합니다.',
-  alternates: { canonical: '/insight/cost' },
+  alternates: alt('/insight/cost'),
 };
 
 const TRAIL = [
@@ -63,7 +64,11 @@ export default function CostPage() {
               '같은 치료라도 건강보험이 되는 부분과 안 되는 부분이 나뉩니다. 그 경계와 비용을 가르는 요인을 정리했습니다.',
             wordCount: charCount(COST_TOPICS.map((c) => c.title + c.answer + c.detail).join('')),
             keywords: ['치과 비용', '건강보험', '비급여', '임플란트 보험'],
+            /* ⚠️ 사진이 없는 쪽이라 대표 이미지 스키마가 통째로 없었다(2026-09-07 실측).
+               Article 의 image 는 구글 리치 결과의 필수 항목이다 — 제목 카드를 대표로 세운다. */
+            hasImage: true,
           }),
+          imageObjectSchema({ path: '/insight/cost', ...pageImage(undefined, '치과 비용 가이드 — 동그라미치과의원') }),
           faqSchema(
             COST_TOPICS.map((c) => ({ q: c.title, a: c.answer })),
             '/insight/cost',

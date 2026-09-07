@@ -17,8 +17,7 @@ import {
   articleSchema,
   og,
   imageObjectSchema,
-  withLocality,
-} from '@/lib/seo';
+  withLocality, alt } from '@/lib/seo';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
 
 /**
@@ -68,7 +67,7 @@ const CASE_NOTE =
 export const metadata: Metadata = {
   title: '충치치료',
   description: META_DESC.slice(0, 155),
-  alternates: { canonical: PATH },
+  alternates: alt(PATH),
   openGraph: og({ title: withLocality('충치치료'), description: META_DESC.slice(0, 155), path: PATH }),
 };
 
@@ -134,6 +133,8 @@ export default function CavityPage() {
             path: PATH,
             about: { type: 'MedicalProcedure', name: '충치치료' },
             image: DOC_IMAGE,
+            /* 화면 링크가 없는 짝 — 기계에게만 알린다(lib/seo.ts related 주석). */
+            ...(journey ? { related: [`/insight/journey/${journey.slug}`] } : {}),
           }),
           imageObjectSchema({ path: PATH, ...DOC_IMAGE }),
           articleSchema({

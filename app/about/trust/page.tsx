@@ -6,7 +6,8 @@ import { AboutHero } from '@/components/AboutHero';
 import { TrustSection } from '@/components/TrustSection';
 import { ArticleMeta, charCount } from '@/components/article';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, medicalWebPageSchema, articleSchema, og } from '@/lib/seo';
+import { breadcrumbSchema, medicalWebPageSchema, articleSchema, og, alt, pageImage, imageObjectSchema,
+} from '@/lib/seo';
 
 /**
  * 무엇을 근거로 믿을 수 있나요 — 자격·인증·논문·언론.
@@ -27,7 +28,7 @@ import { breadcrumbSchema, medicalWebPageSchema, articleSchema, og } from '@/lib
 export const metadata: Metadata = {
   title: '무엇을 근거로 믿을 수 있나요',
   description: `${CLINIC.name}의 자격과 인증, 학술지 발표 논문, 방송 기록을 한자리에 정리했습니다. 보건복지부인증 통합치의학과 전문의 ${TRUST_STATS[0].value}, 인증·수료 ${CREDENTIAL_ROWS.length - 1}건, 발급처를 함께 적었습니다.`,
-  alternates: { canonical: '/about/trust' },
+  alternates: alt('/about/trust'),
   openGraph: og({
     title: `무엇을 근거로 믿을 수 있나요 | ${CLINIC.name}`,
     description: '제3자가 준 자격과 인증, 학술지에 실린 논문, 방송에 나간 기록.',
@@ -61,7 +62,11 @@ export default function TrustPage() {
               MEDIA_APPEARANCES.map((m) => m.outlet + m.program + m.what).join(''),
             ),
             keywords: ['통합치의학과 전문의', '치과 인증', '화정동 치과', '대한치과보존학회'],
+            /* ⚠️ 사진이 없는 쪽이라 대표 이미지 스키마가 통째로 없었다(2026-09-07 실측).
+               Article 의 image 는 구글 리치 결과의 필수 항목이다 — 제목 카드를 대표로 세운다. */
+            hasImage: true,
           }),
+          imageObjectSchema({ path: '/about/trust', ...pageImage(undefined, '무엇을 근거로 말하는가 — 동그라미치과의원') }),
         ]}
       />
 

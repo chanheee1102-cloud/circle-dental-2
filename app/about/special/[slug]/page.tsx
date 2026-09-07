@@ -8,7 +8,9 @@ import { Container, MedicalNotice, ContactCta, Sentences } from '@/components/ui
 import { AboutHero } from '@/components/AboutHero';
 import { StrengthIcon } from '@/components/StrengthIcons';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, og, imageObjectSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, og, imageObjectSchema,
+  alt,
+} from '@/lib/seo';
 import { KeyPoints, TableOfContents, ArticleMeta, headingId, charCount } from '@/components/article';
 import { imageMeta } from '@/lib/imageSize';
 
@@ -40,7 +42,7 @@ export async function generateMetadata({
   return {
     title: s.title,
     description,
-    alternates: { canonical: `/about/special/${s.slug}` },
+    alternates: alt(`/about/special/${s.slug}`),
     openGraph: og({
       title: `${s.title} | ${CLINIC.name}`,
       description,
@@ -96,6 +98,9 @@ export default async function SpecialDetailPage({
             description: s.body,
             wordCount: charCount(s.body, s.context.map((c) => c.h + c.p).join('')),
             keywords: [s.title, ...s.context.map((c) => c.h)],
+            /* ⚠️ 빼먹으면 Article 에 image 가 안 붙는다 — 구글 Article 리치 결과의 필수 항목이다
+               (2026-09-07 실측: 이 계열 11쪽 전부 누락). 바로 위 medicalWebPage 는 받고 있었다. */
+            hasImage: !!heroImage,
           }),
           faqSchema(s.faq, SPATH),
         ]}

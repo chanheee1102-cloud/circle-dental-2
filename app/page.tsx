@@ -24,14 +24,14 @@ import { HoursStrip } from '@/components/HoursStrip';
 import { WhyUsSection } from '@/components/WhyUsSection';
 import { ConcernsSection } from '@/components/ConcernsSection';
 import { JsonLd } from '@/components/JsonLd';
-import { medicalWebPageSchema, imageObjectSchema } from '@/lib/seo';
+import { medicalWebPageSchema, imageObjectSchema, alt } from '@/lib/seo';
 import { imageMeta } from '@/lib/imageSize';
 
 export const metadata: Metadata = {
   title: `${CLINIC.name} | 고양시 덕양구 화정동 치과`,
   description:
     '고양시 덕양구 화정동 동그라미치과의원. 10년 이상 경력의 대학병원 교수 출신 대표원장이 진료합니다. 자연치아살리기·임플란트·심미치료·사랑니 발치. 화·목 야간진료 오후 8시 30분까지.',
-  alternates: { canonical: '/' },
+  alternates: alt('/'),
 };
 
 export default function HomePage() {

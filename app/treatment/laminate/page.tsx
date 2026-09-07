@@ -15,8 +15,7 @@ import {
   articleSchema,
   og,
   imageObjectSchema,
-  withLocality,
-} from '@/lib/seo';
+  withLocality, alt } from '@/lib/seo';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
 import { CautionSection } from '@/components/CautionSection';
 import Image from 'next/image';
@@ -60,7 +59,7 @@ const META_DESC =
 export const metadata: Metadata = {
   title: '라미네이트',
   description: META_DESC.slice(0, 155),
-  alternates: { canonical: PATH },
+  alternates: alt(PATH),
   openGraph: og({ title: withLocality('라미네이트'), description: META_DESC.slice(0, 155), path: PATH }),
 };
 

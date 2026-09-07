@@ -259,6 +259,28 @@ export function withLocality(base: string) {
 }
 
 /**
+ * 페이지별 alternates 블록 — canonical + hreflang.
+ *
+ * ★★ 왜 헬퍼가 필요한가 (2026-09-07, og() 와 정확히 같은 함정) ★★
+ *   Next.js 의 metadata 병합에서 `alternates` 는 **통째로 교체**된다. 루트 레이아웃에
+ *   languages 를 적어 두어도, 페이지가 `alternates: { canonical }` 만 쓰는 순간
+ *   hreflang 이 **사라진다**(실측: 31곳 전부에서 안 나갔다).
+ *
+ * ★ 한국어 하나뿐인 사이트에도 자기 자신을 가리키는 hreflang 을 단다 — '이 문서의 ko-KR 판이
+ *   여기' 라고 못 박아 두면, 검색엔진이 같은 내용의 다른 판을 찾다가 엉뚱한 도메인을
+ *   짝지을 여지가 없다. x-default 는 언어가 안 맞는 방문자에게 보여 줄 기본판이다.
+ * ⚠️ hreflang 은 **절대 주소**여야 한다. 상대 경로로 적으면 무시된다.
+ * ⚠️ 화면에는 아무 영향이 없다 — <head> 안의 기계용 표시다.
+ */
+export function alt(path: string) {
+  const url = abs(path);
+  return {
+    canonical: path,
+    languages: { 'ko-KR': url, 'x-default': url },
+  };
+}
+
+/**
  * 페이지별 Open Graph 블록.
  *
  * ★★ 왜 헬퍼가 필요한가 (2026-08-14 실측으로 발견) ★★
@@ -481,6 +503,17 @@ export function medicalWebPageSchema(opts: {
   about?: { type: 'MedicalProcedure' | 'MedicalCondition'; name: string };
   /** 목록·허브가 아니라 읽을 본문이 있는 문서인가. 대표 이미지가 있으면 함께 잇는다. */
   image?: { src: string; caption: string; width: number; height: number };
+  /**
+   * 이 문서와 **짝이 되는 다른 문서**의 경로.
+   *
+   * ★★ 왜 (2026-09-07 내부 링크 실측) ★★
+   *   치료 여정 7쪽이 들어오는 링크 **하나**(허브 목록)뿐이었다. 시술 쪽은 여정 데이터를
+   *   가져다 회차·기간을 보여 주면서도 그 쪽으로 잇지는 않았다. 사람 눈에는 안 보이는
+   *   관계라 화면을 바꾸지 않고 **기계에게만** 알려 준다.
+   * ⚠️ 이것은 화면의 <a> 를 대신하지 못한다 — 링크 가중치는 실제 링크가 더 세다.
+   *    화면에 링크를 넣기로 하면 이 값은 그대로 두어도 무방하다(중복이 아니라 보강이다).
+   */
+  related?: string[];
 }) {
   const { published, modified } = contentDates(opts.path);
   const schema: Record<string, unknown> = {
@@ -506,12 +539,28 @@ export function medicalWebPageSchema(opts: {
     /** 마지막 검토 주체를 밝히면 의료 정보의 신뢰 신호가 된다(E-E-A-T). */
     reviewedBy: { '@id': ID.director },
     lastReviewed: modified,
+    /*
+     * ★★ speakable — 이 쪽에서 **소리 내어 읽을 곳**을 지정한다 (2026-09-07) ★★
+     *   음성 비서와 답변 엔진은 문서 전체가 아니라 '읽어 줄 한 조각' 을 찾는다. 지정이
+     *   없으면 기계가 알아서 고르고, 대개 머리말이나 메뉴를 집는다.
+     *   여기서는 제목(h1)과 그 아래 첫 단락 — 이 사이트가 '한 줄 답' 을 두는 자리다.
+     * ⚠️ CSS 선택자는 화면 구조와 한 쌍이다. h1 을 없애거나 첫 단락 자리를 바꾸면
+     *    여기도 함께 고칠 것. 어긋나면 기계가 빈 곳을 읽는다.
+     * ⚠️ 이것은 화면에 아무 영향이 없다 — 표시용이 아니라 기계용 표시다.
+     */
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', 'main p'],
+    },
   };
   if (opts.about) {
     schema.about = { '@type': opts.about.type, name: opts.about.name };
   }
   if (opts.image) {
     schema.primaryImageOfPage = { '@id': ID.image(opts.path) };
+  }
+  if (opts.related?.length) {
+    schema.relatedLink = opts.related.map(abs);
   }
   return schema;
 }

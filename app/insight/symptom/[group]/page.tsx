@@ -8,7 +8,9 @@ import { conditionsForSymptom } from '@/lib/conditions';
 import { CLINIC } from '@/lib/clinic';
 import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, og, imageObjectSchema, pageImage } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, medicalWebPageSchema, articleSchema, og, imageObjectSchema, pageImage,
+  alt,
+} from '@/lib/seo';
 import { TableOfContents, ArticleMeta, References, charCount } from '@/components/article';
 import { REFS_CONDITION } from '@/lib/references';
 
@@ -43,12 +45,17 @@ export async function generateMetadata({
   const g = groupBySlug(group);
   if (!g) return {};
   const list = symptomsOfGroup(g);
-  /* 설명에 묶음 안 증상 제목을 이어 붙인다 — 검색 결과 조각에서 '내가 찾던 그것' 이 보여야 한다. */
-  const description = `${g.lead.split('.')[0]}. ${list.map((s) => s.title).join(' · ')}`.slice(0, 155);
+  /*
+   * 설명에 묶음 안 증상 제목을 이어 붙인다 — 검색 결과 조각에서 '내가 찾던 그것' 이 보여야 한다.
+   * ⚠️ 머리글 첫 문장만 쓰면 짧은 쪽이 생긴다(kids 64자, 2026-09-07 실측). 제목을 다 붙이고
+   *    155자에서 자르되, **낱말 중간에서 자르지 않는다** — 잘린 낱말은 조각에서 지저분하다.
+   */
+  const raw = `${g.lead} ${list.map((s) => s.title).join(' · ')}`;
+  const description = raw.length <= 155 ? raw : raw.slice(0, raw.lastIndexOf(' ', 155));
   return {
     title: g.title,
     description,
-    alternates: { canonical: `/insight/symptom/${g.slug}` },
+    alternates: alt(`/insight/symptom/${g.slug}`),
     openGraph: og({ title: g.title, description, path: `/insight/symptom/${g.slug}` }),
   };
 }

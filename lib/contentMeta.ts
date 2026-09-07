@@ -13,8 +13,19 @@
  *   그래서 **실제로 그 글을 쓰거나 고친 날**만 여기 적는다.
  *
  * ⚠️ 본문을 고쳤으면 여기 날짜도 함께 올릴 것. 고치지 않았으면 올리지 말 것.
- *    (자동화하고 싶다면 git 커밋 날짜를 빌드 때 주입하는 방법이 있지만,
- *     오탈자 수정 같은 커밋까지 '내용 갱신' 으로 잡혀 오히려 신뢰를 깎는다.)
+ *
+ * ★★ 2026-09-07 — 손으로만 관리하니 결국 어긋났다 ★★
+ *   실측: 117쪽 **전부** dateModified 가 2026-08-18 이었다. 그런데 그 사이 심미보철·
+ *   임플란트 재수술·증상 묶음·인사이트 허브가 통째로 다시 쓰였다. 3주 전 날짜를 달고
+ *   나가는 것은 신선도 신호를 버리는 일이자 사실과 다르다.
+ *   → 이제 **증거에서 뽑는다**: scripts/contentDates.mjs 가 그 쪽의 page.tsx 와 그 쪽이 쓰는
+ *     lib 데이터에서 **한글이 실제로 바뀐** 마지막 커밋 날짜를 찾아 아래 파일에 적는다.
+ *   ⚠️ 위 경고가 걱정한 '오탈자 커밋 부풀림' 은 두 가지로 막는다 —
+ *      ① git log -G'[가-힣]' — 한글이 바뀐 커밋만 센다. 클래스·리팩터 커밋은 안 걸린다.
+ *      ② components/ 는 세지 않는다. 공용 UI 는 그 쪽의 본문이 아니다(넣었더니 주석 한 줄에
+ *         69쪽이 한날로 뭉갰다).
+ *   ⚠️ 결과 파일은 **커밋한다** — 배포 환경의 git 히스토리는 얕게 복제돼 빌드 때 다시
+ *      계산할 수 없고, 커밋에 남아야 사람이 값을 검토할 수 있다.
  */
 
 /** 이 사이트의 콘텐츠를 처음 공개한 날. */
@@ -43,11 +54,27 @@ const OVERRIDES: Record<string, { published?: string; modified?: string }> = {
   '/privacy': { published: '2026-08-13', modified: '2026-08-13' },
 };
 
+/*
+ * 증거에서 뽑은 쪽별 최종 수정일 (scripts/contentDates.mjs 가 만든다).
+ * ⚠️ 손으로 고치지 말 것 — 다음 실행에서 덮어쓴다. 예외를 두려면 위 OVERRIDES 에 적을 것.
+ */
+import GENERATED from './contentModified.generated.json';
+
+const FROM_GIT: Record<string, string> = GENERATED;
+
 export function contentDates(path: string) {
   const o = OVERRIDES[path] ?? {};
+  /*
+   * 우선순위: 손으로 적은 예외 > git 증거 > 사이트 기본값.
+   * ⚠️ 기본값보다 **뒤로 가지 않게** max 를 쓴다 — 증거가 없거나 오래된 쪽이
+   *    사이트 전체 검토일보다 앞선 날짜를 말하면 안 된다.
+   */
+  const fromGit = FROM_GIT[path];
+  const modified =
+    o.modified ?? (fromGit && fromGit > SITE_MODIFIED ? fromGit : SITE_MODIFIED);
   return {
     published: o.published ?? SITE_PUBLISHED,
-    modified: o.modified ?? SITE_MODIFIED,
+    modified,
   };
 }
 

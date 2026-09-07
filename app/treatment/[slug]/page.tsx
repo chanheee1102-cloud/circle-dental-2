@@ -19,6 +19,7 @@ import {
   og,
   imageObjectSchema,
   withLocality,
+  alt,
 } from '@/lib/seo';
 
 /**
@@ -63,8 +64,10 @@ export async function generateMetadata({
   if (!t || !page) return {};
   return {
     title: t.name,
-    description: page.lead.slice(0, 155),
-    alternates: { canonical: `/treatment/${t.slug}` },
+    /* ⚠️ lead 를 그대로 쓰면 짧은 쪽이 생긴다(save-natural-tooth 41자, 2026-09-07 실측).
+       withLocality 가 자리가 남을 때만 지역 한 줄을 붙인다 — 이 헬퍼가 원래 그 용도다. */
+    description: withLocality(page.lead).slice(0, 155),
+    alternates: alt(`/treatment/${t.slug}`),
     openGraph: og({
       title: withLocality(t.name),
       description: page.lead.slice(0, 155),
@@ -112,6 +115,8 @@ export default async function TreatmentPage({ params }: { params: Promise<{ slug
             path: TPATH,
             about: { type: 'MedicalProcedure', name: t.name },
             image: docImage,
+            /* 화면 링크가 없는 짝 — 기계에게만 알린다(lib/seo.ts related 주석). */
+            ...(journey ? { related: [`/insight/journey/${journey.slug}`] } : {}),
           }),
           imageObjectSchema({ path: TPATH, ...docImage }),
           articleSchema({

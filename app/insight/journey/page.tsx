@@ -5,13 +5,13 @@ import { JOURNEYS } from '@/lib/insight';
 import { NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
-import { breadcrumbSchema, faqSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema, alt } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: '치료 여정 — 몇 번 오고 얼마나 걸리나요',
   description:
     '임플란트 5~7회 3~6개월, 신경치료 크라운까지 4~7회, 잇몸치료 4~6회. 치료별 내원 횟수와 기간, 회차마다 하는 일을 정리했습니다.',
-  alternates: { canonical: '/insight/journey' },
+  alternates: alt('/insight/journey'),
 };
 
 const TRAIL = [
