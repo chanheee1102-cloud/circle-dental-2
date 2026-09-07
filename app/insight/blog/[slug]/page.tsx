@@ -91,7 +91,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         ]}
       />
 
-      <Container className="pt-10 sm:pt-12 lg:pt-16">
+      {/* ⚠️ pb — 없으면 '블로그 목록' 단추가 아래 예약 띠에 붙는다(2026-09-07 오너 지적). */}
+      <Container className="pt-10 pb-16 sm:pt-12 sm:pb-20 lg:pt-16 lg:pb-24">
         <Breadcrumb trail={trail} />
 
         <div className="mt-9 flex flex-wrap items-baseline gap-x-4 gap-y-2">
@@ -130,19 +131,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         />
 
         {/*
-          ⚠️ 이 안내를 지우지 말 것 — 의료광고에는 '개인차' 고지가 필요하고,
-             블로그 글은 진단을 대신하지 않는다는 점을 매번 밝히는 편이 안전하다.
+          (2026-09-07 오너) 본문 끝의 '개인차' 고지 문단과 대표원장 이름줄을 뺐다 — "이거 없애고".
+          ⚠️ 개인차·부작용 고지는 사이트 푸터의 공통 고지와 각 글의 JSON-LD(reviewedBy) 가 계속 맡는다.
+             글마다 다시 넣고 싶으면 여기 두는 대신 lib/blog.ts 의 sanitize 뒤에 붙일 것.
+          ★ 목록 단추는 실선 위에 두고 아래 여백을 넉넉히 — 다음 띠(예약 CTA)에 붙어 보였다.
         */}
-        <aside className="mt-14 max-w-[42em] border-t border-brand-200/70 pt-6 text-[15px] leading-[1.8] text-ink-soft">
-          이 글은 일반적인 이해를 돕기 위한 것으로 개별 진단을 대신하지 않습니다. 치료 결과는
-          개인의 구강 상태와 전신 건강에 따라 다를 수 있으며, 모든 의료 행위에는 부작용이 따를 수
-          있습니다.{' '}
-          <Link href="/about/doctors" className="font-bold text-clay-700 underline-offset-4 hover:underline">
-            {author.name} {author.role}
-          </Link>
-        </aside>
-
-        <div className="mt-12">
+        <div className="mt-14 border-t border-brand-200/70 pt-8">
           <Link
             href="/insight/blog"
             className="group inline-flex items-center gap-2 text-[16px] font-bold text-clay-700"
