@@ -8,6 +8,7 @@ import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
 import { SectionHead, Card, NumChip } from '@/components/saas';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
 import { symptomHref } from '@/lib/symptoms';
+import { Clip, ClipStill } from '@/components/Clip';
 
 /**
  * 진료 랜딩 페이지 — 임플란트에서 만든 언어를 나머지 진료가 함께 쓰는 틀.
@@ -214,6 +215,17 @@ export function TreatmentLanding({
                          **카드 수**를 손볼 것 — 세로 사진이 없어서 사진으로는 못 맞춘다.
                          (figure 사진 8장이 전부 가로 1.50 이상이고 절반은 실제 병원 사진이라 교체 불가)
                     */}
+                    {/*
+                      ★ 움직이는 장면이면 영상으로 (2026-09-07 오너: 신경치료 난이도 사진을 움짤로).
+                        비율은 원본 GIF(780×434) 그대로 — 4:3 상자에 넣으면 위아래가 잘린다.
+                      ⚠️ 정지 사진 쪽 4:3 규칙은 그대로다(위 주석). 영상만 자기 비율을 쓴다.
+                    */}
+                    {b.figure.clip ? (
+                      <div className="relative bg-brand-100" style={{ aspectRatio: b.figure.ratio ?? '780 / 434' }}>
+                        <Clip base={b.figure.clip} label={b.figure.alt} className="absolute inset-0" />
+                        <ClipStill base={b.figure.clip} alt={b.figure.alt} className="absolute inset-0" />
+                      </div>
+                    ) : (
                     <div className="relative aspect-[4/3] bg-brand-100">
                       <Image
                         src={b.figure.src}
@@ -223,6 +235,7 @@ export function TreatmentLanding({
                         className="object-cover"
                       />
                     </div>
+                    )}
                   </Card>
                   <ul className="reveal-stack grid gap-5 sm:grid-cols-2">
                   {b.items.map((it, k) => (

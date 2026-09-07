@@ -49,10 +49,12 @@ export function SpecialGrid({ eager = false }: { eager?: boolean }) {
                 wide ? 'aspect-[16/10] sm:aspect-auto sm:w-1/2' : 'aspect-[16/10]'
               }`}
             >
+              {/* 목록 카드용 사진이 따로 있으면 그것을 — 세로 사진은 위쪽(얼굴)을 붙인다(lib/specials.ts thumb 주석). */}
               <Image
-                src={s.image}
-                alt={s.alt}
+                src={s.thumb?.src ?? s.image}
+                alt={s.thumb?.alt ?? s.alt}
                 fill
+                style={s.thumb?.position ? { objectPosition: s.thumb.position } : undefined}
                 priority={eager && i < 2}
                 sizes={
                   wide

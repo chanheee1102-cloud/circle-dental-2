@@ -17,6 +17,13 @@ export interface NavChild {
   /** 메뉴에 붙는 한 줄 설명. 클릭 전에 무엇인지 알게 한다. */
   desc?: string;
   /**
+   * 판 안에서 이 항목이 속한 **작은 제목**. 같은 값끼리 묶여 제목 아래 선다.
+   * ★ 인사이트 (2026-09-07 오너: "블로그는 맨 위로, 나머지를 대제목으로 묶어서") —
+   *   여덟 줄을 한 줄로 늘어놓으면 목록이지 메뉴가 아니다. 허브 쪽의 세 묶음과 같은 이름을 쓴다.
+   * ⚠️ group 이 없는 항목은 맨 위에 묶음 없이 선다. 순서는 이 배열 순서 그대로다.
+   */
+  group?: string;
+  /**
    * 사이트 밖으로 나가는 링크(블로그 등).
    * ⚠️ 이 표시가 없으면 사이트맵이 그 주소를 **우리 페이지로 착각해** 내보낸다.
    *    flatNavPaths 가 이 값을 보고 건너뛴다.
@@ -56,6 +63,21 @@ export interface NavItem {
  * ⚠️ 헤더에서만 쓸 것 — 푸터·사이트맵은 item.children 을 그대로 봐야 한다.
  */
 export const headerChildren = (item: NavItem) => (item.hubOnly ? undefined : item.children);
+
+/**
+ * 하위 메뉴를 **묶음 순서대로** 잘라 준다 — 헤더 판과 모바일 메뉴가 같은 모양으로 그리기 위해.
+ *   [{ group: undefined, items: [블로그] }, { group: '내 상태가 무엇인지', items: [...] }, …]
+ * ⚠️ 배열 순서를 지킨다. 같은 group 이 떨어져 두 번 나오면 두 묶음이 된다 — 데이터에서 붙여 둘 것.
+ */
+export function groupedChildren(kids: NavChild[]): Array<{ group?: string; items: NavChild[] }> {
+  const out: Array<{ group?: string; items: NavChild[] }> = [];
+  for (const c of kids) {
+    const last = out[out.length - 1];
+    if (last && last.group === c.group) last.items.push(c);
+    else out.push({ group: c.group, items: [c] });
+  }
+  return out;
+}
 
 export const NAV: NavItem[] = [
   {
@@ -155,17 +177,22 @@ export const NAV: NavItem[] = [
     /* 기존 '상담 및 예약' 자리 — 예약 길은 히어로와 퀵메뉴에 있으므로 읽을거리를 둔다. */
     label: '인사이트',
     href: '/insight',
-    /* ⚠️ 여덟 갈래는 허브 쪽에서 카드로 본다. 헤더에서 펼치지 않는다(위 hubOnly 주석). */
-    hubOnly: true,
+    /*
+     * (2026-09-07 오전) 여덟 줄이 길어 hubOnly 로 헤더에서 안 펼쳤다가,
+     * (같은 날 오후 오너) "블로그는 맨 위로, 나머지를 대제목으로 묶어서" — 다시 펼치되 **묶어서** 편다.
+     * ⚠️ 묶음 이름은 app/insight/page.tsx 의 BANDS 세 제목과 같아야 한다. 메뉴에서 본 이름이
+     *    허브에 그대로 있어야 "여기가 거기" 라고 읽힌다.
+     * ⚠️ 순서 = 배열 순서. 블로그가 group 없이 맨 앞이라 묶음 위에 혼자 선다.
+     */
     children: [
       { label: '블로그', href: '/insight/blog', desc: '알아두면 좋은 치과 정보' },
-      { label: '증상으로 찾기', href: '/insight/symptom', desc: '증상별 진료 안내' },
-      { label: '질환 사전', href: '/insight/condition', desc: '치과 질환 정보' },
-      { label: '치료 여정', href: '/insight/journey', desc: '치료 과정과 기간' },
-      { label: '비용 가이드', href: '/insight/cost', desc: '진료 비용과 보험 정보' },
-      { label: '용어 사전', href: '/insight/glossary', desc: '치과 용어 쉽게 보기' },
-      { label: '응급 상황', href: '/insight/emergency', desc: '치과 응급상황 대처법' },
-      { label: '자주 묻는 질문', href: '/faq', desc: '진료에 관한 주요 질문' },
+      { label: '증상으로 찾기', href: '/insight/symptom', desc: '증상별 진료 안내', group: '내 상태가 무엇인지' },
+      { label: '질환 사전', href: '/insight/condition', desc: '치과 질환 정보', group: '내 상태가 무엇인지' },
+      { label: '응급 상황', href: '/insight/emergency', desc: '치과 응급상황 대처법', group: '내 상태가 무엇인지' },
+      { label: '치료 여정', href: '/insight/journey', desc: '치료 과정과 기간', group: '치료를 정하실 때' },
+      { label: '비용 가이드', href: '/insight/cost', desc: '진료 비용과 보험 정보', group: '치료를 정하실 때' },
+      { label: '자주 묻는 질문', href: '/faq', desc: '진료에 관한 주요 질문', group: '치료를 정하실 때' },
+      { label: '용어 사전', href: '/insight/glossary', desc: '치과 용어 쉽게 보기', group: '더 읽어 두실 것' },
     ],
   },
 ];

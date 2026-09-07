@@ -237,9 +237,10 @@ export default function WhiteningPage() {
             </div>
             <div className="card-edge img-in reveal overflow-hidden rounded-2xl">
               <div className="relative aspect-[16/10]">
+                {/* ★ 실제 시술 사진으로 교체 (2026-09-07 오너). 원본 1536×1024(3:2) — 16:10 상자에서 위아래 6% 만 준다. */}
                 <Image
-                  src="/img/scene/wh-barrier.webp"
-                  alt="개구기를 낀 치아 모형의 잇몸 경계를 따라 가느다란 주사기 끝으로 보호막을 도포하는 접사."
+                  src="/img/clinic/whitening-light.webp"
+                  alt="개구기를 끼고 잇몸에 파란 보호막을 두른 뒤 치아에 미백 광선을 비추는 시술 장면 접사."
                   fill
                   sizes="(min-width: 1024px) 560px, 100vw"
                   className="object-cover"

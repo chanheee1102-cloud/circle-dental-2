@@ -171,9 +171,15 @@ export default function LaminatePage() {
             </div>
             <div className="reveal overflow-hidden rounded-2xl border border-brand-200/70 bg-brand-100">
               <div className="relative aspect-[3/2]">
+                {/*
+                  ★ 실제 사진으로 교체 (2026-09-07 오너: "표시한 부분 사진을 이 이미지로").
+                    전에는 /img/ai 의 AI 그림이었다. 원본 1586×992(1.60) — 3:2 상자에 거의 그대로 든다.
+                  ⚠️ 이 쪽의 AI 사진이 이것 하나가 아니다(아래 laminate-caution 도 오늘 움짤로 바뀜).
+                     이 페이지에 /img/ai 가 하나도 안 남으면 AI 고지도 함께 빼는지 확인할 것.
+                */}
                 <Image
-                  src="/img/ai/laminate-what.webp"
-                  alt="흰 상판에 놓인 종잇장처럼 얇은 세라믹 라미네이트 세 장과 앞니 모형"
+                  src="/img/clinic/laminate-shell.webp"
+                  alt="앞니 모형에 얇은 세라믹 라미네이트 한 장을 붙이기 전, 앞쪽에 세워 둔 모습"
                   fill
                   sizes="(min-width: 1024px) 520px, 92vw"
                   className="object-cover"
@@ -276,7 +282,8 @@ export default function LaminatePage() {
       <CautionSection
         title="치료 전에 알아 두실 점"
         items={[...VENEER.limits, ...RISKS]}
-        photo={{ src: '/img/ai/laminate-caution.webp', alt: '흰 상판 위에서 빛이 비쳐 보이는 얇은 세라믹 라미네이트 한 장과 야간 장치' }}
+        /* 움직이는 장면 (2026-09-07 오너: "GIF 파일로 움짤처럼") — 원장이 파노라마 영상을 짚으며 설명하는 실제 상담 장면. */
+        clip={{ base: 'consult-xray', label: '원장이 모니터의 파노라마 방사선 사진을 가리키며 환자에게 설명하는 상담 장면' }}
       />
 
       {/* ── 문답 ─────────────────────────────────────────────────── */}

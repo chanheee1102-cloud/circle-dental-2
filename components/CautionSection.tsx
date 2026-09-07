@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { Container, Sentences } from '@/components/ui';
+import { Clip, ClipStill } from '@/components/Clip';
 
 /**
  * **치료 전에 알아 두실 점** — 왼쪽에 제목·사진, 오른쪽에 번호 붙은 항목.
@@ -20,6 +21,7 @@ export function CautionSection({
   title,
   items,
   photo,
+  clip,
   intro,
   band = false,
   children,
@@ -28,6 +30,11 @@ export function CautionSection({
   items: string[];
   /** 왼쪽 제목 아래 사진. 없으면 제목만. */
   photo?: { src: string; alt: string };
+  /**
+   * 사진 대신 **움직이는 장면**(components/Clip.tsx). photo 와 함께 주면 이것이 이긴다.
+   * ⚠️ 원본 GIF 가 780×434(1.80) 라 상자도 그 비율이다 — 3:2 상자에 넣으면 위아래가 잘린다.
+   */
+  clip?: { base: string; label: string };
   intro?: string;
   /** 밝은 띠 위에 놓을지. 한 페이지에 밝은 띠는 하나다. */
   band?: boolean;
@@ -48,7 +55,15 @@ export function CautionSection({
                 <Sentences text={intro} />
               </p>
             )}
-            {photo && (
+            {clip ? (
+              /* 움직이는 장면 — 비율은 원본 GIF(780×434) 그대로. */
+              <div className="mt-8 overflow-hidden rounded-2xl border border-brand-200/70 bg-brand-100">
+                <div className="relative aspect-[780/434]">
+                  <Clip base={clip.base} label={clip.label} className="absolute inset-0" />
+                  <ClipStill base={clip.base} alt={clip.label} className="absolute inset-0" />
+                </div>
+              </div>
+            ) : photo && (
               /* ⚠️ 3:2 는 원본 비율이다 — 세로로 늘리면 좌우가 잘려 확대돼 보인다(반복해서 겪었다). */
               <div className="mt-8 overflow-hidden rounded-2xl border border-brand-200/70 bg-brand-100">
                 <div className="relative aspect-[3/2]">

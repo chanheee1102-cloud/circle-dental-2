@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { NAV, headerChildren } from '@/lib/nav';
+import { NAV, headerChildren, groupedChildren } from '@/lib/nav';
 import { CLINIC } from '@/lib/clinic';
 import { LogoLockup } from '@/components/Logo';
 import { Sentences } from '@/components/ui';
@@ -437,10 +437,18 @@ export function SiteHeader() {
                   판에 이미 overflow-hidden 이 있으므로 폭은 그냥 두면 된다.
               */}
               <div aria-hidden className="invisible">
+                {/* ⚠️ 아래 실제 칸과 **같은 구조**로 그린다 — 묶음 제목 줄까지 세어야 판 높이가 맞는다. */}
                 <ul className="space-y-3">
-                  {(headerChildren(tallest) ?? []).map((c) => (
-                    <li key={c.href} className="text-[16.5px]">
-                      {c.label}
+                  {groupedChildren(headerChildren(tallest) ?? []).map((g, gi) => (
+                    <li key={g.group ?? gi} className={gi > 0 && g.group ? 'pt-2' : ''}>
+                      {g.group && <p className="mb-2 text-[12.5px]">{g.group}</p>}
+                      <ul className="space-y-3">
+                        {g.items.map((c) => (
+                          <li key={c.href} className="text-[16.5px]">
+                            {c.label}
+                          </li>
+                        ))}
+                      </ul>
                     </li>
                   ))}
                 </ul>
@@ -466,8 +474,23 @@ export function SiteHeader() {
                       ⚠️ 어느 메뉴를 가리키는지 표시하는 것도 띠가 한다(알약 배경).
                          여기서 또 표시하면 지금 없앤 그 중복이 되살아난다.
                     */}
+                    {/*
+                      ★ 묶음 제목 (2026-09-07 오너: "블로그는 맨 위로, 나머지를 대제목으로 묶어서").
+                        group 이 없는 항목(블로그)은 제목 없이 맨 위에 서고, 나머지는 작은 제목 아래 선다.
+                      ⚠️ 위 "그룹 이름을 다시 적지 말 것" 은 **메뉴 이름**(인사이트) 이야기다.
+                         여기 작은 제목은 그 아래 **하위 묶음**이라 겹치지 않는다.
+                      ⚠️ 제목은 링크가 아니다 — 누를 곳처럼 보이면 안 되므로 색을 낮추고 작게 둔다.
+                    */}
                     <ul className="space-y-3">
-                      {kids.map((c) => {
+                      {groupedChildren(kids).map((g, gi) => (
+                        <li key={g.group ?? gi} className={gi > 0 && g.group ? 'pt-2' : ''}>
+                          {g.group && (
+                            <p className="mb-2 text-[12.5px] font-black tracking-[0.06em] whitespace-nowrap text-clay-700">
+                              {g.group}
+                            </p>
+                          )}
+                          <ul className="space-y-3">
+                      {g.items.map((c) => {
                         /* ★ 지금 보고 있는 페이지는 판 안에서도 짙게 — 어디 있는지 두 번 말해 준다. */
                         const current = pathname === c.href;
                         return (
@@ -491,6 +514,9 @@ export function SiteHeader() {
                         </li>
                         );
                       })}
+                          </ul>
+                        </li>
+                      ))}
                     </ul>
                   </nav>
                 );
@@ -572,7 +598,16 @@ export function SiteHeader() {
                               <span aria-hidden>→</span>
                             </Link>
                           </li>
-                          {(headerChildren(item) ?? []).map((c) => (
+                          {/* 묶음 제목 — 데스크톱 판과 같은 묶음(lib/nav.ts group). */}
+                          {groupedChildren(headerChildren(item) ?? []).flatMap((g, gi) => [
+                            g.group ? (
+                              <li key={`g-${gi}`} className="border-t border-mist-soft pt-3 pb-1">
+                                <span className="block text-[12.5px] font-black tracking-[0.06em] text-clay-700">
+                                  {g.group}
+                                </span>
+                              </li>
+                            ) : null,
+                            ...g.items.map((c) => (
                             <li key={c.href}>
                               <Link
                                 href={c.href}
@@ -591,7 +626,8 @@ export function SiteHeader() {
                                 )}
                               </Link>
                             </li>
-                          ))}
+                            )),
+                          ])}
                         </ul>
                       )}
                     </>
