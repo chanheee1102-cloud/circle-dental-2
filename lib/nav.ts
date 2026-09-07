@@ -56,7 +56,15 @@ export interface NavItem {
    *   헤더에서만 안 펼치는 것이지, 구조에서 빼는 것이 아니다.
    */
   hubOnly?: boolean;
+  /**
+   * 푸터·사이트맵·현재 위치 표시에만 쓰는 **전체 목록**. 없으면 children 을 그대로 쓴다.
+   * ★ 인사이트처럼 헤더는 대메뉴 넷만 보여 주고 싶은데 여덟 갈래로 가는 내부 링크는 살려야 할 때.
+   */
+  footer?: NavChild[];
 }
+
+/** 푸터·사이트맵이 보는 하위 목록 — footer 가 있으면 그것, 없으면 children. */
+export const fullChildren = (item: NavItem) => item.footer ?? item.children ?? [];
 
 /**
  * 헤더가 펼칠 하위 메뉴. hubOnly 인 묶음은 undefined 를 돌려준다.
@@ -184,15 +192,32 @@ export const NAV: NavItem[] = [
      *    허브에 그대로 있어야 "여기가 거기" 라고 읽힌다.
      * ⚠️ 순서 = 배열 순서. 블로그가 group 없이 맨 앞이라 묶음 위에 혼자 선다.
      */
+    /*
+     * ★★ 헤더 판에는 **대메뉴 넷만** (2026-09-07 오너: "저렇게 메뉴 펼쳐지는게 아니라 대메뉴만 남기라고") ★★
+     *   블로그 + 허브의 세 묶음 제목. 묶음 제목은 허브 쪽의 그 자리(#조각)로 간다.
+     *   여덟 갈래를 다 펼쳤더니 판이 길고 목록처럼 보였다 — 갈래는 허브에서 카드로 고른다.
+     * ⚠️ 조각 id 는 app/insight/page.tsx BANDS 의 id 와 한 쌍이다. 한쪽만 바꾸면 쪽 맨 위에 떨어진다.
+     */
     children: [
       { label: '블로그', href: '/insight/blog', desc: '알아두면 좋은 치과 정보' },
-      { label: '증상으로 찾기', href: '/insight/symptom', desc: '증상별 진료 안내', group: '내 상태가 무엇인지' },
-      { label: '질환 사전', href: '/insight/condition', desc: '치과 질환 정보', group: '내 상태가 무엇인지' },
-      { label: '응급 상황', href: '/insight/emergency', desc: '치과 응급상황 대처법', group: '내 상태가 무엇인지' },
-      { label: '치료 여정', href: '/insight/journey', desc: '치료 과정과 기간', group: '치료를 정하실 때' },
-      { label: '비용 가이드', href: '/insight/cost', desc: '진료 비용과 보험 정보', group: '치료를 정하실 때' },
-      { label: '자주 묻는 질문', href: '/faq', desc: '진료에 관한 주요 질문', group: '치료를 정하실 때' },
-      { label: '용어 사전', href: '/insight/glossary', desc: '치과 용어 쉽게 보기', group: '더 읽어 두실 것' },
+      { label: '내 상태가 무엇인지', href: '/insight#my-state', desc: '증상 · 질환 · 응급' },
+      { label: '치료를 정하실 때', href: '/insight#deciding', desc: '여정 · 비용 · 자주 묻는 질문' },
+      { label: '더 읽어 두실 것', href: '/insight#more', desc: '용어 사전' },
+    ],
+    /*
+     * ⚠️ 푸터·사이트맵·현재 위치 표시는 **여덟 갈래 전부**를 계속 안다 (footer).
+     *    헤더만 넷으로 줄인 것이지 구조에서 뺀 게 아니다 — 여기서 지우면 여덟 쪽으로 가는
+     *    사이트 전역 내부 링크가 사라진다(2026-09-07 오전에 한 번 겪은 함정).
+     */
+    footer: [
+      { label: '블로그', href: '/insight/blog' },
+      { label: '증상으로 찾기', href: '/insight/symptom' },
+      { label: '질환 사전', href: '/insight/condition' },
+      { label: '응급 상황', href: '/insight/emergency' },
+      { label: '치료 여정', href: '/insight/journey' },
+      { label: '비용 가이드', href: '/insight/cost' },
+      { label: '자주 묻는 질문', href: '/faq' },
+      { label: '용어 사전', href: '/insight/glossary' },
     ],
   },
 ];
@@ -205,7 +230,8 @@ export function flatNavPaths(): string[] {
     /* ⚠️ 바깥 링크는 넣지 말 것 — 남의 도메인 주소가 우리 사이트맵에 실린다. */
     /* ⚠️ '#매복-사랑니' 같은 조각 주소도 넣지 말 것 — 검색엔진은 조각을 떼고 보므로
        사이트맵에 같은 페이지가 세 번 실린다(2026-09-03 실측: wisdom-tooth 가 3줄). */
-    for (const c of item.children ?? []) if (!c.external) out.add(c.href.split('#')[0]);
+    /* ⚠️ children 이 아니라 fullChildren — 헤더가 줄인 목록이 아니라 전체 목록이 사이트맵에 실려야 한다. */
+    for (const c of [...(item.children ?? []), ...(item.footer ?? [])]) if (!c.external) out.add(c.href.split('#')[0]);
   }
   return [...out];
 }
@@ -214,7 +240,7 @@ export function flatNavPaths(): string[] {
 export function labelForPath(path: string): string | undefined {
   for (const item of NAV) {
     if (item.href === path) return item.label;
-    for (const c of item.children ?? []) if (c.href === path) return c.label;
+    for (const c of [...(item.children ?? []), ...(item.footer ?? [])]) if (c.href === path) return c.label;
   }
   return undefined;
 }

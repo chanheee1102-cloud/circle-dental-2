@@ -47,6 +47,7 @@ const TRAIL = [
  */
 const BANDS = [
   {
+    id: 'my-state',
     title: '내 상태가 무엇인지',
     lead: '병명을 모르셔도 됩니다. 지금 느끼시는 것에서 출발해 무엇을 확인하게 되는지까지 이어집니다.',
     cards: [
@@ -71,6 +72,7 @@ const BANDS = [
     ],
   },
   {
+    id: 'deciding',
     title: '치료를 정하실 때',
     lead: '몇 번 오는지, 얼마나 걸리는지, 얼마가 드는지. 결정 전에 알고 계셔야 할 것들입니다.',
     cards: [
@@ -95,6 +97,7 @@ const BANDS = [
     ],
   },
   {
+    id: 'more',
     title: '더 읽어 두실 것',
     lead: '당장 필요하지는 않지만, 알고 계시면 설명을 들으실 때 훨씬 수월합니다.',
     cards: [
@@ -122,7 +125,9 @@ const BANDS = [
  * ⚠️ 이 검사를 지우지 말 것. 빌드가 멈추는 편이 링크가 조용히 사라지는 것보다 낫다.
  */
 {
-  const inNav = (NAV.find((n) => n.href === '/insight')?.children ?? [])
+  const insight = NAV.find((n) => n.href === '/insight');
+  /* ⚠️ children(헤더 대메뉴 넷)이 아니라 footer(여덟 갈래 전부)를 본다 — 카드가 빠지면 갈 길이 사라지는 건 그 여덟이다. */
+  const inNav = (insight?.footer ?? insight?.children ?? [])
     .filter((c) => !c.external)
     .map((c) => c.href);
   const inCards = BANDS.flatMap((b) => b.cards.map((c) => c.href));
@@ -209,7 +214,8 @@ export default function InsightHubPage() {
         */}
         <div className="mt-14 space-y-16">
           {BANDS.map((b) => (
-            <section key={b.title}>
+            /* ⚠️ id 는 lib/nav.ts 인사이트 대메뉴의 #조각과 한 쌍 — 바꾸면 메뉴가 쪽 맨 위에 떨어진다. */
+            <section key={b.title} id={b.id} className="scroll-mt-28">
               <div className="border-b border-wine-line pb-5">
                 <h2 className="display-sm text-[clamp(22px,2.4vw,30px)] leading-[1.3] text-ink">
                   {b.title}

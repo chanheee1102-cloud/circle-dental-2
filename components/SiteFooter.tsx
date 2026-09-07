@@ -141,7 +141,8 @@ export function SiteFooter() {
             <nav key={item.href} aria-label={`푸터 ${item.label}`}>
               <p className="text-[14px] font-semibold tracking-wide text-ink">{item.label}</p>
               <ul className="mt-4 space-y-2.5">
-                {(item.children ?? [{ label: item.label, href: item.href }]).map((c) => (
+                {/* ⚠️ 전체 목록(footer) — 헤더가 넷으로 줄여도 푸터는 여덟 갈래를 다 싣는다(lib/nav.ts). */}
+                {(item.footer ?? item.children ?? [{ label: item.label, href: item.href }]).map((c) => (
                   <li key={c.href}>
                     {/* ⚠️ 바깥 링크는 새 창 — nav 의 external 표시를 그대로 따른다. */}
                     <Link

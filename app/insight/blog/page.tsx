@@ -90,53 +90,55 @@ export default function BlogIndexPage() {
             첫 글을 준비하고 있습니다. 궁금한 점은 전화나 카카오톡으로 먼저 물어보셔도 됩니다.
           </p>
         ) : (
+          /*
+            ★★ 아카이브 격자 — 카드 전부 **같은 규격** (2026-09-07 오너: "카드 사이즈 다르게 하지말고, 아카이브 형식으로") ★★
+              첫 글을 2칸으로 키웠더니 둘째 줄이 한 장만 남아 행이 안 맞았다. 이제 셋씩 같은 크기로 선다.
+            ★ 행·열이 맞는 규칙: 사진 3:2 고정 · 제목 2줄 · 요약 3줄로 **잘라서** 카드 높이를 같게 하고,
+              h-full 로 한 줄의 카드가 서로 높이를 맞춘다. 제목이 길어도 카드가 커지지 않는다.
+            ⚠️ 첫 카드를 다시 키우지 말 것 — 글 수가 3n+1 이면 반드시 행이 깨진다.
+            ⚠️ 삼항식의 가지 안이라 중괄호 주석이 아니라 맨 주석이다 — 표현식 자리에 중괄호를 두면 빌드가 깨진다(실제로 깨졌다).
+               그리고 주석 글 안에 '별표 슬래시' 를 적지 말 것 — 주석이 거기서 닫혀 또 깨진다(이것도 실제로 깨졌다).
+          */
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {posts.map((p, i) => {
-              const big = i === 0;
-              return (
-                <li key={p.slug} className={big ? 'sm:col-span-2' : ''}>
-                  <Link
-                    href={`/insight/blog/${p.slug}`}
-                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-brand-200/70 bg-parchment transition-colors hover:border-brand-300"
-                  >
-                    <div className={`relative overflow-hidden bg-brand-100 ${big ? 'aspect-[2/1]' : 'aspect-[3/2]'}`}>
-                      {p.image ? (
-                        <Image
-                          src={p.image}
-                          alt={p.imageAlt ?? ''}
-                          fill
-                          priority={i < 2}
-                          sizes={big ? '(min-width: 1024px) 860px, 100vw' : '(min-width: 1024px) 420px, (min-width: 640px) 50vw, 100vw'}
-                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center text-[15px] text-ink-muted">사진 없음</div>
-                      )}
+            {posts.map((p, i) => (
+              <li key={p.slug}>
+                <Link
+                  href={`/insight/blog/${p.slug}`}
+                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-brand-200/70 bg-parchment transition-colors hover:border-brand-300"
+                >
+                  <div className="relative aspect-[3/2] overflow-hidden bg-brand-100">
+                    {p.image ? (
+                      <Image
+                        src={p.image}
+                        alt={p.imageAlt ?? ''}
+                        fill
+                        priority={i < 3}
+                        sizes="(min-width: 1024px) 420px, (min-width: 640px) 50vw, 100vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-[15px] text-ink-muted">사진 없음</div>
+                    )}
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
+                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                      <time dateTime={p.date} className="text-[13.5px] font-bold tabular-nums text-clay-700">
+                        {koDate(p.date)}
+                      </time>
+                      {p.category && <span className="text-[13px] font-bold text-ink-muted">{p.category}</span>}
                     </div>
-                    <div className="flex flex-1 flex-col p-6 sm:p-7">
-                      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                        <time dateTime={p.date} className="text-[13.5px] font-bold tabular-nums text-clay-700">
-                          {koDate(p.date)}
-                        </time>
-                        {p.category && <span className="text-[13px] font-bold text-ink-muted">{p.category}</span>}
-                      </div>
-                      <h2
-                        className={`display-sm mt-3 text-ink transition-colors group-hover:text-clay-700 ${
-                          big ? 'text-[clamp(21px,2.4vw,30px)] leading-[1.3]' : 'text-[19px] leading-[1.4]'
-                        }`}
-                      >
-                        {p.title}
-                      </h2>
-                      {/* ⚠️ Sentences 를 쓰지 않는다 — 카드 폭에서 쉼표마다 줄이 갈려 계단이 된다(증상 허브와 같은 이유). */}
-                      <p className="mt-3 line-clamp-3 text-[15.5px] leading-[1.8] text-twilight">{p.summary}</p>
-                      <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-black text-clay-700">
-                        읽기 <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
+                    <h2 className="display-sm mt-3 line-clamp-2 min-h-[2.8em] text-[19px] leading-[1.4] text-ink transition-colors group-hover:text-clay-700">
+                      {p.title}
+                    </h2>
+                    {/* ⚠️ Sentences 를 쓰지 않는다 — 카드 폭에서 쉼표마다 줄이 갈려 계단이 된다(증상 허브와 같은 이유). */}
+                    <p className="mt-3 line-clamp-3 min-h-[5.4em] text-[15.5px] leading-[1.8] text-twilight">{p.summary}</p>
+                    <span className="mt-auto inline-flex items-center gap-2 pt-5 text-[14.5px] font-black text-clay-700">
+                      읽기 <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+                    </span>
+                  </div>
+                </Link>
+              </li>
+            ))}
           </ul>
         )}
       </Container>

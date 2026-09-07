@@ -293,7 +293,9 @@ export function SiteHeader() {
             const under = (href: string) =>
               pathname === href ||
               (href.split('/').filter(Boolean).length >= 2 && pathname.startsWith(href + '/'));
-            const here = (item.children ?? []).some((c) => under(c.href)) || pathname === item.href;
+            /* 현재 묶음 판정은 전체 목록으로 — 헤더가 넷만 보여 줘도 /insight/symptom 은 인사이트 소속이다. */
+            const here =
+              [...(item.children ?? []), ...(item.footer ?? [])].some((c) => under(c.href)) || pathname === item.href;
             return (
               <div
                 key={item.href}
