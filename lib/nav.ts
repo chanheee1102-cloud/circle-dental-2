@@ -37,7 +37,25 @@ export interface NavItem {
   label: string;
   href: string;
   children?: NavChild[];
+  /**
+   * **헤더에서만** 펼치지 않는다 — 누르면 허브 쪽으로 곧장 간다 (2026-09-07 오너 지시).
+   *
+   * ★ 왜 (인사이트) — 하위가 여덟이라 판이 세로로 길어져, 메뉴가 '빨리 가는 자리' 가 아니라
+   *   '읽어야 하는 목록' 이 됐다. 여덟 갈래는 허브 쪽에서 카드로 보는 편이 훨씬 잘 보인다.
+   *
+   * ⚠️⚠️ children 을 지우지 말 것 ⚠️⚠️
+   *   푸터·사이트맵은 그대로 children 을 쓴다. 여기서 지우면 그 여덟 쪽으로 가는
+   *   **사이트 전역 내부 링크가 통째로 사라진다**(푸터가 같은 NAV 를 읽는다).
+   *   헤더에서만 안 펼치는 것이지, 구조에서 빼는 것이 아니다.
+   */
+  hubOnly?: boolean;
 }
+
+/**
+ * 헤더가 펼칠 하위 메뉴. hubOnly 인 묶음은 undefined 를 돌려준다.
+ * ⚠️ 헤더에서만 쓸 것 — 푸터·사이트맵은 item.children 을 그대로 봐야 한다.
+ */
+export const headerChildren = (item: NavItem) => (item.hubOnly ? undefined : item.children);
 
 export const NAV: NavItem[] = [
   {
@@ -137,6 +155,8 @@ export const NAV: NavItem[] = [
     /* 기존 '상담 및 예약' 자리 — 예약 길은 히어로와 퀵메뉴에 있으므로 읽을거리를 둔다. */
     label: '인사이트',
     href: '/insight',
+    /* ⚠️ 여덟 갈래는 허브 쪽에서 카드로 본다. 헤더에서 펼치지 않는다(위 hubOnly 주석). */
+    hubOnly: true,
     children: [
       { label: '블로그', href: '/insight/blog', desc: '알아두면 좋은 치과 정보' },
       { label: '증상으로 찾기', href: '/insight/symptom', desc: '증상별 진료 안내' },

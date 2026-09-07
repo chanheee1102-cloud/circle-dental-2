@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { NAV } from '@/lib/nav';
+import { NAV, headerChildren } from '@/lib/nav';
 import { CLINIC } from '@/lib/clinic';
 import { LogoLockup } from '@/components/Logo';
 import { Sentences } from '@/components/ui';
@@ -147,11 +147,13 @@ export function SiteHeader() {
   }, [openMenu, scrolled]);
 
   /**
-   * 판 높이를 맡을 **가장 긴 그룹**(지금은 인사이트).
+   * 판 높이를 맡을 **가장 긴 그룹**.
    * ⚠️ 항목 수가 같은 그룹이 여럿이면 앞의 것이 뽑힌다 — 높이만 쓰므로 어느 쪽이든 같다.
+   * ⚠️ headerChildren 으로 셀 것 — 인사이트처럼 **안 펼치는** 묶음(hubOnly)을 세면
+   *    열리지도 않는 여덟 줄이 판 높이를 잡아 판이 통째로 길어진다(2026-09-07).
    */
   const tallest = NAV.reduce((a, b) =>
-    (b.children?.length ?? 1) > (a.children?.length ?? 1) ? b : a,
+    (headerChildren(b)?.length ?? 1) > (headerChildren(a)?.length ?? 1) ? b : a,
   );
 
   return (
@@ -296,7 +298,7 @@ export function SiteHeader() {
               <div
                 key={item.href}
                 className="relative"
-                onMouseEnter={() => setOpenMenu(item.children ? item.label : null)}
+                onMouseEnter={() => setOpenMenu(headerChildren(item) ? item.label : null)}
               >
                 {/*
                   ⚠️ 밑줄 표시를 뺐다 — 알약 안에서는 밑줄이 알약 테두리에 붙어 지저분해진다.
@@ -311,8 +313,8 @@ export function SiteHeader() {
                   href={item.href}
                   /* ⚠️ 이 표식으로 칸 위치를 잰다(위 실측 주석). 지우면 판이 왼쪽에 몰린다. */
                   data-nav-trigger=""
-                  onFocus={() => setOpenMenu(item.children ? item.label : null)}
-                  aria-expanded={item.children ? open : undefined}
+                  onFocus={() => setOpenMenu(headerChildren(item) ? item.label : null)}
+                  aria-expanded={headerChildren(item) ? open : undefined}
                   aria-current={here ? 'true' : undefined}
                   /*
                     ★ 현재 묶음은 글자 밑에 2px 고동 줄 하나. 알약 안쪽(bottom-1.5)에 두어
@@ -337,7 +339,7 @@ export function SiteHeader() {
                   }`}
                 >
                   {item.label}
-                  {item.children && <Chevron open={open} />}
+                  {headerChildren(item) && <Chevron open={open} />}
                 </Link>
 
               </div>
@@ -436,7 +438,7 @@ export function SiteHeader() {
               */}
               <div aria-hidden className="invisible">
                 <ul className="space-y-3">
-                  {(tallest.children ?? []).map((c) => (
+                  {(headerChildren(tallest) ?? []).map((c) => (
                     <li key={c.href} className="text-[16.5px]">
                       {c.label}
                     </li>
@@ -444,7 +446,7 @@ export function SiteHeader() {
                 </ul>
               </div>
               {NAV.map((item, i) => {
-                const kids = item.children ?? [];
+                const kids = headerChildren(item) ?? [];
                 return (
                   <nav
                     key={item.href}
@@ -546,7 +548,7 @@ export function SiteHeader() {
               const expanded = mobileGroup === item.label;
               return (
                 <div key={item.href} className="border-b border-wine-line last:border-0">
-                  {item.children ? (
+                  {headerChildren(item) ? (
                     <>
                       <button
                         type="button"
@@ -570,7 +572,7 @@ export function SiteHeader() {
                               <span aria-hidden>→</span>
                             </Link>
                           </li>
-                          {item.children.map((c) => (
+                          {(headerChildren(item) ?? []).map((c) => (
                             <li key={c.href}>
                               <Link
                                 href={c.href}
