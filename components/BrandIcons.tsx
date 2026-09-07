@@ -88,65 +88,58 @@ export function BookingButtons({
   tone?: 'light' | 'dark';
 }) {
   /*
-   * ★★ 세로 넉 줄, 한 줄에 하나 (2026-09-04 오너: "로고 없애고, 버튼 하나당 한줄씩해서 세로로 네줄로") ★★
-   *   한 줄 넷이던 판은 카드가 157px 로 좁아 이름이 접히고 화살표도 못 넣었다.
-   *   세로로 쌓으면 카드가 오른쪽 칸 폭을 다 쓰므로 이름·화살표가 여유 있게 들어간다.
-   * ⚠️ 로고는 뺐다 — 넉 줄이 위쪽 빈자리를 이미 채운다. 다시 넣으면 오른쪽이 답답해진다.
-   * ⚠️ 순서를 바꾸지 말 것 — 전화가 맨 위다. 급한 사람이 먼저 닿아야 하는 것이 전화이고,
+   * ★★ 가로 넉 장 카드 (2026-09-07 오너: "이고운치과랑 너무 똑같아서, 카드 형태로 가로로 네개") ★★
+   *   세로로 쌓은 넉 줄은 같은 손이 만든 다른 병원 사이트와 판박이였다(글 왼쪽·단추 오른쪽 2단).
+   *   여기서는 제목 아래 **전폭으로 카드 넉 장을 한 줄**에 세운다 — 칸 하나가 ~300px 라
+   *   이름·설명·화살표가 여유 있게 들어간다(전에 한 줄 넷이 실패한 건 오른쪽 반 칸(157px)에
+   *   욱여넣어서였다. 이번엔 전폭이라 그 문제가 없다).
+   * ★ 카드마다 **둘째 줄**이 있다 — 전화번호 · 무엇을 하는 길인지. 단추가 아니라 카드로 읽히는
+   *   것은 이 둘째 줄 덕이다. 지우면 다시 단추 네 개가 된다.
+   * ★ 행·열 규격: grid 로 폭을 4등분하고 h-full 로 높이를 맞춘다. 설명이 두 줄인 카드가
+   *   있어도 옆 카드가 같이 늘어난다 — 카드끼리 높이가 다르면 규격이 어긋나 보인다.
+   * ⚠️ 순서를 바꾸지 말 것 — 전화가 맨 앞이다. 급한 사람이 먼저 닿아야 하는 것이 전화이고,
    *    나머지는 시간을 정해서 쓰는 길이다(app/visit/page.tsx 의 안내와 같은 순서).
-   * ⚠️ 오시는 길만 **테두리형**이다. 전화와 같은 단색으로 두면 나란히 선 두 갈색이 같은 단추로
+   * ⚠️ 오시는 길만 **테두리형**이다. 전화와 같은 단색으로 두면 나란히 선 두 갈색이 같은 카드로
    *    보인다(clay-600 은 ink 와 거의 같은 갈색이라 채워도 구별이 안 된다 — 실제로 해 보고 바꿨다).
    * ⚠️ 브랜드 색은 규정 색이다. 카카오 노랑 위 글자는 검정 — 흰 글자면 1.7:1 로 안 읽힌다.
+   * ⚠️ 좁은 화면은 2×2 다(sm:grid-cols-2). 한 줄 넷을 고집하면 카드가 접힌다.
    */
-  const row =
-    'group flex w-full items-center gap-3 rounded-2xl px-6 py-[18px] text-[16.5px] font-bold transition-transform duration-300 hover:-translate-y-0.5';
+  /* ⚠️ 채운 카드에도 투명 테두리 1.5px — 테두리형(오시는 길)과 높이가 3px 어긋나던 것을 맞춘다(실측 158 vs 160). */
+  const card =
+    'group flex h-full min-h-[148px] flex-col rounded-2xl border-[1.5px] border-transparent p-6 transition-transform duration-300 hover:-translate-y-0.5';
   const own = tone === 'dark' ? 'bg-parchment text-dusk' : 'bg-ink text-wine-bg';
-  const arrow = (
-    <span
-      aria-hidden
-      className="ml-auto shrink-0 opacity-70 transition-transform group-hover:translate-x-1"
-    >
-      →
-    </span>
+  const Body = ({ icon, label, sub, dim }: { icon: React.ReactNode; label: string; sub: string; dim: string }) => (
+    <>
+      <span aria-hidden className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-current/10">
+        {icon}
+      </span>
+      <span className="mt-auto pt-6 text-[17px] font-bold leading-tight whitespace-nowrap">{label}</span>
+      <span className={`mt-1.5 flex items-center justify-between gap-3 text-[13.5px] leading-snug ${dim}`}>
+        <span className="min-w-0">{sub}</span>
+        <span aria-hidden className="shrink-0 transition-transform group-hover:translate-x-1">→</span>
+      </span>
+    </>
   );
   return (
-    <div className="reveal flex w-full flex-col gap-3">
-      <a href={phoneHref} aria-label={`전화 ${phone}`} className={`${row} ${own}`}>
-        <PhoneIcon size={22} />
-        <span className="whitespace-nowrap">전화 상담</span>
-        {arrow}
+    <div className="reveal-stack grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <a href={phoneHref} aria-label={`전화 ${phone}`} className={`reveal ${card} ${own}`}>
+        <Body icon={<PhoneIcon size={20} />} label="전화 상담" sub={phone} dim="opacity-75" />
       </a>
-      <a
-        href={kakao}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${row} bg-[#FEE500] text-[#191600]`}
-      >
-        <KakaoIcon size={22} />
-        <span className="whitespace-nowrap">카카오톡 상담</span>
-        {arrow}
+      <a href={kakao} target="_blank" rel="noopener noreferrer" className={`reveal ${card} bg-[#FEE500] text-[#191600]`}>
+        <Body icon={<KakaoIcon size={20} />} label="카카오톡 상담" sub="채팅으로 먼저 물어보기" dim="opacity-70" />
       </a>
-      <a
-        href={naver}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${row} bg-[#03C75A] text-white`}
-      >
-        <NaverIcon size={22} />
-        <span className="whitespace-nowrap">네이버 예약</span>
-        {arrow}
+      <a href={naver} target="_blank" rel="noopener noreferrer" className={`reveal ${card} bg-[#03C75A] text-white`}>
+        <Body icon={<NaverIcon size={20} />} label="네이버 예약" sub="원하는 시간 골라 예약" dim="opacity-85" />
       </a>
       <Link
         href="/visit"
-        className={`${row} border-[1.5px] ${
+        className={`reveal ${card} border-[1.5px] ${
           tone === 'dark'
             ? 'border-parchment/70 text-parchment'
             : 'border-ink/45 text-ink hover:bg-ink hover:text-wine-bg'
         }`}
       >
-        <PinIcon size={22} />
-        <span className="whitespace-nowrap">오시는 길</span>
-        {arrow}
+        <Body icon={<PinIcon size={20} />} label="오시는 길" sub="화정역 · 주차 안내" dim="opacity-70" />
       </Link>
     </div>
   );

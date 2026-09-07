@@ -58,16 +58,17 @@ export function TreatmentClosing({
           ⚠️ 오른쪽 칸을 26rem 으로 **고정**한다. fr 로 두면 페이지마다 제목 길이에 따라
              단추 폭이 달라져 페이지를 옮길 때마다 단추가 늘었다 줄었다 한다.
         */}
-        <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end">
-          <div className="min-w-0">
-            <p className="reveal eyebrow-chip text-clay-700">예약 · 상담</p>
-            <h2 className="reveal display-sm mt-5 max-w-[14em] text-[clamp(26px,3.8vw,44px)] leading-[1.16] tracking-[-0.025em] text-ink">
-              {title}
-            </h2>
-            <p className="reveal mt-7 max-w-[34em] text-[17.5px] leading-[1.9] text-twilight">
-              <Sentences text={lead} />
-            </p>
-          </div>
+        {/* ★ 글 위 · 카드 넉 장 아래 — components/ui.tsx ContactCta 와 같은 규칙(2026-09-07). 2단으로 되돌리지 말 것. */}
+        <div className="max-w-[40em]">
+          <p className="reveal eyebrow-chip text-clay-700">예약 · 상담</p>
+          <h2 className="reveal display-sm mt-5 max-w-[14em] text-[clamp(26px,3.8vw,44px)] leading-[1.16] tracking-[-0.025em] text-ink">
+            {title}
+          </h2>
+          <p className="reveal mt-7 max-w-[34em] text-[17.5px] leading-[1.9] text-twilight">
+            <Sentences text={lead} />
+          </p>
+        </div>
+        <div className="mt-12">
           <BookingButtons
             phone={CLINIC.phone}
             phoneHref={CLINIC.phoneHref}

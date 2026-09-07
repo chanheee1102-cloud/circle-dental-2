@@ -716,20 +716,26 @@ export function ContactCta({
           ⚠️ items-end — 단추 밑선을 설명 마지막 줄에 맞춘다. items-center 로 바꾸면 단추가 떠 보인다.
           ⚠️ basis 를 지우지 말 것 — 좁은 화면에서 줄을 바꾸는 대신 글 칸이 눌려 한 어절씩 쌓인다.
         */}
-        <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end">
-        <div className="min-w-0">
-        <p className="eyebrow-chip text-clay-700">예약 · 상담</p>
-        <h2 className="display-sm mt-5 max-w-[14em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">{title}</h2>
-        <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
-          <Sentences text={desc} />
-        </p>
+        {/*
+          ★★ 글 위 · 카드 넉 장 아래 (2026-09-07 오너: "이고운치과랑 너무 똑같아서, 카드 형태로 가로로 네개") ★★
+            글 왼쪽·단추 오른쪽 2단은 같은 손이 만든 다른 병원 사이트와 판박이였다.
+            제목을 위에 두고 그 아래 전폭으로 카드를 세우면 칸 하나가 ~300px 라 카드가 카드답게 선다.
+          ⚠️ 2단으로 되돌리지 말 것 — 오른쪽 반 칸(157px)에 넷을 넣으면 이름이 접힌다(실측).
+        */}
+        <div className="max-w-[40em]">
+          <p className="eyebrow-chip text-clay-700">예약 · 상담</p>
+          <h2 className="display-sm mt-5 max-w-[14em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">{title}</h2>
+          <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
+            <Sentences text={desc} />
+          </p>
         </div>
-        <BookingButtons
-          phone={CLINIC.phone}
-          phoneHref={CLINIC.phoneHref}
-          kakao={CLINIC.booking.kakao}
-          naver={CLINIC.booking.naver}
-        />
+        <div className="mt-12">
+          <BookingButtons
+            phone={CLINIC.phone}
+            phoneHref={CLINIC.phoneHref}
+            kakao={CLINIC.booking.kakao}
+            naver={CLINIC.booking.naver}
+          />
         </div>
       </Container>
     </section>
