@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CLINIC, NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import { treatmentBySlug } from '@/lib/treatments';
-import { symptomBySlug } from '@/lib/symptoms';
+import {symptomBySlug, symptomHref } from '@/lib/symptoms';
 import { IMPLANT_TOPICS } from '@/lib/implantTopics';
 import { journeyForTreatment } from '@/lib/insight';
 import { MISSING_TOOTH_OPTIONS } from '@/lib/comparisons';
@@ -589,7 +589,7 @@ export default function ImplantPage() {
           ...related.slice(0, 3).map((x) => ({
             label: '관련 증상',
             title: x!.title,
-            href: `/insight/symptom/${x!.slug}`,
+            href: symptomHref(x!.slug),
           })),
         ]}
       />

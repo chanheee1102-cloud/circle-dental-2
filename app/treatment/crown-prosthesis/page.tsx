@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CLINIC, NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import { treatmentBySlug } from '@/lib/treatments';
-import { symptomBySlug } from '@/lib/symptoms';
+import {symptomBySlug, symptomHref } from '@/lib/symptoms';
 import { journeyForTreatment } from '@/lib/insight';
 import { METHODS, MATERIALS, SHADE_STEPS, RISKS } from '@/lib/aestheticPage';
 import { Container, MedicalNotice, Sentences } from '@/components/ui';
@@ -390,7 +390,7 @@ export default function CrownProsthesisPage() {
         links={[
           { label: '자세히 보기', title: '라미네이트', href: '/treatment/laminate' },
           { label: '자주 묻는 질문', title: `많이 묻는 것 ${t.qa.length}가지`, href: '/faq#crown-prosthesis' },
-          ...related.slice(0, 2).map((s) => ({ label: '관련 증상', title: s!.title, href: `/insight/symptom/${s!.slug}` })),
+          ...related.slice(0, 2).map((s) => ({ label: '관련 증상', title: s!.title, href: symptomHref(s!.slug) })),
         ]}
       />
     </div>

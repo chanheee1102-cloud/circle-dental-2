@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CLINIC, NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import { treatmentBySlug } from '@/lib/treatments';
-import { symptomBySlug } from '@/lib/symptoms';
+import {symptomBySlug, symptomHref } from '@/lib/symptoms';
 import { METHODS, LAMINATE_FEATURES, SHADE_STEPS, RISKS } from '@/lib/aestheticPage';
 import { Container, MedicalNotice, Sentences } from '@/components/ui';
 import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
@@ -348,7 +348,7 @@ export default function LaminatePage() {
         links={[
           { label: '함께 보기', title: '심미보철에서 깎는 양 비교하기', href: '/treatment/crown-prosthesis' },
           { label: '함께 보기', title: '치아미백', href: '/treatment/whitening' },
-          ...related.slice(0, 2).map((s) => ({ label: '증상으로 찾기', title: s!.title, href: `/insight/symptom/${s!.slug}` })),
+          ...related.slice(0, 2).map((s) => ({ label: '증상으로 찾기', title: s!.title, href: symptomHref(s!.slug) })),
         ]}
       />
     </>

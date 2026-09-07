@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CONDITIONS, conditionBySlug } from '@/lib/conditions';
-import { symptomBySlug } from '@/lib/symptoms';
+import {symptomBySlug, symptomHref } from '@/lib/symptoms';
 import { treatmentBySlug } from '@/lib/treatments';
 import { Container, MedicalNotice, ContactCta, Sentences, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
@@ -291,7 +291,7 @@ export default async function ConditionDetailPage({
                       {symptoms.map((s) => (
                         <Link
                           key={s!.slug}
-                          href={`/insight/symptom/${s!.slug}`}
+                          href={symptomHref(s!.slug)}
                           className="group flex items-center justify-between gap-3 rounded-2xl border border-brand-200/70 px-5 py-3.5 transition-colors hover:border-brand-300 hover:bg-parchment"
                         >
                           <span className="text-[15.5px] font-bold text-ink transition-colors group-hover:text-clay-700">

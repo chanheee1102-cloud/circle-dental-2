@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { ArticleMeta } from '@/components/article';
 import Link from 'next/link';
-import { SYMPTOMS } from '@/lib/symptoms';
+import { SYMPTOMS, SYMPTOM_GROUPS, symptomsOfGroup, symptomHref } from '@/lib/symptoms';
 import { Container, MedicalNotice, ContactCta, PageHero, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, faqSchema } from '@/lib/seo';
@@ -67,36 +67,64 @@ export default function SymptomIndexPage() {
           ⚠️ 그리고 그 block 자식 때문에 line-clamp-2 가 **아예 동작하지 않고 있었다** — 두 줄로
              줄이려던 것이 전문 노출로 이어졌다. 지금은 접기가 그 역할을 한다.
         */}
-        <ul className="mt-12 grid gap-3 lg:grid-cols-2">
-          {SYMPTOMS.map((s) => (
-            <li key={s.slug}>
-              <details className="group h-full rounded-2xl border border-brand-200/70 bg-parchment transition-colors open:border-brand-300 hover:border-brand-300">
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-5 p-6 [&::-webkit-details-marker]:hidden">
-                  <h2 className="min-w-0 flex-1 text-[18px] leading-snug font-black text-ink transition-colors group-hover:text-clay-700 sm:text-[19px]">
-                    {s.title}
-                  </h2>
-                  {/* 두 글리프를 갈아 끼우지 않는다 — 글꼴에 따라 폭이 달라져 줄이 흔들린다. */}
-                  <span
-                    aria-hidden
-                    className="relative mt-2 h-3.5 w-3.5 shrink-0 text-clay-700 transition-transform duration-300 group-open:rotate-45"
-                  >
-                    <span className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-current" />
-                    <span className="absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-current" />
-                  </span>
-                </summary>
-                <div className="px-6 pb-6">
-                  <p className="text-[15.5px] leading-[1.85] text-ink-soft">{s.answer}</p>
-                  <Link
-                    href={`/insight/symptom/${s.slug}`}
-                    className="mt-4 inline-flex items-center gap-1.5 text-[15px] font-black text-clay-700 hover:underline"
-                  >
-                    자세히 보기 <span aria-hidden>→</span>
-                  </Link>
-                </div>
-              </details>
-            </li>
+        {/*
+          ★★ 묶음별로 나눠 세운다 (2026-09-07, 증상 26쪽 → 7쪽 합치기) ★★
+            전에는 26장이 한 덩어리로 줄지어 있어, 찾는 사람이 스물여섯 개를 다 훑어야 했다.
+            이제 "아플 때 / 잇몸 / 빠짐" 처럼 느낌으로 먼저 좁힌 뒤 그 안에서 고른다.
+          ⚠️ 접힌 답은 **문서에 그대로 있다** — details 는 내용을 지우지 않는다.
+             자바스크립트로 갈아 끼우지 말 것(검색·AI 가 못 읽는다).
+          ⚠️ 링크는 symptomHref 로 만든다 — 손으로 이어 붙이면 합치기 전 주소가 되어
+             내부 링크가 301 을 한 번 더 탄다.
+        */}
+        <div className="mt-12 space-y-14">
+          {SYMPTOM_GROUPS.map((g) => (
+            <section key={g.slug}>
+              <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-wine-line pb-4">
+                <h2 className="display-sm text-[clamp(21px,2.2vw,27px)] leading-[1.3] text-ink">
+                  {g.title}
+                </h2>
+                <Link
+                  href={`/insight/symptom/${g.slug}`}
+                  className="group inline-flex items-center gap-2 text-[15.5px] font-semibold text-clay-700 hover:underline"
+                >
+                  {symptomsOfGroup(g).length}가지 자세히 보기
+                  <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+                </Link>
+              </div>
+
+              <ul className="mt-5 grid gap-3 lg:grid-cols-2">
+                {symptomsOfGroup(g).map((s) => (
+                  <li key={s.slug}>
+                    <details className="group h-full rounded-2xl border border-brand-200/70 bg-parchment transition-colors open:border-brand-300 hover:border-brand-300">
+                      <summary className="flex cursor-pointer list-none items-start justify-between gap-5 p-6 [&::-webkit-details-marker]:hidden">
+                        <h3 className="min-w-0 flex-1 text-[18px] leading-snug font-black text-ink transition-colors group-hover:text-clay-700 sm:text-[19px]">
+                          {s.title}
+                        </h3>
+                        {/* 두 글리프를 갈아 끼우지 않는다 — 글꼴에 따라 폭이 달라져 줄이 흔들린다. */}
+                        <span
+                          aria-hidden
+                          className="relative mt-2 h-3.5 w-3.5 shrink-0 text-clay-700 transition-transform duration-300 group-open:rotate-45"
+                        >
+                          <span className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-current" />
+                          <span className="absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-current" />
+                        </span>
+                      </summary>
+                      <div className="px-6 pb-6">
+                        <p className="text-[15.5px] leading-[1.85] text-ink-soft">{s.answer}</p>
+                        <Link
+                          href={symptomHref(s.slug)}
+                          className="mt-4 inline-flex items-center gap-1.5 text-[15px] font-black text-clay-700 hover:underline"
+                        >
+                          자세히 보기 <span aria-hidden>→</span>
+                        </Link>
+                      </div>
+                    </details>
+                  </li>
+                ))}
+              </ul>
+            </section>
           ))}
-        </ul>
+        </div>
 
         <MedicalNotice />
       </Container>

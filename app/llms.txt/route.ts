@@ -1,6 +1,6 @@
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
 import { TREATMENTS } from '@/lib/treatments';
-import { SYMPTOMS } from '@/lib/symptoms';
+import { SYMPTOM_GROUPS, symptomsOfGroup } from '@/lib/symptoms';
 
 /**
  * /llms.txt — 대규모 언어모델을 위한 사이트 요약.
@@ -73,10 +73,20 @@ export function GET() {
   lines.push('## 증상별 안내');
   lines.push('환자가 말하는 증상에서 출발해 원인 후보와 확인 방법을 설명하는 문서입니다.');
   lines.push('');
-  for (const s of SYMPTOMS) {
-    lines.push(`- [${s.title}](${CLINIC.url}/insight/symptom/${s.slug}) — ${s.short}`);
+  /*
+   * ⚠️ 증상은 묶음 7쪽이고, 증상 하나는 그 쪽 안의 **조각 주소**다 (2026-09-07).
+   *    낱개 주소(/insight/symptom/<증상>)를 다시 적지 말 것 — 301 로 넘어가는 주소다.
+   * ★ 그래도 증상 제목은 하나씩 다 적는다. 답변 엔진이 "밤에 이가 욱신거려서 잠을 못 자요"
+   *   라는 문장을 보고 그 조각을 가리킬 수 있어야, 주소가 줄어든 대가를 덜 치른다.
+   */
+  for (const g of SYMPTOM_GROUPS) {
+    lines.push(`### ${g.title}`);
+    lines.push(`- URL: ${CLINIC.url}/insight/symptom/${g.slug}`);
+    for (const s of symptomsOfGroup(g)) {
+      lines.push(`  - [${s.title}](${CLINIC.url}/insight/symptom/${g.slug}#${s.slug}) — ${s.short}`);
+    }
+    lines.push('');
   }
-  lines.push('');
 
   lines.push('## 인용 시 유의사항');
   lines.push(

@@ -1,4 +1,6 @@
 import type { NextConfig } from 'next';
+/* ⚠️ 리다이렉트를 데이터에서 만든다 — 묶음이 바뀌면 301 도 같이 바뀌어야 어긋나지 않는다. */
+import { SYMPTOM_GROUPS } from './lib/symptoms';
 
 /**
  * 옛 홈페이지(아임웹) → 새 사이트 주소 대응표.
@@ -133,6 +135,22 @@ const nextConfig: NextConfig = {
        */
       { source: '/treatment/implant/immediate-placement', destination: '/treatment/implant/extraction-and-retreatment', permanent: true },
       { source: '/treatment/implant/reoperation', destination: '/treatment/implant/extraction-and-retreatment', permanent: true },
+      /*
+       * ★★ 증상 26쪽 → 묶음 7쪽 (2026-09-07 오너 지시) ★★
+       *   ⚠️⚠️ 이 26줄을 지우지 말 것 — 이것이 없으면 색인된 주소 26개가 통째로 404 다.
+       *   합치기 전에는 증상 하나가 주소 하나였고, 그것이 이 사이트 AEO 의 주력이었다.
+       *   "밤에 이가 욱신거려서 잠을 못 자요" 같은 롱테일 질의로 들어오던 길을 잃지 않으려면
+       *   옛 주소가 새 묶음쪽의 **그 자리**로 가야 한다. 그래서 목적지에 #조각을 붙인다.
+       *   (조각은 묶음쪽의 <section id="{옛 slug}"> 와 짝이다. 한쪽만 바꾸면 쪽 맨 위에 떨어진다.)
+       * ★ SYMPTOM_GROUPS 에서 만들어 낸다 — 손으로 적으면 묶음을 바꿀 때 반드시 어긋난다.
+       */
+      ...SYMPTOM_GROUPS.flatMap((g) =>
+        g.symptoms.map((s) => ({
+          source: `/insight/symptom/${s}`,
+          destination: `/insight/symptom/${g.slug}#${s}`,
+          permanent: true,
+        })),
+      ),
       ...OLD_SITE.map(([source, destination]) => ({ source, destination, permanent: true })),
       ...CONVENTIONAL.map(([source, destination]) => ({ source, destination, permanent: true })),
       /*

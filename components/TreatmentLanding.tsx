@@ -7,6 +7,7 @@ import { Container, Sentences } from '@/components/ui';
 import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
 import { SectionHead, Card, NumChip } from '@/components/saas';
 import { TreatmentClosing } from '@/components/TreatmentClosing';
+import { symptomHref } from '@/lib/symptoms';
 
 /**
  * 진료 랜딩 페이지 — 임플란트에서 만든 언어를 나머지 진료가 함께 쓰는 틀.
@@ -510,7 +511,7 @@ export function TreatmentLanding({
           ...related.slice(0, 3).map((s) => ({
             label: '관련 증상',
             title: s!.title,
-            href: `/insight/symptom/${s!.slug}`,
+            href: symptomHref(s!.slug),
           })),
         ]}
       />

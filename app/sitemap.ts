@@ -4,7 +4,7 @@ import { contentDates } from '@/lib/contentMeta';
 import { flatNavPaths } from '@/lib/nav';
 import { allPosts } from '@/lib/blog';
 import { TREATMENTS } from '@/lib/treatments';
-import { SYMPTOMS } from '@/lib/symptoms';
+import { SYMPTOM_GROUPS } from '@/lib/symptoms';
 import { CONDITIONS } from '@/lib/conditions';
 import { JOURNEYS } from '@/lib/insight';
 import { IMPLANT_TOPICS } from '@/lib/implantTopics';
@@ -69,7 +69,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...entry(`/insight/blog/${p.slug}`, 0.6),
     lastModified: new Date(p.updated ?? p.date),
   }));
-  const symptomPages = SYMPTOMS.map((s) => entry(`/insight/symptom/${s.slug}`, 0.9));
+  /*
+   * ⚠️ 증상은 **묶음 7쪽**이다 (2026-09-07). 증상 26개를 낱개 주소로 다시 싣지 말 것 —
+   *    그 주소들은 next.config.ts 에서 301 이라, 사이트맵에 실으면 리다이렉트되는 주소를
+   *    색인해 달라고 내미는 꼴이 된다(구글이 경고로 잡는다).
+   */
+  /*
+   * ⚠️ 증상은 **묶음 7쪽**이다 (2026-09-07). 증상 26개를 낱개 주소로 다시 싣지 말 것 —
+   *    그 주소들은 next.config.ts 에서 301 이라, 사이트맵에 실으면 리다이렉트되는 주소를
+   *    색인해 달라고 내미는 꼴이 된다(구글이 경고로 잡는다).
+   */
+  const symptomPages = SYMPTOM_GROUPS.map((g) => entry(`/insight/symptom/${g.slug}`, 0.9));
   const conditionPages = CONDITIONS.map((c) => entry(`/insight/condition/${c.slug}`, 0.9));
   const journeyPages = JOURNEYS.map((j) => entry(`/insight/journey/${j.slug}`, 0.8));
   const implantPages = IMPLANT_TOPICS.map((t) => entry(`/treatment/implant/${t.slug}`, 0.85));

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CLINIC, NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import { treatmentBySlug } from '@/lib/treatments';
-import { symptomBySlug } from '@/lib/symptoms';
+import {symptomBySlug, symptomHref } from '@/lib/symptoms';
 import { journeyForTreatment } from '@/lib/insight';
 import { Container, MedicalNotice, Sentences } from '@/components/ui';
 import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
@@ -427,7 +427,7 @@ export default function CavityPage() {
         lead="같은 깊이라도 신경의 노출 정도와 감염 상태에 따라 방법이 달라집니다. 검사로 확인한 뒤에 무엇이 가능한지 말씀드립니다."
         links={[
           { label: '자주 묻는 질문', title: `충치치료에 대해 많이 묻는 것 ${t.qa.length}가지`, href: '/faq#cavity' },
-          ...related.slice(0, 3).map((s) => ({ label: '관련 증상', title: s!.title, href: `/insight/symptom/${s!.slug}` })),
+          ...related.slice(0, 3).map((s) => ({ label: '관련 증상', title: s!.title, href: symptomHref(s!.slug) })),
         ]}
       />
 

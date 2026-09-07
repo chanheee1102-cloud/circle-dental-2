@@ -621,3 +621,107 @@ export const SYMPTOMS: Symptom[] = [
 ];
 
 export const symptomBySlug = (slug: string) => SYMPTOMS.find((s) => s.slug === slug);
+
+/**
+ * ★★ 증상 묶음 — 26쪽을 7쪽으로 합친다 (2026-09-07 오너 지시) ★★
+ *
+ * ⚠️⚠️ 이 결정에는 대가가 있다. 되돌리려면 git history 를 볼 것 ⚠️⚠️
+ *   합치기 전에는 증상 하나가 주소 하나였다. "밤에 이가 욱신거려서 잠을 못 자요" 로
+ *   검색하거나 AI 에 물으면 제목이 그 문장 그대로인 주소가 있었고, 그것이 이 사이트의
+ *   AEO 자산이었다. 26개를 7개로 줄이면 그 주소 26개가 사라진다.
+ *   → 그래서 **잃는 것을 최대한 줄이는 세 가지**를 함께 넣었다. 지우지 말 것.
+ *     ① next.config.ts 의 301 — 옛 주소 26개가 각자 자기 묶음의 **그 자리(#조각)** 로 간다.
+ *        색인과 외부 링크가 넘어간다. 이게 없으면 26개가 통째로 404 다.
+ *     ② 묶음쪽 안에서 증상 하나가 <section id="{slug}"> + <h2> 로 남는다. 제목 문장은
+ *        환자가 말하는 그대로 유지한다 — 검색 질의와 글자가 맞아야 집힌다.
+ *     ③ FAQPage 스키마에 묶음 안 증상 전부를 질문-답으로 싣는다. 주소는 하나여도
+ *        질문은 여럿이라고 알려 주는 유일한 방법이다.
+ *
+ * ★ 묶는 기준은 진단명이 아니라 **환자가 느끼는 것**이다. 병명을 아는 사람은 질환 사전으로
+ *   가고, 이 축은 "아프다 / 피가 난다 / 빠졌다" 로 들어오는 사람을 위한 입구다.
+ * ⚠️ 26개가 정확히 한 번씩만 들어가야 한다 — 빠지면 그 증상은 어디에도 안 실리고,
+ *    겹치면 같은 글이 두 주소에 생긴다. 회귀 검사가 이것을 강제한다.
+ */
+export interface SymptomGroup {
+  slug: string;
+  /** 쪽 제목. 묶음이어도 환자 말투를 유지한다. */
+  title: string;
+  /** 카드·메뉴용 짧은 이름. */
+  short: string;
+  /** 묶음 머리글 — 이 묶음이 무엇을 다루는지 두세 문장. */
+  lead: string;
+  /** 이 묶음에 들어가는 증상 slug. 순서가 곧 쪽 안의 순서다. */
+  symptoms: string[];
+}
+
+export const SYMPTOM_GROUPS: SymptomGroup[] = [
+  {
+    slug: 'pain',
+    title: '이가 아프고 시릴 때',
+    short: '아픔 · 시림',
+    lead: '통증은 원인을 알려 주는 신호이지 원인 그 자체가 아닙니다. 언제 아픈지, 무엇에 아픈지, 얼마나 오래가는지에 따라 확인해야 할 곳이 달라지므로, 느끼시는 양상과 가장 가까운 항목부터 읽어 보세요.',
+    symptoms: ['toothache-night', 'cold-sensitivity', 'cracked-tooth', 'wisdom-tooth-pain', 'jaw-swelling'],
+  },
+  {
+    slug: 'gums',
+    title: '잇몸이 붓고 피가 날 때',
+    short: '잇몸',
+    lead: '잇몸은 아플 때보다 아프지 않을 때 더 많이 진행됩니다. 피가 나거나 붓는 것은 이미 염증이 자리를 잡았다는 뜻이고, 흔들림이나 잇몸이 내려앉는 변화까지 왔다면 뼈가 함께 줄고 있는 단계일 수 있습니다.',
+    symptoms: ['bleeding-gums', 'gum-swelling', 'gum-boil', 'receding-gums', 'loose-tooth'],
+  },
+  {
+    slug: 'missing',
+    title: '치아나 보철이 빠졌을 때',
+    short: '빠짐 · 헐거움',
+    lead: '빠진 자리를 오래 두면 옆 치아가 기울고 맞물리던 치아가 내려와, 나중에 채우려 할 때 선택지가 줄어듭니다. 빠진 것이 치아인지 씌운 보철인지에 따라 지금 하실 일이 다릅니다.',
+    symptoms: ['missing-tooth', 'crown-fell-out', 'loose-denture'],
+  },
+  {
+    slug: 'appearance',
+    title: '치아 색과 모양이 신경 쓰일 때',
+    short: '색 · 모양',
+    lead: '색과 모양의 변화는 미용의 문제로만 보이지만, 충치나 잇몸이 내려앉은 결과인 경우가 섞여 있습니다. 그래서 먼저 확인할 것은 어느 쪽인지이고, 치료 방법은 그다음에 정해집니다.',
+    symptoms: ['dark-spot', 'tooth-discoloration', 'tooth-gap'],
+  },
+  {
+    slug: 'mouth',
+    title: '입냄새가 나고 입안이 불편할 때',
+    short: '입냄새 · 입안',
+    lead: '입안의 불편함은 치아보다 잇몸·침·혀에서 비롯되는 경우가 많습니다. 양치 습관을 바꿔도 그대로라면 원인이 다른 곳에 있다는 뜻이므로, 무엇을 확인하게 되는지 미리 보아 두시면 도움이 됩니다.',
+    symptoms: ['bad-breath', 'mouth-ulcer', 'dry-mouth', 'tongue-coating'],
+  },
+  {
+    slug: 'jaw',
+    title: '턱과 씹는 것이 불편할 때',
+    short: '턱 · 씹기',
+    lead: '씹는 일은 치아 하나가 아니라 위아래가 만나는 방식 전체가 하는 일입니다. 한쪽으로만 씹게 되거나 턱에서 소리가 나는 변화는 그 균형이 무너지고 있다는 신호일 수 있습니다.',
+    symptoms: ['jaw-click', 'teeth-grinding', 'chewing-difficulty', 'food-impaction'],
+  },
+  {
+    slug: 'kids',
+    title: '아이 치아가 걱정될 때',
+    short: '아이 치아',
+    lead: '아이의 치아는 자라는 중이라 어른과 판단 기준이 다릅니다. 빠질 이라서 두어도 되는 경우와, 영구치 자리에 영향을 주기 때문에 지금 봐야 하는 경우가 나뉩니다.',
+    symptoms: ['kids-cavity', 'tooth-eruption'],
+  },
+];
+
+export const groupBySlug = (slug: string) => SYMPTOM_GROUPS.find((g) => g.slug === slug);
+
+/** 증상 하나가 어느 묶음에 들어 있는지. 없으면 undefined — 회귀 검사가 이걸 잡는다. */
+export const groupForSymptom = (symptomSlug: string) =>
+  SYMPTOM_GROUPS.find((g) => g.symptoms.includes(symptomSlug));
+
+/**
+ * 증상으로 가는 링크는 **반드시 이 함수로** 만든다.
+ * ⚠️ '/insight/symptom/' + slug 를 손으로 이어 붙이지 말 것 — 합치기 전 주소가 되어
+ *    301 을 한 번 더 타게 된다(내부 링크에서 301 은 그냥 낭비다).
+ */
+export const symptomHref = (symptomSlug: string) => {
+  const g = groupForSymptom(symptomSlug);
+  return g ? `/insight/symptom/${g.slug}#${symptomSlug}` : '/insight/symptom';
+};
+
+/** 묶음 안의 증상을 순서대로. 데이터에 없는 slug 는 조용히 버린다. */
+export const symptomsOfGroup = (g: SymptomGroup) =>
+  g.symptoms.map((s) => SYMPTOMS.find((x) => x.slug === s)).filter((s): s is Symptom => !!s);

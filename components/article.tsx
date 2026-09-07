@@ -94,27 +94,35 @@ export function KeyPoints({ items, title = '요약' }: { items: string[]; title?
  *   'jump to' 링크가 붙는다. 헤딩에 id 가 없으면 그게 아예 불가능하다.
  * ⚠️ items 의 문자열은 화면 헤딩과 **똑같아야** 한다 — 목차와 본문이 어긋나면
  *    누른 곳으로 안 가는 목차가 된다.
+ *
+ * ★ 앵커를 직접 줄 수도 있다 ({ label, href }) — 증상 묶음쪽처럼 헤딩 글자가 아니라
+ *   **옛 주소의 slug** 를 id 로 써야 하는 자리가 있다(301 이 그 조각으로 보내기 때문).
+ *   글자만 넘기면 지금까지처럼 headingId 로 만든다.
  */
-export function TableOfContents({ items }: { items: string[] }) {
+export function TableOfContents({ items }: { items: Array<string | { label: string; href: string }> }) {
   if (items.length < 3) return null; // 두 줄짜리 목차는 자리만 차지한다
   return (
     <nav aria-label="목차" className="reveal rounded-2xl border border-brand-200/70 bg-parchment p-6 sm:p-7">
       <p className="text-[13.5px] font-black tracking-[0.06em] text-clay-700">목차</p>
       <ol className="mt-4 space-y-2">
-        {items.map((t, i) => (
-          <li key={t} className="flex gap-3 text-[15.5px] leading-relaxed">
-            {/* ⚠️ brand-300 은 밝은 바탕에서 2.08:1 이었다. 번호도 읽는 글이다. */}
-            <span aria-hidden className="shrink-0 tabular-nums font-black text-clay-700">
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <a
-              href={`#${headingId(t)}`}
-              className="text-ink-soft underline-offset-4 transition-colors hover:text-clay-700 hover:underline"
-            >
-              {t}
-            </a>
-          </li>
-        ))}
+        {items.map((it, i) => {
+          const label = typeof it === 'string' ? it : it.label;
+          const href = typeof it === 'string' ? `#${headingId(it)}` : it.href;
+          return (
+            <li key={label} className="flex gap-3 text-[15.5px] leading-relaxed">
+              {/* ⚠️ brand-300 은 밝은 바탕에서 2.08:1 이었다. 번호도 읽는 글이다. */}
+              <span aria-hidden className="shrink-0 tabular-nums font-black text-clay-700">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <a
+                href={href}
+                className="text-ink-soft underline-offset-4 transition-colors hover:text-clay-700 hover:underline"
+              >
+                {label}
+              </a>
+            </li>
+          );
+        })}
       </ol>
     </nav>
   );
