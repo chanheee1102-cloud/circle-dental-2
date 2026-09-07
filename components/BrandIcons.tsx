@@ -104,10 +104,16 @@ export function BookingButtons({
    * ⚠️ 브랜드 색은 규정 색이다. 카카오 노랑 위 글자는 검정 — 흰 글자면 1.7:1 로 안 읽힌다.
    * ⚠️ 좁은 화면은 2×2 다(sm:grid-cols-2). 한 줄 넷을 고집하면 카드가 접힌다.
    */
-  /* ⚠️ 채운 카드에도 투명 테두리 1.5px — 테두리형(오시는 길)과 높이가 3px 어긋나던 것을 맞춘다(실측 158 vs 160). */
+  /*
+   * ⚠️ 테두리 굵기(1.5px)만 공용이고 **색은 카드마다** 준다 — 채운 셋은 transparent, 오시는 길은 ink/45.
+   *    공용 클래스에 border-transparent 를 넣었더니 오시는 길의 border-ink/45 가 **지워졌다**(2026-09-07 실측,
+   *    오너: "오시는길 버튼만 테두리 해줘"). 둘 다 border-color 라 className 순서가 아니라 스타일시트에서
+   *    나중에 나온 쪽이 이긴다. 같은 속성을 공용과 개별에 겹쳐 두지 말 것.
+   * ★ 굵기를 넷 다 주는 이유 — 테두리형만 1.5px 이면 높이가 3px 어긋난다(실측 158 vs 160).
+   */
   const card =
-    'group flex h-full min-h-[148px] flex-col rounded-2xl border-[1.5px] border-transparent p-6 transition-transform duration-300 hover:-translate-y-0.5';
-  const own = tone === 'dark' ? 'bg-parchment text-dusk' : 'bg-ink text-wine-bg';
+    'group flex h-full min-h-[148px] flex-col rounded-2xl border-[1.5px] p-6 transition-transform duration-300 hover:-translate-y-0.5';
+  const own = tone === 'dark' ? 'border-transparent bg-parchment text-dusk' : 'border-transparent bg-ink text-wine-bg';
   const Body = ({ icon, label, sub, dim }: { icon: React.ReactNode; label: string; sub: string; dim: string }) => (
     <>
       <span aria-hidden className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-current/10">
@@ -125,10 +131,10 @@ export function BookingButtons({
       <a href={phoneHref} aria-label={`전화 ${phone}`} className={`reveal ${card} ${own}`}>
         <Body icon={<PhoneIcon size={20} />} label="전화 상담" sub={phone} dim="opacity-75" />
       </a>
-      <a href={kakao} target="_blank" rel="noopener noreferrer" className={`reveal ${card} bg-[#FEE500] text-[#191600]`}>
+      <a href={kakao} target="_blank" rel="noopener noreferrer" className={`reveal ${card} border-transparent bg-[#FEE500] text-[#191600]`}>
         <Body icon={<KakaoIcon size={20} />} label="카카오톡 상담" sub="채팅으로 먼저 물어보기" dim="opacity-70" />
       </a>
-      <a href={naver} target="_blank" rel="noopener noreferrer" className={`reveal ${card} bg-[#03C75A] text-white`}>
+      <a href={naver} target="_blank" rel="noopener noreferrer" className={`reveal ${card} border-transparent bg-[#03C75A] text-white`}>
         <Body icon={<NaverIcon size={20} />} label="네이버 예약" sub="원하는 시간 골라 예약" dim="opacity-85" />
       </a>
       <Link
