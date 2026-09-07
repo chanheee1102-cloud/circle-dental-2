@@ -190,7 +190,7 @@ export default function EmergencyPage() {
                         <span aria-hidden className="mt-0.5 shrink-0 font-black text-clay-700">
                           ○
                         </span>
-                        <span className="min-w-0 flex-1"><Sentences text={d} /></span>
+                        <span className="block min-w-0 flex-1"><Sentences text={d} /></span>
                       </li>
                     ))}
                   </ul>
@@ -205,7 +205,7 @@ export default function EmergencyPage() {
                         <span aria-hidden className="mt-0.5 shrink-0 font-black text-clay-700">
                           ✕
                         </span>
-                        <span className="min-w-0 flex-1"><Sentences text={d} /></span>
+                        <span className="block min-w-0 flex-1"><Sentences text={d} /></span>
                       </li>
                     ))}
                   </ul>

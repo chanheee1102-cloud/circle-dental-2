@@ -183,7 +183,7 @@ export default function ExtractionAndRetreatmentPage() {
             </div>
 
             <div>
-              <div className="border-t border-wine-line pt-7">
+              <div className="border-t border-wine-line pt-7 lg:border-t-0 lg:pt-0">
                 <p className={SUB}>이런 경우에 검토합니다</p>
                 <ul className="reveal-stack mt-4 divide-y divide-wine-line">
                   {IMMEDIATE.yes.map((v) => (
@@ -196,9 +196,9 @@ export default function ExtractionAndRetreatmentPage() {
               {/* ⚠️ 알아 두실 점을 지우지 말 것 — 장점만 적으면 광고문이 된다(의료법 제56조). */}
               <div className="mt-8 rounded-2xl border border-clay-600/40 bg-clay-400/[0.07] p-6 ring-1 ring-clay-400/10 ring-inset">
                 <p className={SUB}>알아 두실 점</p>
-                <ul className="mt-3 space-y-2.5">
+                <ul className="mt-4 divide-y divide-clay-600/20">
                   {IMMEDIATE.care.map((v) => (
-                    <li key={v} className="text-[16px] leading-[1.8] text-ink">
+                    <li key={v} className="py-4 text-[16.5px] leading-[1.85] text-ink">
                       <Sentences text={v} />
                     </li>
                   ))}
@@ -246,7 +246,7 @@ export default function ExtractionAndRetreatmentPage() {
             </div>
 
             <div>
-              <div className="border-t border-wine-line pt-7">
+              <div className="border-t border-wine-line pt-7 lg:border-t-0 lg:pt-0">
                 <p className={SUB}>이럴 때 제거를 검토합니다</p>
                 <ul className="reveal-stack mt-4 divide-y divide-wine-line">
                   {REDO.yes.map((v) => (
@@ -259,9 +259,9 @@ export default function ExtractionAndRetreatmentPage() {
               {/* ⚠️ 지우지 말 것 — 재수술은 부작용과 한계가 분명한 치료다(의료법 제56조). */}
               <div className="mt-8 rounded-2xl border border-clay-600/40 bg-clay-400/[0.07] p-6 ring-1 ring-clay-400/10 ring-inset">
                 <p className={SUB}>알아 두실 점</p>
-                <ul className="mt-3 space-y-2.5">
+                <ul className="mt-4 divide-y divide-clay-600/20">
                   {REDO.care.map((v) => (
-                    <li key={v} className="text-[16px] leading-[1.8] text-ink">
+                    <li key={v} className="py-4 text-[16.5px] leading-[1.85] text-ink">
                       <Sentences text={v} />
                     </li>
                   ))}

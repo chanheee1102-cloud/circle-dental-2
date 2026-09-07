@@ -56,7 +56,7 @@ export function FailureCauseChart() {
         중요한지가 여기서 드러납니다.
       </p>
 
-      <ul className="mt-8 space-y-4">
+      <ul className="mt-8 space-y-5">
         {ROWS.map((r, i) => (
           <li key={r.label}>
             <div className="flex items-baseline justify-between gap-4">

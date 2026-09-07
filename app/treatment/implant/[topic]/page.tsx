@@ -137,7 +137,7 @@ export default async function ImplantTopicPage({
                       >
                         ✓
                       </span>
-                      <span className="min-w-0 flex-1"><Sentences text={s} /></span>
+                      <span className="block min-w-0 flex-1"><Sentences text={s} /></span>
                     </li>
                   ))}
                 </ul>
@@ -156,7 +156,7 @@ export default async function ImplantTopicPage({
                       >
                         !
                       </span>
-                      <span className="min-w-0 flex-1"><Sentences text={s} /></span>
+                      <span className="block min-w-0 flex-1"><Sentences text={s} /></span>
                     </li>
                   ))}
                 </ul>
