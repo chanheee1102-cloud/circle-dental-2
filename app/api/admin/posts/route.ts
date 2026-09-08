@@ -59,6 +59,7 @@ export async function GET(req: Request) {
           slug: j.slug || f.name.replace(/\.json$/i, '').replace(/^\d{4}-\d{2}-\d{2}-/, ''),
           title: j.title || '(제목 없음)',
           date: j.date || f.name.slice(0, 10),
+          time: j.time,
           updated: j.updated,
           summary: j.summary || '',
           category: j.category,
