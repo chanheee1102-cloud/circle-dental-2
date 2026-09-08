@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { CLINIC } from '@/lib/clinic';
 import { contentDates } from '@/lib/contentMeta';
 import { flatNavPaths } from '@/lib/nav';
-import { allPosts } from '@/lib/blog';
+import { allPostsMerged } from '@/lib/insightFeed';
 import { TREATMENTS } from '@/lib/treatments';
 import { SYMPTOM_GROUPS } from '@/lib/symptoms';
 import { CONDITIONS } from '@/lib/conditions';
@@ -35,7 +35,7 @@ import { DOCTORS } from '@/lib/doctors';
 /* ★ 한 시간마다 다시 만든다 — 예약 글이 날짜가 되면 사이트맵에도 실려야 한다. */
 export const revalidate = 3600;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const url = (p: string) => (p === '/' ? CLINIC.url : `${CLINIC.url}${p}`);
 
   /** 경로 하나를 사이트맵 항목으로. 날짜는 항상 contentDates 에서 온다. */
@@ -68,7 +68,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
    * ⚠️ 손으로 적지 말 것. 한 달에 열 편이면 손으로 관리하는 목록은 반드시 어긋난다.
    * ★ lastModified 는 글에 적힌 날짜다 — 색인이 '언제 바뀐 글인지' 를 보고 다시 온다.
    */
-  const blogPages = allPosts().map((p) => ({
+  /* 중앙(winaid) 글도 같이 — 사이트맵에 없으면 색인이 늦다. 중앙이 안 되면 우리 글만. */
+  const blogPages = (await allPostsMerged()).map((p) => ({
     ...entry(`/insight/blog/${p.slug}`, 0.6),
     lastModified: new Date(p.updated ?? p.date),
   }));

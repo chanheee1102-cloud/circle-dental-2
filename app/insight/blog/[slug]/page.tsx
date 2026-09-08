@@ -7,7 +7,8 @@ import { notFound } from 'next/navigation';
 export const revalidate = 3600;
 import { CLINIC } from '@/lib/clinic';
 import { DOCTORS } from '@/lib/doctors';
-import { allPosts, postBySlug, publishedIso } from '@/lib/blog';
+import { allPosts, publishedIso } from '@/lib/blog';
+import { postBySlugMerged, extractFaq } from '@/lib/insightFeed';
 import { Container, ContactCta, Breadcrumb, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, og, medicalWebPageSchema, alt } from '@/lib/seo';
@@ -25,9 +26,13 @@ import { breadcrumbSchema, abs, og, medicalWebPageSchema, alt } from '@/lib/seo'
  * ★ 날짜는 글 파일에서 온다. 다른 페이지처럼 contentDates(경로) 를 쓰지 않는다 —
  *   그쪽은 사람이 관리하는 표라 한 달에 열 편씩 늘어나는 글에는 맞지 않는다.
  */
+/* 빌드 때 미리 만드는 건 우리 글뿐. 중앙 글은 첫 요청 때 그려지고(dynamicParams 기본값) ISR 로 남는다. */
 export function generateStaticParams() {
   return allPosts().map((p) => ({ slug: p.slug }));
 }
+
+/** 중앙 글의 표지는 절대 주소 — abs() 를 다시 붙이지 않는다. */
+const imgUrl = (s: string) => (/^https?:\/\//.test(s) ? s : abs(s));
 
 export async function generateMetadata({
   params,
@@ -35,7 +40,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = postBySlug(slug);
+  const post = await postBySlugMerged(slug);
   if (!post) return {};
   const path = `/insight/blog/${post.slug}`;
   return {
@@ -54,8 +59,10 @@ export async function generateMetadata({
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = postBySlug(slug);
+  const post = await postBySlugMerged(slug);
   if (!post) notFound();
+  /* 본문 끝 '자주 묻는 질문' 이 있으면 FAQPage 로도 낸다(중앙 글 문서 권고 — AI 검색이 질문·답을 그대로 읽는다). */
+  const faq = extractFaq(post.html);
 
   const path = `/insight/blog/${post.slug}`;
   const trail = [
@@ -87,7 +94,18 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             publisher: { '@id': `${CLINIC.url}/#clinic` },
             author: { '@id': `${CLINIC.url}/about/doctors#${author.slug}` },
             ...(post.category ? { articleSection: post.category } : {}),
+            ...(post.image ? { image: imgUrl(post.image) } : {}),
           },
+          ...(faq.length
+            ? [
+                {
+                  '@context': 'https://schema.org',
+                  '@type': 'FAQPage',
+                  '@id': `${CLINIC.url}${path}#faq`,
+                  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+                },
+              ]
+            : []),
         ]}
       />
 

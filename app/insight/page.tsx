@@ -8,7 +8,7 @@ import { JOURNEYS, COST_TOPICS, GLOSSARY } from '@/lib/insight';
 import { CONDITIONS } from '@/lib/conditions';
 import { CLINIC_QA } from '@/lib/faq';
 import { TREATMENTS } from '@/lib/treatments';
-import { allPosts } from '@/lib/blog';
+import { allPostsMerged } from '@/lib/insightFeed';
 import { NAV } from '@/lib/nav';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -105,7 +105,7 @@ const BANDS = [
         href: '/insight/blog',
         title: '블로그',
         desc: '진료하며 자주 받는 질문과 알아두면 좋은 치과 이야기를 적어 둡니다.',
-        tag: `${allPosts().length}편`,
+        tag: '', /* 렌더 때 채운다 — 중앙(winaid) 글까지 센 posts.length (아래 InsightHubPage) */
       },
       {
         href: '/insight/glossary',
@@ -140,7 +140,9 @@ const BANDS = [
   }
 }
 
-export default function InsightHubPage() {
+export default async function InsightHubPage() {
+  /* 우리 글 + 중앙(winaid) 글 — lib/insightFeed.ts. 중앙이 안 되면 우리 글만. */
+  const posts = await allPostsMerged();
   return (
     <>
       <JsonLd data={breadcrumbSchema(TRAIL)} />
@@ -166,7 +168,7 @@ export default function InsightHubPage() {
           ⚠️ 글이 없으면 띠 자체를 그리지 않는다 — 빈 띠는 사이트가 덜 된 것처럼 보인다.
         */}
         {(() => {
-          const latest = allPosts().slice(0, 6);
+          const latest = posts.slice(0, 6);
           if (!latest.length) return null;
           const ko = (iso: string) => {
             const [y, m, d] = iso.split('-');
@@ -189,8 +191,13 @@ export default function InsightHubPage() {
                       className="group flex h-full flex-col overflow-hidden rounded-2xl border border-brand-200/70 bg-parchment transition-colors hover:border-brand-300"
                     >
                       <div className="relative aspect-[3/2] overflow-hidden bg-brand-100">
-                        {p.image && (
+                        {p.image ? (
                           <Image src={p.image} alt={p.imageAlt ?? ''} fill sizes="340px" className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                        ) : (
+                          /* 표지 없는 글(중앙 글은 흔하다) — 빈 상자 대신 분류 타일. 블로그 목록과 같은 처리. */
+                          <div className="flex h-full items-center justify-center">
+                            <span className="display-sm text-[20px] text-clay-700">{p.category ?? '블로그'}</span>
+                          </div>
                         )}
                       </div>
                       <div className="flex flex-1 flex-col p-5">
@@ -226,7 +233,7 @@ export default function InsightHubPage() {
               </div>
               <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {b.cards.map((c) => (
-                  <CardLink key={c.href} {...c} as="h3" />
+                  <CardLink key={c.href} {...c} tag={c.href === '/insight/blog' ? `${posts.length}편` : c.tag} as="h3" />
                 ))}
               </div>
             </section>

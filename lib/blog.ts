@@ -54,6 +54,11 @@ export interface BlogPost {
   imageAlt?: string;
   /** 본문 HTML. h2/h3/p/ul/ol/li/strong/em/a/blockquote/figure/img 정도만 쓴다. */
   html: string;
+  /**
+   * 어디서 온 글인가. local = content/blog 파일(기본). central = 중앙(winaid) 인사이트 API(lib/insightFeed.ts).
+   * 관리자 화면은 local 만 고칠 수 있다 — central 글은 중앙에서 발행 취소해야 사라진다.
+   */
+  source?: 'local' | 'central';
 }
 
 /**
@@ -89,10 +94,12 @@ const DIR = join(process.cwd(), 'content', 'blog');
  * 위험한 조각을 걷어 낸다 — **마지막 방어선**이다.
  * ⚠️ 이것이 있으니 아무 HTML 이나 넣어도 된다고 생각하지 말 것. 위 주석 참고.
  */
-function sanitizeBody(html: string): string {
+export function sanitizeBody(html: string): string {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, '')
     .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<(object|embed|link|meta)\b[^>]*>/gi, '')
     .replace(/\son[a-z]+\s*=\s*"[^"]*"/gi, '')
     .replace(/\son[a-z]+\s*=\s*'[^']*'/gi, '')
     .replace(/javascript:/gi, '');
@@ -147,6 +154,7 @@ export function allPosts(opts: { includeFuture?: boolean } = {}): BlogPost[] {
       image: p.image && p.image.startsWith('/img/') ? p.image : undefined,
       imageAlt: p.imageAlt,
       html: sanitizeBody(p.html),
+      source: 'local',
     });
   }
 

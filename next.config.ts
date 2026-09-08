@@ -124,7 +124,11 @@ const nextConfig: NextConfig = {
    */
   outputFileTracingRoot: __dirname,
   // 이미지 최적화 — 실제 사진 도입 시 remotePatterns 추가.
-  images: { formats: ['image/avif', 'image/webp'] },
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    /* 중앙(winaid) 인사이트 글의 표지 사진 — lib/insightFeed.ts CENTRAL_IMAGE_HOSTS 와 짝. 다른 호스트는 그리지 않는다. */
+    remotePatterns: [{ protocol: 'https', hostname: 'xmbyxlimqvyvijcpzsal.supabase.co', pathname: '/storage/v1/object/public/insights/**' }],
+  },
 
   async redirects() {
     return [

@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { CLINIC } from '@/lib/clinic';
-import { allPosts, publishedIso } from '@/lib/blog';
+import { publishedIso } from '@/lib/blog';
+import { allPostsMerged } from '@/lib/insightFeed';
 import { Container, ContactCta, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, og, alt } from '@/lib/seo';
@@ -48,8 +49,12 @@ const koDate = (iso: string) => {
  * ⚠️ 글은 content/blog/*.json 이 전부다(lib/blog.ts). 이 파일은 그 목록을 그리기만 한다.
  * ⚠️ 글이 하나도 없어도 정상이다 — 그때는 빈 화면 대신 '준비 중' 을 말한다. 404 로 만들지 말 것.
  */
-export default function BlogIndexPage() {
-  const posts = allPosts();
+/** 중앙 글의 표지는 절대 주소로 온다 — abs() 를 다시 붙이면 주소가 두 겹이 된다. */
+const imgUrl = (s: string) => (/^https?:\/\//.test(s) ? s : abs(s));
+
+export default async function BlogIndexPage() {
+  /* 우리 글(content/blog) + 중앙(winaid) 글 — lib/insightFeed.ts. 중앙이 안 되면 우리 글만 남는다. */
+  const posts = await allPostsMerged();
 
   return (
     <>
@@ -70,7 +75,7 @@ export default function BlogIndexPage() {
               datePublished: publishedIso(p),
               dateModified: p.updated ?? p.date,
               description: p.summary,
-              ...(p.image ? { image: abs(p.image) } : {}),
+              ...(p.image ? { image: imgUrl(p.image) } : {}),
             })),
           },
         ]}
@@ -117,7 +122,11 @@ export default function BlogIndexPage() {
                         className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       />
                     ) : (
-                      <div className="flex h-full items-center justify-center text-[15px] text-ink-muted">사진 없음</div>
+                      /* 표지가 없는 글(중앙 글은 흔하다) — '사진 없음' 은 오류처럼 읽힌다. 분류를 적은 제목 타일로 대신한다. */
+                      <div className="flex h-full flex-col items-center justify-center gap-1.5 bg-brand-100">
+                        <span className="display-sm text-[22px] text-clay-700">{p.category ?? '블로그'}</span>
+                        <span className="text-[13px] font-bold text-ink-muted">{CLINIC.name}</span>
+                      </div>
                     )}
                   </div>
                   <div className="flex flex-1 flex-col p-6">
