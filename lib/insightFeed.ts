@@ -19,9 +19,17 @@
  *    0편일 때). 그 값이 배포 환경변수에 들어가면 남의 글이 실린다 — 로컬에서만.
  */
 import { allPosts, publishKey, sanitizeBody, type BlogPost } from './blog';
+import hiddenCfg from '../content/central-hidden.json';
 
-const BASE = (process.env.INSIGHTS_API_BASE ?? 'https://winaid-request.vercel.app').replace(/\/+$/, '');
-const HOSPITAL = process.env.INSIGHTS_HOSPITAL_SLUG ?? 'circle-dental';
+export const CENTRAL_BASE = (process.env.INSIGHTS_API_BASE ?? 'https://winaid-request.vercel.app').replace(/\/+$/, '');
+export const CENTRAL_HOSPITAL = process.env.INSIGHTS_HOSPITAL_SLUG ?? 'circle-dental';
+const BASE = CENTRAL_BASE;
+const HOSPITAL = CENTRAL_HOSPITAL;
+/**
+ * 관리자가 숨긴 중앙 글(lib/centralHidden.ts, /admin '중앙에서 오는 글'). 빌드 때 읽는다 —
+ * 관리자가 파일을 커밋하면 Vercel 이 다시 빌드하므로 1~2분 뒤 목록·상세·사이트맵에서 함께 빠진다.
+ */
+const HIDDEN = new Set<string>(((hiddenCfg as { hidden?: string[] }).hidden ?? []).filter((s) => typeof s === 'string'));
 /** 표지 사진을 믿고 그릴 호스트. next.config.ts images.remotePatterns 와 같이 고친다. */
 export const CENTRAL_IMAGE_HOSTS = ['xmbyxlimqvyvijcpzsal.supabase.co'];
 
@@ -103,14 +111,14 @@ export async function centralPosts(): Promise<BlogPost[]> {
   for (let page = 1; page <= 5; page++) {
     const j = await api<ApiList>(`page=${page}&limit=100`);
     if (!j) break;
-    for (const it of j.items ?? []) if (it.slug && it.title) out.push(toPost(it));
+    for (const it of j.items ?? []) if (it.slug && it.title && !HIDDEN.has(it.slug)) out.push(toPost(it));
     if (!j.hasMore) break;
   }
   return out;
 }
 
 export async function centralPost(slug: string): Promise<BlogPost | undefined> {
-  if (!/^[a-z0-9][a-z0-9-]{0,120}$/i.test(slug)) return undefined;
+  if (!/^[a-z0-9][a-z0-9-]{0,120}$/i.test(slug) || HIDDEN.has(slug)) return undefined;
   const j = await api<ApiDetail>(`slug=${encodeURIComponent(slug)}`);
   return j?.item?.slug ? toPost(j.item) : undefined;
 }

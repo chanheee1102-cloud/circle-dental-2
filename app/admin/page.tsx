@@ -108,6 +108,8 @@ export default function AdminPage() {
   /* 무인 발행(크론) 설정 — /api/admin/auto. null 이면 아직 못 읽음. */
   const [autoCfg, setAutoCfg] = useState<{ enabled: boolean; everyDays: number; time: string; last?: { at: string; result: string } } | null>(null);
   const [autoNext, setAutoNext] = useState<{ due: boolean; date: string } | null>(null);
+  /* 중앙(winaid)에서 오는 글 — 여기서는 숨기기만 된다(lib/centralHidden.ts). */
+  const [central, setCentral] = useState<{ items: Array<{ slug: string; title: string; post_type: string; published_at: string; hasCover: boolean; hidden: boolean }> } | null>(null);
   const [cronReady, setCronReady] = useState(true);
 
   useEffect(() => {
@@ -143,9 +145,24 @@ export default function AdminPage() {
       .then((r) => r.json())
       .then((a) => { if (a.ok) { setAutoCfg(a.config); setAutoNext(a.next); setCronReady(a.cronReady); } })
       .catch(() => {});
+    fetch('/api/admin/central', { headers: headers(), cache: 'no-store' })
+      .then((r) => r.json())
+      .then((c) => { if (c.ok) setCentral({ items: c.items }); })
+      .catch(() => {});
   }, [headers]);
 
   useEffect(() => { load(); }, [load]);
+
+  /* 중앙 글 숨기기/다시 보이기 — 저장소에 한 줄 커밋. 반영은 재빌드 뒤(1~2분). */
+  const toggleCentral = async (slug: string, hidden: boolean) => {
+    setBusy(true);
+    const r = await fetch('/api/admin/central', { method: 'POST', headers: headers(), body: JSON.stringify({ slug, hidden }) });
+    const j = await r.json().catch(() => ({}));
+    setBusy(false);
+    if (!r.ok) { setMsg({ kind: 'err', text: j.error || '못 바꿨습니다.' }); return; }
+    setCentral((c) => (c ? { items: c.items.map((it) => (it.slug === slug ? { ...it, hidden } : it)) } : c));
+    setMsg({ kind: 'ok', text: hidden ? '숨겼습니다. 1~2분 뒤 사이트에서 빠집니다(중앙 데이터는 그대로).' : '다시 보이게 했습니다. 1~2분 뒤 사이트에 실립니다.' });
+  };
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -722,6 +739,40 @@ export default function AdminPage() {
         })}
         {posts.length === 0 && !busy && <li className="py-10 text-center text-[15px] text-ink-soft">아직 글이 없습니다. '새 글 쓰기' 로 시작하세요.</li>}
       </ul>
+
+      {/*
+        ★ 중앙(winaid)에서 오는 글 (2026-09-08 오너: "중앙에서 올린 거 admin 에서 삭제 못 해?")
+          이 글들은 우리 저장소에 없다 — 사이트가 그릴 때 API 로 받는다(lib/insightFeed.ts). 그래서 '지우기' 는
+          없고 '숨기기' 만 있다. 고치기·사진·발행 취소는 중앙 관리자에서. 숨김은 목록·상세·사이트맵에 함께 적용된다.
+      */}
+      {central && central.items.length > 0 && (
+        <section className="mt-12">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h2 className="text-[18px] font-black text-ink">중앙(winaid)에서 오는 글 {central.items.length}편</h2>
+            <p className="text-[13px] text-ink-muted">여기서는 숨기기만 됩니다. 글을 고치거나 지우는 건 중앙에서.</p>
+          </div>
+          <ul className="mt-4 divide-y divide-brand-200/70 border-t border-brand-200/70">
+            {central.items.map((c) => {
+              const k = new Date(new Date(c.published_at).getTime() + 9 * 3600 * 1000).toISOString();
+              return (
+                <li key={c.slug} className="flex flex-wrap items-center gap-x-5 gap-y-2 py-4">
+                  <span className={`w-[52px] rounded-full px-2 py-0.5 text-center text-[12.5px] font-black ${c.hidden ? 'bg-ink/10 text-ink-muted' : 'bg-green-100 text-green-800'}`}>
+                    {c.hidden ? '숨김' : '실림'}
+                  </span>
+                  <span className="w-[150px] text-[14.5px] tabular-nums text-ink-soft">{koDate(k.slice(0, 10), k.slice(11, 16))}</span>
+                  <span className={`min-w-0 flex-1 truncate text-[16px] font-bold ${c.hidden ? 'text-ink-muted line-through' : 'text-ink'}`}>{c.title}</span>
+                  <span className="text-[13.5px] text-ink-muted">{c.post_type === 'column' ? '칼럼' : '블로그'}{c.hasCover ? '' : ' · 사진 없음'}</span>
+                  {!c.hidden && <a href={`/insight/blog/${c.slug}`} target="_blank" rel="noreferrer" className="text-[14px] font-bold text-clay-700">보기</a>}
+                  <button onClick={() => toggleCentral(c.slug, !c.hidden)} disabled={busy} className={`text-[14px] font-bold ${c.hidden ? 'text-ink' : 'text-red-700'} disabled:opacity-40`}>
+                    {c.hidden ? '다시 보이기' : '숨기기'}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="mt-3 text-[13px] leading-[1.7] text-ink-muted">숨기면 저장소에 기록되고 1~2분 뒤 사이트에서 빠집니다(목록·상세·사이트맵 모두). 중앙 쪽 데이터는 그대로라 다시 보이기도 됩니다. 사진이 없는 글은 중앙에서 사진을 붙이면 저절로 따라옵니다.</p>
+        </section>
+      )}
 
       <details className="mt-12 rounded-2xl border border-brand-200/70 bg-parchment p-5 text-[14.5px] leading-[1.85] text-ink">
         <summary className="cursor-pointer text-[15px] font-black">처음이라면 · 사용법</summary>
