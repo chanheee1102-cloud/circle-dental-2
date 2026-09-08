@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 /**
- * 블로그 관리 — 로그인 · 목록 · 쓰기/고치기 · 발행 · 삭제 · 사진 만들기.
+ * 블로그 관리 — 로그인 · 목록 · 쓰기/고치기 · 발행 · 삭제 · 사진 만들기 · 글 초안(Gemini).
  *
  * ★★ '발행하기' 는 저장소에 커밋하는 것이다 (2026-09-07 오너: "발행하기 버튼 만들어서 누르기만 하면") ★★
  *   누르면 content/blog/{날짜}-{주소}.json 이 GitHub 에 올라가고, Vercel 이 2~3분 안에 다시 빌드한다.
@@ -46,22 +46,26 @@ export default function AdminPage() {
   const [editing, setEditing] = useState<Post | null>(null);
   const [msg, setMsg] = useState<{ kind: 'ok' | 'err' | 'info'; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
-  const [server, setServer] = useState({ hasServerToken: true, hasOpenAI: true });
+  const [server, setServer] = useState({ hasServerToken: true, hasOpenAI: true, hasGemini: true, repo: '' });
   const [ghToken, setGhToken] = useState('');
   const [oaKey, setOaKey] = useState('');
+  const [gmKey, setGmKey] = useState('');
+  const [topic, setTopic] = useState('');
   const [imgPrompt, setImgPrompt] = useState('');
 
   useEffect(() => {
     setGhToken(localStorage.getItem('cd_gh_token') || '');
     setOaKey(localStorage.getItem('cd_oa_key') || '');
+    setGmKey(localStorage.getItem('cd_gm_key') || '');
   }, []);
 
   const headers = useCallback(() => {
     const h: Record<string, string> = { 'content-type': 'application/json' };
     if (ghToken) h['x-github-token'] = ghToken;
     if (oaKey) h['x-openai-key'] = oaKey;
+    if (gmKey) h['x-gemini-key'] = gmKey;
     return h;
-  }, [ghToken, oaKey]);
+  }, [ghToken, oaKey, gmKey]);
 
   const load = useCallback(async () => {
     setBusy(true);
@@ -80,7 +84,7 @@ export default function AdminPage() {
     }
     setAuthed(true);
     setPosts(j.posts);
-    setServer({ hasServerToken: j.hasServerToken, hasOpenAI: j.hasOpenAI });
+    setServer({ hasServerToken: j.hasServerToken, hasOpenAI: j.hasOpenAI, hasGemini: j.hasGemini, repo: `${j.repo}@${j.branch}` });
   }, [headers]);
 
   useEffect(() => {
@@ -111,6 +115,7 @@ export default function AdminPage() {
   const saveKeys = () => {
     localStorage.setItem('cd_gh_token', ghToken.trim());
     localStorage.setItem('cd_oa_key', oaKey.trim());
+    localStorage.setItem('cd_gm_key', gmKey.trim());
     setMsg({ kind: 'ok', text: '이 브라우저에 저장했습니다. 다시 불러옵니다.' });
     load();
   };
@@ -172,6 +177,47 @@ export default function AdminPage() {
     setMsg({ kind: 'ok', text: `사진을 올렸습니다 (${Math.round(j.bytes / 1024)}KB). 아래 '사진 설명' 을 채워 주세요.` });
   };
 
+  /*
+   * ★ 글 초안 — Gemini 가 쓰고 편집칸에 채운다. **발행은 사람이** 읽고 누른다 (2026-09-08 오너 GO).
+   *   기존 글 제목을 함께 보내 같은 질문을 다시 쓰지 않게 한다(자기 잠식 방지).
+   * ⚠️ 여기서 publish() 를 이어 부르지 말 것 — 의료광고는 사람이 한 번 봐야 한다.
+   */
+  const makeDraft = async () => {
+    if (!editing) return;
+    if (topic.trim().length < 2) {
+      setMsg({ kind: 'err', text: '주제를 한 줄 적어 주세요. 예: 임플란트 심고 며칠 뒤부터 씹어도 되나' });
+      return;
+    }
+    setBusy(true);
+    setMsg({ kind: 'info', text: '글을 쓰는 중입니다 (30~60초)…' });
+    const r = await fetch('/api/admin/draft', {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ topic, existingTitles: posts.map((p) => p.title) }),
+    });
+    const j = await r.json();
+    setBusy(false);
+    if (!r.ok) {
+      setMsg({ kind: 'err', text: j.error || '글을 못 썼습니다.' });
+      if (r.status === 428) setServer((s) => ({ ...s, hasGemini: false }));
+      return;
+    }
+    const d = j.draft;
+    setEditing({
+      ...editing,
+      title: d.title,
+      slug: editing.file ? editing.slug : d.slug,
+      summary: d.summary,
+      category: d.category || editing.category,
+      imageAlt: d.imageAlt,
+      html: d.html,
+    });
+    setImgPrompt(d.imagePrompt || '');
+    const warn = (j.warnings || []).length ? ` ⚠️ 의료법에 걸릴 수 있는 낱말: ${j.warnings.join(', ')} — 본문에서 고쳐 주세요.` : '';
+    const notes = (j.notes || []).length ? ` (${j.notes.join(' · ')})` : '';
+    setMsg({ kind: warn ? 'err' : 'ok', text: `초안을 채웠습니다 (${j.chars}자). 읽어 보고 고친 뒤 발행하세요.${notes}${warn}` });
+  };
+
   const today = todayKST();
   const stats = useMemo(() => {
     const live = posts.filter((p) => p.date <= today).length;
@@ -207,6 +253,19 @@ export default function AdminPage() {
         </button>
         <h1 className="display-sm mt-4 text-[26px] text-ink">{e.file ? '글 고치기' : '새 글'}</h1>
         {e.file && <p className="mt-1 text-[13.5px] text-ink-muted">파일 {e.file} · 주소 /insight/blog/{e.slug}</p>}
+
+        <div className="mt-8 rounded-2xl border border-brand-200/70 bg-parchment p-5">
+          <p className="text-[13px] font-black text-clay-700">글 초안 만들기 · Gemini</p>
+          <p className="mt-1 text-[14px] leading-[1.7] text-ink-soft">
+            환자가 묻는 말 그대로 적으면 제목·요약·본문·사진 장면까지 채웁니다. 채워진 글은 아직 발행되지 않습니다 — 읽어 보고 고친 뒤 아래 &lsquo;발행하기&rsquo; 를 누르세요.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <input value={topic} onChange={(ev) => setTopic(ev.target.value)} className={`${inputCls} min-w-[260px] flex-1`} placeholder="예: 임플란트 심고 며칠 뒤부터 씹어도 되나요" />
+            <button onClick={makeDraft} disabled={busy} className={btnDark}>
+              초안 쓰기
+            </button>
+          </div>
+        </div>
 
         <div className="mt-8 grid gap-5 sm:grid-cols-2">
           <label className="block sm:col-span-2">
@@ -293,6 +352,10 @@ export default function AdminPage() {
           <p className="mt-1 text-[14.5px] text-ink-soft">
             실린 글 {stats.live} · 예약 {stats.queued} · 오늘 {today}
           </p>
+          {/* ★ 어느 저장소에 쓰는지 보인다 — GITHUB_REPO 를 안 넣으면 옛 저장소로 가는 사고를 눈으로 잡는다. */}
+          <p className="mt-1 text-[13px] text-ink-muted">
+            저장소 {server.repo || '…'} · 서버 키: GitHub {server.hasServerToken ? '✓' : '✗'} · OpenAI {server.hasOpenAI ? '✓' : '✗'} · Gemini {server.hasGemini ? '✓' : '✗'}
+          </p>
         </div>
         <div className="flex gap-3">
           <button onClick={() => setEditing({ ...EMPTY, date: today })} className={btnDark}>
@@ -304,7 +367,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {(!server.hasServerToken || !server.hasOpenAI) && (
+      {(!server.hasServerToken || !server.hasOpenAI || !server.hasGemini) && (
         <div className="mt-8 rounded-2xl border border-clay-600/40 bg-clay-400/[0.07] p-5">
           <p className="text-[14.5px] font-black text-ink">서버에 키가 없습니다 — 이 브라우저에만 저장해 두고 쓸 수 있습니다</p>
           <p className="mt-1 text-[14px] leading-[1.7] text-ink-soft">
@@ -314,12 +377,19 @@ export default function AdminPage() {
                 {' '}
                 과 <code>OPENAI_API_KEY</code>
               </>
+            )}
+            {!server.hasGemini && (
+              <>
+                {' '}
+                과 <code>GEMINI_API_KEY</code>
+              </>
             )}{' '}
             를 넣는 것입니다. 그러면 아래 칸은 필요 없습니다.
           </p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {!server.hasServerToken && <input type="password" value={ghToken} onChange={(e) => setGhToken(e.target.value)} className={inputCls} placeholder="GitHub 토큰 (github_pat_…)" />}
             {!server.hasOpenAI && <input type="password" value={oaKey} onChange={(e) => setOaKey(e.target.value)} className={inputCls} placeholder="OpenAI 키 (sk-…) — 사진 만들기용" />}
+            {!server.hasGemini && <input type="password" value={gmKey} onChange={(e) => setGmKey(e.target.value)} className={inputCls} placeholder="Gemini 키 (AIza…) — 글 초안용" />}
           </div>
           <button onClick={saveKeys} className={`${btnLine} mt-4`}>
             저장하고 다시 불러오기

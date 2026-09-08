@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { isAuthed } from '@/lib/adminAuth';
-import { listDir, readFile, writeFile, deleteFile, fileSha, tokenFrom } from '@/lib/github';
+import { listDir, readFile, writeFile, deleteFile, fileSha, tokenFrom, repoInfo } from '@/lib/github';
 
 export const runtime = 'nodejs';
 
@@ -68,7 +68,7 @@ export async function GET(req: Request) {
       }),
     );
     posts.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
-    return NextResponse.json({ posts, hasServerToken: !!process.env.GITHUB_TOKEN, hasOpenAI: !!process.env.OPENAI_API_KEY });
+    return NextResponse.json({ posts, repo: repoInfo().repo, branch: repoInfo().branch, hasServerToken: !!process.env.GITHUB_TOKEN, hasOpenAI: !!process.env.OPENAI_API_KEY, hasGemini: !!process.env.GEMINI_API_KEY });
   } catch (e) {
     return NextResponse.json({ error: String(e).slice(0, 300) }, { status: 502 });
   }
