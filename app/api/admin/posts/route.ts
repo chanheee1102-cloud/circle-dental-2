@@ -22,12 +22,15 @@ type PostIn = {
   slug: string;
   title: string;
   date: string;
+  time?: string;
   updated?: string;
   summary: string;
   category?: string;
   image?: string;
   imageAlt?: string;
   html: string;
+  /** 새 사진의 webp data URL — 있으면 image 경로로 먼저 커밋한다. 없으면 이미 저장소에 있는 사진을 그대로 쓴다. */
+  imageData?: string;
 };
 
 const noAuth = () => NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
@@ -67,7 +70,8 @@ export async function GET(req: Request) {
         };
       }),
     );
-    posts.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+    const key = (p: { date: string; time?: string }) => `${p.date}T${p.time || '00:00'}`;
+    posts.sort((a, b) => (key(a) < key(b) ? 1 : key(a) > key(b) ? -1 : 0));
     return NextResponse.json({ posts, repo: repoInfo().repo, branch: repoInfo().branch, hasServerToken: !!process.env.GITHUB_TOKEN, hasOpenAI: !!process.env.OPENAI_API_KEY, hasGemini: !!process.env.GEMINI_API_KEY });
   } catch (e) {
     return NextResponse.json({ error: String(e).slice(0, 300) }, { status: 502 });
@@ -84,10 +88,27 @@ export async function PUT(req: Request) {
   const slug = (post.slug || '').toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
   if (!slug) return NextResponse.json({ error: '주소(slug)는 영문 소문자·숫자·하이픈만 됩니다.' }, { status: 400 });
   if (!/^\d{4}-\d{2}-\d{2}$/.test(post.date)) return NextResponse.json({ error: '날짜는 YYYY-MM-DD 로 적어 주세요.' }, { status: 400 });
+  if (post.time && !/^\d{2}:\d{2}$/.test(post.time)) return NextResponse.json({ error: '시각은 HH:mm 로 적어 주세요.' }, { status: 400 });
   for (const k of ['title', 'summary', 'html'] as const) {
     if (!post[k] || !String(post[k]).trim()) return NextResponse.json({ error: `${k} 가 비어 있습니다.` }, { status: 400 });
   }
   if (post.image && !post.image.startsWith('/img/')) return NextResponse.json({ error: '사진 경로는 /img/ 아래여야 합니다.' }, { status: 400 });
+  if (post.image && post.imageData) {
+    /*
+     * ★ 사진 파일은 여기서, 발행과 함께 커밋한다 (image/upload 라우트는 미리보기만 준다).
+     * ⚠️ 경로는 post.image 그대로 — /img/blog/{이름}.webp 형식만 받는다. 다른 폴더로 쓰게 두지 말 것.
+     */
+    if (!/^\/img\/blog\/[a-z0-9-]+\.webp$/.test(post.image)) return NextResponse.json({ error: '사진 경로 형식이 이상합니다.' }, { status: 400 });
+    const b64 = post.imageData.replace(/^data:image\/webp;base64,/, '');
+    if (b64.length > 3_000_000) return NextResponse.json({ error: '사진이 너무 큽니다.' }, { status: 413 });
+    try {
+      const imgPath = `public${post.image}`;
+      const imgSha = await fileSha(token, imgPath);
+      await writeFile(token, imgPath, Buffer.from(b64, 'base64'), `사진(블로그): ${post.image.split('/').pop()}`, imgSha);
+    } catch (e) {
+      return NextResponse.json({ error: `사진을 올리지 못했습니다: ${String(e).slice(0, 200)}` }, { status: 502 });
+    }
+  }
 
   /*
    * ⚠️ 파일 이름이 곧 주소다. 이미 있는 글(post.file)을 고칠 때는 **그 파일 이름을 그대로** 쓴다 —
@@ -98,6 +119,7 @@ export async function PUT(req: Request) {
   const body = {
     title: post.title.trim(),
     date: post.date,
+    ...(post.time && post.time !== '00:00' ? { time: post.time } : {}),
     ...(post.updated ? { updated: post.updated } : {}),
     summary: post.summary.trim(),
     ...(post.category ? { category: post.category.trim() } : {}),

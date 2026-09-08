@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { CLINIC } from '@/lib/clinic';
-import { allPosts } from '@/lib/blog';
+import { allPosts, publishedIso } from '@/lib/blog';
 import { Container, ContactCta, PageHero } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, og, alt } from '@/lib/seo';
@@ -67,7 +67,7 @@ export default function BlogIndexPage() {
               '@type': 'BlogPosting',
               headline: p.title,
               url: abs(`/insight/blog/${p.slug}`),
-              datePublished: p.date,
+              datePublished: publishedIso(p),
               dateModified: p.updated ?? p.date,
               description: p.summary,
               ...(p.image ? { image: abs(p.image) } : {}),

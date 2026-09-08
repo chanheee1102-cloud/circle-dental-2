@@ -1,20 +1,25 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { BodyEditor, charCount } from '@/components/admin/BodyEditor';
 
 /**
- * 블로그 관리 — 로그인 · 목록 · 쓰기/고치기 · 발행 · 삭제 · 사진 만들기 · 글 초안(Gemini).
+ * 블로그 관리 — 마케터가 쓰는 화면 (2026-09-08 오너: "사용하기 편하고 직관적이면서 최대한 자동화").
  *
- * ★★ '발행하기' 는 저장소에 커밋하는 것이다 (2026-09-07 오너: "발행하기 버튼 만들어서 누르기만 하면") ★★
- *   누르면 content/blog/{날짜}-{주소}.json 이 GitHub 에 올라가고, Vercel 이 2~3분 안에 다시 빌드한다.
- *   글의 날짜가 오늘 이후면 **예약** 상태다 — 그 날짜가 되면 저절로 실린다(lib/blog.ts todayKST).
- *   그래서 '매달 자동 발행' 은 별도 장치 없이, 날짜를 미리 적어 두는 것으로 끝난다.
+ * ★★ 흐름은 두 단계다 ★★
+ *   1) '어떤 글을 쓸까요' 한 줄 → [초안 만들기] → Gemini 가 제목·요약·본문·사진 장면을 쓰고,
+ *      이어서 gpt-image-2 가 그 장면으로 대표 사진까지 만든다. 사람은 기다리기만 한다.
+ *   2) 검토 화면 — 사진(다시 만들기 / 내 사진 올리기)과 글(문서처럼 고치는 편집기)을 보고,
+ *      [지금 바로 올리기] 또는 날짜·시각을 골라 [예약 발행].
  *
- * ★ 권한은 두 겹이다. 비밀번호는 이 화면을 여는 문, GitHub 토큰은 저장소에 쓰는 힘.
- *   토큰은 Vercel 환경변수(GITHUB_TOKEN)에 두는 것이 정석이고, 없으면 여기서 한 번 붙여 넣는다
- *   (브라우저 localStorage 에만 남는다. 서버에는 저장하지 않는다).
+ * ★ '발행' 은 저장소에 커밋하는 것이다. content/blog/{날짜}-{주소}.json 이 GitHub 에 올라가고
+ *   Vercel 이 2~3분 안에 다시 빌드한다. 날짜·시각이 미래면 그때까지 숨어 있다가 저절로 실린다(lib/blog.ts publishKey).
+ * ★ 초안이 자동으로 발행되는 일은 없다 — 의료광고라 사람이 한 번은 읽어야 한다. 이 순서를 바꾸지 말 것.
+ * ★ 권한은 두 겹. 비밀번호는 이 화면을 여는 문, GitHub 토큰은 저장소에 쓰는 힘. 키 셋은 Vercel 환경변수가
+ *   정석이고(목록 머리에 ✓/✗ 로 보인다), 없으면 이 브라우저에만 붙여 넣어 쓸 수 있다.
  * ⚠️ 이 화면은 noindex + robots disallow 다(layout.tsx · app/robots.ts).
- * ⚠️ 의료광고다. 글마다 의료법 제56조가 그대로 적용된다 — 아래 '올리기 전에' 안내를 지우지 말 것.
+ * ⚠️ 사진은 만들거나 올릴 때 **커밋하지 않는다** — 미리보기(data URL)만 들고 있다가 발행할 때 글과 함께 보낸다(imageData).
+ *    그래서 '다시 만들기' 를 열 번 눌러도 저장소와 Vercel 은 조용하다.
  */
 type Post = {
   file?: string;
@@ -22,6 +27,7 @@ type Post = {
   slug: string;
   title: string;
   date: string;
+  time?: string;
   updated?: string;
   summary: string;
   category?: string;
@@ -29,29 +35,63 @@ type Post = {
   imageAlt?: string;
   html: string;
 };
+type View = 'list' | 'topic' | 'edit';
 
-const EMPTY: Post = { slug: '', title: '', date: '', summary: '', category: '', image: '', imageAlt: '', html: '' };
-const todayKST = () => new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+const CATEGORIES = ['임플란트', '잇몸치료', '충치치료', '신경치료', '보철', '심미치료', '사랑니', '예방', '응급', '치과 선택'];
+const EXAMPLES = [
+  '임플란트 심고 며칠 뒤부터 씹어도 되나요',
+  '잇몸에서 피가 나는데 스케일링만 받으면 되나요',
+  '아이 유치 충치도 꼭 치료해야 하나요',
+  '크라운 씌운 이가 다시 아픈 이유',
+  '치아 미백 뒤에 시린 건 정상인가요',
+];
+const EMPTY: Post = { slug: '', title: '', date: '', time: '09:00', summary: '', category: '', image: '', imageAlt: '', html: '' };
 
-const inputCls =
-  'w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-[15.5px] text-ink outline-none focus:border-clay-600';
-const btn = 'inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[15px] font-bold transition-opacity disabled:opacity-40';
+const nowKST = () => new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 16);
+const todayKST = () => nowKST().slice(0, 10);
+const keyOf = (p: { date: string; time?: string }) => `${p.date}T${p.time || '00:00'}`;
+const koDate = (iso: string, time?: string) => {
+  const [y, m, d] = iso.split('-');
+  return `${y}. ${Number(m)}. ${Number(d)}.${time && time !== '00:00' ? ` ${time}` : ''}`;
+};
+
+const inputCls = 'w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-[15.5px] text-ink outline-none focus:border-clay-600';
+const labelCls = 'text-[13px] font-black text-clay-700';
+const btn = 'inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-[15px] font-bold transition-opacity disabled:opacity-40';
 const btnDark = `${btn} bg-ink text-wine-bg hover:opacity-90`;
 const btnLine = `${btn} border-[1.5px] border-ink/40 text-ink hover:bg-ink hover:text-wine-bg`;
+
+/** 휴대폰 사진(3~8MB)을 브라우저에서 먼저 줄인다 — 서버 한도(4.5MB) 때문. 긴 변 1600px, JPEG 0.86 → 보통 300~600KB. */
+async function shrink(file: File): Promise<string> {
+  const bmp = await createImageBitmap(file).catch(() => null);
+  if (!bmp) throw new Error('이 형식은 브라우저가 읽지 못합니다. 아이폰 HEIC 는 사진 앱에서 JPG 로 내보내거나, 설정 > 카메라 > 포맷을 "높은 호환성" 으로 바꿔 주세요.');
+  const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+  const c = document.createElement('canvas');
+  c.width = Math.round(bmp.width * scale);
+  c.height = Math.round(bmp.height * scale);
+  c.getContext('2d')!.drawImage(bmp, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', 0.86);
+}
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState<boolean | null>(null);
   const [pw, setPw] = useState('');
   const [posts, setPosts] = useState<Post[]>([]);
+  const [view, setView] = useState<View>('list');
   const [editing, setEditing] = useState<Post | null>(null);
+  /* 새로 만들거나 올린 사진의 data URL. 발행 때 imageData 로 함께 간다. 저장소에 이미 있는 사진이면 null. */
+  const [preview, setPreview] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ kind: 'ok' | 'err' | 'info'; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState<string | null>(null);
   const [server, setServer] = useState({ hasServerToken: true, hasOpenAI: true, hasGemini: true, repo: '' });
   const [ghToken, setGhToken] = useState('');
   const [oaKey, setOaKey] = useState('');
   const [gmKey, setGmKey] = useState('');
   const [topic, setTopic] = useState('');
-  const [imgPrompt, setImgPrompt] = useState('');
+  const [scene, setScene] = useState('');
+  const [warnings, setWarnings] = useState<string[]>([]);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setGhToken(localStorage.getItem('cd_gh_token') || '');
@@ -71,10 +111,7 @@ export default function AdminPage() {
     setBusy(true);
     const r = await fetch('/api/admin/posts', { headers: headers(), cache: 'no-store' });
     setBusy(false);
-    if (r.status === 401) {
-      setAuthed(false);
-      return;
-    }
+    if (r.status === 401) { setAuthed(false); return; }
     const j = await r.json();
     if (!r.ok) {
       setAuthed(true);
@@ -87,29 +124,20 @@ export default function AdminPage() {
     setServer({ hasServerToken: j.hasServerToken, hasOpenAI: j.hasOpenAI, hasGemini: j.hasGemini, repo: `${j.repo}@${j.branch}` });
   }, [headers]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useEffect(() => { load(); }, [load]);
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
     const r = await fetch('/api/admin/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ password: pw }) });
     setBusy(false);
-    if (!r.ok) {
-      setMsg({ kind: 'err', text: '비밀번호가 맞지 않습니다.' });
-      return;
-    }
-    setPw('');
-    setMsg(null);
-    load();
+    if (!r.ok) { setMsg({ kind: 'err', text: '비밀번호가 맞지 않습니다.' }); return; }
+    setPw(''); setMsg(null); load();
   };
 
   const logout = async () => {
     await fetch('/api/admin/login', { method: 'DELETE' });
-    setAuthed(false);
-    setPosts([]);
-    setEditing(null);
+    setAuthed(false); setPosts([]); setEditing(null); setView('list');
   };
 
   const saveKeys = () => {
@@ -120,109 +148,131 @@ export default function AdminPage() {
     load();
   };
 
-  const publish = async () => {
+  const openNew = () => { setEditing({ ...EMPTY, date: todayKST() }); setPreview(null); setWarnings([]); setTopic(''); setScene(''); setMsg(null); setView('topic'); };
+  const openEdit = (p: Post) => { setEditing({ ...p, time: p.time || '00:00' }); setPreview(null); setWarnings([]); setScene(''); setMsg(null); setView('edit'); };
+  const backToList = () => { setEditing(null); setView('list'); setMsg(null); };
+
+  /* ── 사진: 만들기 / 올리기 ─────────────────────────────────── */
+  const imageName = (p: Post) => (p.image ? `${p.slug || 'post'}-${Date.now().toString(36).slice(-4)}` : p.slug || 'post');
+
+  const makeImage = async (p: Post, sceneText: string): Promise<Post> => {
+    const r = await fetch('/api/admin/image', { method: 'POST', headers: headers(), body: JSON.stringify({ prompt: sceneText, name: imageName(p) }) });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || '사진을 못 만들었습니다.');
+    setPreview(j.preview || null);
+    return { ...p, image: j.image };
+  };
+
+  const regenImage = async () => {
     if (!editing) return;
-    setBusy(true);
-    setMsg(null);
-    const r = await fetch('/api/admin/posts', { method: 'PUT', headers: headers(), body: JSON.stringify({ post: editing }) });
-    const j = await r.json();
+    if (!scene.trim()) { setMsg({ kind: 'err', text: '어떤 장면인지 한 줄 적어 주세요. 예: 흰 상판 위의 임플란트 하나와 크라운' }); return; }
+    setBusy(true); setMsg({ kind: 'info', text: '사진을 만드는 중입니다 (30~40초)…' });
+    try {
+      const p = await makeImage(editing, scene);
+      setEditing(p);
+      setMsg({ kind: 'ok', text: '사진을 바꿨습니다. 올릴 때 함께 저장됩니다. 마음에 안 들면 장면을 고쳐 다시 만들거나, 내 사진을 올리세요.' });
+    } catch (e) { setMsg({ kind: 'err', text: String((e as Error).message) }); }
     setBusy(false);
-    if (!r.ok) {
-      setMsg({ kind: 'err', text: j.error || '발행에 실패했습니다.' });
-      return;
-    }
-    const future = editing.date > todayKST();
-    setMsg({
-      kind: 'ok',
-      text: `${j.updated ? '고쳐서' : '새로'} 올렸습니다 (${j.file}). ${
-        future ? `${editing.date} 에 자동으로 실립니다.` : '2~3분 뒤 사이트에 보입니다.'
-      }`,
-    });
-    setEditing(null);
-    load();
   };
 
-  const remove = async (p: Post) => {
-    if (!p.file) return;
-    if (!confirm(`"${p.title}" 을(를) 삭제할까요? 주소가 사라지고, 색인된 글이면 검색에서도 빠집니다.`)) return;
-    setBusy(true);
-    const r = await fetch('/api/admin/posts', { method: 'DELETE', headers: headers(), body: JSON.stringify({ file: p.file }) });
-    const j = await r.json();
+  const upload = async (file: File | undefined) => {
+    if (!editing || !file) return;
+    setBusy(true); setMsg({ kind: 'info', text: '사진을 올리는 중입니다…' });
+    try {
+      const data = await shrink(file);
+      const r = await fetch('/api/admin/upload', { method: 'POST', headers: headers(), body: JSON.stringify({ name: imageName(editing), data }) });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || '사진을 못 올렸습니다.');
+      setPreview(j.preview || null);
+      setEditing({ ...editing, image: j.image });
+      setMsg({ kind: 'ok', text: `사진을 받았습니다 (${Math.round(j.bytes / 1024)}KB). 올릴 때 함께 저장됩니다. '사진 설명' 이 사진과 맞는지 봐 주세요.` });
+    } catch (e) { setMsg({ kind: 'err', text: String((e as Error).message) }); }
     setBusy(false);
-    if (!r.ok) {
-      setMsg({ kind: 'err', text: j.error || '삭제에 실패했습니다.' });
-      return;
-    }
-    setMsg({ kind: 'ok', text: '삭제했습니다. 2~3분 뒤 사이트에서 사라집니다.' });
-    load();
+    if (fileRef.current) fileRef.current.value = '';
   };
 
-  const makeImage = async () => {
-    if (!editing) return;
-    const name = editing.slug || 'post';
-    if (!imgPrompt.trim()) {
-      setMsg({ kind: 'err', text: '어떤 장면인지 한 줄 적어 주세요. 예: 흰 상판 위에 놓인 임플란트 하나와 크라운' });
-      return;
-    }
-    setBusy(true);
-    setMsg({ kind: 'info', text: '그림을 만드는 중입니다 (30~40초)…' });
-    const r = await fetch('/api/admin/image', { method: 'POST', headers: headers(), body: JSON.stringify({ prompt: imgPrompt, name }) });
-    const j = await r.json();
-    setBusy(false);
-    if (!r.ok) {
-      setMsg({ kind: 'err', text: j.error || '그림을 못 만들었습니다.' });
-      return;
-    }
-    setEditing({ ...editing, image: j.image });
-    setMsg({ kind: 'ok', text: `사진을 올렸습니다 (${Math.round(j.bytes / 1024)}KB). 아래 '사진 설명' 을 채워 주세요.` });
-  };
-
-  /*
-   * ★ 글 초안 — Gemini 가 쓰고 편집칸에 채운다. **발행은 사람이** 읽고 누른다 (2026-09-08 오너 GO).
-   *   기존 글 제목을 함께 보내 같은 질문을 다시 쓰지 않게 한다(자기 잠식 방지).
-   * ⚠️ 여기서 publish() 를 이어 부르지 말 것 — 의료광고는 사람이 한 번 봐야 한다.
-   */
+  /* ── 1단계: 초안 → 사진까지 한 번에 ─────────────────────────── */
   const makeDraft = async () => {
     if (!editing) return;
-    if (topic.trim().length < 2) {
-      setMsg({ kind: 'err', text: '주제를 한 줄 적어 주세요. 예: 임플란트 심고 며칠 뒤부터 씹어도 되나' });
-      return;
-    }
-    setBusy(true);
-    setMsg({ kind: 'info', text: '글을 쓰는 중입니다 (30~60초)…' });
-    const r = await fetch('/api/admin/draft', {
-      method: 'POST',
-      headers: headers(),
-      body: JSON.stringify({ topic, existingTitles: posts.map((p) => p.title) }),
-    });
+    if (topic.trim().length < 2) { setMsg({ kind: 'err', text: '어떤 글을 쓸지 한 줄 적어 주세요.' }); return; }
+    setBusy(true); setMsg(null);
+    setProgress('1/2 · 글을 쓰는 중입니다 (30~60초). 잠시만요.');
+    const r = await fetch('/api/admin/draft', { method: 'POST', headers: headers(), body: JSON.stringify({ topic, existingTitles: posts.map((p) => p.title) }) });
     const j = await r.json();
-    setBusy(false);
     if (!r.ok) {
-      setMsg({ kind: 'err', text: j.error || '글을 못 썼습니다.' });
+      setBusy(false); setProgress(null);
+      setMsg({ kind: 'err', text: j.error || '글을 못 썼습니다. 한 번 더 눌러 보세요.' });
       if (r.status === 428) setServer((s) => ({ ...s, hasGemini: false }));
       return;
     }
     const d = j.draft;
-    setEditing({
-      ...editing,
-      title: d.title,
-      slug: editing.file ? editing.slug : d.slug,
-      summary: d.summary,
-      category: d.category || editing.category,
-      imageAlt: d.imageAlt,
-      html: d.html,
-    });
-    setImgPrompt(d.imagePrompt || '');
-    const warn = (j.warnings || []).length ? ` ⚠️ 의료법에 걸릴 수 있는 낱말: ${j.warnings.join(', ')} — 본문에서 고쳐 주세요.` : '';
-    const notes = (j.notes || []).length ? ` (${j.notes.join(' · ')})` : '';
-    setMsg({ kind: warn ? 'err' : 'ok', text: `초안을 채웠습니다 (${j.chars}자). 읽어 보고 고친 뒤 발행하세요.${notes}${warn}` });
+    let p: Post = { ...editing, title: d.title, slug: d.slug, summary: d.summary, category: d.category || '', imageAlt: d.imageAlt, html: d.html };
+    setWarnings(j.warnings || []);
+    setScene(d.imagePrompt || '');
+    setProgress('2/2 · 글에 맞는 사진을 만드는 중입니다 (30~40초).');
+    let photoNote = '';
+    try {
+      p = await makeImage(p, d.imagePrompt || d.title);
+    } catch (e) {
+      photoNote = ` 사진은 못 만들었습니다 (${String((e as Error).message).slice(0, 80)}) — 검토 화면에서 다시 만들거나 올려 주세요.`;
+    }
+    setEditing(p);
+    setBusy(false); setProgress(null);
+    setView('edit');
+    setMsg({ kind: (j.warnings || []).length ? 'err' : 'ok', text: `초안이 준비됐습니다 (공백 제외 ${charCount(d.html)}자). 읽어 보고 고친 뒤 올리세요.${photoNote}` });
   };
 
-  const today = todayKST();
+  /* ── 발행 ─────────────────────────────────────────────────── */
+  const publish = async (mode: 'now' | 'schedule') => {
+    if (!editing) return;
+    let p = editing;
+    if (mode === 'now') {
+      const n = nowKST();
+      p = { ...p, date: n.slice(0, 10), time: n.slice(11, 16) };
+    }
+    if (!p.title.trim() || !p.summary.trim() || !p.html.trim()) { setMsg({ kind: 'err', text: '제목·요약·본문은 비울 수 없습니다.' }); return; }
+    if (p.image && !p.imageAlt?.trim()) { setMsg({ kind: 'err', text: '사진 설명(무엇이 찍혔는지)을 채워 주세요. 검색과 화면 낭독기가 읽는 글입니다.' }); return; }
+    if (p.file && preview) p = { ...p, updated: todayKST() };
+    setBusy(true); setMsg(null);
+    const r = await fetch('/api/admin/posts', { method: 'PUT', headers: headers(), body: JSON.stringify({ post: { ...p, ...(preview ? { imageData: preview } : {}) } }) });
+    const j = await r.json();
+    setBusy(false);
+    if (!r.ok) { setMsg({ kind: 'err', text: j.error || '올리지 못했습니다.' }); return; }
+    const future = keyOf(p) > nowKST();
+    setEditing(null); setView('list');
+    setMsg({
+      kind: 'ok',
+      text: future
+        ? `예약했습니다. ${koDate(p.date, p.time)} 에 저절로 실립니다 (그 시각 뒤 최대 한 시간 안).`
+        : `올렸습니다. 2~3분 뒤 사이트에 보입니다: /insight/blog/${p.slug}`,
+    });
+    load();
+  };
+
+  const remove = async (p: Post) => {
+    if (!p.file || !confirm(`"${p.title}" 을 지울까요? 사이트에서도 사라집니다.`)) return;
+    setBusy(true);
+    const r = await fetch('/api/admin/posts', { method: 'DELETE', headers: headers(), body: JSON.stringify({ file: p.file }) });
+    const j = await r.json();
+    setBusy(false);
+    if (!r.ok) { setMsg({ kind: 'err', text: j.error || '삭제에 실패했습니다.' }); return; }
+    setMsg({ kind: 'ok', text: '지웠습니다. 2~3분 뒤 사이트에서 사라집니다.' });
+    setEditing(null); setView('list');
+    load();
+  };
+
+  const now = nowKST();
   const stats = useMemo(() => {
-    const live = posts.filter((p) => p.date <= today).length;
+    const live = posts.filter((p) => keyOf(p) <= now).length;
     return { live, queued: posts.length - live };
-  }, [posts, today]);
+  }, [posts, now]);
+
+  const Msg = () =>
+    msg ? (
+      <p className={`mt-6 rounded-xl px-4 py-3 text-[14.5px] leading-[1.7] ${msg.kind === 'ok' ? 'bg-green-50 text-green-900' : msg.kind === 'err' ? 'bg-red-50 text-red-800' : 'bg-brand-100 text-ink'}`}>
+        {msg.text}
+      </p>
+    ) : null;
 
   /* ── 로그인 ───────────────────────────────────────────────── */
   if (authed === false) {
@@ -232,9 +282,7 @@ export default function AdminPage() {
         <h1 className="display-sm mt-3 text-[28px] text-ink">로그인</h1>
         <form onSubmit={login} className="mt-8 space-y-4">
           <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} placeholder="비밀번호" autoFocus className={inputCls} />
-          <button type="submit" disabled={busy || !pw} className={`${btnDark} w-full justify-center`}>
-            들어가기
-          </button>
+          <button type="submit" disabled={busy || !pw} className={`${btnDark} w-full`}>들어가기</button>
         </form>
         {msg && <p className="mt-4 text-[14.5px] text-red-700">{msg.text}</p>}
       </main>
@@ -242,101 +290,180 @@ export default function AdminPage() {
   }
   if (authed === null) return <main className="px-6 py-24 text-center text-ink-soft">불러오는 중…</main>;
 
-  /* ── 편집 ─────────────────────────────────────────────────── */
-  if (editing) {
+  /* ── 1단계: 무엇을 쓸까 ───────────────────────────────────── */
+  if (view === 'topic' && editing) {
+    return (
+      <main className="mx-auto max-w-[760px] px-6 py-14">
+        <button onClick={backToList} className="text-[14.5px] font-bold text-clay-700">← 목록으로</button>
+        <h1 className="display-sm mt-4 text-[28px] text-ink">새 글</h1>
+        <p className="mt-2 text-[15.5px] leading-[1.8] text-ink-soft">
+          환자가 실제로 묻는 말을 그대로 적어 주세요. 제목·요약·본문·대표 사진까지 한 번에 만들어 드립니다. 만든 뒤에 읽어 보고 고칠 수 있습니다.
+        </p>
+
+        <label className="mt-8 block">
+          <span className={labelCls}>어떤 글을 쓸까요?</span>
+          <textarea
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            rows={2}
+            autoFocus
+            disabled={busy}
+            className={`${inputCls} mt-2 text-[17px]`}
+            placeholder="예: 임플란트 심고 며칠 뒤부터 씹어도 되나요"
+            onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); makeDraft(); } }}
+          />
+        </label>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {EXAMPLES.map((t) => (
+            <button key={t} type="button" disabled={busy} onClick={() => setTopic(t)} className="rounded-full border border-brand-200 bg-white px-3.5 py-1.5 text-[13.5px] text-ink-soft hover:border-clay-600 hover:text-ink">
+              {t}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center gap-4">
+          <button onClick={makeDraft} disabled={busy || topic.trim().length < 2} className={`${btnDark} px-7 py-3 text-[16px]`}>
+            {busy ? '만드는 중…' : '초안 만들기'}
+          </button>
+          <button onClick={() => { setView('edit'); setMsg(null); }} disabled={busy} className="text-[14px] font-bold text-ink-muted underline underline-offset-2">
+            AI 없이 빈 글로 직접 쓰기
+          </button>
+        </div>
+
+        {progress && (
+          <div className="mt-8 rounded-2xl border border-brand-200/70 bg-parchment p-5">
+            <div className="flex items-center gap-3">
+              <span className="inline-block size-3 animate-pulse rounded-full bg-clay-600" />
+              <p className="text-[15px] font-bold text-ink">{progress}</p>
+            </div>
+            <p className="mt-2 text-[14px] text-ink-soft">이 화면을 닫지 마세요. 끝나면 검토 화면으로 넘어갑니다.</p>
+          </div>
+        )}
+        <Msg />
+      </main>
+    );
+  }
+
+  /* ── 2단계: 검토하고 올리기 ───────────────────────────────── */
+  if (view === 'edit' && editing) {
     const e = editing;
     const set = (k: keyof Post, v: string) => setEditing({ ...e, [k]: v });
+    const img = preview || e.image || '';
+    const scheduledFuture = keyOf(e) > now;
     return (
-      <main className="mx-auto max-w-[880px] px-6 py-14">
-        <button onClick={() => setEditing(null)} className="text-[14.5px] font-bold text-clay-700">
-          ← 목록으로
-        </button>
-        <h1 className="display-sm mt-4 text-[26px] text-ink">{e.file ? '글 고치기' : '새 글'}</h1>
-        {e.file && <p className="mt-1 text-[13.5px] text-ink-muted">파일 {e.file} · 주소 /insight/blog/{e.slug}</p>}
-
-        <div className="mt-8 rounded-2xl border border-brand-200/70 bg-parchment p-5">
-          <p className="text-[13px] font-black text-clay-700">글 초안 만들기 · Gemini</p>
-          <p className="mt-1 text-[14px] leading-[1.7] text-ink-soft">
-            환자가 묻는 말 그대로 적으면 제목·요약·본문·사진 장면까지 채웁니다. 채워진 글은 아직 발행되지 않습니다 — 읽어 보고 고친 뒤 아래 &lsquo;발행하기&rsquo; 를 누르세요.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <input value={topic} onChange={(ev) => setTopic(ev.target.value)} className={`${inputCls} min-w-[260px] flex-1`} placeholder="예: 임플란트 심고 며칠 뒤부터 씹어도 되나요" />
-            <button onClick={makeDraft} disabled={busy} className={btnDark}>
-              초안 쓰기
-            </button>
+      <main className="mx-auto max-w-[1180px] px-6 py-12">
+        <button onClick={backToList} className="text-[14.5px] font-bold text-clay-700">← 목록으로</button>
+        <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 className="display-sm text-[26px] text-ink">{e.file ? '글 고치기' : '읽어 보고 올리기'}</h1>
+            <p className="mt-1 text-[13.5px] text-ink-muted">
+              {e.file ? `주소 /insight/blog/${e.slug} (바꿀 수 없습니다)` : e.slug ? `주소 /insight/blog/${e.slug}` : '주소는 올릴 때 자동으로 정해집니다'}
+            </p>
           </div>
         </div>
 
-        <div className="mt-8 grid gap-5 sm:grid-cols-2">
-          <label className="block sm:col-span-2">
-            <span className="text-[13px] font-black text-clay-700">제목 · 사람이 실제로 검색하거나 AI 에 묻는 문장 그대로</span>
-            <input value={e.title} onChange={(ev) => set('title', ev.target.value)} className={`${inputCls} mt-1.5`} placeholder="예: 임플란트·브리지·틀니, 무엇을 기준으로 고르나요?" />
-          </label>
-          <label className="block">
-            <span className="text-[13px] font-black text-clay-700">주소(영문) {e.file && '· 바꾸지 마세요'}</span>
-            <input value={e.slug} disabled={!!e.file} onChange={(ev) => set('slug', ev.target.value)} className={`${inputCls} mt-1.5 disabled:opacity-60`} placeholder="implant-bridge-denture" />
-          </label>
-          <label className="block">
-            <span className="text-[13px] font-black text-clay-700">발행일 · 오늘 이후면 그날 자동으로 실립니다</span>
-            <input type="date" value={e.date} onChange={(ev) => set('date', ev.target.value)} className={`${inputCls} mt-1.5`} />
-          </label>
-          <label className="block">
-            <span className="text-[13px] font-black text-clay-700">분류</span>
-            <input value={e.category || ''} onChange={(ev) => set('category', ev.target.value)} className={`${inputCls} mt-1.5`} placeholder="임플란트 · 잇몸치료 · 응급 …" />
-          </label>
-          <label className="block">
-            <span className="text-[13px] font-black text-clay-700">고친 날 (선택)</span>
-            <input type="date" value={e.updated || ''} onChange={(ev) => set('updated', ev.target.value)} className={`${inputCls} mt-1.5`} />
-          </label>
-          <label className="block sm:col-span-2">
-            <span className="text-[13px] font-black text-clay-700">요약 · 검색 결과와 카드에 나가는 한두 문장 (70~160자)</span>
-            <textarea value={e.summary} onChange={(ev) => set('summary', ev.target.value)} rows={2} className={`${inputCls} mt-1.5`} />
-          </label>
-
-          <div className="sm:col-span-2 rounded-2xl border border-brand-200/70 bg-parchment p-5">
-            <p className="text-[13px] font-black text-clay-700">대표 사진</p>
-            {e.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={e.image} alt="" className="mt-3 aspect-[3/2] w-full max-w-[420px] rounded-xl object-cover" />
-            ) : (
-              <p className="mt-2 text-[14px] text-ink-soft">아직 없습니다. 아래에 장면을 적고 만들거나, 경로를 직접 적으세요.</p>
-            )}
-            <div className="mt-4 flex flex-wrap gap-3">
-              <input value={imgPrompt} onChange={(ev) => setImgPrompt(ev.target.value)} className={`${inputCls} min-w-[260px] flex-1`} placeholder="장면 한 줄 (사람·손·글자는 자동으로 뺍니다)" />
-              <button onClick={makeImage} disabled={busy || !e.slug} className={btnLine}>
-                사진 만들기
-              </button>
-            </div>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <input value={e.image || ''} onChange={(ev) => set('image', ev.target.value)} className={inputCls} placeholder="/img/blog/파일이름.webp" />
-              <input value={e.imageAlt || ''} onChange={(ev) => set('imageAlt', ev.target.value)} className={inputCls} placeholder="사진 설명 (무엇이 찍혔는지)" />
-            </div>
+        {warnings.length > 0 && (
+          <div className="mt-6 rounded-2xl border border-red-300 bg-red-50 p-5 text-[14.5px] leading-[1.7] text-red-900">
+            <p className="font-black">이 낱말은 의료광고 심의에 걸릴 수 있습니다: {warnings.join(', ')}</p>
+            <p className="mt-1">본문에서 찾아서 다른 말로 바꿔 주세요. 그대로 올리면 병원이 책임을 집니다.</p>
           </div>
-
-          <label className="block sm:col-span-2">
-            <span className="text-[13px] font-black text-clay-700">본문 HTML · p / h2 / h3 / strong / a 만. 목록·마크다운·최상급 표현 금지</span>
-            <textarea value={e.html} onChange={(ev) => set('html', ev.target.value)} rows={18} className={`${inputCls} mt-1.5 font-mono text-[13.5px]`} />
-          </label>
-        </div>
-
-        <div className="mt-6 rounded-2xl border border-clay-600/40 bg-clay-400/[0.07] p-5 text-[14.5px] leading-[1.8] text-ink">
-          <p className="font-black">올리기 전에</p>
-          <p className="mt-1">
-            블로그 글도 의료광고입니다. 치료경험담·후기·별점, 치료 전후 사진, &lsquo;최고·유일·완벽&rsquo; 같은 최상급, 근거 없는 효과 단정은 의료법 제56조에 걸립니다.
-            이미 사이트에 있는 주제(증상·질환·시술·비용)를 다시 쓰면 기존 페이지와 검색에서 서로 다툽니다.
-          </p>
-        </div>
-
-        {msg && (
-          <p className={`mt-5 text-[15px] ${msg.kind === 'err' ? 'text-red-700' : msg.kind === 'ok' ? 'text-green-800' : 'text-ink-soft'}`}>{msg.text}</p>
         )}
-        <div className="mt-6 flex flex-wrap gap-3">
-          <button onClick={publish} disabled={busy} className={btnDark}>
-            {e.file ? '고쳐서 발행하기' : '발행하기'}
-          </button>
-          <button onClick={() => setEditing(null)} disabled={busy} className={btnLine}>
-            취소
-          </button>
+        <Msg />
+
+        <div className="mt-8 grid gap-8 lg:grid-cols-[380px_1fr]">
+          {/* 왼쪽: 사진 */}
+          <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+            <div className="overflow-hidden rounded-2xl border border-brand-200/70 bg-brand-100">
+              {img ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={img} alt="" className="aspect-[3/2] w-full object-cover" />
+              ) : (
+                <div className="flex aspect-[3/2] items-center justify-center text-[14.5px] text-ink-muted">아직 사진이 없습니다</div>
+              )}
+            </div>
+            <div className="rounded-2xl border border-brand-200/70 bg-parchment p-4">
+              <p className={labelCls}>사진 바꾸기</p>
+              <input value={scene} onChange={(ev) => setScene(ev.target.value)} className={`${inputCls} mt-2`} placeholder="장면 한 줄 (영어·한국어 모두 됩니다)" />
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button onClick={regenImage} disabled={busy || (!server.hasOpenAI && !oaKey)} className={btnLine}>AI 로 다시 만들기</button>
+                <button onClick={() => fileRef.current?.click()} disabled={busy} className={btnLine}>내 사진 올리기</button>
+                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(ev) => upload(ev.target.files?.[0])} />
+              </div>
+              <p className="mt-2 text-[12.5px] leading-[1.6] text-ink-muted">JPG·PNG 아무 크기나 됩니다. 사람 얼굴·치료 전후 사진은 올리지 마세요(의료법).</p>
+            </div>
+            <label className="block">
+              <span className={labelCls}>사진 설명 · 무엇이 찍혔는지</span>
+              <input value={e.imageAlt || ''} onChange={(ev) => set('imageAlt', ev.target.value)} className={`${inputCls} mt-2`} placeholder="예: 흰 상판 위의 임플란트 모형과 크라운" />
+            </label>
+          </aside>
+
+          {/* 오른쪽: 글 */}
+          <section className="space-y-5">
+            <label className="block">
+              <span className={labelCls}>제목</span>
+              <input value={e.title} onChange={(ev) => set('title', ev.target.value)} className={`${inputCls} mt-2 text-[18px] font-bold`} placeholder="환자가 묻는 문장 그대로" />
+            </label>
+            <div className="grid gap-5 sm:grid-cols-[1fr_200px]">
+              <label className="block">
+                <span className={labelCls}>요약 · 검색 결과와 목록 카드에 나가는 한두 문장</span>
+                <textarea value={e.summary} onChange={(ev) => set('summary', ev.target.value)} rows={3} className={`${inputCls} mt-2`} />
+                <span className="mt-1 block text-[12.5px] text-ink-muted">{e.summary.length}자 · 70~160자가 좋습니다</span>
+              </label>
+              <label className="block">
+                <span className={labelCls}>분류</span>
+                <select value={e.category || ''} onChange={(ev) => set('category', ev.target.value)} className={`${inputCls} mt-2`}>
+                  <option value="">고르기</option>
+                  {[...new Set([...CATEGORIES, ...posts.map((p) => p.category).filter(Boolean)])].map((c) => (
+                    <option key={c} value={c as string}>{c}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div>
+              <span className={labelCls}>본문 · 보이는 그대로 사이트에 실립니다</span>
+              <div className="mt-2">
+                <BodyEditor value={e.html} onChange={(html) => set('html', html)} />
+              </div>
+            </div>
+            {!e.file && (
+              <details className="text-[13.5px] text-ink-muted">
+                <summary className="cursor-pointer font-bold">고급 · 주소(영문) 바꾸기</summary>
+                <input value={e.slug} onChange={(ev) => set('slug', ev.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))} className={`${inputCls} mt-2`} placeholder="when-to-chew-after-implant" />
+                <p className="mt-1">올린 뒤에는 바꿀 수 없습니다. 영문 소문자·숫자·하이픈만.</p>
+              </details>
+            )}
+          </section>
+        </div>
+
+        {/* 아래 고정 띠: 언제 올릴까 */}
+        <div className="sticky bottom-0 mt-10 -mx-6 border-t border-brand-200/70 bg-wine-bg/95 px-6 py-4 backdrop-blur">
+          <div className="mx-auto flex max-w-[1180px] flex-wrap items-end gap-4">
+            <label className="block">
+              <span className={labelCls}>올릴 날짜</span>
+              <input type="date" value={e.date} min={e.file ? undefined : todayKST()} onChange={(ev) => set('date', ev.target.value)} className={`${inputCls} mt-1.5 w-[170px]`} />
+            </label>
+            <label className="block">
+              <span className={labelCls}>시각</span>
+              <select value={e.time || '00:00'} onChange={(ev) => set('time', ev.target.value)} className={`${inputCls} mt-1.5 w-[110px]`}>
+                {Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, '0')}:00`).map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </label>
+            <div className="ml-auto flex flex-wrap items-center gap-3">
+              {e.file && <button onClick={() => remove(e)} disabled={busy} className="text-[14px] font-bold text-red-700">이 글 삭제</button>}
+              {e.file ? (
+                <button onClick={() => publish('schedule')} disabled={busy} className={btnDark}>고친 내용 저장</button>
+              ) : (
+                <>
+                  <button onClick={() => publish('schedule')} disabled={busy || !scheduledFuture} className={btnLine} title={scheduledFuture ? '' : '날짜·시각을 지금 이후로 고르면 예약할 수 있습니다'}>
+                    {scheduledFuture ? `${koDate(e.date, e.time)} 예약 발행` : '예약 발행 (미래 시각을 고르세요)'}
+                  </button>
+                  <button onClick={() => publish('now')} disabled={busy} className={btnDark}>지금 바로 올리기</button>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </main>
     );
@@ -349,21 +476,15 @@ export default function AdminPage() {
         <div>
           <p className="text-[13px] font-black tracking-[0.14em] text-clay-600">동그라미치과 · 블로그 관리</p>
           <h1 className="display-sm mt-3 text-[28px] text-ink">글 {posts.length}편</h1>
-          <p className="mt-1 text-[14.5px] text-ink-soft">
-            실린 글 {stats.live} · 예약 {stats.queued} · 오늘 {today}
-          </p>
+          <p className="mt-1 text-[14.5px] text-ink-soft">실린 글 {stats.live} · 예약 {stats.queued} · 지금 {now.replace('T', ' ')}</p>
           {/* ★ 어느 저장소에 쓰는지 보인다 — GITHUB_REPO 를 안 넣으면 옛 저장소로 가는 사고를 눈으로 잡는다. */}
           <p className="mt-1 text-[13px] text-ink-muted">
-            저장소 {server.repo || '…'} · 서버 키: GitHub {server.hasServerToken ? '✓' : '✗'} · OpenAI {server.hasOpenAI ? '✓' : '✗'} · Gemini {server.hasGemini ? '✓' : '✗'}
+            저장소 {server.repo || '…'} · 연결: 저장소 {server.hasServerToken ? '✓' : '✗'} · 사진 {server.hasOpenAI ? '✓' : '✗'} · 글쓰기 {server.hasGemini ? '✓' : '✗'}
           </p>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => setEditing({ ...EMPTY, date: today })} className={btnDark}>
-            새 글
-          </button>
-          <button onClick={logout} className={btnLine}>
-            나가기
-          </button>
+          <button onClick={openNew} className={btnDark}>새 글 쓰기</button>
+          <button onClick={logout} className={btnLine}>나가기</button>
         </div>
       </div>
 
@@ -371,68 +492,52 @@ export default function AdminPage() {
         <div className="mt-8 rounded-2xl border border-clay-600/40 bg-clay-400/[0.07] p-5">
           <p className="text-[14.5px] font-black text-ink">서버에 키가 없습니다 — 이 브라우저에만 저장해 두고 쓸 수 있습니다</p>
           <p className="mt-1 text-[14px] leading-[1.7] text-ink-soft">
-            정석은 Vercel 프로젝트의 Environment Variables 에 <code>GITHUB_TOKEN</code> (repo 권한의 fine-grained 토큰)
-            {!server.hasOpenAI && (
-              <>
-                {' '}
-                과 <code>OPENAI_API_KEY</code>
-              </>
-            )}
-            {!server.hasGemini && (
-              <>
-                {' '}
-                과 <code>GEMINI_API_KEY</code>
-              </>
-            )}{' '}
-            를 넣는 것입니다. 그러면 아래 칸은 필요 없습니다.
+            정석은 Vercel 프로젝트의 Environment Variables 에 <code>GITHUB_TOKEN</code>
+            {!server.hasOpenAI && <> · <code>OPENAI_API_KEY</code></>}
+            {!server.hasGemini && <> · <code>GEMINI_API_KEY</code></>} 를 넣고 Redeploy 하는 것입니다. 그러면 아래 칸은 필요 없습니다.
           </p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {!server.hasServerToken && <input type="password" value={ghToken} onChange={(e) => setGhToken(e.target.value)} className={inputCls} placeholder="GitHub 토큰 (github_pat_…)" />}
-            {!server.hasOpenAI && <input type="password" value={oaKey} onChange={(e) => setOaKey(e.target.value)} className={inputCls} placeholder="OpenAI 키 (sk-…) — 사진 만들기용" />}
-            {!server.hasGemini && <input type="password" value={gmKey} onChange={(e) => setGmKey(e.target.value)} className={inputCls} placeholder="Gemini 키 (AIza…) — 글 초안용" />}
+            {!server.hasServerToken && <input type="password" value={ghToken} onChange={(ev) => setGhToken(ev.target.value)} className={inputCls} placeholder="GitHub 토큰 (github_pat_…)" />}
+            {!server.hasOpenAI && <input type="password" value={oaKey} onChange={(ev) => setOaKey(ev.target.value)} className={inputCls} placeholder="OpenAI 키 (sk-…) — 사진용" />}
+            {!server.hasGemini && <input type="password" value={gmKey} onChange={(ev) => setGmKey(ev.target.value)} className={inputCls} placeholder="Gemini 키 (AIza…) — 글쓰기용" />}
           </div>
-          <button onClick={saveKeys} className={`${btnLine} mt-4`}>
-            저장하고 다시 불러오기
-          </button>
+          <button onClick={saveKeys} className={`${btnLine} mt-4`}>저장하고 다시 불러오기</button>
         </div>
       )}
 
-      {msg && (
-        <p className={`mt-6 text-[15px] ${msg.kind === 'err' ? 'text-red-700' : msg.kind === 'ok' ? 'text-green-800' : 'text-ink-soft'}`}>{msg.text}</p>
-      )}
+      <Msg />
 
-      <ul className="mt-8 divide-y divide-wine-line border-t border-wine-line">
+      <ul className="mt-8 divide-y divide-brand-200/70 border-t border-brand-200/70">
         {posts.map((p) => {
-          const live = p.date <= today;
+          const live = keyOf(p) <= now;
           return (
-            <li key={p.file} className="flex flex-wrap items-center gap-x-6 gap-y-2 py-4">
-              <span className={`shrink-0 rounded-full px-3 py-1 text-[12.5px] font-black ${live ? 'bg-green-100 text-green-900' : 'bg-clay-tint text-clay-700'}`}>
+            <li key={p.file || p.slug} className="flex flex-wrap items-center gap-x-5 gap-y-2 py-4">
+              <span className={`w-[52px] rounded-full px-2 py-0.5 text-center text-[12.5px] font-black ${live ? 'bg-green-100 text-green-800' : 'bg-brand-100 text-clay-700'}`}>
                 {live ? '실림' : '예약'}
               </span>
-              <span className="w-[96px] shrink-0 text-[14px] tabular-nums text-ink-muted">{p.date}</span>
-              <span className="min-w-0 flex-1 text-[16px] font-bold text-ink">{p.title}</span>
-              {p.category && <span className="text-[13px] text-ink-muted">{p.category}</span>}
-              <span className="flex gap-2">
-                {live && (
-                  <a href={`/insight/blog/${p.slug}`} target="_blank" rel="noreferrer" className="text-[14px] font-bold text-clay-700 hover:underline">
-                    보기
-                  </a>
-                )}
-                <button onClick={() => setEditing(p)} className="text-[14px] font-bold text-ink hover:underline">
-                  고치기
-                </button>
-                <button onClick={() => remove(p)} className="text-[14px] font-bold text-red-700 hover:underline">
-                  삭제
-                </button>
-              </span>
+              <span className="w-[150px] text-[14.5px] tabular-nums text-ink-soft">{koDate(p.date, p.time)}</span>
+              <button onClick={() => openEdit(p)} className="min-w-0 flex-1 truncate text-left text-[16px] font-bold text-ink hover:text-clay-700">{p.title}</button>
+              <span className="text-[13.5px] text-ink-muted">{p.category}</span>
+              {live && <a href={`/insight/blog/${p.slug}`} target="_blank" rel="noreferrer" className="text-[14px] font-bold text-clay-700">보기</a>}
+              <button onClick={() => openEdit(p)} className="text-[14px] font-bold text-ink">고치기</button>
             </li>
           );
         })}
-        {!posts.length && !busy && <li className="py-8 text-[15px] text-ink-soft">아직 글이 없습니다. &lsquo;새 글&rsquo; 을 눌러 시작하세요.</li>}
+        {posts.length === 0 && !busy && <li className="py-10 text-center text-[15px] text-ink-soft">아직 글이 없습니다. '새 글 쓰기' 로 시작하세요.</li>}
       </ul>
-      <p className="mt-8 text-[13.5px] leading-[1.7] text-ink-muted">
-        발행·수정·삭제는 저장소에 바로 커밋되고, 사이트에는 2~3분 뒤 반영됩니다. 발행일이 오늘 이후인 글은 그날 0시(한국 시간)부터 저절로 실립니다.
-      </p>
+
+      <details className="mt-12 rounded-2xl border border-brand-200/70 bg-parchment p-5 text-[14.5px] leading-[1.85] text-ink">
+        <summary className="cursor-pointer text-[15px] font-black">처음이라면 · 사용법</summary>
+        <ol className="mt-3 list-decimal space-y-1.5 pl-5">
+          <li><strong>새 글 쓰기</strong> → 환자가 묻는 말을 한 줄 적고 <strong>초안 만들기</strong>. 1~2분 기다리면 글과 사진이 함께 준비됩니다.</li>
+          <li>검토 화면에서 <strong>끝까지 읽습니다.</strong> 원장님 말투나 병원 사정과 다른 곳을 고치세요. 빨간 경고가 있으면 그 낱말은 꼭 바꿉니다.</li>
+          <li>사진이 별로면 장면을 고쳐 <strong>AI 로 다시 만들기</strong>, 또는 <strong>내 사진 올리기</strong>. 사진 설명 칸은 사진과 맞게.</li>
+          <li><strong>지금 바로 올리기</strong> 또는 날짜·시각을 골라 <strong>예약 발행</strong>. 한 달 10편이면 3일 간격이 좋습니다.</li>
+          <li>올린 글은 2~3분 뒤 사이트에 보입니다. 예약 글은 그 시각이 지나면 저절로 실립니다.</li>
+        </ol>
+        <p className="mt-3 font-black">하지 말 것</p>
+        <p>치료 후기·전후 사진·'최고/유일/완벽' 같은 표현은 의료법 위반입니다. 사이트에 이미 있는 주제(증상·시술·비용 페이지)를 통째로 다시 쓰지 마세요. 올린 글의 주소(영문)는 바꾸지 마세요.</p>
+      </details>
     </main>
   );
 }

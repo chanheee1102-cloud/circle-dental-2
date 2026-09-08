@@ -33,6 +33,11 @@ export interface BlogPost {
   title: string;
   /** YYYY-MM-DD. 목록 정렬과 구조화 데이터의 발행일. */
   date: string;
+  /**
+   * 발행 시각 HH:mm (한국 시간). 없으면 그날 0시. (2026-09-08 오너: "발행 날짜나 시간 고르도록")
+   * ⚠️ 쪽은 한 시간마다 다시 그려지므로(ISR 3600) 실제 노출은 최대 한 시간 늦을 수 있다.
+   */
+  time?: string;
   /** 고친 날. 없으면 발행일과 같다. */
   updated?: string;
   /** 목록과 검색 결과에 나가는 한두 문장. */
@@ -60,7 +65,22 @@ export interface BlogPost {
  *    안 그러면 한국 시간 새벽 0~9시에 올린 글이 아홉 시간 늦게 나온다.
  */
 export function todayKST(): string {
-  return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+  return nowKST().slice(0, 10);
+}
+
+/** 지금(한국 시간) — 'YYYY-MM-DDTHH:mm'. 발행 시각 게이트의 기준. */
+export function nowKST(): string {
+  return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 16);
+}
+
+/** 구조화 데이터용 발행 시각 — 시각이 있으면 '2026-09-10T09:00:00+09:00', 없으면 날짜만. */
+export function publishedIso(p: { date: string; time?: string }): string {
+  return p.time && /^\d{2}:\d{2}$/.test(p.time) && p.time !== '00:00' ? `${p.date}T${p.time}:00+09:00` : p.date;
+}
+
+/** 글의 발행 시각 키 — date 와 time 을 붙여 nowKST() 와 문자열로 비교한다. */
+export function publishKey(p: { date: string; time?: string }): string {
+  return `${p.date}T${p.time && /^\d{2}:\d{2}$/.test(p.time) ? p.time : '00:00'}`;
 }
 
 const DIR = join(process.cwd(), 'content', 'blog');
@@ -93,7 +113,7 @@ export function allPosts(opts: { includeFuture?: boolean } = {}): BlogPost[] {
    * ⚠️ 기본은 **오늘까지의 글만**이다. date 가 미래인 글은 예약 상태라 목록·상세·사이트맵·
    *    llms.txt 어디에도 안 나간다. 관리자 화면만 includeFuture 로 전부 본다.
    */
-  const today = todayKST();
+  const now = nowKST();
   let files: string[];
   try {
     files = readdirSync(DIR).filter((f) => f.toLowerCase().endsWith('.json'));
@@ -114,11 +134,12 @@ export function allPosts(opts: { includeFuture?: boolean } = {}): BlogPost[] {
     /* 없으면 화면이 이상해지는 값들 — 하나라도 비면 그 글은 싣지 않는다. */
     if (!p.title || !p.date || !p.summary || !p.html) continue;
     /* 예약 글 — 날짜가 오기 전에는 없는 글이다. */
-    if (!opts.includeFuture && p.date > today) continue;
+    if (!opts.includeFuture && publishKey(p as { date: string; time?: string }) > now) continue;
     posts.push({
       slug: p.slug || slugFromFile(file),
       title: p.title,
       date: p.date,
+      time: p.time,
       updated: p.updated,
       summary: p.summary,
       category: p.category,
@@ -129,7 +150,7 @@ export function allPosts(opts: { includeFuture?: boolean } = {}): BlogPost[] {
     });
   }
 
-  return posts.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  return posts.sort((a, b) => (publishKey(a) < publishKey(b) ? 1 : publishKey(a) > publishKey(b) ? -1 : 0));
 }
 
 export function postBySlug(slug: string): BlogPost | undefined {

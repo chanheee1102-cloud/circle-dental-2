@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
 import { isAuthed } from '@/lib/adminAuth';
-import { writeFile, fileSha, tokenFrom } from '@/lib/github';
 
 export const runtime = 'nodejs';
 export const maxDuration = 120;
 
 /**
- * POST { prompt, name } → gpt-image-2 로 그림을 만들어 public/img/blog/{name}.webp 로 커밋한다.
+ * POST { prompt, name } → gpt-image-2 로 그림을 만들어 **webp 미리보기(data URL)** 로 돌려준다.
+ *
+ * ★ 여기서 커밋하지 않는다 (2026-09-08). 마케터가 '다시 만들기' 를 여러 번 누르는데, 그때마다 저장소에
+ *   커밋하면 Vercel 이 매번 다시 빌드하고 안 쓰는 사진이 쌓인다. 사진 파일은 **발행할 때** posts PUT 이
+ *   글과 함께 커밋한다(imageData). 그래서 이 라우트는 GitHub 토큰이 필요 없다.
  *
  * ★ 결은 사이트의 다른 AI 사진과 같아야 한다 — 아래 LOOK 을 프롬프트 뒤에 항상 붙인다.
  *   (scripts 의 _gen*.cjs 와 같은 문장. 결이 갈리면 한 사이트로 안 보인다.)
@@ -23,8 +26,6 @@ const LOOK =
 
 export async function POST(req: Request) {
   if (!isAuthed(req)) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
-  const token = tokenFrom(req);
-  if (!token) return NextResponse.json({ error: 'GitHub 토큰이 없습니다.' }, { status: 428 });
   const key = process.env.OPENAI_API_KEY || req.headers.get('x-openai-key');
   if (!key) return NextResponse.json({ error: 'OpenAI 키가 없습니다. Vercel 환경변수 OPENAI_API_KEY 를 설정하거나 화면에서 붙여 넣으세요.' }, { status: 428 });
 
@@ -45,10 +46,7 @@ export async function POST(req: Request) {
 
     const sharp = (await import('sharp')).default;
     const webp = await sharp(Buffer.from(b64, 'base64')).webp({ quality: 82 }).toBuffer();
-    const path = `public/img/blog/${safe}.webp`;
-    const sha = await fileSha(token, path);
-    await writeFile(token, path, webp, `사진(블로그): ${safe}`, sha);
-    return NextResponse.json({ ok: true, image: `/img/blog/${safe}.webp`, bytes: webp.length });
+    return NextResponse.json({ ok: true, image: `/img/blog/${safe}.webp`, bytes: webp.length, preview: `data:image/webp;base64,${webp.toString('base64')}` });
   } catch (e) {
     return NextResponse.json({ error: String(e).slice(0, 300) }, { status: 502 });
   }

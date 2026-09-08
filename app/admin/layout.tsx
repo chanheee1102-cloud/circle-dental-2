@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 };
 
+/*
+ * ★ data-admin — globals.css 가 이 표식을 보고 사이트 머리말·꼬리말·퀵메뉴를 숨긴다.
+ *   루트 레이아웃은 손대지 않는다(사이트 전체가 쓰는 파일). 관리자는 작업 화면이라 예약 띠·전화 단추가 필요 없고,
+ *   아래 고정 퀵메뉴가 '지금 바로 올리기' 띠를 가렸다(2026-09-08 실측).
+ */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return <div data-admin>{children}</div>;
 }

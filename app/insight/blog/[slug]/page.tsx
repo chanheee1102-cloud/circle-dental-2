@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation';
 export const revalidate = 3600;
 import { CLINIC } from '@/lib/clinic';
 import { DOCTORS } from '@/lib/doctors';
-import { allPosts, postBySlug } from '@/lib/blog';
+import { allPosts, postBySlug, publishedIso } from '@/lib/blog';
 import { Container, ContactCta, Breadcrumb, Sentences } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, og, medicalWebPageSchema, alt } from '@/lib/seo';
@@ -81,7 +81,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             description: post.summary,
             url: abs(path),
             inLanguage: 'ko-KR',
-            datePublished: post.date,
+            datePublished: publishedIso(post),
             dateModified: post.updated ?? post.date,
             isPartOf: { '@id': `${CLINIC.url}/insight/blog#blog` },
             publisher: { '@id': `${CLINIC.url}/#clinic` },
