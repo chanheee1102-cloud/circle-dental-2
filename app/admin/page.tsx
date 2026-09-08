@@ -105,6 +105,10 @@ export default function AdminPage() {
   const [autoCount, setAutoCount] = useState(10);
   const [auto, setAuto] = useState<{ step: string; done: Array<{ title: string; date: string }>; skipped: string[]; running: boolean } | null>(null);
   const stopRef = useRef(false);
+  /* 무인 발행(크론) 설정 — /api/admin/auto. null 이면 아직 못 읽음. */
+  const [autoCfg, setAutoCfg] = useState<{ enabled: boolean; everyDays: number; time: string; last?: { at: string; result: string } } | null>(null);
+  const [autoNext, setAutoNext] = useState<{ due: boolean; date: string } | null>(null);
+  const [cronReady, setCronReady] = useState(true);
 
   useEffect(() => {
     setGhToken(localStorage.getItem('cd_gh_token') || '');
@@ -135,6 +139,10 @@ export default function AdminPage() {
     setAuthed(true);
     setPosts(j.posts);
     setServer({ hasServerToken: j.hasServerToken, hasOpenAI: j.hasOpenAI, hasGemini: j.hasGemini, repo: `${j.repo}@${j.branch}` });
+    fetch('/api/admin/auto', { headers: headers(), cache: 'no-store' })
+      .then((r) => r.json())
+      .then((a) => { if (a.ok) { setAutoCfg(a.config); setAutoNext(a.next); setCronReady(a.cronReady); } })
+      .catch(() => {});
   }, [headers]);
 
   useEffect(() => { load(); }, [load]);
@@ -295,14 +303,14 @@ export default function AdminPage() {
       if (stopRef.current) break;
       const t = topics[i];
       setAuto((a) => (a ? { ...a, step: `${i + 1}/${topics.length} · 글을 쓰는 중 — ${t.topic}` } : a));
-      let rd = await fetch('/api/admin/draft', { method: 'POST', headers: headers(), body: JSON.stringify({ topic: t.topic, existingTitles: titlesSoFar }) });
+      let rd = await fetch('/api/admin/draft', { method: 'POST', headers: headers(), body: JSON.stringify({ topic: t.topic, existingTitles: titlesSoFar, review: true }) });
       let jd = await rd.json();
       if (!rd.ok) { skipped.push(`${t.topic} — ${jd.error || '글 실패'}`); continue; }
       /* 의료법 낱말이 걸리면 그 낱말을 피해서 한 번 다시 쓴다. 그래도 HARD 가 남으면 버리고, SOFT 만 남으면 예약하되 사유를 남긴다. */
       let flagged = [...(jd.warnings || []), ...(jd.cautions || [])];
       if (flagged.length) {
         setAuto((a) => (a ? { ...a, step: `${i + 1}/${topics.length} · 의료법 낱말(${flagged.join(', ')})을 피해 다시 쓰는 중 — ${t.topic}` } : a));
-        rd = await fetch('/api/admin/draft', { method: 'POST', headers: headers(), body: JSON.stringify({ topic: t.topic, existingTitles: titlesSoFar, avoid: flagged }) });
+        rd = await fetch('/api/admin/draft', { method: 'POST', headers: headers(), body: JSON.stringify({ topic: t.topic, existingTitles: titlesSoFar, avoid: flagged, review: true }) });
         jd = await rd.json();
         if (!rd.ok) { skipped.push(`${t.topic} — ${jd.error || '글 실패'}`); continue; }
         flagged = [...(jd.warnings || []), ...(jd.cautions || [])];
@@ -333,6 +341,37 @@ export default function AdminPage() {
     if (!rp.ok) return fail(jp.error || '올리지 못했습니다.');
     setAuto((a) => (a ? { ...a, running: false, step: '', skipped } : a));
     setMsg({ kind: 'ok', text: `${made.length}편을 예약했습니다 — ${koDate(made[0].date)} 부터 ${koDate(made[made.length - 1].date)} 까지 ${AUTO_GAP_DAYS}일 간격, ${AUTO_TIME}. 목록에서 '고치기' 로 미리 읽어 보실 수 있습니다.${skipped.length ? ` 건너뛴 글 ${skipped.length}편은 아래에 사유가 있습니다.` : ''}` });
+    load();
+  };
+
+  /*
+   * ★ 무인 발행 토글 (2026-09-08 오너: "마케터 손에 안 가게 3일마다 자동으로") — 켜 두면 Vercel 크론이 매일 0시(한국)에
+   *   /api/cron/blog 를 부르고, 미래 글이 없으면 한 편을 만들어 everyDays 뒤로 예약한다. 사람은 아무것도 안 해도 된다.
+   * ⚠️ 설정은 저장소 파일(content/auto-blog.json)이라 토글 = 커밋 = 빌드 한 번. 자주 누를 것이 아니다.
+   */
+  const toggleAuto = async (enabled: boolean, everyDays?: number) => {
+    if (!autoCfg) return;
+    const days = everyDays ?? autoCfg.everyDays;
+    if (enabled && !confirm(`무인 발행을 켤까요? 사람이 읽지 않은 글이 ${days}일에 한 편씩 올라갑니다. 의료법 낱말 검사와 감수를 거치지만 완벽하지는 않습니다 — 목록을 가끔 훑어봐 주세요.`)) return;
+    setBusy(true);
+    const r = await fetch('/api/admin/auto', { method: 'POST', headers: headers(), body: JSON.stringify({ enabled, everyDays: days }) });
+    const j = await r.json();
+    setBusy(false);
+    if (!r.ok) { setMsg({ kind: 'err', text: j.error || '설정을 저장하지 못했습니다.' }); return; }
+    setAutoCfg(j.config);
+    setMsg({ kind: 'ok', text: enabled ? `무인 발행을 켰습니다 — ${days}일에 한 편, ${j.config.time}. 다음 글은 예약된 마지막 글 ${days}일 뒤에 저절로 만들어집니다.` : '무인 발행을 껐습니다. 예약된 글은 그대로 실립니다.' });
+  };
+
+  /* 시험 — 크론이 하는 일을 지금 한 번 (미래 글이 있어도 그 뒤에 잇는다). 2~3분. */
+  const runCronNow = async () => {
+    if (!confirm('지금 한 편을 자동으로 만들어 예약할까요? 2~3분 걸립니다.')) return;
+    setBusy(true); setMsg({ kind: 'info', text: '무인 발행을 한 번 돌리는 중입니다 (주제 → 글 → 감수 → 사진, 2~3분)…' });
+    const r = await fetch('/api/cron/blog?force=1', { cache: 'no-store' });
+    const j = await r.json();
+    setBusy(false);
+    if (!r.ok) { setMsg({ kind: 'err', text: j.error || '실패했습니다.' }); return; }
+    if (j.skipped) { setMsg({ kind: 'err', text: `이번엔 올리지 않았습니다 — ${j.skipped}${j.topic ? ` (${j.topic})` : ''}. 내일 다시 시도합니다.` }); load(); return; }
+    setMsg({ kind: 'ok', text: `${koDate(j.date)} 에 예약했습니다 — ${j.title}${j.cautions?.length ? ` · 확인 권장: ${j.cautions.join(', ')}` : ''}${j.fixes?.length ? ` · 감수: ${j.fixes.join(' / ')}` : ''}` });
     load();
   };
 
@@ -571,6 +610,36 @@ export default function AdminPage() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          {/* ★ 무인 발행 토글 — 자동 N편 버튼 왼쪽 (2026-09-08 오너). 켜짐이면 초록 점, 다음 글 날짜를 아래 줄에. */}
+          {autoCfg && (
+            <div className={`flex items-center gap-3 rounded-full border-[1.5px] px-4 py-2 ${autoCfg.enabled ? 'border-green-700/50 bg-green-50' : 'border-ink/25 bg-white'}`}>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={autoCfg.enabled}
+                disabled={busy || !!auto?.running}
+                onClick={() => toggleAuto(!autoCfg.enabled)}
+                className={`relative h-[26px] w-[46px] shrink-0 rounded-full transition-colors ${autoCfg.enabled ? 'bg-green-700' : 'bg-ink/25'} disabled:opacity-40`}
+                title={autoCfg.enabled ? '무인 발행 끄기' : '무인 발행 켜기'}
+              >
+                <span className={`absolute top-[3px] size-[20px] rounded-full bg-white shadow transition-[left] ${autoCfg.enabled ? 'left-[23px]' : 'left-[3px]'}`} />
+              </button>
+              <div className="leading-tight">
+                <p className="text-[14px] font-black text-ink">
+                  무인 발행 {autoCfg.enabled ? '켜짐' : '꺼짐'} ·{' '}
+                  <select value={autoCfg.everyDays} disabled={busy} onChange={(ev) => toggleAuto(autoCfg.enabled, Number(ev.target.value))} className="bg-transparent font-black outline-none" aria-label="며칠에 한 편">
+                    {[1, 2, 3, 4, 5, 7].map((d) => <option key={d} value={d}>{d}일</option>)}
+                  </select>
+                  에 1편
+                </p>
+                <p className="text-[12px] text-ink-muted">
+                  {!cronReady ? '⚠️ 서버에 CRON_SECRET 이 없어 크론이 못 돕니다' : autoCfg.enabled && autoNext ? (autoNext.due ? '오늘 밤 0시에 다음 글을 만듭니다' : `${koDate(autoNext.date)} 글이 실린 날 밤에 다음 글을 만듭니다`) : '켜면 사람이 안 건드려도 이어집니다'}
+                  {' · '}
+                  <button type="button" onClick={runCronNow} disabled={busy || !!auto?.running} className="underline underline-offset-2 disabled:opacity-40">지금 한 편</button>
+                </p>
+              </div>
+            </div>
+          )}
           <div className="flex items-center overflow-hidden rounded-full border-[1.5px] border-ink/40">
             <select value={autoCount} onChange={(ev) => setAutoCount(Number(ev.target.value))} disabled={!!auto?.running} className="h-[44px] bg-white pl-4 pr-2 text-[15px] font-bold text-ink outline-none" aria-label="자동으로 쓸 편수">
               {AUTO_COUNTS.map((c) => <option key={c} value={c}>{c}편</option>)}
@@ -602,6 +671,12 @@ export default function AdminPage() {
       )}
 
       <Msg />
+
+      {autoCfg?.last && (
+        <p className="mt-6 rounded-xl bg-brand-100 px-4 py-3 text-[13.5px] leading-[1.7] text-ink-soft">
+          무인 발행 마지막 기록 · {autoCfg.last.at} — {autoCfg.last.result}
+        </p>
+      )}
 
       {auto && (auto.running || auto.done.length > 0 || auto.skipped.length > 0) && (
         <div className="mt-8 rounded-2xl border border-brand-200/70 bg-parchment p-5">
@@ -655,6 +730,7 @@ export default function AdminPage() {
           <li>검토 화면에서 <strong>끝까지 읽습니다.</strong> 원장님 말투나 병원 사정과 다른 곳을 고치세요. 빨간 경고가 있으면 그 낱말은 꼭 바꿉니다.</li>
           <li>사진이 별로면 장면을 고쳐 <strong>AI 로 다시 만들기</strong>, 또는 <strong>내 사진 올리기</strong>. 사진 설명 칸은 사진과 맞게.</li>
           <li><strong>지금 바로 올리기</strong> 또는 날짜·시각을 골라 <strong>예약 발행</strong>. 한 달 10편이면 3일 간격이 좋습니다.</li>
+          <li><strong>무인 발행</strong> 토글을 켜 두면 사람이 아무것도 안 해도 며칠에 한 편씩 만들어 예약됩니다(매일 밤 0시에 확인). 감수까지 거치지만 완벽하지는 않으니 목록을 가끔 훑어봐 주세요. 예약된 글은 실리기 전에 '고치기' 로 읽고 고칠 수 있습니다.</li>
           <li>한꺼번에 하려면 <strong>자동으로 쓰고 예약</strong> — 편수를 고르면 주제부터 사진까지 만들어 3일 간격으로 예약합니다. 의료법 낱말이 걸린 글은 건너뛰고 사유를 보여 줍니다. 예약된 글은 실리기 전에 '고치기' 로 읽어 보세요.</li>
           <li>올린 글은 2~3분 뒤 사이트에 보입니다. 예약 글은 그 시각이 지나면 저절로 실립니다.</li>
         </ol>
