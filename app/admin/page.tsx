@@ -38,13 +38,20 @@ type Post = {
 type View = 'list' | 'topic' | 'edit';
 
 const CATEGORIES = ['임플란트', '잇몸치료', '충치치료', '신경치료', '보철', '심미치료', '사랑니', '예방', '응급', '치과 선택'];
+/* 입력칸의 회색 예시 문구 — 칩으로 두면 그대로 눌러서 겹치는 글이 생긴다(2026-09-08 오너). 열 때마다 하나씩 돌아가며 보인다. */
 const EXAMPLES = [
   '임플란트 심고 며칠 뒤부터 씹어도 되나요',
   '잇몸에서 피가 나는데 스케일링만 받으면 되나요',
   '아이 유치 충치도 꼭 치료해야 하나요',
-  '크라운 씌운 이가 다시 아픈 이유',
+  '크라운 씌운 이가 다시 아픈 이유가 뭔가요',
   '치아 미백 뒤에 시린 건 정상인가요',
+  '사랑니 뽑고 며칠이나 붓나요',
+  '신경치료 중간에 안 아프면 그만 다녀도 되나요',
 ];
+const AUTO_COUNTS = [3, 5, 10, 15, 20];
+const AUTO_GAP_DAYS = 3;
+const AUTO_TIME = '09:00';
+const addDays = (iso: string, n: number) => new Date(new Date(`${iso}T00:00:00Z`).getTime() + n * 86400000).toISOString().slice(0, 10);
 const EMPTY: Post = { slug: '', title: '', date: '', time: '09:00', summary: '', category: '', image: '', imageAlt: '', html: '' };
 
 const nowKST = () => new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 16);
@@ -91,7 +98,13 @@ export default function AdminPage() {
   const [topic, setTopic] = useState('');
   const [scene, setScene] = useState('');
   const [warnings, setWarnings] = useState<string[]>([]);
+  const [cautions, setCautions] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [example, setExample] = useState(EXAMPLES[0]);
+  /* 자동 흐름 상태 — 진행 줄과 중단 신호. stopRef 는 렌더와 무관하게 루프가 읽는다. */
+  const [autoCount, setAutoCount] = useState(10);
+  const [auto, setAuto] = useState<{ step: string; done: Array<{ title: string; date: string }>; skipped: string[]; running: boolean } | null>(null);
+  const stopRef = useRef(false);
 
   useEffect(() => {
     setGhToken(localStorage.getItem('cd_gh_token') || '');
@@ -148,8 +161,8 @@ export default function AdminPage() {
     load();
   };
 
-  const openNew = () => { setEditing({ ...EMPTY, date: todayKST() }); setPreview(null); setWarnings([]); setTopic(''); setScene(''); setMsg(null); setView('topic'); };
-  const openEdit = (p: Post) => { setEditing({ ...p, time: p.time || '00:00' }); setPreview(null); setWarnings([]); setScene(''); setMsg(null); setView('edit'); };
+  const openNew = () => { setEditing({ ...EMPTY, date: todayKST() }); setPreview(null); setWarnings([]); setCautions([]); setTopic(''); setScene(''); setMsg(null); setExample(EXAMPLES[Math.floor(Math.random() * EXAMPLES.length)]); setView('topic'); };
+  const openEdit = (p: Post) => { setEditing({ ...p, time: p.time || '00:00' }); setPreview(null); setWarnings([]); setCautions([]); setScene(''); setMsg(null); setView('edit'); };
   const backToList = () => { setEditing(null); setView('list'); setMsg(null); };
 
   /* ── 사진: 만들기 / 올리기 ─────────────────────────────────── */
@@ -208,6 +221,7 @@ export default function AdminPage() {
     const d = j.draft;
     let p: Post = { ...editing, title: d.title, slug: d.slug, summary: d.summary, category: d.category || '', imageAlt: d.imageAlt, html: d.html };
     setWarnings(j.warnings || []);
+    setCautions(j.cautions || []);
     setScene(d.imagePrompt || '');
     setProgress('2/2 · 글에 맞는 사진을 만드는 중입니다 (30~40초).');
     let photoNote = '';
@@ -234,7 +248,7 @@ export default function AdminPage() {
     if (p.image && !p.imageAlt?.trim()) { setMsg({ kind: 'err', text: '사진 설명(무엇이 찍혔는지)을 채워 주세요. 검색과 화면 낭독기가 읽는 글입니다.' }); return; }
     if (p.file && preview) p = { ...p, updated: todayKST() };
     setBusy(true); setMsg(null);
-    const r = await fetch('/api/admin/posts', { method: 'PUT', headers: headers(), body: JSON.stringify({ post: { ...p, ...(preview ? { imageData: preview } : {}) } }) });
+    const r = await fetch('/api/admin/publish', { method: 'POST', headers: headers(), body: JSON.stringify({ posts: [{ ...p, ...(preview ? { imageData: preview } : {}) }] }) });
     const j = await r.json();
     setBusy(false);
     if (!r.ok) { setMsg({ kind: 'err', text: j.error || '올리지 못했습니다.' }); return; }
@@ -246,6 +260,79 @@ export default function AdminPage() {
         ? `예약했습니다. ${koDate(p.date, p.time)} 에 저절로 실립니다 (그 시각 뒤 최대 한 시간 안).`
         : `올렸습니다. 2~3분 뒤 사이트에 보입니다: /insight/blog/${p.slug}`,
     });
+    load();
+  };
+
+  /*
+   * ★★ 자동으로 쓰고 예약 (2026-09-08 오너: "자동 10건 쓰기 하면 3일 간격으로 … 내용이랑 이미지까지 해서 발행 예약") ★★
+   *   주제 N개 고르기 → 편마다 (글 → 사진) → 마지막에 **커밋 하나**로 전부 예약.
+   *   날짜는 이미 예약된 마지막 글 다음부터 3일 간격, 09:00. 그래서 이어서 누르면 달력이 그대로 이어진다.
+   * ⚠️ 사람 검토가 없는 흐름이다. 그래서 의료법 낱말 경고가 있는 글은 **예약하지 않고 건너뛴다**(목록에 사유가 남는다).
+   *    첫 글이 오늘이 아니라 사흘 뒤인 것도 그 때문 — 목록에서 '고치기' 로 읽어 볼 시간이 있다.
+   * ⚠️ 탭을 닫으면 멈춘다. 중간까지 만든 것은 커밋되지 않는다(커밋은 끝에 한 번). '중단' 을 누르면 그때까지 만든 것만 예약한다.
+   */
+  const runAuto = async () => {
+    if (auto?.running) return;
+    const n = autoCount;
+    if (!confirm(`${n}편을 자동으로 쓰고 ${AUTO_GAP_DAYS}일 간격으로 예약할까요? 글마다 1~2분, 전부 ${Math.round((n * 90) / 60)}분쯤 걸립니다. 그동안 이 탭을 닫지 마세요.`)) return;
+    stopRef.current = false;
+    setMsg(null);
+    setAuto({ step: '주제를 고르는 중입니다…', done: [], skipped: [], running: true });
+    const fail = (text: string) => { setAuto((a) => (a ? { ...a, running: false, step: '' } : a)); setMsg({ kind: 'err', text }); };
+    const rt = await fetch('/api/admin/topics', { method: 'POST', headers: headers(), body: JSON.stringify({ count: n, existing: posts.map((p) => ({ title: p.title, summary: p.summary })) }) });
+    const jt = await rt.json();
+    if (!rt.ok) return fail(jt.error || '주제를 못 골랐습니다.');
+    const topics: Array<{ topic: string; category: string }> = jt.topics;
+
+    /* 시작 날짜: 예약된 마지막 글 다음. 없으면 오늘. 거기서 3일 뒤부터. */
+    const lastDate = posts.reduce((m, p) => (p.date > m ? p.date : m), todayKST());
+    let date = addDays(lastDate, AUTO_GAP_DAYS);
+    const made: Post[] = [];
+    const skipped: string[] = [];
+    const titlesSoFar = posts.map((p) => p.title);
+    const usedSlugs = new Set(posts.map((p) => p.slug));
+    for (let i = 0; i < topics.length; i++) {
+      if (stopRef.current) break;
+      const t = topics[i];
+      setAuto((a) => (a ? { ...a, step: `${i + 1}/${topics.length} · 글을 쓰는 중 — ${t.topic}` } : a));
+      let rd = await fetch('/api/admin/draft', { method: 'POST', headers: headers(), body: JSON.stringify({ topic: t.topic, existingTitles: titlesSoFar }) });
+      let jd = await rd.json();
+      if (!rd.ok) { skipped.push(`${t.topic} — ${jd.error || '글 실패'}`); continue; }
+      /* 의료법 낱말이 걸리면 그 낱말을 피해서 한 번 다시 쓴다. 그래도 HARD 가 남으면 버리고, SOFT 만 남으면 예약하되 사유를 남긴다. */
+      let flagged = [...(jd.warnings || []), ...(jd.cautions || [])];
+      if (flagged.length) {
+        setAuto((a) => (a ? { ...a, step: `${i + 1}/${topics.length} · 의료법 낱말(${flagged.join(', ')})을 피해 다시 쓰는 중 — ${t.topic}` } : a));
+        rd = await fetch('/api/admin/draft', { method: 'POST', headers: headers(), body: JSON.stringify({ topic: t.topic, existingTitles: titlesSoFar, avoid: flagged }) });
+        jd = await rd.json();
+        if (!rd.ok) { skipped.push(`${t.topic} — ${jd.error || '글 실패'}`); continue; }
+        flagged = [...(jd.warnings || []), ...(jd.cautions || [])];
+      }
+      if ((jd.warnings || []).length) { skipped.push(`${t.topic} — 두 번 모두 의료법 낱말: ${jd.warnings.join(', ')}`); continue; }
+      const softNote = (jd.cautions || []).length ? ` (확인 권장: ${jd.cautions.join(', ')})` : '';
+      const d = jd.draft;
+      let slug = d.slug || `post-${i + 1}`;
+      while (usedSlugs.has(slug)) slug = `${slug}-2`;
+      usedSlugs.add(slug);
+      let p: Post = { slug, title: d.title, date, time: AUTO_TIME, summary: d.summary, category: d.category || t.category, imageAlt: d.imageAlt, html: d.html };
+      let imageData: string | undefined;
+      setAuto((a) => (a ? { ...a, step: `${i + 1}/${topics.length} · 사진을 만드는 중 — ${d.title}` } : a));
+      try {
+        const ri = await fetch('/api/admin/image', { method: 'POST', headers: headers(), body: JSON.stringify({ prompt: d.imagePrompt || d.title, name: slug }) });
+        const ji = await ri.json();
+        if (ri.ok) { p = { ...p, image: ji.image }; imageData = ji.preview; }
+      } catch { /* 사진 없이도 글은 예약한다 — 목록 카드가 제목 카드로 대신한다. */ }
+      made.push({ ...p, ...(imageData ? ({ imageData } as object) : {}) } as Post);
+      titlesSoFar.push(d.title);
+      date = addDays(date, AUTO_GAP_DAYS);
+      setAuto((a) => (a ? { ...a, done: [...a.done, { title: d.title + softNote, date: p.date }], skipped: [...skipped] } : a));
+    }
+    if (!made.length) return fail(`예약할 글이 없습니다. ${skipped.length ? '건너뛴 사유: ' + skipped.join(' / ') : ''}`);
+    setAuto((a) => (a ? { ...a, step: `${made.length}편을 저장소에 올리는 중…` } : a));
+    const rp = await fetch('/api/admin/publish', { method: 'POST', headers: headers(), body: JSON.stringify({ posts: made }) });
+    const jp = await rp.json();
+    if (!rp.ok) return fail(jp.error || '올리지 못했습니다.');
+    setAuto((a) => (a ? { ...a, running: false, step: '', skipped } : a));
+    setMsg({ kind: 'ok', text: `${made.length}편을 예약했습니다 — ${koDate(made[0].date)} 부터 ${koDate(made[made.length - 1].date)} 까지 ${AUTO_GAP_DAYS}일 간격, ${AUTO_TIME}. 목록에서 '고치기' 로 미리 읽어 보실 수 있습니다.${skipped.length ? ` 건너뛴 글 ${skipped.length}편은 아래에 사유가 있습니다.` : ''}` });
     load();
   };
 
@@ -309,17 +396,11 @@ export default function AdminPage() {
             autoFocus
             disabled={busy}
             className={`${inputCls} mt-2 text-[17px]`}
-            placeholder="예: 임플란트 심고 며칠 뒤부터 씹어도 되나요"
+            placeholder={`예: ${example}`}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); makeDraft(); } }}
           />
         </label>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {EXAMPLES.map((t) => (
-            <button key={t} type="button" disabled={busy} onClick={() => setTopic(t)} className="rounded-full border border-brand-200 bg-white px-3.5 py-1.5 text-[13.5px] text-ink-soft hover:border-clay-600 hover:text-ink">
-              {t}
-            </button>
-          ))}
-        </div>
+        <p className="mt-2 text-[13.5px] text-ink-muted">이미 있는 글과 겹치면 다른 각도로 씁니다. 그래도 목록을 한 번 훑고 적으면 더 좋습니다.</p>
 
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <button onClick={makeDraft} disabled={busy || topic.trim().length < 2} className={`${btnDark} px-7 py-3 text-[16px]`}>
@@ -366,6 +447,12 @@ export default function AdminPage() {
           <div className="mt-6 rounded-2xl border border-red-300 bg-red-50 p-5 text-[14.5px] leading-[1.7] text-red-900">
             <p className="font-black">이 낱말은 의료광고 심의에 걸릴 수 있습니다: {warnings.join(', ')}</p>
             <p className="mt-1">본문에서 찾아서 다른 말로 바꿔 주세요. 그대로 올리면 병원이 책임을 집니다.</p>
+          </div>
+        )}
+        {cautions.length > 0 && (
+          <div className="mt-6 rounded-2xl border border-amber-300 bg-amber-50 p-5 text-[14.5px] leading-[1.7] text-amber-900">
+            <p className="font-black">확인해 보세요: {cautions.join(', ')}</p>
+            <p className="mt-1">문맥에 따라 괜찮을 수도 있는 말입니다. &lsquo;통증이 없어도 오세요&rsquo; 는 되고 &lsquo;통증이 없는 시술&rsquo; 은 안 됩니다. 효과를 단정하는 문장이면 고쳐 주세요.</p>
           </div>
         )}
         <Msg />
@@ -436,7 +523,8 @@ export default function AdminPage() {
         </div>
 
         {/* 아래 고정 띠: 언제 올릴까 */}
-        <div className="sticky bottom-0 mt-10 -mx-6 border-t border-brand-200/70 bg-wine-bg/95 px-6 py-4 backdrop-blur">
+        {/* ★ 띠 배경은 본문과 다른 베이지(brand-100) — 흰 바탕에 흰 띠라 어디서 끊기는지 안 보였다(2026-09-08 오너). */}
+        <div className="sticky bottom-0 mt-10 -mx-6 border-t-2 border-clay-600/40 bg-brand-100 px-6 py-4 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
           <div className="mx-auto flex max-w-[1180px] flex-wrap items-end gap-4">
             <label className="block">
               <span className={labelCls}>올릴 날짜</span>
@@ -482,8 +570,16 @@ export default function AdminPage() {
             저장소 {server.repo || '…'} · 연결: 저장소 {server.hasServerToken ? '✓' : '✗'} · 사진 {server.hasOpenAI ? '✓' : '✗'} · 글쓰기 {server.hasGemini ? '✓' : '✗'}
           </p>
         </div>
-        <div className="flex gap-3">
-          <button onClick={openNew} className={btnDark}>새 글 쓰기</button>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center overflow-hidden rounded-full border-[1.5px] border-ink/40">
+            <select value={autoCount} onChange={(ev) => setAutoCount(Number(ev.target.value))} disabled={!!auto?.running} className="h-[44px] bg-white pl-4 pr-2 text-[15px] font-bold text-ink outline-none" aria-label="자동으로 쓸 편수">
+              {AUTO_COUNTS.map((c) => <option key={c} value={c}>{c}편</option>)}
+            </select>
+            <button onClick={runAuto} disabled={!!auto?.running || busy} className="h-[44px] bg-white px-4 text-[15px] font-bold text-ink hover:bg-ink hover:text-wine-bg disabled:opacity-40">
+              자동으로 쓰고 예약
+            </button>
+          </div>
+          <button onClick={openNew} disabled={!!auto?.running} className={btnDark}>새 글 쓰기</button>
           <button onClick={logout} className={btnLine}>나가기</button>
         </div>
       </div>
@@ -506,6 +602,32 @@ export default function AdminPage() {
       )}
 
       <Msg />
+
+      {auto && (auto.running || auto.done.length > 0 || auto.skipped.length > 0) && (
+        <div className="mt-8 rounded-2xl border border-brand-200/70 bg-parchment p-5">
+          {auto.running ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-block size-3 animate-pulse rounded-full bg-clay-600" />
+              <p className="min-w-0 flex-1 text-[15px] font-bold text-ink">{auto.step}</p>
+              <button onClick={() => { stopRef.current = true; setAuto((a) => (a ? { ...a, step: '지금 글까지 마치고 멈춥니다…' } : a)); }} className="text-[14px] font-bold text-red-700">중단</button>
+            </div>
+          ) : (
+            <p className="text-[15px] font-bold text-ink">자동 쓰기 결과</p>
+          )}
+          {auto.running && <p className="mt-2 text-[13.5px] text-ink-soft">이 탭을 닫지 마세요. 전부 만든 뒤 한 번에 예약합니다.</p>}
+          {auto.done.length > 0 && (
+            <ul className="mt-3 space-y-1 text-[14px] text-ink">
+              {auto.done.map((d) => <li key={d.title}>✓ {koDate(d.date)} · {d.title}</li>)}
+            </ul>
+          )}
+          {auto.skipped.length > 0 && (
+            <ul className="mt-3 space-y-1 text-[13.5px] text-red-800">
+              {auto.skipped.map((s) => <li key={s}>건너뜀 · {s}</li>)}
+            </ul>
+          )}
+          {!auto.running && <button onClick={() => setAuto(null)} className="mt-3 text-[13.5px] font-bold text-ink-muted underline underline-offset-2">닫기</button>}
+        </div>
+      )}
 
       <ul className="mt-8 divide-y divide-brand-200/70 border-t border-brand-200/70">
         {posts.map((p) => {
@@ -533,6 +655,7 @@ export default function AdminPage() {
           <li>검토 화면에서 <strong>끝까지 읽습니다.</strong> 원장님 말투나 병원 사정과 다른 곳을 고치세요. 빨간 경고가 있으면 그 낱말은 꼭 바꿉니다.</li>
           <li>사진이 별로면 장면을 고쳐 <strong>AI 로 다시 만들기</strong>, 또는 <strong>내 사진 올리기</strong>. 사진 설명 칸은 사진과 맞게.</li>
           <li><strong>지금 바로 올리기</strong> 또는 날짜·시각을 골라 <strong>예약 발행</strong>. 한 달 10편이면 3일 간격이 좋습니다.</li>
+          <li>한꺼번에 하려면 <strong>자동으로 쓰고 예약</strong> — 편수를 고르면 주제부터 사진까지 만들어 3일 간격으로 예약합니다. 의료법 낱말이 걸린 글은 건너뛰고 사유를 보여 줍니다. 예약된 글은 실리기 전에 '고치기' 로 읽어 보세요.</li>
           <li>올린 글은 2~3분 뒤 사이트에 보입니다. 예약 글은 그 시각이 지나면 저절로 실립니다.</li>
         </ol>
         <p className="mt-3 font-black">하지 말 것</p>

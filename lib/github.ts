@@ -80,6 +80,35 @@ export async function deleteFile(token: string, path: string, sha: string, messa
   return gh(token, `/repos/${repo}/contents/${path}`, { method: 'DELETE', body: JSON.stringify({ message, sha, branch }) });
 }
 
+/**
+ * 여러 파일을 **커밋 하나**로 올린다 — blob → tree → commit → ref 순서(Git Data API).
+ * ★ 왜 — Contents API 는 파일마다 커밋이고, Vercel 은 커밋마다 빌드한다. 글 10편 + 사진 10장을
+ *   파일마다 올리면 빌드 20번이 줄을 선다. 이 함수로 묶으면 한 번이다.
+ * ⚠️ base_tree 를 주므로 여기 없는 파일은 그대로 남는다(덮어쓰기·추가만 한다. 삭제는 deleteFile).
+ * ⚠️ ref 갱신은 fast-forward 만(force 아님). 그 사이 다른 커밋이 들어오면 422 가 나고, 호출한 쪽이 다시 시도하면 된다.
+ */
+export async function commitFiles(token: string, files: Array<{ path: string; content: Buffer | string }>, message: string): Promise<string> {
+  const { repo, branch } = repoInfo();
+  const ref = (await gh(token, `/repos/${repo}/git/ref/heads/${branch}`)) as { object: { sha: string } };
+  const head = ref.object.sha;
+  const commit = (await gh(token, `/repos/${repo}/git/commits/${head}`)) as { tree: { sha: string } };
+  const tree: Array<{ path: string; mode: '100644'; type: 'blob'; sha: string }> = [];
+  for (const f of files) {
+    const blob = (await gh(token, `/repos/${repo}/git/blobs`, {
+      method: 'POST',
+      body: JSON.stringify({
+        content: Buffer.isBuffer(f.content) ? f.content.toString('base64') : Buffer.from(f.content, 'utf8').toString('base64'),
+        encoding: 'base64',
+      }),
+    })) as { sha: string };
+    tree.push({ path: f.path, mode: '100644', type: 'blob', sha: blob.sha });
+  }
+  const newTree = (await gh(token, `/repos/${repo}/git/trees`, { method: 'POST', body: JSON.stringify({ base_tree: commit.tree.sha, tree }) })) as { sha: string };
+  const newCommit = (await gh(token, `/repos/${repo}/git/commits`, { method: 'POST', body: JSON.stringify({ message, tree: newTree.sha, parents: [head] }) })) as { sha: string };
+  await gh(token, `/repos/${repo}/git/refs/heads/${branch}`, { method: 'PATCH', body: JSON.stringify({ sha: newCommit.sha, force: false }) });
+  return newCommit.sha;
+}
+
 /** 파일의 현재 sha (없으면 undefined) — 덮어쓰기 전에 쓴다. */
 export async function fileSha(token: string, path: string): Promise<string | undefined> {
   try {
