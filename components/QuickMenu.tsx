@@ -178,7 +178,18 @@ const RAIL = [
    *    유리 버튼 위에서 색만 튀고 재질이 어긋난다.
    * ⚠️ 이름 글자를 화면에 안 그리므로 label 이 유일한 이름이다(aria-label·title).
    */
-  { href: CLINIC.phoneHref, label: '전화상담', icon: <PhoneIcon /> },
+  /*
+   * ★★ 전화상담에 번호를 함께 적는다 (2026-09-11 오너) ★★
+   *   이 레일은 2xl(1536px) 이상, 즉 **PC 화면에서만** 보인다. PC 에는 거는 장치가 없어서
+   *   `tel:` 을 눌러도 대개 아무 일도 일어나지 않는다 — 누른 사람은 고장 난 버튼으로 본다.
+   *   PC 에서 전화의 실제 쓰임은 "번호를 보고 휴대폰으로 옮겨 적는 것"이므로,
+   *   눌러야 할 버튼이 아니라 **읽을 수 있는 번호**로 둔다.
+   *   ⚠️ `tel:` 링크 자체는 남긴다 — 태블릿·통화 연동 브라우저에서는 동작하고,
+   *      번호를 안 보여 준 것이 문제였지 링크가 문제가 아니었다.
+   *   ⚠️ 아래 고정 바(2xl 미만)에는 넣지 않았다 — 거기서는 눌러 바로 걸리고,
+   *      줄이 하나 늘면 바 높이가 커져 짝인 여백(h-[73px])까지 다시 재야 한다.
+   */
+  { href: CLINIC.phoneHref, label: '전화상담', sub: CLINIC.phone, icon: <PhoneIcon /> },
   { href: CLINIC.booking.naver, label: '네이버예약', external: true, icon: <NaverIcon /> },
   { href: CLINIC.booking.kakao, label: '카톡상담', external: true, icon: <KakaoIcon /> },
   { href: '/visit', label: '오시는 길', internal: true, icon: <PinIcon /> },
@@ -250,6 +261,7 @@ function NaverIcon({ size = 22 }: { size?: number }) {
 function RailItem({
   href,
   label,
+  sub,
   icon,
   external,
   internal,
@@ -257,6 +269,7 @@ function RailItem({
 }: {
   href: string;
   label: string;
+  sub?: string;
   icon: React.ReactNode;
   external?: boolean;
   internal?: boolean;
@@ -270,7 +283,24 @@ function RailItem({
       <span aria-hidden className="flex h-6 w-6 items-center justify-center">
         {icon}
       </span>
-      {label}
+      {/*
+        이름과 덧줄은 한 덩어리다 — 바깥 gap(6px) 을 그대로 쓰면 딴 줄처럼 떨어져 보인다.
+        ⚠️ 글자 크기 11px 은 **레일 폭 86px 에 맞춘 값**이다(실측: 11.5px 이면 78.8px 라
+           안쪽 여백이 좌우 3.6px 밖에 안 남는다). 이 상자는 모서리를 둥글리려고
+           overflow-hidden 이어서, 삐져나간 숫자는 경고 없이 **잘린 채로 보인다.**
+           잘린 전화번호는 틀린 전화번호다. 키우려면 폭부터 다시 잴 것 —
+           단, 폭은 위 nav 주석대로 2xl 여유가 2px 뿐이라 **넓힐 수 없다.**
+        ⚠️ tabular-nums: 숫자 폭을 고정한다. 없으면 1 이 든 번호가 좁아져 가운데가 흔들린다.
+        ⚠️ whitespace-nowrap: 좁은 레일에서 `031-` / `972-2875` 로 끊기는 것을 막는다.
+      */}
+      <span className="flex flex-col items-center gap-0.5">
+        {label}
+        {sub ? (
+          <span className="whitespace-nowrap text-[11px] font-medium tracking-tight text-ink/60 tabular-nums">
+            {sub}
+          </span>
+        ) : null}
+      </span>
     </>
   );
   if (internal) {
