@@ -361,12 +361,37 @@ export function SiteHeader() {
         */}
         <div className="flex items-center gap-2">
           {/*
+            ★★ 전화번호를 예약하기 옆에 되돌린다 (2026-09-11 오너: "헤더에 예약하기 옆에
+               번호도 추가하자, 저기에 번호 써 두는 게 낫겠다") ★★
+
+              2026-08-27 에 뺐던 것은 **테두리 친 h-10 버튼(약 170px)** 이었고, 그때는
+              헤더가 떠 있는 좁은 알약이라 그 170px 가 알약을 두 배로 벌렸다.
+              지금은 둘 다 사실이 아니다 —
+                ① 헤더가 2026-09-02 에 **화면을 가로지르는 띠**가 됐다(안쪽 상자 1320px).
+                   실측상 로고+메뉴+예약하기가 1320px 를 다 못 채운다.
+                ② 버튼이 아니라 **글자**로 둔다. 테두리·배경이 없으니 폭이 절반이고,
+                   채운 예약 버튼과 무게로 갈려 서로 안 다툰다.
+              그래서 '넣지 말 것' 경고는 이 형태에 한해 해제한다.
+              ⚠️ 되돌려 **테두리 친 버튼**으로 만들지 말 것 — 그건 그때 그 문제 그대로다.
+
+            ⚠️ 번호는 xl(1280px) 부터 보인다. lg(1024)에서는 메뉴 여섯 개와 부딪힌다(실측).
+               그 아래에서는 하단 고정 바와 모바일 서랍이 같은 전화를 그대로 한다.
+            ⚠️ tabular-nums 를 빼지 말 것 — 스크롤로 헤더가 h-94 → h-74 로 줄 때
+               숫자 폭이 흔들리면 예약 버튼이 좌우로 떤다.
+          */}
+          <a
+            href={CLINIC.phoneHref}
+            aria-label={`대표전화 ${CLINIC.phone}`}
+            className={`hidden shrink-0 items-center gap-1.5 rounded-full px-2.5 py-2 text-[15px] font-bold tracking-tight transition-colors outline-none tabular-nums focus-visible:ring-2 focus-visible:ring-clay-700/60 xl:inline-flex ${
+              overHero ? 'text-white hover:text-white/75' : 'text-charcoal hover:text-clay-700'
+            }`}
+          >
+            <HeaderPhoneIcon />
+            {CLINIC.phone}
+          </a>
+          {/*
             ★★ 예약하기 버튼을 알약 맨 오른쪽에 **되돌렸다** (2026-09-02 오너:
                "헤더 맨 오른쪽에 예약하기 버튼은 있어야지") ★★
-               2026-08-27 에 뺐던 이유는 "전화번호 버튼(약 170px) + 예약 버튼" 둘을 넣어
-               알약이 두 배로 벌어져서였다. 그래서 **예약 하나만** 되돌린다 —
-               전화는 히어로 보조 버튼·퀵메뉴·모바일 서랍·푸터에 그대로 있다.
-            ⚠️ 전화번호 버튼을 여기 함께 넣지 말 것. 그러면 그때 그 문제가 그대로 돌아온다.
             ⚠️ lg 미만에서는 숨긴다 — 좁은 화면은 알약이 화면 폭을 다 쓰는 데다
                바로 아래 하단 고정 바에 같은 버튼이 있다.
           */}
@@ -661,6 +686,28 @@ export function SiteHeader() {
  * ⚠️ 카드 안의 링크를 누르면 반드시 카드를 닫는다(onNavigate). Next.js 는 페이지를 갈아
  *    끼우는 방식이라 헤더가 다시 마운트되지 않는다 — 안 닫으면 이동한 뒤에도 떠 있다.
  */
+/**
+ * 헤더 전화번호 앞의 수화기.
+ *
+ * ★ 퀵메뉴(components/QuickMenu.tsx)의 PhoneIcon 과 같은 획이다 — 같은 화면에 두 가지
+ *   수화기가 있으면 서로 다른 물건으로 읽힌다.
+ * ⚠️ 16px 이다(퀵메뉴는 22px). 헤더 글자가 15px 라 22px 수화기는 숫자보다 커진다.
+ * ⚠️ currentColor 를 고정 색으로 바꾸지 말 것 — 사진 위에서는 흰색, 밝은 면에서는
+ *    먹색으로 따라가야 한다.
+ */
+function HeaderPhoneIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden>
+      <path
+        d="M6.5 3.2 8.2 6.4 6.6 8.1a10.5 10.5 0 0 0 5.3 5.3l1.7-1.6 3.2 1.7v2.9c0 .7-.6 1.3-1.4 1.2C8.2 16.8 3.2 11.8 2.4 5c-.1-.8.5-1.4 1.2-1.4h2.9Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function Chevron({ open = false }: { open?: boolean }) {
   return (
     <svg

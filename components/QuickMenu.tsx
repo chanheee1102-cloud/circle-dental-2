@@ -21,6 +21,15 @@ export function QuickMenu() {
    *    그냥 사라지는 것처럼 보인다.
    */
   const [showTop, setShowTop] = useState(false);
+  /*
+   * ★★ 전화상담을 '누르면 번호가 뜨는' 것으로 (2026-09-11 오너) ★★
+   *   이 레일은 2xl(1536px) 이상, 즉 PC 에서만 뜨는데 PC 에는 거는 장치가 없다.
+   *   `tel:` 만 걸려 있으면 눌러도 대개 아무 일이 없고, 누른 사람에게는 고장 난 버튼이다.
+   *   번호를 이름 밑에 상시로 적어 봤지만(같은 날, 되돌림) 좁은 레일에 숫자가 꽉 차
+   *   답답했다. 그래서 **평소엔 이름만, 누르면 번호 판**으로 바꾼다.
+   */
+  const [phoneOpen, setPhoneOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 600);
@@ -28,6 +37,28 @@ export function QuickMenu() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  /*
+   * 팝업 닫기 — Esc 와 바깥 클릭.
+   * ⚠️ 열려 있을 때만 듣는다. 늘 붙여 두면 페이지 전체의 클릭마다 헛일을 한다.
+   * ⚠️ `mousedown` 으로 듣는다 — `click` 으로 들으면 레일 안의 링크를 누를 때
+   *    먼저 닫히면서 링크가 사라져 이동이 씹히는 브라우저가 있다.
+   */
+  useEffect(() => {
+    if (!phoneOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPhoneOpen(false);
+    };
+    const onDown = (e: MouseEvent) => {
+      if (!wrapRef.current?.contains(e.target as Node)) setPhoneOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('mousedown', onDown);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('mousedown', onDown);
+    };
+  }, [phoneOpen]);
 
   return (
     <>
@@ -87,12 +118,20 @@ export function QuickMenu() {
            2xl(1536) 부터는 좌우 여백이 108px 라 딱 비껴간다.
         ★ 그 아래 폭에서는 아래 고정 바가 같은 네 가지를 그대로 한다 — 없어지는 기능은 없다.
       */}
+      {/*
+        ⚠️ 레일을 감싸는 칸이 하나 더 있는 이유 — 전화 팝업이 레일 **왼쪽**에 서야 하는데,
+           레일 자신은 모서리를 둥글리려고 overflow-hidden 이라 그 안에 두면 잘린다.
+           칸은 자리만 잡고(고정), 그리는 것은 없다. `top-0` 으로 팝업이 레일 맨 위 항목
+           (= 전화상담) 과 같은 높이에 선다 — 맨 위로 버튼이 생겼다 사라져도 안 어긋난다.
+      */}
+      <div ref={wrapRef} className="fixed right-5 bottom-7 z-40 hidden 2xl:block">
       <nav
-        className="pane-glass fixed right-5 bottom-7 z-40 hidden w-[86px] flex-col overflow-hidden rounded-[22px] 2xl:flex"
+        className="pane-glass w-[86px] flex-col overflow-hidden rounded-[22px] flex"
         aria-label="빠른 연락"
       >
-        {RAIL.map((r, i) => (
-          <RailItem key={r.label} {...r} first={i === 0} />
+        <RailPhoneButton open={phoneOpen} onToggle={() => setPhoneOpen((v) => !v)} />
+        {RAIL.map((r) => (
+          <RailItem key={r.label} {...r} />
         ))}
         {/* 맨 위로 — 스크롤이 어느 정도 내려가야 나타난다. */}
         {showTop && (
@@ -112,6 +151,8 @@ export function QuickMenu() {
           </button>
         )}
       </nav>
+      <PhonePopover open={phoneOpen} onClose={() => setPhoneOpen(false)} />
+      </div>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-wine-line bg-wine-bg/95 backdrop-blur 2xl:hidden">
         <div className="grid grid-cols-4">
@@ -179,17 +220,9 @@ const RAIL = [
    * ⚠️ 이름 글자를 화면에 안 그리므로 label 이 유일한 이름이다(aria-label·title).
    */
   /*
-   * ★★ 전화상담에 번호를 함께 적는다 (2026-09-11 오너) ★★
-   *   이 레일은 2xl(1536px) 이상, 즉 **PC 화면에서만** 보인다. PC 에는 거는 장치가 없어서
-   *   `tel:` 을 눌러도 대개 아무 일도 일어나지 않는다 — 누른 사람은 고장 난 버튼으로 본다.
-   *   PC 에서 전화의 실제 쓰임은 "번호를 보고 휴대폰으로 옮겨 적는 것"이므로,
-   *   눌러야 할 버튼이 아니라 **읽을 수 있는 번호**로 둔다.
-   *   ⚠️ `tel:` 링크 자체는 남긴다 — 태블릿·통화 연동 브라우저에서는 동작하고,
-   *      번호를 안 보여 준 것이 문제였지 링크가 문제가 아니었다.
-   *   ⚠️ 아래 고정 바(2xl 미만)에는 넣지 않았다 — 거기서는 눌러 바로 걸리고,
-   *      줄이 하나 늘면 바 높이가 커져 짝인 여백(h-[73px])까지 다시 재야 한다.
+   * ⚠️ 전화상담은 여기 없다 — 링크가 아니라 **번호 판을 여는 버튼**이라
+   *    RailPhoneButton 으로 따로 있고, 레일 맨 위 자리도 그대로다(위 ⚠️ 의 '전화가 맨 위').
    */
-  { href: CLINIC.phoneHref, label: '전화상담', sub: CLINIC.phone, icon: <PhoneIcon /> },
   { href: CLINIC.booking.naver, label: '네이버예약', external: true, icon: <NaverIcon /> },
   { href: CLINIC.booking.kakao, label: '카톡상담', external: true, icon: <KakaoIcon /> },
   { href: '/visit', label: '오시는 길', internal: true, icon: <PinIcon /> },
@@ -250,6 +283,108 @@ function NaverIcon({ size = 22 }: { size?: number }) {
  *   위에 얹으면 스티커를 붙인 것처럼 보인다. 색이 든 원본 아이콘은 흰 바탕인
  *   모바일 하단 바에 그대로 남아 있다.
  */
+/** 레일 항목과 같은 생김새 — 이 값을 두 곳이 쓰므로 한 줄로 묶어 둔다. */
+const RAIL_CLS =
+  'flex w-full flex-col items-center gap-1.5 px-1 py-3.5 text-[13.5px] font-semibold text-ink transition-colors hover:text-clay-700';
+
+/**
+ * 전화상담 — 누르면 번호 판을 여는 버튼.
+ *
+ * ★ 링크가 아니라 버튼인 이유는 위 phoneOpen 주석에 있다(PC 에는 거는 장치가 없다).
+ * ⚠️ 레일 맨 위 항목이므로 위 구분선을 그리지 않는다.
+ * ⚠️ aria-expanded 를 빼지 말 것 — 화면 낭독기에서 '눌러야 뭔가 열린다' 를 아는 유일한 단서다.
+ */
+function RailPhoneButton({ open, onToggle }: { open: boolean; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-haspopup="dialog"
+      className={`${RAIL_CLS} outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-clay-700/60 ${
+        open ? 'bg-brand-100 text-clay-700' : ''
+      }`}
+    >
+      <span aria-hidden className="flex h-6 w-6 items-center justify-center">
+        <PhoneIcon />
+      </span>
+      전화상담
+    </button>
+  );
+}
+
+/**
+ * 번호 판 — 레일 왼쪽에 선다.
+ *
+ * ★ 담는 것은 번호와 '번호 복사' 하나뿐이다. PC 에서 필요한 동작이 그 둘뿐이라
+ *   진료시간·주소까지 끌어오면 판이 또 하나의 페이지가 된다(그건 /visit 이 한다).
+ * ⚠️ 번호는 `<a href="tel:">` 그대로 둔다 — 태블릿·통화 연동 브라우저에서는 눌러서 걸린다.
+ *    PC 에서 안 걸리는 것이 문제였지 링크가 문제가 아니었다.
+ * ⚠️ select-all: 드래그 한 번에 번호 전체가 잡힌다. 복사 버튼을 못 쓰는 환경의 대비책이다.
+ */
+function PhonePopover({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [copied, setCopied] = useState(false);
+
+  /* 판이 닫히면 '복사했습니다' 도 지운다 — 다시 열었을 때 지난 흔적이 남아 있으면 안 된다. */
+  useEffect(() => {
+    if (!open) setCopied(false);
+  }, [open]);
+
+  /* ⚠️ 2초 뒤 되돌리는 타이머는 반드시 치운다. 연타하면 타이머가 쌓인다. */
+  useEffect(() => {
+    if (!copied) return;
+    const t = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(t);
+  }, [copied]);
+
+  if (!open) return null;
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(CLINIC.phone);
+      setCopied(true);
+    } catch {
+      /* 클립보드가 막힌 환경(비 HTTPS·권한 거부)에서도 번호는 이미 화면에 있다. 조용히 넘어간다. */
+    }
+  };
+
+  return (
+    <div
+      role="dialog"
+      aria-label="대표전화"
+      className="pane-glass absolute top-0 right-full mr-3 w-[216px] rounded-[18px] p-4 shadow-[0_18px_40px_-20px_rgba(43,30,20,0.45)]"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-[12.5px] font-semibold tracking-wide text-ink/55">대표전화</p>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="닫기"
+          className="-mt-1 -mr-1 flex h-7 w-7 items-center justify-center rounded-full text-[15px] leading-none text-ink/45 transition-colors hover:bg-brand-100 hover:text-ink"
+        >
+          ✕
+        </button>
+      </div>
+      <a
+        href={CLINIC.phoneHref}
+        className="mt-1.5 block select-all text-[21px] font-bold tracking-tight text-ink tabular-nums"
+      >
+        {CLINIC.phone}
+      </a>
+      <button
+        type="button"
+        onClick={copy}
+        className="mt-3 w-full rounded-full bg-clay-700 py-2 text-[13.5px] font-bold text-white transition-opacity hover:opacity-90"
+      >
+        {copied ? '복사했습니다' : '번호 복사'}
+      </button>
+      <p className="mt-2.5 text-[12px] leading-relaxed text-ink/55">
+        진료시간은 <Link href="/visit" className="underline underline-offset-2 hover:text-ink">오시는 길</Link> 에 있습니다.
+      </p>
+    </div>
+  );
+}
+
 /**
  * 퀵메뉴 항목 하나 — 아이콘 위, 이름 아래.
  *
@@ -261,46 +396,25 @@ function NaverIcon({ size = 22 }: { size?: number }) {
 function RailItem({
   href,
   label,
-  sub,
   icon,
   external,
   internal,
-  first,
 }: {
   href: string;
   label: string;
-  sub?: string;
   icon: React.ReactNode;
   external?: boolean;
   internal?: boolean;
-  first?: boolean;
 }) {
-  const cls = `flex w-full flex-col items-center gap-1.5 px-1 py-3.5 text-[13.5px] font-semibold text-ink transition-colors hover:text-clay-700 ${
-    first ? '' : 'border-t border-brand-200'
-  }`;
+  /* ⚠️ 맨 위는 언제나 전화상담 버튼이므로 이 항목들은 전부 위 구분선을 가진다.
+        예전의 `first` 갈래는 그래서 필요 없어졌다 — 되살리지 말 것. */
+  const cls = `${RAIL_CLS} border-t border-brand-200`;
   const body = (
     <>
       <span aria-hidden className="flex h-6 w-6 items-center justify-center">
         {icon}
       </span>
-      {/*
-        이름과 덧줄은 한 덩어리다 — 바깥 gap(6px) 을 그대로 쓰면 딴 줄처럼 떨어져 보인다.
-        ⚠️ 글자 크기 11px 은 **레일 폭 86px 에 맞춘 값**이다(실측: 11.5px 이면 78.8px 라
-           안쪽 여백이 좌우 3.6px 밖에 안 남는다). 이 상자는 모서리를 둥글리려고
-           overflow-hidden 이어서, 삐져나간 숫자는 경고 없이 **잘린 채로 보인다.**
-           잘린 전화번호는 틀린 전화번호다. 키우려면 폭부터 다시 잴 것 —
-           단, 폭은 위 nav 주석대로 2xl 여유가 2px 뿐이라 **넓힐 수 없다.**
-        ⚠️ tabular-nums: 숫자 폭을 고정한다. 없으면 1 이 든 번호가 좁아져 가운데가 흔들린다.
-        ⚠️ whitespace-nowrap: 좁은 레일에서 `031-` / `972-2875` 로 끊기는 것을 막는다.
-      */}
-      <span className="flex flex-col items-center gap-0.5">
-        {label}
-        {sub ? (
-          <span className="whitespace-nowrap text-[11px] font-medium tracking-tight text-ink/60 tabular-nums">
-            {sub}
-          </span>
-        ) : null}
-      </span>
+      {label}
     </>
   );
   if (internal) {
