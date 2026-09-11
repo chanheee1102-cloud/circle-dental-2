@@ -7,6 +7,7 @@ import { NAV, headerChildren, groupedChildren } from '@/lib/nav';
 import { CLINIC } from '@/lib/clinic';
 import { LogoLockup } from '@/components/Logo';
 import { Sentences } from '@/components/ui';
+import { PhoneGlyph, PhonePopover, usePhonePopover } from '@/components/PhonePopover';
 
 /**
  * 전역 헤더.
@@ -38,6 +39,8 @@ export function SiteHeader() {
   /** 모바일에서 펼쳐 놓은 그룹. 한 번에 하나만 — 전부 펼치면 접는 의미가 없다. */
   const [mobileGroup, setMobileGroup] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  /* 헤더 전화 버튼의 번호 판 — 퀵메뉴와 **같은 것**이다(components/PhonePopover.tsx). */
+  const phone = usePhonePopover();
   const [scrolled, setScrolled] = useState(false);
 
   /*
@@ -76,6 +79,16 @@ export function SiteHeader() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  /*
+   * 메뉴가 열리면 번호 판을 닫는다 — 위 버튼의 반대 방향이다.
+   * 메가메뉴는 마우스만 올려도 열리므로, 번호 판을 열어 둔 채 메뉴 위를 지나면
+   * 메뉴 판이 번호 판을 덮어 버린다(z 로는 못 이긴다 — 버튼 쪽 ⚠️ 참조).
+   * ⚠️ phone.close 는 useCallback 으로 고정돼 있다. 새 함수가 되면 이 effect 가 계속 돈다.
+   */
+  useEffect(() => {
+    if (openMenu) phone.close();
+  }, [openMenu, phone.close]);
 
   /* Escape — 열린 판은 반드시 키보드로 닫을 수 있어야 한다. */
   useEffect(() => {
@@ -361,35 +374,6 @@ export function SiteHeader() {
         */}
         <div className="flex items-center gap-2">
           {/*
-            ★★ 전화번호를 예약하기 옆에 되돌린다 (2026-09-11 오너: "헤더에 예약하기 옆에
-               번호도 추가하자, 저기에 번호 써 두는 게 낫겠다") ★★
-
-              2026-08-27 에 뺐던 것은 **테두리 친 h-10 버튼(약 170px)** 이었고, 그때는
-              헤더가 떠 있는 좁은 알약이라 그 170px 가 알약을 두 배로 벌렸다.
-              지금은 둘 다 사실이 아니다 —
-                ① 헤더가 2026-09-02 에 **화면을 가로지르는 띠**가 됐다(안쪽 상자 1320px).
-                   실측상 로고+메뉴+예약하기가 1320px 를 다 못 채운다.
-                ② 버튼이 아니라 **글자**로 둔다. 테두리·배경이 없으니 폭이 절반이고,
-                   채운 예약 버튼과 무게로 갈려 서로 안 다툰다.
-              그래서 '넣지 말 것' 경고는 이 형태에 한해 해제한다.
-              ⚠️ 되돌려 **테두리 친 버튼**으로 만들지 말 것 — 그건 그때 그 문제 그대로다.
-
-            ⚠️ 번호는 xl(1280px) 부터 보인다. lg(1024)에서는 메뉴 여섯 개와 부딪힌다(실측).
-               그 아래에서는 하단 고정 바와 모바일 서랍이 같은 전화를 그대로 한다.
-            ⚠️ tabular-nums 를 빼지 말 것 — 스크롤로 헤더가 h-94 → h-74 로 줄 때
-               숫자 폭이 흔들리면 예약 버튼이 좌우로 떤다.
-          */}
-          <a
-            href={CLINIC.phoneHref}
-            aria-label={`대표전화 ${CLINIC.phone}`}
-            className={`hidden shrink-0 items-center gap-1.5 rounded-full px-2.5 py-2 text-[15px] font-bold tracking-tight transition-colors outline-none tabular-nums focus-visible:ring-2 focus-visible:ring-clay-700/60 xl:inline-flex ${
-              overHero ? 'text-white hover:text-white/75' : 'text-charcoal hover:text-clay-700'
-            }`}
-          >
-            <HeaderPhoneIcon />
-            {CLINIC.phone}
-          </a>
-          {/*
             ★★ 예약하기 버튼을 알약 맨 오른쪽에 **되돌렸다** (2026-09-02 오너:
                "헤더 맨 오른쪽에 예약하기 버튼은 있어야지") ★★
             ⚠️ lg 미만에서는 숨긴다 — 좁은 화면은 알약이 화면 폭을 다 쓰는 데다
@@ -405,6 +389,77 @@ export function SiteHeader() {
             예약하기
             <span aria-hidden>→</span>
           </a>
+          {/*
+            ★★ 전화 버튼을 예약하기 **오른쪽**에 (2026-09-11 오너: "예약하기 오른쪽에
+               버튼처럼 추가해. 그래서 팝업 똑같이 나오게") ★★
+
+              같은 날 앞선 판은 예약하기 **왼쪽에 테두리 없는 글자**였다. 오너가 보고
+              버튼으로, 오른쪽으로 옮기라 했다 — 그 판은 남기지 않는다(둘 다 두면 번호가
+              헤더에 두 번 적힌다).
+
+              ⚠️ 2026-08-27 의 '전화번호 버튼을 여기 넣지 말 것' 경고는 **해제한다.**
+                 그 경고는 "떠 있는 좁은 알약 + 170px 버튼" 을 전제했는데, 헤더가
+                 2026-09-02 에 화면 폭 띠(안쪽 1320px)가 되면서 전제가 사라졌다.
+                 실측상 로고+메뉴+예약+전화가 1320px 안에서 안 부딪힌다(아래 ⚠️ 참조).
+
+            ★ 누르면 퀵메뉴와 **같은 번호 판**이 열린다(components/PhonePopover.tsx).
+              PC 에는 거는 장치가 없어 `tel:` 은 눌러도 아무 일이 없기 때문이다.
+              ⚠️ 그래서 링크가 아니라 버튼이다. `<a href="tel:">` 로 되돌리지 말 것 —
+                 되돌리는 순간 PC 에서 아무 일도 안 일어나는 버튼으로 돌아간다.
+                 (번호를 거는 `tel:` 링크는 판 **안**에 그대로 있다.)
+
+            ⚠️ 테두리만 두고 안은 비운다 — 바로 왼쪽의 예약하기가 채운 버튼이라
+               둘 다 채우면 무엇을 먼저 눌러야 할지가 사라진다.
+            ⚠️ xl(1280px) 부터 보인다 — lg(1024)에서는 메뉴 여섯 개와 부딪힌다(실측).
+               그 아래에서는 하단 고정 바와 모바일 서랍이 같은 전화를 그대로 한다.
+            ⚠️ tabular-nums 를 빼지 말 것 — 스크롤로 헤더가 h-94 → h-74 로 줄 때
+               숫자 폭이 흔들리면 버튼이 좌우로 떤다.
+          */}
+          {/*
+            ⚠️⚠️ 감싼 칸에 `shrink-0` 을 빼지 말 것 (2026-09-11 실측) ⚠️⚠️
+              이 칸은 flex 항목이라 자리가 모자라면 줄어든다. 줄어들면 안의 번호가
+              `031-` / `972-` / `2875` 로 **세 줄로 접혀** 버튼 높이가 90px 이 됐다
+              (예약하기는 43px 다 — 헤더가 통째로 어긋났다).
+            ⚠️ 버튼 쪽 `whitespace-nowrap` 도 같은 이유다. 둘 다 있어야 한다.
+          */}
+          <div ref={phone.wrapRef} className="relative hidden shrink-0 xl:block">
+            <button
+              type="button"
+              onClick={() => {
+                /* ⚠️ 메가메뉴를 먼저 닫는다 — 열려 있으면 그 판(z-10)이 번호 판을 덮는다.
+                      메가메뉴는 헤더 띠 **밖**에 있어서 띠 안쪽 z 를 아무리 올려도 못 이긴다
+                      (띠가 backdrop-filter 로 자기 쌓임 맥락을 만든다). 겹치지 않게 하는 것이
+                      z 싸움보다 옳다 — 판 두 개가 동시에 열릴 이유도 없다. */
+                setOpenMenu(null);
+                phone.toggle();
+              }}
+              aria-expanded={phone.open}
+              aria-haspopup="dialog"
+              aria-label={`대표전화 ${CLINIC.phone}`}
+              className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2.5 text-[15px] font-bold whitespace-nowrap tracking-tight transition-colors outline-none tabular-nums focus-visible:ring-2 focus-visible:ring-clay-700/60 ${
+                overHero
+                  ? 'border-white/45 text-white hover:bg-white/10'
+                  : `border-brand-300 text-charcoal hover:border-clay-700 hover:text-clay-700 ${
+                      phone.open ? 'border-clay-700 bg-brand-100 text-clay-700' : ''
+                    }`
+              }`}
+            >
+              <PhoneGlyph size={16} stroke={1.6} />
+              {CLINIC.phone}
+            </button>
+            {/*
+              ⚠️ 자리 값만 넘긴다 — 재질·크기는 판 자신이 진다(퀵메뉴 판과 같아야 한다).
+              ⚠️ 헤더 띠에는 overflow-hidden 이 없다(메가메뉴가 밖으로 내려와야 해서다).
+                 그래서 이 판이 띠 아래로 내려와도 안 잘린다. 띠에 overflow 를 주지 말 것.
+              ⚠️ z-20 — 아래로 펼쳐지는 메가메뉴 판(z-10)보다 위다. 같거나 낮으면
+                 메뉴를 열어 둔 채 전화를 누를 때 판이 메뉴 밑에 깔린다.
+            */}
+            <PhonePopover
+              open={phone.open}
+              onClose={phone.close}
+              className="absolute top-full right-0 z-20 mt-2"
+            />
+          </div>
           <button
             type="button"
             onClick={() => setMobileOpen((v) => !v)}
@@ -686,27 +741,6 @@ export function SiteHeader() {
  * ⚠️ 카드 안의 링크를 누르면 반드시 카드를 닫는다(onNavigate). Next.js 는 페이지를 갈아
  *    끼우는 방식이라 헤더가 다시 마운트되지 않는다 — 안 닫으면 이동한 뒤에도 떠 있다.
  */
-/**
- * 헤더 전화번호 앞의 수화기.
- *
- * ★ 퀵메뉴(components/QuickMenu.tsx)의 PhoneIcon 과 같은 획이다 — 같은 화면에 두 가지
- *   수화기가 있으면 서로 다른 물건으로 읽힌다.
- * ⚠️ 16px 이다(퀵메뉴는 22px). 헤더 글자가 15px 라 22px 수화기는 숫자보다 커진다.
- * ⚠️ currentColor 를 고정 색으로 바꾸지 말 것 — 사진 위에서는 흰색, 밝은 면에서는
- *    먹색으로 따라가야 한다.
- */
-function HeaderPhoneIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden>
-      <path
-        d="M6.5 3.2 8.2 6.4 6.6 8.1a10.5 10.5 0 0 0 5.3 5.3l1.7-1.6 3.2 1.7v2.9c0 .7-.6 1.3-1.4 1.2C8.2 16.8 3.2 11.8 2.4 5c-.1-.8.5-1.4 1.2-1.4h2.9Z"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 function Chevron({ open = false }: { open?: boolean }) {
   return (

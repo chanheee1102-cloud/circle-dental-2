@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CLINIC } from '@/lib/clinic';
+import { PhoneGlyph, PhonePopover, usePhonePopover } from '@/components/PhonePopover';
 
 /**
  * 우측 고정 퀵메뉴.
@@ -27,9 +28,10 @@ export function QuickMenu() {
    *   `tel:` 만 걸려 있으면 눌러도 대개 아무 일이 없고, 누른 사람에게는 고장 난 버튼이다.
    *   번호를 이름 밑에 상시로 적어 봤지만(같은 날, 되돌림) 좁은 레일에 숫자가 꽉 차
    *   답답했다. 그래서 **평소엔 이름만, 누르면 번호 판**으로 바꾼다.
+   * ⚠️ 판과 여닫기는 헤더와 **같은 것**을 쓴다(components/PhonePopover.tsx).
+   *    여기서 따로 만들지 말 것 — 같은 판이 두 벌이 되는 순간 한쪽만 바뀐다.
    */
-  const [phoneOpen, setPhoneOpen] = useState(false);
-  const wrapRef = useRef<HTMLDivElement>(null);
+  const phone = usePhonePopover();
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 600);
@@ -37,28 +39,6 @@ export function QuickMenu() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
-  /*
-   * 팝업 닫기 — Esc 와 바깥 클릭.
-   * ⚠️ 열려 있을 때만 듣는다. 늘 붙여 두면 페이지 전체의 클릭마다 헛일을 한다.
-   * ⚠️ `mousedown` 으로 듣는다 — `click` 으로 들으면 레일 안의 링크를 누를 때
-   *    먼저 닫히면서 링크가 사라져 이동이 씹히는 브라우저가 있다.
-   */
-  useEffect(() => {
-    if (!phoneOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setPhoneOpen(false);
-    };
-    const onDown = (e: MouseEvent) => {
-      if (!wrapRef.current?.contains(e.target as Node)) setPhoneOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    window.addEventListener('mousedown', onDown);
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      window.removeEventListener('mousedown', onDown);
-    };
-  }, [phoneOpen]);
 
   return (
     <>
@@ -124,12 +104,12 @@ export function QuickMenu() {
            칸은 자리만 잡고(고정), 그리는 것은 없다. `top-0` 으로 팝업이 레일 맨 위 항목
            (= 전화상담) 과 같은 높이에 선다 — 맨 위로 버튼이 생겼다 사라져도 안 어긋난다.
       */}
-      <div ref={wrapRef} className="fixed right-5 bottom-7 z-40 hidden 2xl:block">
+      <div ref={phone.wrapRef} className="fixed right-5 bottom-7 z-40 hidden 2xl:block">
       <nav
         className="pane-glass w-[86px] flex-col overflow-hidden rounded-[22px] flex"
         aria-label="빠른 연락"
       >
-        <RailPhoneButton open={phoneOpen} onToggle={() => setPhoneOpen((v) => !v)} />
+        <RailPhoneButton open={phone.open} onToggle={phone.toggle} />
         {RAIL.map((r) => (
           <RailItem key={r.label} {...r} />
         ))}
@@ -151,7 +131,9 @@ export function QuickMenu() {
           </button>
         )}
       </nav>
-      <PhonePopover open={phoneOpen} onClose={() => setPhoneOpen(false)} />
+      {/* ⚠️ 자리 값만 넘긴다 — 재질·크기는 판 자신이 진다(헤더 판과 같아야 한다).
+             top-0 이라 레일 맨 위 항목(= 전화상담)과 같은 높이에 선다. */}
+      <PhonePopover open={phone.open} onClose={phone.close} className="absolute top-0 right-full mr-3" />
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-wine-line bg-wine-bg/95 backdrop-blur 2xl:hidden">
@@ -185,7 +167,7 @@ export function QuickMenu() {
             href={CLINIC.phoneHref}
             className="flex flex-col items-center gap-1.5 bg-dusk py-3 text-[13.5px] font-semibold text-white"
           >
-            <PhoneIcon />
+            <PhoneGlyph />
             전화
           </a>
         </div>
@@ -241,18 +223,6 @@ function PinIcon() {
     </svg>
   );
 }
-function PhoneIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden>
-      <path
-        d="M6.5 3.2 8.2 6.4 6.6 8.1a10.5 10.5 0 0 0 5.3 5.3l1.7-1.6 3.2 1.7v2.9c0 .7-.6 1.3-1.4 1.2C8.2 16.8 3.2 11.8 2.4 5c-.1-.8.5-1.4 1.2-1.4h2.9Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 function KakaoIcon({ size = 22 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" fill="none" aria-hidden>
@@ -290,7 +260,7 @@ const RAIL_CLS =
 /**
  * 전화상담 — 누르면 번호 판을 여는 버튼.
  *
- * ★ 링크가 아니라 버튼인 이유는 위 phoneOpen 주석에 있다(PC 에는 거는 장치가 없다).
+ * ★ 링크가 아니라 버튼인 이유는 위 usePhonePopover 주석에 있다(PC 에는 거는 장치가 없다).
  * ⚠️ 레일 맨 위 항목이므로 위 구분선을 그리지 않는다.
  * ⚠️ aria-expanded 를 빼지 말 것 — 화면 낭독기에서 '눌러야 뭔가 열린다' 를 아는 유일한 단서다.
  */
@@ -306,82 +276,10 @@ function RailPhoneButton({ open, onToggle }: { open: boolean; onToggle: () => vo
       }`}
     >
       <span aria-hidden className="flex h-6 w-6 items-center justify-center">
-        <PhoneIcon />
+        <PhoneGlyph />
       </span>
       전화상담
     </button>
-  );
-}
-
-/**
- * 번호 판 — 레일 왼쪽에 선다.
- *
- * ★ 담는 것은 번호와 '번호 복사' 하나뿐이다. PC 에서 필요한 동작이 그 둘뿐이라
- *   진료시간·주소까지 끌어오면 판이 또 하나의 페이지가 된다(그건 /visit 이 한다).
- * ⚠️ 번호는 `<a href="tel:">` 그대로 둔다 — 태블릿·통화 연동 브라우저에서는 눌러서 걸린다.
- *    PC 에서 안 걸리는 것이 문제였지 링크가 문제가 아니었다.
- * ⚠️ select-all: 드래그 한 번에 번호 전체가 잡힌다. 복사 버튼을 못 쓰는 환경의 대비책이다.
- */
-function PhonePopover({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const [copied, setCopied] = useState(false);
-
-  /* 판이 닫히면 '복사했습니다' 도 지운다 — 다시 열었을 때 지난 흔적이 남아 있으면 안 된다. */
-  useEffect(() => {
-    if (!open) setCopied(false);
-  }, [open]);
-
-  /* ⚠️ 2초 뒤 되돌리는 타이머는 반드시 치운다. 연타하면 타이머가 쌓인다. */
-  useEffect(() => {
-    if (!copied) return;
-    const t = setTimeout(() => setCopied(false), 2000);
-    return () => clearTimeout(t);
-  }, [copied]);
-
-  if (!open) return null;
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(CLINIC.phone);
-      setCopied(true);
-    } catch {
-      /* 클립보드가 막힌 환경(비 HTTPS·권한 거부)에서도 번호는 이미 화면에 있다. 조용히 넘어간다. */
-    }
-  };
-
-  return (
-    <div
-      role="dialog"
-      aria-label="대표전화"
-      className="pane-glass absolute top-0 right-full mr-3 w-[216px] rounded-[18px] p-4 shadow-[0_18px_40px_-20px_rgba(43,30,20,0.45)]"
-    >
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-[12.5px] font-semibold tracking-wide text-ink/55">대표전화</p>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="닫기"
-          className="-mt-1 -mr-1 flex h-7 w-7 items-center justify-center rounded-full text-[15px] leading-none text-ink/45 transition-colors hover:bg-brand-100 hover:text-ink"
-        >
-          ✕
-        </button>
-      </div>
-      <a
-        href={CLINIC.phoneHref}
-        className="mt-1.5 block select-all text-[21px] font-bold tracking-tight text-ink tabular-nums"
-      >
-        {CLINIC.phone}
-      </a>
-      <button
-        type="button"
-        onClick={copy}
-        className="mt-3 w-full rounded-full bg-clay-700 py-2 text-[13.5px] font-bold text-white transition-opacity hover:opacity-90"
-      >
-        {copied ? '복사했습니다' : '번호 복사'}
-      </button>
-      <p className="mt-2.5 text-[12px] leading-relaxed text-ink/55">
-        진료시간은 <Link href="/visit" className="underline underline-offset-2 hover:text-ink">오시는 길</Link> 에 있습니다.
-      </p>
-    </div>
   );
 }
 
