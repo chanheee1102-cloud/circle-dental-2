@@ -175,17 +175,6 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: '/:path*', headers: SECURITY_HEADERS },
-      /*
-       * ★ *.vercel.app 미리보기 주소는 검색에서 뺀다 (2026-09-11).
-       *   circle-dental.shop(네이버·구글용 안내 사이트)과 글자까지 같은 본문이 이 vercel 주소에도 열려 있어
-       *   구글이 어느 쪽을 원본으로 볼지 임의로 정하는 상태였다. 실제 도메인이 붙으면 그 호스트는 이 규칙에
-       *   걸리지 않으므로 그대로 색인된다. robots.txt 로 막지 않는 이유: 막으면 로봇이 noindex 를 읽지 못한다.
-       */
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: '(.*)[.]vercel[.]app' }],
-        headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
-      },
       {
         source: '/llms.txt',
         headers: [{ key: 'Content-Type', value: 'text/plain; charset=utf-8' }],
