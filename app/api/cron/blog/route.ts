@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { isAuthed } from '@/lib/adminAuth';
 import { autoDraft } from '@/lib/adminDraft';
-import { generateImage } from '@/lib/adminImage';
+import { generateImage, composeImagePrompt } from '@/lib/adminImage';
+import { readClinicPrompt } from '@/lib/clinicPrompt';
 import { readAutoConfig, writeAutoConfig, listPostsMeta, nextAutoDate, todayKST } from '@/lib/autoBlog';
 
 export const runtime = 'nodejs';
@@ -47,7 +48,9 @@ export async function GET(req: Request) {
   };
 
   try {
-    const r = await autoDraft(gemini, posts.map((p) => ({ title: p.title, summary: p.summary })));
+    /* ★ 사람이 쓰든 크론이 쓰든 같은 병원 규칙을 본다 — 담당자 프롬프트를 저장소에 둔 이유가 이것이다. */
+    const clinic = await readClinicPrompt(token);
+    const r = await autoDraft(gemini, posts.map((p) => ({ title: p.title, summary: p.summary })), undefined, clinic);
     if (!r.ok) {
       await record(`건너뜀 — ${r.reason}${r.topic ? ` (${r.topic})` : ''}`);
       return NextResponse.json({ ok: true, skipped: r.reason, topic: r.topic });
@@ -61,7 +64,9 @@ export async function GET(req: Request) {
     const files: Array<{ path: string; content: Buffer | string }> = [];
     if (openai) {
       try {
-        const webp = await generateImage(openai, d.imagePrompt || d.title);
+        const composed = await composeImagePrompt(gemini, d.imagePrompt || d.title, clinic.image);
+        if (!composed.applied) r.fixes.push('사진 규칙을 못 반영해 기본 장면으로 만들었습니다');
+        const webp = await generateImage(openai, composed.prompt);
         image = `/img/blog/${slug}.webp`;
         files.push({ path: `public${image}`, content: webp });
       } catch (e) {

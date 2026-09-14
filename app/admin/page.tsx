@@ -111,6 +111,18 @@ export default function AdminPage() {
   /* 중앙(winaid)에서 오는 글 — 여기서는 숨기기만 된다(lib/centralHidden.ts). */
   const [central, setCentral] = useState<{ items: Array<{ slug: string; title: string; post_type: string; published_at: string; hasCover: boolean; hidden: boolean }> } | null>(null);
   const [cronReady, setCronReady] = useState(true);
+  /*
+   * 담당자 프롬프트 — 이 병원의 글·사진 규칙 (저장소 content/clinic-prompt.json · lib/clinicPrompt.ts).
+   * ★ 기본값도 서버에서 받는다. 같은 규칙 원문을 화면과 서버 두 곳에 두면 반드시 어긋난다.
+   * ⚠️ clinicDirtyRef — 목록을 다시 불러올 때(발행 뒤 load()) 마케터가 고치던 칸을 덮어쓰지 않기 위한 자물쇠.
+   */
+  type Clinic = { writing: string; image: string; updatedAt?: string; saved?: boolean };
+  const [clinicSaved, setClinicSaved] = useState<Clinic | null>(null);
+  const [clinicDefaults, setClinicDefaults] = useState<{ writing: string; image: string } | null>(null);
+  const [clinicForm, setClinicForm] = useState({ writing: '', image: '' });
+  const [clinicMax, setClinicMax] = useState(2000);
+  const [clinicSaving, setClinicSaving] = useState(false);
+  const clinicDirtyRef = useRef(false);
 
   useEffect(() => {
     setGhToken(localStorage.getItem('cd_gh_token') || '');
@@ -131,6 +143,18 @@ export default function AdminPage() {
     const r = await fetch('/api/admin/posts', { headers: headers(), cache: 'no-store' });
     setBusy(false);
     if (r.status === 401) { setAuthed(false); return; }
+    /* ★ 글 목록보다 먼저 — GitHub 토큰이 없어 목록이 실패해도 규칙 칸은 기본값으로 보여야 한다(아래 return 위). */
+    fetch('/api/admin/prompt', { headers: headers(), cache: 'no-store' })
+      .then((rp) => rp.json())
+      .then((p) => {
+        if (!p.ok) return;
+        setClinicSaved(p.prompt);
+        setClinicDefaults(p.defaults);
+        setClinicMax(p.max || 2000);
+        /* 고치던 중이면 건드리지 않는다 — 발행 한 번에 쓰던 규칙이 날아가면 다시는 안 쓴다. */
+        if (!clinicDirtyRef.current) setClinicForm({ writing: p.prompt.writing, image: p.prompt.image });
+      })
+      .catch(() => {});
     const j = await r.json();
     if (!r.ok) {
       setAuthed(true);
@@ -164,6 +188,34 @@ export default function AdminPage() {
     setMsg({ kind: 'ok', text: hidden ? '숨겼습니다. 1~2분 뒤 사이트에서 빠집니다(중앙 데이터는 그대로).' : '다시 보이게 했습니다. 1~2분 뒤 사이트에 실립니다.' });
   };
 
+  /*
+   * ★★ 담당자 프롬프트 저장 (2026-09-14 오너: "마케터가 칸에서 프롬프트 바꾸고 저장하면 그대로 반영해서 매번 나와야 해") ★★
+   *   저장 = 저장소에 커밋 하나. 글쓰기·사진 라우트가 요청마다 이 파일을 읽으므로 **다음 글부터 바로** 먹는다.
+   *   이미 올라간 글은 바뀌지 않는다 — 그 글들은 이미 만들어진 결과물이다.
+   */
+  const saveClinic = async () => {
+    setClinicSaving(true);
+    const r = await fetch('/api/admin/prompt', { method: 'POST', headers: headers(), body: JSON.stringify(clinicForm) });
+    const j = await r.json().catch(() => ({}));
+    setClinicSaving(false);
+    if (!r.ok) { setMsg({ kind: 'err', text: j.error || '프롬프트를 저장하지 못했습니다.' }); return; }
+    clinicDirtyRef.current = false;
+    setClinicSaved(j.prompt);
+    setClinicForm({ writing: j.prompt.writing, image: j.prompt.image });
+    setMsg({ kind: 'ok', text: '프롬프트를 저장했습니다. 지금부터 새로 쓰는 글과 사진에 매번 반영됩니다 (이미 올라간 글은 그대로).' });
+  };
+
+  const setClinicField = (k: 'writing' | 'image', v: string) => {
+    clinicDirtyRef.current = true;
+    setClinicForm((f) => ({ ...f, [k]: v }));
+  };
+
+  /* 기본값 불러오기 — 칸만 채운다. 저장은 사람이 읽어 보고 누른다. */
+  const fillDefault = (k: 'writing' | 'image') => {
+    if (!clinicDefaults) return;
+    setClinicField(k, clinicDefaults[k]);
+  };
+
   const login = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
@@ -193,22 +245,24 @@ export default function AdminPage() {
   /* ── 사진: 만들기 / 올리기 ─────────────────────────────────── */
   const imageName = (p: Post) => (p.image ? `${p.slug || 'post'}-${Date.now().toString(36).slice(-4)}` : p.slug || 'post');
 
-  const makeImage = async (p: Post, sceneText: string): Promise<Post> => {
+  /* ruleMiss — 사진 규칙 칸에 글이 있는데 그것을 못 반영한 경우. 조용히 넘어가면 칸이 안 먹는 것처럼 보인다. */
+  const RULE_MISS = ' 다만 사진 규칙은 이번에 반영하지 못했습니다 (글쓰기 키 확인). 다시 만들기를 한 번 더 눌러 보세요.';
+  const makeImage = async (p: Post, sceneText: string): Promise<{ post: Post; ruleMiss: boolean }> => {
     const r = await fetch('/api/admin/image', { method: 'POST', headers: headers(), body: JSON.stringify({ prompt: sceneText, name: imageName(p) }) });
     const j = await r.json();
     if (!r.ok) throw new Error(j.error || '사진을 못 만들었습니다.');
     setPreview(j.preview || null);
-    return { ...p, image: j.image };
+    return { post: { ...p, image: j.image }, ruleMiss: !!j.hasRule && j.ruleApplied === false };
   };
 
   const regenImage = async () => {
     if (!editing) return;
     if (!scene.trim()) { setMsg({ kind: 'err', text: '어떤 장면인지 한 줄 적어 주세요. 예: 흰 상판 위의 임플란트 하나와 크라운' }); return; }
-    setBusy(true); setMsg({ kind: 'info', text: '사진을 만드는 중입니다 (30~40초)…' });
+    setBusy(true); setMsg({ kind: 'info', text: '사진을 만드는 중입니다 (30~50초)…' });
     try {
-      const p = await makeImage(editing, scene);
-      setEditing(p);
-      setMsg({ kind: 'ok', text: '사진을 바꿨습니다. 올릴 때 함께 저장됩니다. 마음에 안 들면 장면을 고쳐 다시 만들거나, 내 사진을 올리세요.' });
+      const { post, ruleMiss } = await makeImage(editing, scene);
+      setEditing(post);
+      setMsg({ kind: ruleMiss ? 'err' : 'ok', text: `사진을 바꿨습니다. 올릴 때 함께 저장됩니다. 마음에 안 들면 장면을 고쳐 다시 만들거나, 내 사진을 올리세요.${ruleMiss ? RULE_MISS : ''}` });
     } catch (e) { setMsg({ kind: 'err', text: String((e as Error).message) }); }
     setBusy(false);
   };
@@ -248,10 +302,12 @@ export default function AdminPage() {
     setWarnings(j.warnings || []);
     setCautions(j.cautions || []);
     setScene(d.imagePrompt || '');
-    setProgress('2/2 · 글에 맞는 사진을 만드는 중입니다 (30~40초).');
+    setProgress('2/2 · 글에 맞는 사진을 만드는 중입니다 (30~50초).');
     let photoNote = '';
     try {
-      p = await makeImage(p, d.imagePrompt || d.title);
+      const made = await makeImage(p, d.imagePrompt || d.title);
+      p = made.post;
+      if (made.ruleMiss) photoNote = RULE_MISS;
     } catch (e) {
       photoNote = ` 사진은 못 만들었습니다 (${String((e as Error).message).slice(0, 80)}) — 검토 화면에서 다시 만들거나 올려 주세요.`;
     }
@@ -314,6 +370,7 @@ export default function AdminPage() {
     let date = addDays(lastDate, AUTO_GAP_DAYS);
     const made: Post[] = [];
     const skipped: string[] = [];
+    let ruleMiss = 0;
     const titlesSoFar = posts.map((p) => p.title);
     const usedSlugs = new Set(posts.map((p) => p.slug));
     for (let i = 0; i < topics.length; i++) {
@@ -345,6 +402,7 @@ export default function AdminPage() {
         const ri = await fetch('/api/admin/image', { method: 'POST', headers: headers(), body: JSON.stringify({ prompt: d.imagePrompt || d.title, name: slug }) });
         const ji = await ri.json();
         if (ri.ok) { p = { ...p, image: ji.image }; imageData = ji.preview; }
+        if (ri.ok && ji.hasRule && ji.ruleApplied === false) ruleMiss++;
       } catch { /* 사진 없이도 글은 예약한다 — 목록 카드가 제목 카드로 대신한다. */ }
       made.push({ ...p, ...(imageData ? ({ imageData } as object) : {}) } as Post);
       titlesSoFar.push(d.title);
@@ -357,7 +415,7 @@ export default function AdminPage() {
     const jp = await rp.json();
     if (!rp.ok) return fail(jp.error || '올리지 못했습니다.');
     setAuto((a) => (a ? { ...a, running: false, step: '', skipped } : a));
-    setMsg({ kind: 'ok', text: `${made.length}편을 예약했습니다 — ${koDate(made[0].date)} 부터 ${koDate(made[made.length - 1].date)} 까지 ${AUTO_GAP_DAYS}일 간격, ${AUTO_TIME}. 목록에서 '고치기' 로 미리 읽어 보실 수 있습니다.${skipped.length ? ` 건너뛴 글 ${skipped.length}편은 아래에 사유가 있습니다.` : ''}` });
+    setMsg({ kind: 'ok', text: `${made.length}편을 예약했습니다 — ${koDate(made[0].date)} 부터 ${koDate(made[made.length - 1].date)} 까지 ${AUTO_GAP_DAYS}일 간격, ${AUTO_TIME}. 목록에서 '고치기' 로 미리 읽어 보실 수 있습니다.${skipped.length ? ` 건너뛴 글 ${skipped.length}편은 아래에 사유가 있습니다.` : ''}${ruleMiss ? ` 사진 ${ruleMiss}장은 사진 규칙을 반영하지 못했습니다 — 목록에서 열어 '다시 만들기' 를 눌러 주세요.` : ''}` });
     load();
   };
 
@@ -405,6 +463,8 @@ export default function AdminPage() {
   };
 
   const now = nowKST();
+  /* 저장 단추를 켜는 조건. 훅이 아니라 파생값이므로 이른 return 위에 둘 필요는 없지만, 읽기 좋게 여기 모아 둔다. */
+  const clinicDirty = !!clinicSaved && (clinicForm.writing !== clinicSaved.writing || clinicForm.image !== clinicSaved.image);
   const stats = useMemo(() => {
     const live = posts.filter((p) => keyOf(p) <= now).length;
     return { live, queued: posts.length - live };
@@ -532,7 +592,12 @@ export default function AdminPage() {
                 <button onClick={() => fileRef.current?.click()} disabled={busy} className={btnLine}>내 사진 올리기</button>
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(ev) => upload(ev.target.files?.[0])} />
               </div>
-              <p className="mt-2 text-[12.5px] leading-[1.6] text-ink-muted">JPG·PNG 아무 크기나 됩니다. 사람 얼굴·치료 전후 사진은 올리지 마세요(의료법).</p>
+              <p className="mt-2 text-[12.5px] leading-[1.6] text-ink-muted">
+                {clinicSaved?.image.trim()
+                  ? '여기 적은 장면에 목록 화면의 ‘사진 규칙’ 이 항상 함께 적용됩니다 (사람이 나오는지, 어떤 결인지).'
+                  : '목록 화면에서 ‘사진 규칙’ 을 적어 두면 만들 때마다 그 결로 나옵니다.'}
+                {' '}JPG·PNG 아무 크기나 됩니다. 사람 얼굴·치료 전후 사진은 올리지 마세요(의료법).
+              </p>
             </div>
             <label className="block">
               <span className={labelCls}>사진 설명 · 무엇이 찍혔는지</span>
@@ -615,7 +680,7 @@ export default function AdminPage() {
 
   /* ── 목록 ─────────────────────────────────────────────────── */
   return (
-    <main className="mx-auto max-w-[1000px] px-6 py-14">
+    <main className="mx-auto max-w-[1280px] px-6 py-14">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-[13px] font-black tracking-[0.14em] text-clay-600">동그라미치과 · 블로그 관리</p>
@@ -721,7 +786,83 @@ export default function AdminPage() {
         </div>
       )}
 
-      <ul className="mt-8 divide-y divide-brand-200/70 border-t border-brand-200/70">
+      <div className="mt-8 grid gap-10 lg:grid-cols-[380px_1fr]">
+        {/*
+          ★★ 담당자 프롬프트 (2026-09-14 오너: "담당자 프롬프트 넣는 거 만들어줘 … 저장해 두면 이미지 만들 때 반영해서 나오도록") ★★
+            칸은 둘 — 글·제목 하나, 사진 하나. 제목을 따로 떼지 않은 이유는 lib/clinicPrompt.ts 머리말 참고.
+            기본값은 전에 코드에 박혀 있던 프롬프트 그대로다. 고칠 수 있게 꺼내 놓은 것이 이 기능의 요지다
+            ("지금 사람 안 나오게 되어 있는데 나오게 하고 싶을 수도 있으니까" — 그 줄이 이제 사진 칸 안에 있다).
+        */}
+        <aside className="lg:sticky lg:top-8 lg:self-start">
+          <div className="rounded-2xl border border-brand-200/70 bg-parchment p-5">
+            <p className="text-[16px] font-black text-ink">담당자 프롬프트</p>
+            <p className="mt-1.5 text-[13px] leading-[1.7] text-ink-soft">
+              이 병원의 글·사진 규칙입니다. 고쳐서 저장하면 <strong>새로 쓰는 글과 사진마다</strong> 그대로 반영됩니다. 자동으로 쓰는 글과 무인 발행도 같은 규칙을 씁니다.
+            </p>
+
+            {clinicSaved === null ? (
+              <p className="mt-5 text-[14px] text-ink-muted">불러오는 중…</p>
+            ) : (
+              <>
+                <label className="mt-5 block">
+                  <span className={labelCls}>글 · 제목 규칙</span>
+                  <textarea
+                    value={clinicForm.writing}
+                    onChange={(ev) => setClinicField('writing', ev.target.value)}
+                    rows={12}
+                    maxLength={clinicMax}
+                    disabled={clinicSaving}
+                    className={`${inputCls} mt-2 py-2.5 text-[13.5px] leading-[1.75]`}
+                    placeholder="예: 대표원장 1인칭으로 친절하게 씁니다. 제목은 환자가 묻는 질문 그대로."
+                  />
+                  <span className="mt-1 flex items-center justify-between gap-2 text-[12px] text-ink-muted">
+                    <span>{clinicForm.writing.length}/{clinicMax}자 · 제목 규칙도 여기에 함께</span>
+                    <button type="button" onClick={() => fillDefault('writing')} className="shrink-0 font-bold underline underline-offset-2">기본값</button>
+                  </span>
+                </label>
+
+                <label className="mt-5 block">
+                  <span className={labelCls}>사진 규칙</span>
+                  <textarea
+                    value={clinicForm.image}
+                    onChange={(ev) => setClinicField('image', ev.target.value)}
+                    rows={8}
+                    maxLength={clinicMax}
+                    disabled={clinicSaving}
+                    className={`${inputCls} mt-2 py-2.5 text-[13.5px] leading-[1.75]`}
+                    placeholder="예: 환자 뒷모습이 보이게. 진료실 배경이 은은하게."
+                  />
+                  <span className="mt-1 flex items-center justify-between gap-2 text-[12px] text-ink-muted">
+                    <span>{clinicForm.image.length}/{clinicMax}자</span>
+                    <button type="button" onClick={() => fillDefault('image')} className="shrink-0 font-bold underline underline-offset-2">기본값</button>
+                  </span>
+                </label>
+                <p className="mt-2 text-[12px] leading-[1.7] text-ink-muted">
+                  사람이 나오는 사진을 원하면 <strong>&lsquo;사람은 나오지 않습니다&rsquo; 줄을 지우고</strong> &ldquo;환자 뒷모습이 보이게&rdquo; 처럼 적으세요. 적어 두신 말은 글쓰기 AI 가 사진 프롬프트로 옮겨 매번 함께 보냅니다.
+                </p>
+
+                <button onClick={saveClinic} disabled={!clinicDirty || clinicSaving || busy} className={`${btnDark} mt-4 w-full`}>
+                  {clinicSaving ? '저장하는 중…' : clinicDirty ? '저장' : '저장됨'}
+                </button>
+                {clinicDirty && (
+                  <button
+                    type="button"
+                    onClick={() => { clinicDirtyRef.current = false; setClinicForm({ writing: clinicSaved.writing, image: clinicSaved.image }); }}
+                    className="mt-2 w-full text-[13px] font-bold text-ink-muted underline underline-offset-2"
+                  >
+                    고친 것 취소
+                  </button>
+                )}
+                <p className="mt-3 text-[12px] leading-[1.7] text-ink-muted">
+                  {clinicSaved.saved ? `마지막 저장 ${clinicSaved.updatedAt || '기록 없음'}.` : '아직 저장한 적이 없어 기본값입니다.'} 저장하면 다음 글부터 바로 적용되고, 이미 올라간 글은 바뀌지 않습니다. 의료법 금지 표현과 목록·마크다운 차단, 얼굴·치료 전후 사진 금지는 이 칸에서 풀 수 없고 늘 작동합니다.
+                </p>
+              </>
+            )}
+          </div>
+        </aside>
+
+        <div className="min-w-0">
+      <ul className="divide-y divide-brand-200/70 border-t border-brand-200/70">
         {posts.map((p) => {
           const live = keyOf(p) <= now;
           return (
@@ -784,10 +925,17 @@ export default function AdminPage() {
           <li><strong>무인 발행</strong> 토글을 켜 두면 사람이 아무것도 안 해도 며칠에 한 편씩 만들어 예약됩니다(매일 밤 0시에 확인). 감수까지 거치지만 완벽하지는 않으니 목록을 가끔 훑어봐 주세요. 예약된 글은 실리기 전에 '고치기' 로 읽고 고칠 수 있습니다.</li>
           <li>한꺼번에 하려면 <strong>자동으로 쓰고 예약</strong> — 편수를 고르면 주제부터 사진까지 만들어 3일 간격으로 예약합니다. 의료법 낱말이 걸린 글은 건너뛰고 사유를 보여 줍니다. 예약된 글은 실리기 전에 '고치기' 로 읽어 보세요.</li>
           <li>올린 글은 2~3분 뒤 사이트에 보입니다. 예약 글은 그 시각이 지나면 저절로 실립니다.</li>
+          <li>
+            왼쪽 <strong>담당자 프롬프트</strong> 는 이 병원의 글·사진 규칙입니다. 말투를 바꾸고 싶거나("대표원장 1인칭으로"),
+            사진에 사람이 나오게 하고 싶으면("환자 뒷모습이 보이게") 거기를 고치고 <strong>저장</strong> 하세요. 다음 글부터 매번 반영됩니다.
+            되돌리고 싶으면 <strong>기본값</strong> 을 누르고 저장하면 됩니다.
+          </li>
         </ol>
         <p className="mt-3 font-black">하지 말 것</p>
         <p>치료 후기·전후 사진·'최고/유일/완벽' 같은 표현은 의료법 위반입니다. 사이트에 이미 있는 주제(증상·시술·비용 페이지)를 통째로 다시 쓰지 마세요. 올린 글의 주소(영문)는 바꾸지 마세요.</p>
       </details>
+        </div>
+      </div>
     </main>
   );
 }
