@@ -221,9 +221,11 @@ export function SiteHeader() {
                 'border-b border-charcoal/20 bg-[linear-gradient(180deg,rgba(248,243,234,0.92),rgba(248,243,234,0.80))] backdrop-blur-[40px] backdrop-saturate-[1.6] shadow-[0_8px_20px_-16px_rgba(43,30,20,0.28)]'
           }`}
         >
-          {/* ⚠️ 띠는 화면 폭, 내용은 본문 폭 — 안쪽 상자만 max-w 를 진다. */}
+          {/* ⚠️ 띠는 화면 폭, 내용은 본문 폭 — 안쪽 상자만 max-w 를 진다.
+              ⚠️ gap-6 → gap-4 (2026-09-14). 로고·메뉴·버튼이 1320px 안에서 48px 모자랐다.
+                 자세한 내력은 아래 로고 칸의 shrink-0 주석에 있다. */}
           <div
-            className={`mx-auto flex w-full max-w-[1320px] items-center justify-between gap-6 px-5 transition-all duration-300 lg:px-8 ${
+            className={`mx-auto flex w-full max-w-[1320px] items-center justify-between gap-4 px-5 transition-all duration-300 lg:px-8 ${
               // ⚠️ 히어로의 -mt-[68px] sm:-mt-[94px] 와 **같은 값**이어야 한다.
               scrolled ? 'h-[60px] sm:h-[74px]' : 'h-[68px] sm:h-[94px]'
             }`}
@@ -236,7 +238,21 @@ export function SiteHeader() {
              진료시간은 푸터와 /visit 에 정확히 적혀 있다.
              ⚠️ 되살리려면 그 한계(공휴일 판정 불가)부터 해결할 것.
         */}
-        <div className="flex items-center gap-3">
+        {/*
+          ⚠️⚠️ `shrink-0` 을 빼지 말 것 (2026-09-14 실측) ⚠️⚠️
+            이 칸만 flex 기본값(shrink:1)이었다. 그래서 자리가 모자라면 **로고 혼자**
+            줄어들었다 — 오른쪽 전화 버튼과 예약 버튼은 자기 몸에 shrink-0 이 있어
+            안 줄고, 메뉴 글자는 nowrap 이라 못 줄기 때문이다.
+            실측(2026-09-14, circledental.vercel.app): 로고가 179x42 여야 하는데
+              1280px 창 → 45x42 (가로가 4분의 1로 눌림)
+              1440~2560px → 85x42
+            숫자로만 보면 '줄어든' 것이지만 화면에서는 **글자가 가로로 찌그러져** 보인다.
+            ★ 2026-09-11 에 전화 버튼을 넣으며 "1320px 안에서 안 부딪힌다" 고 적었는데,
+              부딪히지 않은 것이 아니라 로고가 조용히 눌려서 자리를 내주고 있던 것이다.
+            ★ 이걸 고정하면 다른 데서 자리를 빼야 한다 — 그래서 같은 커밋에서
+              줄 간격(gap-6→4)과 메뉴의 xl 증폭(xl:gap-4 / xl:px-5)을 함께 걷어냈다.
+        */}
+        <div className="flex shrink-0 items-center gap-3">
           {/*
             ⚠️ 데스크톱 알약 안에서는 **마크만** 쓴다 — 워드마크(214px)가 알약을 두 배로 벌린다.
                좁은 화면은 알약이 화면 폭을 다 쓰므로 워드마크를 그대로 둔다.
@@ -249,7 +265,9 @@ export function SiteHeader() {
             aria-label={`${CLINIC.name} 홈`}
             className="inline-flex min-h-11 items-center transition-opacity hover:opacity-80"
           >
-            <LogoLockup tone={overHero ? 'light' : 'brand'} />
+            {/* ⚠️ tightWidths — 1024~1159px 에서만 워드마크를 접는다. 왜인지는 Logo.tsx 주석에.
+                푸터는 자리가 넉넉하므로 이 값을 주지 않는다. */}
+            <LogoLockup tone={overHero ? 'light' : 'brand'} tightWidths />
           </Link>
         </div>
 
@@ -283,7 +301,9 @@ export function SiteHeader() {
                서기 때문에, 메뉴가 붙으면 칸끼리 겹친다(2026-09-02 실측: gap-0.5 에서
                1·2번 칸이 겹쳤다). 띠가 화면 폭이라 자리는 넉넉하다.
           */
-          className="hidden items-center gap-2 lg:flex xl:gap-4"
+          /* ⚠️ xl:gap-4 를 걷어냈다 (2026-09-14) — 메뉴가 1280px 부터 88px 더 벌어지면서
+                그만큼을 로고가 눌려 내주고 있었다. 위 로고 칸 shrink-0 주석 참조. */
+          className="hidden items-center gap-2 lg:flex"
           aria-label="주 메뉴"
         >
           {NAV.map((item) => {
@@ -337,9 +357,11 @@ export function SiteHeader() {
                     ★ focus-visible 링 — 키보드로 다니는 사람에게 지금 어디에 있는지 보인다.
                       마우스 클릭에는 안 뜬다(focus-visible).
                   */
-                  className={`relative inline-flex items-center gap-1 rounded-full px-4 py-2.5 text-[18px] font-bold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-clay-700/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-50 xl:px-5 ${
+                  /* ⚠️ xl:px-5 를 걷어냈다 (2026-09-14) — 위 gap 과 같은 이유다.
+                        밑줄(after)의 xl:after:inset-x-5 도 함께 빼야 줄이 글자 폭과 맞는다. */
+                  className={`relative inline-flex items-center gap-1 rounded-full px-4 py-2.5 text-[18px] font-bold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-clay-700/60 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-50 ${
                     here
-                      ? 'after:absolute after:inset-x-4 after:bottom-1.5 after:h-[2px] after:rounded-full after:bg-clay-700 xl:after:inset-x-5'
+                      ? 'after:absolute after:inset-x-4 after:bottom-1.5 after:h-[2px] after:rounded-full after:bg-clay-700'
                       : ''
                   } ${
                     overHero

@@ -9,17 +9,66 @@ import { IMG } from '@/lib/assets';
  * ★ 어두운 배경(푸터)에서는 원본이 짙은 회색이라 안 보인다. CSS 필터로 반전시킨다 —
  *   흰색 버전 파일을 따로 받으면 `tone="light"` 분기를 그 파일로 바꾸면 된다.
  * ★ priority — 헤더 로고는 첫 화면에 반드시 보이는 이미지라 지연 로딩하지 않는다.
+ *
+ * @param tightWidths 자리가 빠듯한 구간에서 워드마크를 접고 마크만 둘지.
+ *   ⚠️ **헤더만** true 다. 푸터는 자리가 넉넉하므로 늘 워드마크를 보여 준다 —
+ *      기본값을 true 로 바꾸면 푸터에서도 병원 이름이 사라진다.
  */
-export function LogoLockup({ tone = 'brand' }: { tone?: 'brand' | 'light' }) {
+export function LogoLockup({
+  tone = 'brand',
+  tightWidths = false,
+}: {
+  tone?: 'brand' | 'light';
+  tightWidths?: boolean;
+}) {
+  if (!tightWidths) {
+    return (
+      <Image
+        src={IMG.logo}
+        alt="동그라미치과의원 CIRCLE DENTAL CLINIC"
+        width={214}
+        height={44}
+        priority
+        className={`block h-[38px] w-auto sm:h-[42px] ${tone === 'light' ? 'brightness-0 invert' : ''}`}
+      />
+    );
+  }
   return (
-    <Image
-      src={IMG.logo}
-      alt="동그라미치과의원 CIRCLE DENTAL CLINIC"
-      width={214}
-      height={44}
-      priority
-      className={`h-[38px] w-auto sm:h-[42px] ${tone === 'light' ? 'brightness-0 invert' : ''}`}
-    />
+    <>
+      {/*
+        ⚠️⚠️ 1024~1159px 에서만 **마크만** 보인다 (2026-09-14 실측) ⚠️⚠️
+          이 구간은 데스크톱 메뉴가 켜지는(lg=1024) 첫 구간인데 메뉴 여섯 개가
+          아직 안 들어간다. 실측으로 세 요소가 필요한 폭은
+            워드마크 179 + 메뉴 752 + 예약 112 + 간격 32 = 1075px
+          인데 1024px 창의 안쪽 폭은 960px 이다 — 115px 이 모자란다.
+          예전에는 그 모자람을 **로고가 혼자 눌려서** 메웠다(1024px 에서 49x42, 원래 179x42).
+        ★ 그래서 이 구간에서는 워드마크를 접고 마크(42px)만 둔다 — 135px 이 남아 들어간다.
+        ★ 1160px 부터, 그리고 모바일(1024 미만, 메뉴가 서랍으로 들어간 구간)에서는
+          워드마크를 그대로 보여 준다. 병원 이름이 보이는 쪽이 늘 낫다.
+        ⚠️ 링크와 aria-label 은 바깥(SiteHeader)에 있어 마크만 보여도 병원명은 읽힌다.
+           alt 를 지우지 말 것 — 워드마크가 보이는 구간에서는 이 글자가 이름을 대신한다.
+      */}
+      {/*
+        ⚠️ 구간을 **한 규칙**으로 적는다 — `lg:hidden` 과 `min-[1160px]:block` 을 따로
+           쓰면 안 된다. 두 규칙의 순서가 Tailwind 가 정하는 대로라 1160px 이상에서도
+           `lg:hidden` 이 이겨서 워드마크가 영영 안 나왔다(2026-09-14 실측).
+           `lg:max-[1159px]:` 는 `@media (min-width:1024px) and (max-width:1159px)` 한 줄이라
+           기본값과 부딪히지 않는다.
+      */}
+      <span className="hidden lg:max-[1159px]:block" aria-hidden>
+        <LogoMark size={42} tone={tone} />
+      </span>
+      <Image
+        src={IMG.logo}
+        alt="동그라미치과의원 CIRCLE DENTAL CLINIC"
+        width={214}
+        height={44}
+        priority
+        className={`block h-[38px] w-auto sm:h-[42px] lg:max-[1159px]:hidden ${
+          tone === 'light' ? 'brightness-0 invert' : ''
+        }`}
+      />
+    </>
   );
 }
 
