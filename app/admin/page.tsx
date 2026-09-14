@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { BodyEditor, charCount } from '@/components/admin/BodyEditor';
+import { BodyEditor } from '@/components/admin/BodyEditor';
 
 /**
  * 블로그 관리 — 마케터가 쓰는 화면 (2026-09-08 오너: "사용하기 편하고 직관적이면서 최대한 자동화").
@@ -35,24 +35,9 @@ type Post = {
   imageAlt?: string;
   html: string;
 };
-type View = 'list' | 'topic' | 'edit';
+type View = 'list' | 'edit';
 
 const CATEGORIES = ['임플란트', '잇몸치료', '충치치료', '신경치료', '보철', '심미치료', '사랑니', '예방', '응급', '치과 선택'];
-/* 입력칸의 회색 예시 문구 — 칩으로 두면 그대로 눌러서 겹치는 글이 생긴다(2026-09-08 오너). 열 때마다 하나씩 돌아가며 보인다. */
-const EXAMPLES = [
-  '임플란트 심고 며칠 뒤부터 씹어도 되나요',
-  '잇몸에서 피가 나는데 스케일링만 받으면 되나요',
-  '아이 유치 충치도 꼭 치료해야 하나요',
-  '크라운 씌운 이가 다시 아픈 이유가 뭔가요',
-  '치아 미백 뒤에 시린 건 정상인가요',
-  '사랑니 뽑고 며칠이나 붓나요',
-  '신경치료 중간에 안 아프면 그만 다녀도 되나요',
-];
-const AUTO_COUNTS = [3, 5, 10, 15, 20];
-const AUTO_GAP_DAYS = 3;
-const AUTO_TIME = '09:00';
-const addDays = (iso: string, n: number) => new Date(new Date(`${iso}T00:00:00Z`).getTime() + n * 86400000).toISOString().slice(0, 10);
-const EMPTY: Post = { slug: '', title: '', date: '', time: '09:00', summary: '', category: '', image: '', imageAlt: '', html: '' };
 
 const nowKST = () => new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 16);
 const todayKST = () => nowKST().slice(0, 10);
@@ -215,22 +200,15 @@ export default function AdminPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ kind: 'ok' | 'err' | 'info'; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
-  const [progress, setProgress] = useState<string | null>(null);
   const [server, setServer] = useState({ hasServerToken: true, hasOpenAI: true, hasGemini: true, repo: '' });
   const [ghToken, setGhToken] = useState('');
   const [oaKey, setOaKey] = useState('');
   const [gmKey, setGmKey] = useState('');
-  const [topic, setTopic] = useState('');
   const [scene, setScene] = useState('');
   const [warnings, setWarnings] = useState<string[]>([]);
   const [cautions, setCautions] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
-  const [example, setExample] = useState(EXAMPLES[0]);
-  /* 자동 흐름 상태 — 진행 줄과 중단 신호. stopRef 는 렌더와 무관하게 루프가 읽는다. */
-  const [autoCount, setAutoCount] = useState(10);
-  const [auto, setAuto] = useState<{ step: string; done: Array<{ title: string; date: string }>; skipped: string[]; running: boolean } | null>(null);
-  const stopRef = useRef(false);
-  /* 무인 발행(크론) 설정 — /api/admin/auto. null 이면 아직 못 읽음. */
+  /* 자동 예약 발행(크론) 설정 — /api/admin/auto. null 이면 아직 못 읽음. */
   const [autoCfg, setAutoCfg] = useState<{ enabled: boolean; everyDays: number; time: string; last?: { at: string; result: string } } | null>(null);
   const [autoNext, setAutoNext] = useState<{ due: boolean; date: string } | null>(null);
   /* 중앙(winaid)에서 오는 글 — 여기서는 숨기기만 된다(lib/centralHidden.ts). */
@@ -350,11 +328,6 @@ export default function AdminPage() {
     setPw(''); setMsg(null); load();
   };
 
-  const logout = async () => {
-    await fetch('/api/admin/login', { method: 'DELETE' });
-    setAuthed(false); setPosts([]); setEditing(null); setView('list');
-  };
-
   const saveKeys = () => {
     localStorage.setItem('cd_gh_token', ghToken.trim());
     localStorage.setItem('cd_oa_key', oaKey.trim());
@@ -363,7 +336,6 @@ export default function AdminPage() {
     load();
   };
 
-  const openNew = () => { setEditing({ ...EMPTY, date: todayKST() }); setPreview(null); setWarnings([]); setCautions([]); setTopic(''); setScene(''); setMsg(null); setExample(EXAMPLES[Math.floor(Math.random() * EXAMPLES.length)]); setView('topic'); };
   const openEdit = (p: Post) => { setEditing({ ...p, time: p.time || '00:00' }); setPreview(null); setWarnings([]); setCautions([]); setScene(''); setMsg(null); setView('edit'); };
   const backToList = () => { setEditing(null); setView('list'); setMsg(null); };
 
@@ -408,40 +380,6 @@ export default function AdminPage() {
     if (fileRef.current) fileRef.current.value = '';
   };
 
-  /* ── 1단계: 초안 → 사진까지 한 번에 ─────────────────────────── */
-  const makeDraft = async () => {
-    if (!editing) return;
-    if (topic.trim().length < 2) { setMsg({ kind: 'err', text: '어떤 글을 쓸지 한 줄 적어 주세요.' }); return; }
-    setBusy(true); setMsg(null);
-    setProgress('1/2 · 글을 쓰는 중입니다 (30~60초). 잠시만요.');
-    const r = await fetch('/api/admin/draft', { method: 'POST', headers: headers(), body: JSON.stringify({ topic, existingTitles: posts.map((p) => p.title) }) });
-    const j = await r.json();
-    if (!r.ok) {
-      setBusy(false); setProgress(null);
-      setMsg({ kind: 'err', text: j.error || '글을 못 썼습니다. 한 번 더 눌러 보세요.' });
-      if (r.status === 428) setServer((s) => ({ ...s, hasGemini: false }));
-      return;
-    }
-    const d = j.draft;
-    let p: Post = { ...editing, title: d.title, slug: d.slug, summary: d.summary, category: d.category || '', imageAlt: d.imageAlt, html: d.html };
-    setWarnings(j.warnings || []);
-    setCautions(j.cautions || []);
-    setScene(d.imagePrompt || '');
-    setProgress('2/2 · 글에 맞는 사진을 만드는 중입니다 (30~50초).');
-    let photoNote = '';
-    try {
-      const made = await makeImage(p, d.imagePrompt || d.title);
-      p = made.post;
-      if (made.ruleMiss) photoNote = RULE_MISS;
-    } catch (e) {
-      photoNote = ` 사진은 못 만들었습니다 (${String((e as Error).message).slice(0, 80)}) — 검토 화면에서 다시 만들거나 올려 주세요.`;
-    }
-    setEditing(p);
-    setBusy(false); setProgress(null);
-    setView('edit');
-    setMsg({ kind: (j.warnings || []).length ? 'err' : 'ok', text: `초안이 준비됐습니다 (공백 제외 ${charCount(d.html)}자). 읽어 보고 고친 뒤 올리세요.${photoNote}` });
-  };
-
   /* ── 발행 ─────────────────────────────────────────────────── */
   const publish = async (mode: 'now' | 'schedule') => {
     if (!editing) return;
@@ -470,102 +408,27 @@ export default function AdminPage() {
   };
 
   /*
-   * ★★ 자동으로 쓰고 예약 (2026-09-08 오너: "자동 10건 쓰기 하면 3일 간격으로 … 내용이랑 이미지까지 해서 발행 예약") ★★
-   *   주제 N개 고르기 → 편마다 (글 → 사진) → 마지막에 **커밋 하나**로 전부 예약.
-   *   날짜는 이미 예약된 마지막 글 다음부터 3일 간격, 09:00. 그래서 이어서 누르면 달력이 그대로 이어진다.
-   * ⚠️ 사람 검토가 없는 흐름이다. 그래서 의료법 낱말 경고가 있는 글은 **예약하지 않고 건너뛴다**(목록에 사유가 남는다).
-   *    첫 글이 오늘이 아니라 사흘 뒤인 것도 그 때문 — 목록에서 '고치기' 로 읽어 볼 시간이 있다.
-   * ⚠️ 탭을 닫으면 멈춘다. 중간까지 만든 것은 커밋되지 않는다(커밋은 끝에 한 번). '중단' 을 누르면 그때까지 만든 것만 예약한다.
-   */
-  const runAuto = async () => {
-    if (auto?.running) return;
-    const n = autoCount;
-    if (!confirm(`${n}편을 자동으로 쓰고 ${AUTO_GAP_DAYS}일 간격으로 예약할까요? 글마다 1~2분, 전부 ${Math.round((n * 90) / 60)}분쯤 걸립니다. 그동안 이 탭을 닫지 마세요.`)) return;
-    stopRef.current = false;
-    setMsg(null);
-    setAuto({ step: '주제를 고르는 중입니다…', done: [], skipped: [], running: true });
-    const fail = (text: string) => { setAuto((a) => (a ? { ...a, running: false, step: '' } : a)); setMsg({ kind: 'err', text }); };
-    const rt = await fetch('/api/admin/topics', { method: 'POST', headers: headers(), body: JSON.stringify({ count: n, existing: posts.map((p) => ({ title: p.title, summary: p.summary })) }) });
-    const jt = await rt.json();
-    if (!rt.ok) return fail(jt.error || '주제를 못 골랐습니다.');
-    const topics: Array<{ topic: string; category: string }> = jt.topics;
-
-    /* 시작 날짜: 예약된 마지막 글 다음. 없으면 오늘. 거기서 3일 뒤부터. */
-    const lastDate = posts.reduce((m, p) => (p.date > m ? p.date : m), todayKST());
-    let date = addDays(lastDate, AUTO_GAP_DAYS);
-    const made: Post[] = [];
-    const skipped: string[] = [];
-    let ruleMiss = 0;
-    const titlesSoFar = posts.map((p) => p.title);
-    const usedSlugs = new Set(posts.map((p) => p.slug));
-    for (let i = 0; i < topics.length; i++) {
-      if (stopRef.current) break;
-      const t = topics[i];
-      setAuto((a) => (a ? { ...a, step: `${i + 1}/${topics.length} · 글을 쓰는 중 — ${t.topic}` } : a));
-      let rd = await fetch('/api/admin/draft', { method: 'POST', headers: headers(), body: JSON.stringify({ topic: t.topic, existingTitles: titlesSoFar, review: true }) });
-      let jd = await rd.json();
-      if (!rd.ok) { skipped.push(`${t.topic} — ${jd.error || '글 실패'}`); continue; }
-      /* 의료법 낱말이 걸리면 그 낱말을 피해서 한 번 다시 쓴다. 그래도 HARD 가 남으면 버리고, SOFT 만 남으면 예약하되 사유를 남긴다. */
-      let flagged = [...(jd.warnings || []), ...(jd.cautions || [])];
-      if (flagged.length) {
-        setAuto((a) => (a ? { ...a, step: `${i + 1}/${topics.length} · 의료법 낱말(${flagged.join(', ')})을 피해 다시 쓰는 중 — ${t.topic}` } : a));
-        rd = await fetch('/api/admin/draft', { method: 'POST', headers: headers(), body: JSON.stringify({ topic: t.topic, existingTitles: titlesSoFar, avoid: flagged, review: true }) });
-        jd = await rd.json();
-        if (!rd.ok) { skipped.push(`${t.topic} — ${jd.error || '글 실패'}`); continue; }
-        flagged = [...(jd.warnings || []), ...(jd.cautions || [])];
-      }
-      if ((jd.warnings || []).length) { skipped.push(`${t.topic} — 두 번 모두 의료법 낱말: ${jd.warnings.join(', ')}`); continue; }
-      const softNote = (jd.cautions || []).length ? ` (확인 권장: ${jd.cautions.join(', ')})` : '';
-      const d = jd.draft;
-      let slug = d.slug || `post-${i + 1}`;
-      while (usedSlugs.has(slug)) slug = `${slug}-2`;
-      usedSlugs.add(slug);
-      let p: Post = { slug, title: d.title, date, time: AUTO_TIME, summary: d.summary, category: d.category || t.category, imageAlt: d.imageAlt, html: d.html };
-      let imageData: string | undefined;
-      setAuto((a) => (a ? { ...a, step: `${i + 1}/${topics.length} · 사진을 만드는 중 — ${d.title}` } : a));
-      try {
-        const ri = await fetch('/api/admin/image', { method: 'POST', headers: headers(), body: JSON.stringify({ prompt: d.imagePrompt || d.title, name: slug }) });
-        const ji = await ri.json();
-        if (ri.ok) { p = { ...p, image: ji.image }; imageData = ji.preview; }
-        if (ri.ok && ji.hasRule && ji.ruleApplied === false) ruleMiss++;
-      } catch { /* 사진 없이도 글은 예약한다 — 목록 카드가 제목 카드로 대신한다. */ }
-      made.push({ ...p, ...(imageData ? ({ imageData } as object) : {}) } as Post);
-      titlesSoFar.push(d.title);
-      date = addDays(date, AUTO_GAP_DAYS);
-      setAuto((a) => (a ? { ...a, done: [...a.done, { title: d.title + softNote, date: p.date }], skipped: [...skipped] } : a));
-    }
-    if (!made.length) return fail(`예약할 글이 없습니다. ${skipped.length ? '건너뛴 사유: ' + skipped.join(' / ') : ''}`);
-    setAuto((a) => (a ? { ...a, step: `${made.length}편을 저장소에 올리는 중…` } : a));
-    const rp = await fetch('/api/admin/publish', { method: 'POST', headers: headers(), body: JSON.stringify({ posts: made }) });
-    const jp = await rp.json();
-    if (!rp.ok) return fail(jp.error || '올리지 못했습니다.');
-    setAuto((a) => (a ? { ...a, running: false, step: '', skipped } : a));
-    setMsg({ kind: 'ok', text: `${made.length}편을 예약했습니다 — ${koDate(made[0].date)} 부터 ${koDate(made[made.length - 1].date)} 까지 ${AUTO_GAP_DAYS}일 간격, ${AUTO_TIME}. 목록에서 '고치기' 로 미리 읽어 보실 수 있습니다.${skipped.length ? ` 건너뛴 글 ${skipped.length}편은 아래에 사유가 있습니다.` : ''}${ruleMiss ? ` 사진 ${ruleMiss}장은 사진 규칙을 반영하지 못했습니다 — 목록에서 열어 '다시 만들기' 를 눌러 주세요.` : ''}` });
-    load();
-  };
-
-  /*
-   * ★ 무인 발행 토글 (2026-09-08 오너: "마케터 손에 안 가게 3일마다 자동으로") — 켜 두면 Vercel 크론이 매일 0시(한국)에
+   * ★ 자동 예약 발행 토글 (2026-09-08 오너: "마케터 손에 안 가게 3일마다 자동으로") — 켜 두면 Vercel 크론이 매일 0시(한국)에
    *   /api/cron/blog 를 부르고, 미래 글이 없으면 한 편을 만들어 everyDays 뒤로 예약한다. 사람은 아무것도 안 해도 된다.
    * ⚠️ 설정은 저장소 파일(content/auto-blog.json)이라 토글 = 커밋 = 빌드 한 번. 자주 누를 것이 아니다.
    */
   const toggleAuto = async (enabled: boolean, everyDays?: number) => {
     if (!autoCfg) return;
     const days = everyDays ?? autoCfg.everyDays;
-    if (enabled && !confirm(`무인 발행을 켤까요? 사람이 읽지 않은 글이 ${days}일에 한 편씩 올라갑니다. 의료법 낱말 검사와 감수를 거치지만 완벽하지는 않습니다 — 목록을 가끔 훑어봐 주세요.`)) return;
+    if (enabled && !confirm(`자동 예약 발행을 켤까요? 사람이 읽지 않은 글이 ${days}일에 한 편씩 올라갑니다. 의료법 낱말 검사와 감수를 거치지만 완벽하지는 않습니다 — 목록을 가끔 훑어봐 주세요.`)) return;
     setBusy(true);
     const r = await fetch('/api/admin/auto', { method: 'POST', headers: headers(), body: JSON.stringify({ enabled, everyDays: days }) });
     const j = await r.json();
     setBusy(false);
     if (!r.ok) { setMsg({ kind: 'err', text: j.error || '설정을 저장하지 못했습니다.' }); return; }
     setAutoCfg(j.config);
-    setMsg({ kind: 'ok', text: enabled ? `무인 발행을 켰습니다 — ${days}일에 한 편, ${j.config.time}. 다음 글은 예약된 마지막 글 ${days}일 뒤에 저절로 만들어집니다.` : '무인 발행을 껐습니다. 예약된 글은 그대로 실립니다.' });
+    setMsg({ kind: 'ok', text: enabled ? `자동 예약 발행을 켰습니다 — ${days}일에 한 편, ${j.config.time}. 다음 글은 예약된 마지막 글 ${days}일 뒤에 저절로 만들어집니다.` : '자동 예약 발행을 껐습니다. 예약된 글은 그대로 실립니다.' });
   };
 
   /* 시험 — 크론이 하는 일을 지금 한 번 (미래 글이 있어도 그 뒤에 잇는다). 2~3분. */
   const runCronNow = async () => {
     if (!confirm('지금 한 편을 자동으로 만들어 예약할까요? 2~3분 걸립니다.')) return;
-    setBusy(true); setMsg({ kind: 'info', text: '무인 발행을 한 번 돌리는 중입니다 (주제 → 글 → 감수 → 사진, 2~3분)…' });
+    setBusy(true); setMsg({ kind: 'info', text: '한 편을 쓰는 중입니다 (주제 → 글 → 감수 → 사진, 2~3분)…' });
     const r = await fetch('/api/cron/blog?force=1', { cache: 'no-store' });
     const j = await r.json();
     setBusy(false);
@@ -618,55 +481,7 @@ export default function AdminPage() {
   }
   if (authed === null) return <main className="px-6 py-24 text-center text-ink-soft">불러오는 중…</main>;
 
-  /* ── 1단계: 무엇을 쓸까 ───────────────────────────────────── */
-  if (view === 'topic' && editing) {
-    return (
-      <main className="mx-auto max-w-[760px] px-6 py-14">
-        <button onClick={backToList} className="text-[14.5px] font-bold text-clay-700">← 목록으로</button>
-        <h1 className="display-sm mt-4 text-[28px] text-ink">새 글</h1>
-        <p className="mt-2 text-[15.5px] leading-[1.8] text-ink-soft">
-          환자가 실제로 묻는 말을 그대로 적어 주세요. 제목·요약·본문·대표 사진까지 한 번에 만들어 드립니다. 만든 뒤에 읽어 보고 고칠 수 있습니다.
-        </p>
-
-        <label className="mt-8 block">
-          <span className={labelCls}>어떤 글을 쓸까요?</span>
-          <textarea
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-            rows={2}
-            autoFocus
-            disabled={busy}
-            className={`${inputCls} mt-2 text-[17px]`}
-            placeholder={`예: ${example}`}
-            onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); makeDraft(); } }}
-          />
-        </label>
-        <p className="mt-2 text-[13.5px] text-ink-muted">이미 있는 글과 겹치면 다른 각도로 씁니다. 그래도 목록을 한 번 훑고 적으면 더 좋습니다.</p>
-
-        <div className="mt-8 flex flex-wrap items-center gap-4">
-          <button onClick={makeDraft} disabled={busy || topic.trim().length < 2} className={`${btnDark} px-7 py-3 text-[16px]`}>
-            {busy ? '만드는 중…' : '초안 만들기'}
-          </button>
-          <button onClick={() => { setView('edit'); setMsg(null); }} disabled={busy} className="text-[14px] font-bold text-ink-muted underline underline-offset-2">
-            AI 없이 빈 글로 직접 쓰기
-          </button>
-        </div>
-
-        {progress && (
-          <div className="mt-8 rounded-2xl border border-brand-200/70 bg-parchment p-5">
-            <div className="flex items-center gap-3">
-              <span className="inline-block size-3 animate-pulse rounded-full bg-clay-600" />
-              <p className="text-[15px] font-bold text-ink">{progress}</p>
-            </div>
-            <p className="mt-2 text-[14px] text-ink-soft">이 화면을 닫지 마세요. 끝나면 검토 화면으로 넘어갑니다.</p>
-          </div>
-        )}
-        <Msg />
-      </main>
-    );
-  }
-
-  /* ── 2단계: 검토하고 올리기 ───────────────────────────────── */
+  /* ── 글 고치기 (목록의 '수정') ─────────────────────────────── */
   if (view === 'edit' && editing) {
     const e = editing;
     const set = (k: keyof Post, v: string) => setEditing({ ...e, [k]: v });
@@ -816,48 +631,47 @@ export default function AdminPage() {
             저장소 {server.repo || '…'} · 연결: 저장소 {server.hasServerToken ? '✓' : '✗'} · 사진 {server.hasOpenAI ? '✓' : '✗'} · 글쓰기 {server.hasGemini ? '✓' : '✗'}
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          {/* ★ 무인 발행 토글 — 자동 N편 버튼 왼쪽 (2026-09-08 오너). 켜짐이면 초록 점, 다음 글 날짜를 아래 줄에. */}
-          {autoCfg && (
-            <div className={`flex items-center gap-3 rounded-full border-[1.5px] px-4 py-2 ${autoCfg.enabled ? 'border-green-700/50 bg-green-50' : 'border-ink/25 bg-white'}`}>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={autoCfg.enabled}
-                disabled={busy || !!auto?.running}
-                onClick={() => toggleAuto(!autoCfg.enabled)}
-                className={`relative h-[26px] w-[46px] shrink-0 rounded-full transition-colors ${autoCfg.enabled ? 'bg-green-700' : 'bg-ink/25'} disabled:opacity-40`}
-                title={autoCfg.enabled ? '무인 발행 끄기' : '무인 발행 켜기'}
-              >
-                <span className={`absolute top-[3px] size-[20px] rounded-full bg-white shadow transition-[left] ${autoCfg.enabled ? 'left-[23px]' : 'left-[3px]'}`} />
-              </button>
-              <div className="leading-tight">
-                <p className="text-[14px] font-black text-ink">
-                  무인 발행 {autoCfg.enabled ? '켜짐' : '꺼짐'} ·{' '}
-                  <select value={autoCfg.everyDays} disabled={busy} onChange={(ev) => toggleAuto(autoCfg.enabled, Number(ev.target.value))} className="bg-transparent font-black outline-none" aria-label="며칠에 한 편">
-                    {[1, 2, 3, 4, 5, 7].map((d) => <option key={d} value={d}>{d}일</option>)}
-                  </select>
-                  에 1편
-                </p>
-                <p className="text-[12px] text-ink-muted">
-                  {!cronReady ? '⚠️ 서버에 CRON_SECRET 이 없어 크론이 못 돕니다' : autoCfg.enabled && autoNext ? (autoNext.due ? '오늘 밤 0시에 다음 글을 만듭니다' : `${koDate(autoNext.date)} 글이 실린 날 밤에 다음 글을 만듭니다`) : '켜면 사람이 안 건드려도 이어집니다'}
-                  {' · '}
-                  <button type="button" onClick={runCronNow} disabled={busy || !!auto?.running} className="underline underline-offset-2 disabled:opacity-40">지금 한 편</button>
-                </p>
-              </div>
-            </div>
-          )}
-          <div className="flex items-center overflow-hidden rounded-full border-[1.5px] border-ink/40">
-            <select value={autoCount} onChange={(ev) => setAutoCount(Number(ev.target.value))} disabled={!!auto?.running} className="h-[44px] bg-white pl-4 pr-2 text-[15px] font-bold text-ink outline-none" aria-label="자동으로 쓸 편수">
-              {AUTO_COUNTS.map((c) => <option key={c} value={c}>{c}편</option>)}
-            </select>
-            <button onClick={runAuto} disabled={!!auto?.running || busy} className="h-[44px] bg-white px-4 text-[15px] font-bold text-ink hover:bg-ink hover:text-wine-bg disabled:opacity-40">
-              자동으로 쓰고 예약
+        {/*
+          ★ 자동 예약 발행 토글 — 이 화면의 유일한 단추다 (2026-09-14 오너: "자동 예약 발행 저 토글만,
+            문구도 쉽게, 날짜 드롭다운 더 티나게"). 켜 두면 사람이 아무것도 안 해도 며칠에 한 편씩 올라간다.
+            같은 날 '자동으로 쓰고 예약'·'새 글 쓰기'·'나가기' 를 뺐다 — 글은 전부 자동으로 쓰고,
+            사람이 하는 일은 왼쪽 규칙을 손보고 목록을 훑는 것뿐이다.
+        */}
+        {autoCfg && (
+          <div className={`flex items-center gap-4 rounded-2xl border-[1.5px] px-5 py-3.5 ${autoCfg.enabled ? 'border-green-700/50 bg-green-50' : 'border-ink/25 bg-white'}`}>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={autoCfg.enabled}
+              disabled={busy}
+              onClick={() => toggleAuto(!autoCfg.enabled)}
+              className={`relative h-[30px] w-[54px] shrink-0 rounded-full transition-colors ${autoCfg.enabled ? 'bg-green-700' : 'bg-ink/25'} disabled:opacity-40`}
+              title={autoCfg.enabled ? '자동 예약 발행 끄기' : '자동 예약 발행 켜기'}
+            >
+              <span className={`absolute top-[3px] size-[24px] rounded-full bg-white shadow transition-[left] ${autoCfg.enabled ? 'left-[27px]' : 'left-[3px]'}`} />
             </button>
+            <div className="leading-tight">
+              <p className="text-[16px] font-black text-ink">자동 예약 발행 {autoCfg.enabled ? '켜짐' : '꺼짐'}</p>
+              <p className="mt-2 flex flex-wrap items-center gap-2 text-[14.5px] text-ink">
+                <select
+                  value={autoCfg.everyDays}
+                  disabled={busy}
+                  onChange={(ev) => toggleAuto(autoCfg.enabled, Number(ev.target.value))}
+                  className="rounded-full border-[1.5px] border-ink/35 bg-white px-3 py-1.5 text-[15px] font-black text-ink outline-none focus:border-clay-600 disabled:opacity-40"
+                  aria-label="며칠에 한 편"
+                >
+                  {[1, 2, 3, 4, 5, 7, 10, 14].map((d) => <option key={d} value={d}>{d}일</option>)}
+                </select>
+                <span>에 한 편씩 저절로 올라갑니다</span>
+              </p>
+              <p className="mt-1.5 text-[12.5px] text-ink-muted">
+                {!cronReady ? '⚠️ 서버에 CRON_SECRET 이 없어 자동 발행이 못 돕니다' : autoCfg.enabled && autoNext ? (autoNext.due ? '오늘 밤 0시에 다음 글을 만듭니다' : `${koDate(autoNext.date)} 글이 실린 날 밤에 다음 글을 만듭니다`) : '켜면 사람이 안 건드려도 이어집니다'}
+                {' · '}
+                <button type="button" onClick={runCronNow} disabled={busy} className="font-bold underline underline-offset-2 disabled:opacity-40">지금 한 편 쓰기</button>
+              </p>
+            </div>
           </div>
-          <button onClick={openNew} disabled={!!auto?.running} className={btnDark}>새 글 쓰기</button>
-          <button onClick={logout} className={btnLine}>나가기</button>
-        </div>
+        )}
       </div>
 
       {(!server.hasServerToken || !server.hasOpenAI || !server.hasGemini) && (
@@ -879,37 +693,8 @@ export default function AdminPage() {
 
       <Msg />
 
-      {autoCfg?.last && (
-        <p className="mt-6 rounded-xl bg-brand-100 px-4 py-3 text-[13.5px] leading-[1.7] text-ink-soft">
-          무인 발행 마지막 기록 · {autoCfg.last.at} — {autoCfg.last.result}
-        </p>
-      )}
-
-      {auto && (auto.running || auto.done.length > 0 || auto.skipped.length > 0) && (
-        <div className="mt-8 rounded-2xl border border-brand-200/70 bg-parchment p-5">
-          {auto.running ? (
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-block size-3 animate-pulse rounded-full bg-clay-600" />
-              <p className="min-w-0 flex-1 text-[15px] font-bold text-ink">{auto.step}</p>
-              <button onClick={() => { stopRef.current = true; setAuto((a) => (a ? { ...a, step: '지금 글까지 마치고 멈춥니다…' } : a)); }} className="text-[14px] font-bold text-red-700">중단</button>
-            </div>
-          ) : (
-            <p className="text-[15px] font-bold text-ink">자동 쓰기 결과</p>
-          )}
-          {auto.running && <p className="mt-2 text-[13.5px] text-ink-soft">이 탭을 닫지 마세요. 전부 만든 뒤 한 번에 예약합니다.</p>}
-          {auto.done.length > 0 && (
-            <ul className="mt-3 space-y-1 text-[14px] text-ink">
-              {auto.done.map((d) => <li key={d.title}>✓ {koDate(d.date)} · {d.title}</li>)}
-            </ul>
-          )}
-          {auto.skipped.length > 0 && (
-            <ul className="mt-3 space-y-1 text-[13.5px] text-red-800">
-              {auto.skipped.map((s) => <li key={s}>건너뜀 · {s}</li>)}
-            </ul>
-          )}
-          {!auto.running && <button onClick={() => setAuto(null)} className="mt-3 text-[13.5px] font-bold text-ink-muted underline underline-offset-2">닫기</button>}
-        </div>
-      )}
+      {/* ⚠️ '무인 발행 마지막 기록' 띠는 뺐다 (2026-09-14 오너: "저건 그냥 없애"). 기록 자체는
+          content/auto-blog.json 의 last 에 그대로 남으므로, 무엇이 왜 건너뛰어졌는지는 그 파일로 확인한다. */}
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[400px_1fr]">
         {/*
@@ -983,12 +768,13 @@ export default function AdminPage() {
               <span className="w-[150px] text-[14.5px] tabular-nums text-ink-soft">{koDate(p.date, p.time)}</span>
               <button onClick={() => openEdit(p)} className="min-w-0 flex-1 truncate text-left text-[16px] font-bold text-ink hover:text-clay-700">{p.title}</button>
               <span className="text-[13.5px] text-ink-muted">{p.category}</span>
-              {live && <a href={`/insight/blog/${p.slug}`} target="_blank" rel="noreferrer" className="text-[14px] font-bold text-clay-700">보기</a>}
-              <button onClick={() => openEdit(p)} className="text-[14px] font-bold text-ink">고치기</button>
+              {/* 2026-09-14 오너: "보기 고치기 말고, 수정 삭제 두 개만". 글을 읽어 보려면 제목을 누르면 된다. */}
+              <button onClick={() => openEdit(p)} className="text-[14px] font-bold text-ink">수정</button>
+              <button onClick={() => remove(p)} disabled={busy} className="text-[14px] font-bold text-red-700 disabled:opacity-40">삭제</button>
             </li>
           );
         })}
-        {posts.length === 0 && !busy && <li className="py-10 text-center text-[15px] text-ink-soft">아직 글이 없습니다. '새 글 쓰기' 로 시작하세요.</li>}
+        {posts.length === 0 && !busy && <li className="py-10 text-center text-[15px] text-ink-soft">아직 글이 없습니다. 위 '자동 예약 발행' 을 켜면 저절로 쌓입니다.</li>}
       </ul>
 
       {/*
@@ -1028,21 +814,18 @@ export default function AdminPage() {
       <details className="mt-12 rounded-2xl border border-brand-200/70 bg-parchment p-5 text-[14.5px] leading-[1.85] text-ink">
         <summary className="cursor-pointer text-[15px] font-black">처음이라면 · 사용법</summary>
         <ol className="mt-3 list-decimal space-y-1.5 pl-5">
-          <li><strong>새 글 쓰기</strong> → 환자가 묻는 말을 한 줄 적고 <strong>초안 만들기</strong>. 1~2분 기다리면 글과 사진이 함께 준비됩니다.</li>
-          <li>검토 화면에서 <strong>끝까지 읽습니다.</strong> 원장님 말투나 병원 사정과 다른 곳을 고치세요. 빨간 경고가 있으면 그 낱말은 꼭 바꿉니다.</li>
-          <li>사진이 별로면 장면을 고쳐 <strong>AI 로 다시 만들기</strong>, 또는 <strong>내 사진 올리기</strong>. 사진 설명 칸은 사진과 맞게.</li>
-          <li><strong>지금 바로 올리기</strong> 또는 날짜·시각을 골라 <strong>예약 발행</strong>. 한 달 10편이면 3일 간격이 좋습니다.</li>
-          <li><strong>무인 발행</strong> 토글을 켜 두면 사람이 아무것도 안 해도 며칠에 한 편씩 만들어 예약됩니다(매일 밤 0시에 확인). 감수까지 거치지만 완벽하지는 않으니 목록을 가끔 훑어봐 주세요. 예약된 글은 실리기 전에 '고치기' 로 읽고 고칠 수 있습니다.</li>
-          <li>한꺼번에 하려면 <strong>자동으로 쓰고 예약</strong> — 편수를 고르면 주제부터 사진까지 만들어 3일 간격으로 예약합니다. 의료법 낱말이 걸린 글은 건너뛰고 사유를 보여 줍니다. 예약된 글은 실리기 전에 '고치기' 로 읽어 보세요.</li>
-          <li>올린 글은 2~3분 뒤 사이트에 보입니다. 예약 글은 그 시각이 지나면 저절로 실립니다.</li>
+          <li><strong>자동 예약 발행</strong> 을 켜 두면 끝입니다. 며칠에 한 편씩 주제·글·사진까지 저절로 만들어져 예약됩니다(매일 밤 0시에 확인). 며칠에 한 편인지는 옆 드롭다운에서 고르세요.</li>
           <li>
-            왼쪽 <strong>담당자 프롬프트</strong> 는 이 병원의 글·사진 규칙입니다. 말투를 바꾸고 싶거나("대표원장 1인칭으로"),
-            사진에 사람이 나오게 하고 싶으면("환자 뒷모습이 보이게") 거기를 고치고 <strong>저장</strong> 하세요. 다음 글부터 매번 반영됩니다.
-            되돌리고 싶으면 <strong>기본값</strong> 을 누르고 저장하면 됩니다.
+            왼쪽 <strong>담당자 프롬프트</strong> 가 그 글과 사진의 결을 정합니다. 말하듯이 적으면 됩니다 —
+            &ldquo;원장님이 말하듯 친절하게&rdquo;, &ldquo;치과 의사는 안 나오게 해 주세요&rdquo; 처럼. <strong>+ 규칙 추가</strong> 로 늘리고 <strong>×</strong> 로 지운 뒤 <strong>저장</strong> 을 누르면 다음 글부터 매번 반영됩니다.
+            되돌리려면 <strong>기본값</strong> 을 누르고 저장하세요.
           </li>
+          <li>예약된 글은 실리기 전에 목록에서 <strong>수정</strong> 으로 읽고 고칠 수 있습니다. 마음에 안 들면 <strong>삭제</strong>.</li>
+          <li>사진이 별로면 수정 화면에서 장면을 고쳐 <strong>AI 로 다시 만들기</strong>, 또는 <strong>내 사진 올리기</strong>. 사진 설명 칸은 사진과 맞게.</li>
+          <li>고친 글은 2~3분 뒤 사이트에 반영됩니다. 예약 글은 그 시각이 지나면 저절로 실립니다.</li>
         </ol>
-        <p className="mt-3 font-black">하지 말 것</p>
-        <p>치료 후기·전후 사진·'최고/유일/완벽' 같은 표현은 의료법 위반입니다. 사이트에 이미 있는 주제(증상·시술·비용 페이지)를 통째로 다시 쓰지 마세요. 올린 글의 주소(영문)는 바꾸지 마세요.</p>
+        <p className="mt-3 font-black">알아 두실 것</p>
+        <p>사람이 읽지 않은 글이 올라가는 구조라 목록을 가끔 훑어봐 주세요. 치료 후기·전후 사진·'최고/유일/완벽' 같은 표현은 의료법 위반이고, 프롬프트 칸에 무엇을 적으셔도 그런 표현과 얼굴 나오는 사진은 늘 막힙니다. 올린 글의 주소(영문)는 바꾸지 마세요.</p>
       </details>
         </div>
       </div>
