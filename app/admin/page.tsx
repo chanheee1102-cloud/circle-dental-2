@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { BodyEditor, charCount } from '@/components/admin/BodyEditor';
 
 /**
@@ -78,6 +78,131 @@ async function shrink(file: File): Promise<string> {
   c.height = Math.round(bmp.height * scale);
   c.getContext('2d')!.drawImage(bmp, 0, 0, c.width, c.height);
   return c.toDataURL('image/jpeg', 0.86);
+}
+
+/**
+ * 규칙 한 줄.
+ * ★ 칸은 내용에 맞춰 세로로 늘어난다 — 좁은 왼쪽 기둥에서 한 줄짜리 input 을 쓰면 긴 규칙이 옆으로 잘려
+ *   무엇을 적어 뒀는지 눈으로 확인할 수 없다. 줄바꿈은 칸 구분이라 Enter 로는 못 넣는다(+ 로 칸을 늘린다).
+ */
+function RuleRow({
+  index,
+  value,
+  onChange,
+  onRemove,
+  placeholder,
+  max,
+  disabled,
+}: {
+  index: number;
+  value: string;
+  onChange: (v: string) => void;
+  onRemove: () => void;
+  placeholder: string;
+  max: number;
+  disabled?: boolean;
+}) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }, [value]);
+  return (
+    <div className="flex items-start gap-1">
+      <textarea
+        ref={ref}
+        rows={1}
+        value={value}
+        onChange={(ev) => onChange(ev.target.value)}
+        onKeyDown={(ev) => { if (ev.key === 'Enter') ev.preventDefault(); }}
+        disabled={disabled}
+        maxLength={max}
+        placeholder={placeholder}
+        className={`${inputCls} min-w-0 resize-none overflow-hidden px-3 py-2 text-[13.5px] leading-[1.6]`}
+      />
+      <button
+        type="button"
+        onClick={onRemove}
+        disabled={disabled}
+        aria-label={`${index + 1}번째 규칙 지우기`}
+        title="이 줄 지우기"
+        className="mt-1.5 shrink-0 rounded-full px-1.5 py-1 text-[17px] leading-none text-ink-muted hover:bg-ink/5 hover:text-red-700 disabled:opacity-40"
+      >
+        ×
+      </button>
+    </div>
+  );
+}
+
+/**
+ * 규칙 한 줄 = 칸 하나 (2026-09-14 오너: "한 줄씩 칸 생기게 해 줘. + 버튼 넣어서 규칙 추가하고 싶을 때마다
+ * 한 줄씩 추가하도록. 지금 저렇게 한 번에 좁은 곳에 다 쓰니까 너무 어지럽다").
+ *
+ * ★ 저장 형식은 그대로 **줄바꿈으로 이은 한 덩이**다. 서버도 프롬프트도 이 화면이 칸을 어떻게 쪼개는지 모른다.
+ *   나중에 칸 모양을 또 바꿔도 저장된 규칙은 그대로 읽힌다.
+ * ⚠️ 이 컴포넌트를 AdminPage 안에 두지 말 것 — 렌더마다 새 함수가 되어 글자 하나 칠 때마다 칸에서 커서가 빠진다.
+ */
+function RuleList({
+  label,
+  value,
+  onChange,
+  placeholder,
+  max,
+  disabled,
+  onReset,
+  hint,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  max: number;
+  disabled?: boolean;
+  onReset: () => void;
+  hint?: React.ReactNode;
+}) {
+  const rules = value.split('\n');
+  /* 줄바꿈이 칸 구분이라 한 칸 안에 줄바꿈이 들어오면(붙여넣기) 공백으로 눕힌다. */
+  const set = (i: number, v: string) => onChange(rules.map((r, k) => (k === i ? v.replace(/[\r\n]+/g, ' ') : r)).join('\n'));
+  const remove = (i: number) => {
+    const next = rules.filter((_, k) => k !== i);
+    onChange((next.length ? next : ['']).join('\n'));
+  };
+  return (
+    <div className="mt-5">
+      <div className="flex items-baseline justify-between gap-2">
+        <span className={labelCls}>{label}</span>
+        <button type="button" onClick={onReset} disabled={disabled} className="text-[12px] font-bold text-ink-muted underline underline-offset-2 disabled:opacity-40">
+          기본값
+        </button>
+      </div>
+      <div className="mt-2 space-y-2">
+        {rules.map((r, i) => (
+          <RuleRow
+            key={i}
+            index={i}
+            value={r}
+            onChange={(v) => set(i, v)}
+            onRemove={() => remove(i)}
+            placeholder={i === 0 ? placeholder : '규칙 한 줄'}
+            max={max}
+            disabled={disabled}
+          />
+        ))}
+      </div>
+      <button
+        type="button"
+        onClick={() => onChange([...rules, ''].join('\n'))}
+        disabled={disabled}
+        className="mt-2 inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-ink/25 px-3.5 py-1.5 text-[13px] font-bold text-ink hover:bg-ink hover:text-wine-bg disabled:opacity-40"
+      >
+        <span className="text-[15px] leading-none">+</span> 규칙 추가
+      </button>
+      {hint && <p className="mt-2 text-[12px] leading-[1.7] text-ink-muted">{hint}</p>}
+    </div>
+  );
 }
 
 export default function AdminPage() {
@@ -786,7 +911,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-[380px_1fr]">
+      <div className="mt-8 grid gap-10 lg:grid-cols-[400px_1fr]">
         {/*
           ★★ 담당자 프롬프트 (2026-09-14 오너: "담당자 프롬프트 넣는 거 만들어줘 … 저장해 두면 이미지 만들 때 반영해서 나오도록") ★★
             칸은 둘 — 글·제목 하나, 사진 하나. 제목을 따로 떼지 않은 이유는 lib/clinicPrompt.ts 머리말 참고.
@@ -797,49 +922,34 @@ export default function AdminPage() {
           <div className="rounded-2xl border border-brand-200/70 bg-parchment p-5">
             <p className="text-[16px] font-black text-ink">담당자 프롬프트</p>
             <p className="mt-1.5 text-[13px] leading-[1.7] text-ink-soft">
-              이 병원의 글·사진 규칙입니다. 고쳐서 저장하면 <strong>새로 쓰는 글과 사진마다</strong> 그대로 반영됩니다. 자동으로 쓰는 글과 무인 발행도 같은 규칙을 씁니다.
+              말하듯이 적으면 됩니다. 저장하면 <strong>새로 쓰는 글과 사진마다</strong> 그대로 반영됩니다.
             </p>
 
             {clinicSaved === null ? (
               <p className="mt-5 text-[14px] text-ink-muted">불러오는 중…</p>
             ) : (
               <>
-                <label className="mt-5 block">
-                  <span className={labelCls}>글 · 제목 규칙</span>
-                  <textarea
-                    value={clinicForm.writing}
-                    onChange={(ev) => setClinicField('writing', ev.target.value)}
-                    rows={12}
-                    maxLength={clinicMax}
-                    disabled={clinicSaving}
-                    className={`${inputCls} mt-2 py-2.5 text-[13.5px] leading-[1.75]`}
-                    placeholder="예: 대표원장 1인칭으로 친절하게 씁니다. 제목은 환자가 묻는 질문 그대로."
-                  />
-                  <span className="mt-1 flex items-center justify-between gap-2 text-[12px] text-ink-muted">
-                    <span>{clinicForm.writing.length}/{clinicMax}자 · 제목 규칙도 여기에 함께</span>
-                    <button type="button" onClick={() => fillDefault('writing')} className="shrink-0 font-bold underline underline-offset-2">기본값</button>
-                  </span>
-                </label>
+                <RuleList
+                  label="글 · 제목 규칙"
+                  value={clinicForm.writing}
+                  onChange={(v) => setClinicField('writing', v)}
+                  onReset={() => fillDefault('writing')}
+                  max={clinicMax}
+                  disabled={clinicSaving}
+                  placeholder="예: 원장님이 말하듯 친절하게 써 주세요"
+                  hint="제목 규칙도 여기에 함께 적으시면 됩니다."
+                />
 
-                <label className="mt-5 block">
-                  <span className={labelCls}>사진 규칙</span>
-                  <textarea
-                    value={clinicForm.image}
-                    onChange={(ev) => setClinicField('image', ev.target.value)}
-                    rows={8}
-                    maxLength={clinicMax}
-                    disabled={clinicSaving}
-                    className={`${inputCls} mt-2 py-2.5 text-[13.5px] leading-[1.75]`}
-                    placeholder="예: 환자 뒷모습이 보이게. 진료실 배경이 은은하게."
-                  />
-                  <span className="mt-1 flex items-center justify-between gap-2 text-[12px] text-ink-muted">
-                    <span>{clinicForm.image.length}/{clinicMax}자</span>
-                    <button type="button" onClick={() => fillDefault('image')} className="shrink-0 font-bold underline underline-offset-2">기본값</button>
-                  </span>
-                </label>
-                <p className="mt-2 text-[12px] leading-[1.7] text-ink-muted">
-                  사람이 나오는 사진을 원하면 <strong>&lsquo;사람은 나오지 않습니다&rsquo; 줄을 지우고</strong> &ldquo;환자 뒷모습이 보이게&rdquo; 처럼 적으세요. 적어 두신 말은 글쓰기 AI 가 사진 프롬프트로 옮겨 매번 함께 보냅니다.
-                </p>
+                <RuleList
+                  label="사진 규칙"
+                  value={clinicForm.image}
+                  onChange={(v) => setClinicField('image', v)}
+                  onReset={() => fillDefault('image')}
+                  max={clinicMax}
+                  disabled={clinicSaving}
+                  placeholder="예: 치과 의사는 안 나오게 해 주세요"
+                  hint={<>&ldquo;환자 뒷모습이 보이게&rdquo; 처럼 적으시면 됩니다. 사람이 나오게 하려면 <strong>&lsquo;사람은 나오지 않게&rsquo; 줄을 × 로 지우세요.</strong></>}
+                />
 
                 <button onClick={saveClinic} disabled={!clinicDirty || clinicSaving || busy} className={`${btnDark} mt-4 w-full`}>
                   {clinicSaving ? '저장하는 중…' : clinicDirty ? '저장' : '저장됨'}
@@ -854,7 +964,7 @@ export default function AdminPage() {
                   </button>
                 )}
                 <p className="mt-3 text-[12px] leading-[1.7] text-ink-muted">
-                  {clinicSaved.saved ? `마지막 저장 ${clinicSaved.updatedAt || '기록 없음'}.` : '아직 저장한 적이 없어 기본값입니다.'} 저장하면 다음 글부터 바로 적용되고, 이미 올라간 글은 바뀌지 않습니다. 의료법 금지 표현과 목록·마크다운 차단, 얼굴·치료 전후 사진 금지는 이 칸에서 풀 수 없고 늘 작동합니다.
+                  {clinicSaved.saved ? `마지막 저장 ${clinicSaved.updatedAt || '기록 없음'}.` : '아직 저장한 적 없음 (기본값).'} 다음 글부터 바로 적용되고, 이미 올라간 글은 그대로입니다. 의료법에 걸리는 표현과 얼굴·치료 전후 사진은 여기서 뭘 적으셔도 늘 막힙니다.
                 </p>
               </>
             )}
