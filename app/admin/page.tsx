@@ -42,6 +42,9 @@ const CATEGORIES = ['임플란트', '잇몸치료', '충치치료', '신경치�
 const nowKST = () => new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 16);
 const todayKST = () => nowKST().slice(0, 10);
 const keyOf = (p: { date: string; time?: string }) => `${p.date}T${p.time || '00:00'}`;
+const addDays = (iso: string, n: number) => new Date(new Date(`${iso}T00:00:00Z`).getTime() + n * 86400000).toISOString().slice(0, 10);
+/** 켜 뒀을 때 목록에 미리 보여 줄 '예정' 줄 수. 셋이면 며칠 간격인지 눈으로 읽힌다. */
+const PLANNED_ROWS = 3;
 const koDate = (iso: string, time?: string) => {
   const [y, m, d] = iso.split('-');
   return `${y}. ${Number(m)}. ${Number(d)}.${time && time !== '00:00' ? ` ${time}` : ''}`;
@@ -422,7 +425,9 @@ export default function AdminPage() {
     setBusy(false);
     if (!r.ok) { setMsg({ kind: 'err', text: j.error || '설정을 저장하지 못했습니다.' }); return; }
     setAutoCfg(j.config);
-    setMsg({ kind: 'ok', text: enabled ? `자동 예약 발행을 켰습니다 — ${days}일에 한 편, ${j.config.time}. 다음 글은 예약된 마지막 글 ${days}일 뒤에 저절로 만들어집니다.` : '자동 예약 발행을 껐습니다. 예약된 글은 그대로 실립니다.' });
+    /* ⚠️ 켰다고 초록 띠를 띄우지 않는다 (2026-09-14 오너: "저렇게 초록색으로 뜨지 말고").
+       무슨 일이 일어나는지는 목록에 생기는 '예정' 줄이 말해 준다 — 끄면 그 줄이 사라진다. */
+    setMsg(null);
   };
 
   /* 시험 — 크론이 하는 일을 지금 한 번 (미래 글이 있어도 그 뒤에 잇는다). 2~3분. */
@@ -457,6 +462,21 @@ export default function AdminPage() {
     const live = posts.filter((p) => keyOf(p) <= now).length;
     return { live, queued: posts.length - live };
   }, [posts, now]);
+
+  /*
+   * ★ '예정' 줄 — 자동 예약 발행을 켰을 때 앞으로 글이 올라갈 자리 (2026-09-14 오너: "토글 켜면 밑에
+   *   리스트에 올라가는 날짜하고, 제목은 아직 안 만들었으니까 '예정'. 토글 끄면 사라지도록").
+   * ⚠️ '예약'(파일이 있는 글)과 다르다. 크론은 한 번에 한 편만 만들기 때문에 이 줄들에 해당하는 글은
+   *   아직 저장소에 없다. 간격이 정해져 있어 날짜만 미리 계산해 보여 주는 것이라, 고치거나 지울 것도 없다.
+   * ⚠️ 첫 줄 날짜 — 미래 글이 없으면 오늘 밤에 만들어질 그 날짜(autoNext.date), 이미 예약된 글이 있으면
+   *   그 글 다음 차례부터다(그 글 자체는 아래 목록에 '예약' 으로 이미 보인다).
+   */
+  const planned = useMemo(() => {
+    if (!autoCfg?.enabled || !autoNext) return [];
+    const gap = autoCfg.everyDays;
+    const first = autoNext.due ? autoNext.date : addDays(autoNext.date, gap);
+    return Array.from({ length: PLANNED_ROWS }, (_, i) => addDays(first, i * gap)).reverse();
+  }, [autoCfg, autoNext]);
 
   const Msg = () =>
     msg ? (
@@ -625,7 +645,7 @@ export default function AdminPage() {
         <div>
           <p className="text-[13px] font-black tracking-[0.14em] text-clay-600">동그라미치과 · 블로그 관리</p>
           <h1 className="display-sm mt-3 text-[28px] text-ink">글 {posts.length}편</h1>
-          <p className="mt-1 text-[14.5px] text-ink-soft">실린 글 {stats.live} · 예약 {stats.queued} · 지금 {now.replace('T', ' ')}</p>
+          <p className="mt-1 text-[14.5px] text-ink-soft">실린 글 {stats.live} · 예약 {stats.queued}{planned.length ? ` · 예정 ${planned.length}` : ''} · 지금 {now.replace('T', ' ')}</p>
           {/* ★ 어느 저장소에 쓰는지 보인다 — GITHUB_REPO 를 안 넣으면 옛 저장소로 가는 사고를 눈으로 잡는다. */}
           <p className="mt-1 text-[13px] text-ink-muted">
             저장소 {server.repo || '…'} · 연결: 저장소 {server.hasServerToken ? '✓' : '✗'} · 사진 {server.hasOpenAI ? '✓' : '✗'} · 글쓰기 {server.hasGemini ? '✓' : '✗'}
@@ -758,6 +778,15 @@ export default function AdminPage() {
 
         <div className="min-w-0">
       <ul className="divide-y divide-brand-200/70 border-t border-brand-200/70">
+        {/* 아직 안 쓴 글자리. 토글을 끄면 planned 가 빈 배열이 되어 그대로 사라진다. */}
+        {planned.map((date) => (
+          <li key={`planned-${date}`} className="flex flex-wrap items-center gap-x-5 gap-y-2 py-4">
+            <span className="w-[52px] rounded-full border border-dashed border-clay-600/40 px-2 py-0.5 text-center text-[12.5px] font-black text-clay-600">예정</span>
+            <span className="w-[150px] text-[14.5px] tabular-nums text-ink-muted">{koDate(date, autoCfg?.time)}</span>
+            <span className="min-w-0 flex-1 truncate text-[16px] font-bold text-ink-muted">예정</span>
+            <span className="text-[13.5px] text-ink-muted">아직 안 쓴 글</span>
+          </li>
+        ))}
         {posts.map((p) => {
           const live = keyOf(p) <= now;
           return (
