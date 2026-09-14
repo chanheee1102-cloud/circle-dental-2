@@ -468,13 +468,15 @@ export default function AdminPage() {
    *   리스트에 올라가는 날짜하고, 제목은 아직 안 만들었으니까 '예정'. 토글 끄면 사라지도록").
    * ⚠️ '예약'(파일이 있는 글)과 다르다. 크론은 한 번에 한 편만 만들기 때문에 이 줄들에 해당하는 글은
    *   아직 저장소에 없다. 간격이 정해져 있어 날짜만 미리 계산해 보여 주는 것이라, 고치거나 지울 것도 없다.
-   * ⚠️ 첫 줄 날짜 — 미래 글이 없으면 오늘 밤에 만들어질 그 날짜(autoNext.date), 이미 예약된 글이 있으면
-   *   그 글 다음 차례부터다(그 글 자체는 아래 목록에 '예약' 으로 이미 보인다).
+   * ⚠️ 첫 줄 날짜 — 이미 예약된 글이 있으면 그 글 다음 차례부터다(그 글 자체는 아래 목록에 '예약' 으로 이미 보인다).
+   *   밀려 있으면(autoNext.due 이고 날짜가 오늘 이하) **내일**이다. 크론은 자정에만 돌아서 오늘 것을 지금
+   *   만들 수는 없다 — 서버가 준 autoNext.date 를 그대로 쓰면 이미 지난 '오늘 09:00' 이 예정으로 뜬다.
    */
   const planned = useMemo(() => {
     if (!autoCfg?.enabled || !autoNext) return [];
     const gap = autoCfg.everyDays;
-    const first = autoNext.due ? autoNext.date : addDays(autoNext.date, gap);
+    const today = todayKST();
+    const first = autoNext.due ? (autoNext.date <= today ? addDays(today, 1) : autoNext.date) : addDays(autoNext.date, gap);
     return Array.from({ length: PLANNED_ROWS }, (_, i) => addDays(first, i * gap)).reverse();
   }, [autoCfg, autoNext]);
 
