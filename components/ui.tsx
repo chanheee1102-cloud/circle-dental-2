@@ -450,82 +450,53 @@ export function PageHero({
   children?: React.ReactNode;
 }) {
   return (
-    <section className={`relative isolate -mt-[68px] overflow-hidden pt-[68px] sm:-mt-[94px] sm:pt-[94px] ${
-      photo ? 'flex min-h-[clamp(460px,58vh,640px)] items-center bg-night' : ''
-    }`}>
-      {/* ⚠️ 사진이 없는 페이지는 min-h 도 어두운 면도 걸지 않는다 — 빈 화면이 반 페이지 남는다. */}
-      {/*
-        사진은 배경이고 그 위에 **어두운 덮개 + 흰 글자** 다 (2026-09-02 오너: "원본 느낌").
-        ⚠️ 덮개를 걷거나 흰색으로 바꾸지 말 것 — 세 번 시도했고 세 번 반려됐다
-           (components/TreatmentShell.tsx 머리 주석에 이력이 있다).
-      */}
-      {photo ? (
-        <>
-          <Image
-            src={HERO_PHOTOS[photo].src}
-            alt=""
-            aria-hidden
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                'radial-gradient(80% 64% at 50% 42%, rgba(30,28,25,0.47) 0%, rgba(30,28,25,0.76) 62%, rgba(30,28,25,0.88) 100%)',
-            }}
-          />
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                'linear-gradient(to bottom, rgba(30,28,25,0.64) 0%, rgba(30,28,25,0.40) 38%, rgba(30,28,25,0.82) 100%)',
-            }}
-          />
-        </>
-      ) : null}
-
-      {/*
-        ⚠️⚠️ 글자색이 사진 유무에 따라 갈린다 ⚠️⚠️
-          사진이 있으면 그 위는 어두운 면이라 parchment 계열,
-          없으면 흰 페이지라 ink 계열이다. 한쪽만 바꾸면 반대쪽에서 글자가 사라진다.
-      */}
-      <Container className="relative py-12 sm:py-16 text-center lg:py-20">
-        <div className="flex justify-center">
-          <Breadcrumb trail={trail} tone={photo ? 'dark' : undefined} />
+    /*
+     * ★★ 어두운 사진 띠 → 아이보리 머리 (2026-09-16, 디자인 수정 요청서) ★★
+     *   요청서: "아이보리 바탕에 충분한 여백, 신뢰는 사진·여백·타이포로". 사진 위 흰 글자
+     *   구조(덮개가 조건이던 구조)를 버리고, 왼쪽 제목 · 오른쪽 사진 액자로 바꿨다.
+     *   덮개 문제 자체가 사라진다 — 글자가 사진 위에 놓이지 않는다.
+     * ⚠️ 헤더가 불투명 띠라 음수 위 여백(-mt)이 필요 없다.
+     * ⚠️ 사진은 넓은 화면에서만 — 좁은 화면에서는 본문이 접힌 아래로 밀려 손해다.
+     */
+    <section className="relative border-b border-wine-line bg-wine-bg">
+      <Container
+        className={`grid gap-10 py-10 lg:items-center lg:py-16 ${
+          photo ? 'lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]' : ''
+        }`}
+      >
+        <div className="flex flex-col gap-10">
+          <Breadcrumb trail={trail} />
+          <div className="max-w-[30em]">
+            <p className="eyebrow-chip text-ash">{eyebrow}</p>
+            <h1
+              id={typeof title === 'string' ? headingId(title) : undefined}
+              className="serif-head mt-4 scroll-mt-28 text-[32px] text-charcoal sm:text-[42px] lg:text-[48px]"
+            >
+              {/* ⚠️ 관형형+의존명사를 묶어 준다 — '살리는 / 것이' 같은 끊김을 막는다(bindKo). */}
+              {typeof title === 'string' ? bindKo(title) : title}
+            </h1>
+            {desc ? (
+              <p className="mt-6 max-w-[34em] text-[17px] leading-[1.9] text-ash sm:text-[18px]">
+                <Sentences text={desc} />
+              </p>
+            ) : null}
+            {children ? <div className="mt-8">{children}</div> : null}
+          </div>
         </div>
-
-        <p
-          className={`eyebrow-chip mt-8 justify-center ${photo ? 'text-clay-200' : 'text-clay-700'}`}
-        >
-          {eyebrow}
-        </p>
-        <h1
-          id={typeof title === 'string' ? headingId(title) : undefined}
-          className={`serif-head mx-auto mt-5 max-w-[20em] scroll-mt-28 text-[clamp(28px,3.6vw,46px)] leading-[1.25] ${
-            photo ? 'text-parchment' : 'text-ink'
-          }`}
-        >
-          {/* ⚠️ 관형형+의존명사를 묶어 준다 — '살리는 / 것이' 같은 끊김을 막는다(bindKo). */}
-          {typeof title === 'string' ? bindKo(title) : title}
-        </h1>
-        {desc ? (
-          <p
-            className={`mx-auto mt-6 max-w-[46em] text-[17px] leading-[1.9] sm:text-[18px] ${
-              photo ? 'text-parchment/85' : 'text-twilight'
-            }`}
-          >
-            <Sentences text={desc} tone={photo ? 'dark' : undefined} />
-          </p>
+        {photo ? (
+          <div className="relative hidden aspect-[4/3] overflow-hidden rounded-[8px] bg-wine-soft lg:block">
+            <Image
+              src={HERO_PHOTOS[photo].src}
+              alt=""
+              aria-hidden
+              fill
+              priority
+              sizes="(max-width: 1024px) 0px, 45vw"
+              className="object-cover"
+            />
+          </div>
         ) : null}
-        {children ? <div className="mt-8">{children}</div> : null}
       </Container>
-
-
     </section>
   );
 }

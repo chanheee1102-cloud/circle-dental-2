@@ -2773,3 +2773,91 @@ body:has([data-admin]) > :is(header, footer, .fixed) {
   display: none !important;
 }
 
+/* ══ 홈 — 요청서(2026-09-16) 목업 기준 보강 ══════════════════════════════ */
+
+/* 히어로 오른쪽 사진이 왼쪽 아이보리로 스며드는 가장자리 */
+.hero-fade::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--color-wine-bg) 0%, rgba(247, 245, 240, 0) 22%);
+}
+@media (max-width: 1023px) {
+  .hero-fade::before {
+    background: linear-gradient(180deg, rgba(247, 245, 240, 0) 70%, var(--color-wine-bg) 100%);
+  }
+}
+
+/* 스크롤 안내 — 짧은 세로선이 천천히 내려간다 */
+.scroll-cue::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 44px;
+  margin-top: 10px;
+  background: linear-gradient(to bottom, var(--color-charcoal), transparent);
+  animation: scrollCue 2.2s ease-in-out infinite;
+}
+@keyframes scrollCue {
+  0% { transform: scaleY(0); transform-origin: top; opacity: 0 }
+  40% { transform: scaleY(1); transform-origin: top; opacity: 1 }
+  100% { transform: scaleY(1) translateY(12px); opacity: 0 }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue::after { animation: none }
+}
+
+/* 사진 위 블루그레이 덮개 — 어두운 띠 구획 */
+.tint-bluegray {
+  background:
+    linear-gradient(90deg, rgba(46, 55, 61, 0.94) 0%, rgba(46, 55, 61, 0.82) 55%, rgba(46, 55, 61, 0.62) 100%);
+}
+
+/* 번호 원 — '동그라미' 모티프. 정원(正圓)은 브랜드라 각지게 만들지 말 것. */
+.num-ring {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--color-brand-300);
+  color: var(--color-brand-700);
+  font-family: var(--font-display-en);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+/* 사진 카드 — 손을 올리면 사진만 아주 조금 커진다 */
+.photo-card img {
+  transition: transform 0.7s cubic-bezier(0, 0, 0.2, 1);
+}
+.photo-card:hover img {
+  transform: scale(1.04);
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-card:hover img { transform: none }
+}
+
+/* 홈 구획 세로 여백 — 96 / 128(lg). 요청서: "충분한 여백". */
+.section-y-home {
+  padding-top: 96px;
+  padding-bottom: 96px;
+}
+@media (min-width: 1024px) {
+  .section-y-home {
+    padding-top: 128px;
+    padding-bottom: 128px;
+  }
+}
+
+/* 작은 영문 라벨 — 목업의 "PRESERVE YOUR NATURAL SMILE" 류. 라틴 문자 자리에만. */
+.kicker {
+  font-family: var(--font-display-en);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  line-height: 1.6;
+  color: var(--color-ash);
+}

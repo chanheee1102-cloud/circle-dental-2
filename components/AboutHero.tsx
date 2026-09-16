@@ -48,40 +48,43 @@ export function AboutHero({
   position?: string;
 }) {
   return (
-    <section className="relative isolate -mt-[68px] flex min-h-[clamp(600px,76vh,800px)] flex-col justify-end overflow-hidden bg-wine-deep pt-[68px] text-parchment sm:-mt-[94px] sm:pt-[94px]">
-      {/*
-        ⚠️ alt 를 채우지 말 것 — 이 사진은 장식이다. 뜻은 아래 제목이 전부 진다.
-        ⚠️ filter 로 밝기를 올리지 말 것. 덮개 값이 이 사진의 원래 밝기를 전제로 잡혀 있다.
-      */}
-      <Image
-        src={PHOTOS[photo].src}
-        alt=""
-        aria-hidden
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-        style={{ objectPosition: position }}
-      />
-      {/* 아래에서 위로 — 글이 앉는 아래 절반만 덮고 위 절반은 사진 그대로 둔다. */}
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_top,rgba(30,28,25,0.77)_0%,rgba(30,28,25,0.73)_30%,rgba(30,28,25,0.68)_50%,rgba(30,28,25,0.18)_70%,rgba(30,28,25,0.02)_100%)]" />
-      {/* 왼쪽에서 오른쪽으로 한 겹 더 — 글 줄이 긴 쪽만 받쳐 준다. */}
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_right,rgba(30,28,25,0.36)_0%,rgba(30,28,25,0.16)_46%,rgba(30,28,25,0)_76%)]" />
-
-      <Container className="relative pb-16 lg:pb-24">
-        <Breadcrumb trail={trail} tone="dark" />
-        <h1
-          id={typeof title === 'string' ? headingId(title) : undefined}
-          className="serif-head mt-8 max-w-[17em] scroll-mt-28 text-[clamp(30px,4.4vw,54px)] text-parchment"
-        >
-          {/* ⚠️ 관형형+의존명사를 묶어 준다 — '살리는 / 것이' 같은 끊김을 막는다(bindKo). */}
-          {typeof title === 'string' ? bindKo(title) : title}
-        </h1>
-        {lead ? (
-          <p className="mt-7 max-w-[44em] text-[17px] leading-[1.9] text-parchment/85 sm:text-[18px]">
-            <Sentences text={lead} />
-          </p>
-        ) : null}
+    /*
+     * ★★ 사진 위 흰 글자 → 아이보리 머리 + 오른쪽 사진 (2026-09-16, 디자인 수정 요청서) ★★
+     *   덮개가 '조건'이던 이유는 글자가 사진 위에 있어서였다. 글자를 아이보리로 내리고
+     *   사진을 액자에 넣으면 덮개도 실측도 필요 없다. 홈 첫 화면·PageHero 와 같은 문법.
+     */
+    <section className="relative border-b border-wine-line bg-wine-bg">
+      <Container className="grid gap-10 py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:py-16">
+        <div className="flex flex-col gap-10">
+          <Breadcrumb trail={trail} />
+          <div className="max-w-[30em]">
+            <h1
+              id={typeof title === 'string' ? headingId(title) : undefined}
+              className="serif-head scroll-mt-28 text-[32px] text-charcoal sm:text-[42px] lg:text-[50px]"
+            >
+              {/* ⚠️ 관형형+의존명사를 묶어 준다 — '살리는 / 것이' 같은 끊김을 막는다(bindKo). */}
+              {typeof title === 'string' ? bindKo(title) : title}
+            </h1>
+            {lead ? (
+              <p className="mt-7 max-w-[34em] text-[17px] leading-[1.9] text-ash sm:text-[18px]">
+                <Sentences text={lead} />
+              </p>
+            ) : null}
+          </div>
+        </div>
+        <div className="relative aspect-[4/3] overflow-hidden rounded-[8px] bg-wine-soft">
+          {/* ⚠️ alt 를 채우지 말 것 — 이 사진은 장식이다. 뜻은 왼쪽 제목이 전부 진다. */}
+          <Image
+            src={PHOTOS[photo].src}
+            alt=""
+            aria-hidden
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover"
+            style={{ objectPosition: position }}
+          />
+        </div>
       </Container>
     </section>
   );
