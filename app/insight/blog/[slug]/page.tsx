@@ -122,7 +122,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           )}
         </div>
 
-        <h1 className="display-sm mt-4 max-w-[20em] text-[clamp(28px,3.6vw,44px)] leading-[1.25] tracking-[-0.02em] text-ink">
+        <h1 className="serif-head mt-4 max-w-[20em] text-[clamp(28px,3.6vw,44px)] text-ink">
           {post.title}
         </h1>
         <p className="mt-6 max-w-[46em] text-[18px] leading-[1.9] text-twilight"><Sentences text={post.summary} /></p>

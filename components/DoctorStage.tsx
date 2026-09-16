@@ -100,7 +100,7 @@ function Stand({ d, big }: { d: Doc; big?: boolean }) {
         {big && (
           <span
             aria-hidden
-            className="pointer-events-none absolute -inset-x-8 -top-10 bottom-0 -z-10 rounded-[999px] bg-[radial-gradient(60%_55%_at_50%_45%,rgba(217,164,65,0.16)_0%,transparent_70%)]"
+            className="pointer-events-none absolute -inset-x-8 -top-10 bottom-0 -z-10 rounded-[999px] bg-[radial-gradient(60%_55%_at_50%_45%,rgba(185,196,202,0.16)_0%,transparent_70%)]"
           />
         )}
       {/*

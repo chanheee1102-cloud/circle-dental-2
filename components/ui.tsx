@@ -347,8 +347,8 @@ export function SectionHead({
         id={typeof title === 'string' ? headingId(title) : undefined}
         className={
           as === 'h1'
-            ? 'display-sm mt-4 scroll-mt-28 text-[32px] text-ink sm:text-[42px]'
-            : 'display-sm mt-4 scroll-mt-28 text-[28px] text-ink sm:text-[36px]'
+            ? 'serif-head mt-4 scroll-mt-28 text-[32px] text-ink sm:text-[44px]'
+            : 'serif-head mt-4 scroll-mt-28 text-[28px] text-ink sm:text-[38px]'
         }
       >
         {/*
@@ -506,7 +506,7 @@ export function PageHero({
         </p>
         <h1
           id={typeof title === 'string' ? headingId(title) : undefined}
-          className={`display-sm mx-auto mt-5 max-w-[20em] scroll-mt-28 text-[clamp(28px,3.6vw,46px)] leading-[1.25] ${
+          className={`serif-head mx-auto mt-5 max-w-[20em] scroll-mt-28 text-[clamp(28px,3.6vw,46px)] leading-[1.25] ${
             photo ? 'text-parchment' : 'text-ink'
           }`}
         >
@@ -724,7 +724,7 @@ export function ContactCta({
         */}
         <div className="max-w-[40em]">
           <p className="eyebrow-chip text-clay-700">예약 · 상담</p>
-          <h2 className="display-sm mt-5 max-w-[14em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">{title}</h2>
+          <h2 className="serif-head mt-5 max-w-[14em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">{title}</h2>
           <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
             <Sentences text={desc} />
           </p>

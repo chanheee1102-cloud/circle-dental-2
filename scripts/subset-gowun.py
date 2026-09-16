@@ -70,7 +70,8 @@ def used_glyphs():
         # ⚠️ 제목 안에 같은 태그가 중첩되는 경우는 없다 — 있으면 이 정규식을 고칠 것.
         for m in re.finditer(
             # display-ko(홈) 뿐 아니라 display / display-sm(전 페이지)도 세리프다.
-            r'<(h1|h2|h3|h4|p|span|div|a|li|strong)\b[^>]*class="[^"]*\bdisplay(?:-ko|-sm)?\b[^"]*"[^>]*>(.*?)</\1>',
+            # 2026-09-16: 세리프 = .display / .display-ko / .serif-head (.display-sm 은 산세리프지만 여유로 포함).
+            r'<(h1|h2|h3|h4|p|span|div|a|li|strong)\b[^>]*class="[^"]*\b(?:display(?:-ko|-sm)?|serif-head)\b[^"]*"[^>]*>(.*?)</\1>',
             html,
             re.S,
         ):

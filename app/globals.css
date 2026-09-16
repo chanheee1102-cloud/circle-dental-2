@@ -42,290 +42,114 @@
  */
 @theme {
   /*
-   * ★★ 화이트 그린 → 다시 웜 뉴트럴 + 골드 (2026-08-25 운영자: "색깔도 초록색에서
-   *    이전처럼 되돌려줘") ★★
-   *    같은 날 초록으로 한 번 갈아탔다가 되돌아온 것이다. 값은 2026-08-13 판과 같다.
+   * ★★ 색 체계 — 디자인 수정 요청서 (2026-09-16, 클라이언트 sukho) ★★
+   *   "따뜻한 아이보리를 기본으로, 차분한 블루그레이를 포인트로."
+   *   ⚠️ 색 이름은 그대로 두고 **값만** 갈아 끼웠다 — 89개 페이지가 이 이름을 쓴다.
+   *      (고동/베이지 시절 이름 clay·gold·wine·walnut 은 이제 이름과 값이 다르다.
+   *       이름이 아니라 값이 디자인이다.)
    *
-   * ⚠️ 색 이름은 그대로 두고 값만 바꾼다 — 89개 페이지가 이 이름을 쓴다.
-   *    gold-* 는 다시 **테라코타**다(초록으로 갔던 동안 밝은 초록이었다).
-   * ⚠️ mint-* 는 첫 화면·버튼·오늘 표시가 쓰는 이름인데, 웜 팔레트에는 민트가 없다.
-   *    이름을 지우면 그 자리들을 전부 손봐야 하므로 **값만 웜 쪽으로 돌린다**.
-   */
-  --color-ink: #2b1e14;      /* 고동 — 제목 (베이지 위 11.41:1) */
-  --color-ink-soft: #55432f; /* 고동 보조 (5.53:1) */
-  /*
-   * ⚠️⚠️ #948c85 로 되돌리지 말 것 — 밝은 바탕에서 3.12:1 이라 기준(4.5)에 미달했다.
-   *    "장식용이니 작은 본문에 쓰지 말 것" 이라고 적어 뒀지만 실제로는 빵부스러기·
-   *    메타·캡션 등 **읽어야 하는 글**에 34곳이 쓰고 있었다(전 페이지 실측 466건 중
-   *    62건이 이 색 하나). 규칙을 지키게 만드는 것보다 색을 통과시키는 편이 확실하다.
-   *    지금 값: 크림 바탕 4.74:1 · 흰 면 5.02:1.
-   * ⚠️ 어두운 면에서는 쓰지 않는다(실측 0곳). 어두운 쪽은 brand-200/300 이 맡는다.
-   */
-  --color-ink-muted: #6b5642;/* 가장 흐린 단계 (4.66:1) — 더 흐리게 하지 말 것 */
-
-  /* 웜 뉴트럴 — 따뜻한 회갈색 축 */
-  --color-brand-50: #f8f3ea;
-  --color-brand-100: #ece5d8;
-  --color-brand-200: #c9bda6;
-  --color-brand-300: #b3a58a;
-  --color-brand-400: #a89478;
-  --color-brand-500: #6b5a45;
-  --color-brand-600: #59493a;
-  --color-brand-700: #4a3826; /* ← 기준색. 헤더·버튼·푸터가 쓴다 */
-  --color-brand-800: #33261a;
-  --color-brand-900: #2b1e14;
-
-  /*
-   * 어두운 화면용 두 단계 (2026-08-27).
-   * ★ brand-900(#22201d) 은 카드·띠에 쓰기엔 맞지만 **화면 전체 바탕**으로는 밝다.
-   *   제품 사이트처럼 어두운 면을 깔려면 한 단계 더 내려간 값이 필요하다.
-   * ⚠️ 순검정(#000)을 쓰지 않는다 — 이 사이트는 웜 뉴트럴 축이라 순검정을 깔면 색이 튄다.
-   *   night 는 brand 축과 같은 색상각에서 명도만 더 내린 값이다.
-   */
-  --color-night: #241a12;   /* 화면 바탕 */
-  --color-night-2: #33261a; /* 한 단 올린 띠 */
-
-  /*
-   * ★★ MindMarket 축 — 심미보철 페이지 전용 (2026-08-27, 오너가 스타일 레퍼런스로 지목) ★★
-   *   크림 종이 바탕 + 아주 큰 타이포 + 50px 라운드 + 초록 강조 하나.
-   *   그림자를 쓰지 않고 **크림→흰색 면 차이**로만 층을 만드는 것이 이 시스템의 핵심이다.
+   *   기본 배경   Warm Ivory    #F7F5F0   넓은 바탕(body)
+   *   기본 텍스트 Deep Charcoal #242521   본문·주요 제목
+   *   브랜드 포인트 Blue Gray   #53616A   버튼·강조·일부 그래픽 — 필요한 곳에만
+   *   보조        Warm Taupe    #A89F93   라인·배경·큰 라벨(본문 크기 글자엔 금지 — 2.4:1)
+   *   White       Soft White    #FFFFFF   카드·이미지 주변
    *
-   * ⚠️ 이 토큰은 심미보철 한 페이지에서만 쓴다. 사이트 전역에 퍼뜨리지 말 것 —
-   *    나머지 페이지는 웜 뉴트럴(brand) 축과 clay 강조를 쓴다.
-   * ⚠️ grass 는 **구조 강조 전용**이다(테두리·획·아이콘). 본문 글자색이나 큰 면에 쓰지 말 것.
-   * ⚠️ coral 은 서비스 단위 행동 버튼에만. 전역 CTA 색으로 승격하지 말 것.
+   * ⚠️ 포인트 색을 남발하지 말 것 — 요청서: "버튼이나 강조 문구까지 모두 포인트 컬러로
+   *    처리하는 방식은 피하고 싶다". 채운 버튼은 화면당 하나.
    */
-  --color-paper: #ffffff;      /* 페이지 바탕 — 흰색이 아니다 */
-  --color-paper-2: #f4efe6;    /* 한 단 들어간 면 */
-  --color-inkw: #2b1e14;       /* 본문·테두리·아이콘 (순검정 금지) */
-  /*
-   * ⚠️ #80827f → #565853 으로 내렸다 (2026-08-27, 실측).
-   *   paper-2(#e0dbce) 위에서 2.80:1 이라 본문 크기 글까지 흐릿했다(31곳이 걸렸다).
-   *   지금 값은 paper-2 위 5.05:1, paper 위 5.7:1 이다.
-   * ⚠️ '눌러 둔 글' 이라는 역할은 그대로다 — 본문(inkw)보다 여전히 옅다.
-   */
-  --color-stone: #55432f;      /* 눌러 둔 글 */
-  --color-hairline: #d3c9b6;   /* 아주 옅은 구분선 */
-  --color-grass: #d9a441;      /* 구조 강조 */
-  --color-coral: #6f746f;      /* 서비스 행동 버튼 */
-  --color-sky: #e7bd72;
-  --color-sun: #c3c7c3;
+  --color-ink: #242521;      /* 제목 (아이보리 위 14.6:1) */
+  --color-ink-soft: #5b5852; /* 보조 (6.9:1) */
+  --color-ink-muted: #6b675f;/* 가장 흐린 단계 (5.2:1) — 더 흐리게 하지 말 것 */
 
-  /*
-   * ★★ 실험실 축 — 치아미백 페이지 전용 (2026-08-27, 오너가 스타일 레퍼런스로 지목) ★★
-   *   거의 검정에 초록 기운이 도는 바탕 + 단일 굵기 타이포 + 라임 강조 하나.
-   *   그림자를 절대 쓰지 않고 **1px 헤어라인**으로만 구획한다.
-   *
-   * ⚠️ abyss 는 순검정이 아니다. 초록 기운을 품은 어두운 색이라 라임 강조와 같은 계열로 읽힌다.
-   *    순검정(void)은 **푸터에만** 쓴다 — 본문 어두운 면에 쓰면 강조색이 겉돈다.
-   * ⚠️ lime 은 40x40 화살표 버튼과 6px 점에만 쓴다. 큰 면·본문 뒤·그라디언트에 쓰지 말 것.
-   *    이 시스템의 힘은 나머지가 전부 무채색이라 초록이 나타나면 눈이 그리로 가는 데 있다.
-   * ⚠️ lichen·tissue 는 밝은 면 전용이다. 어두운 면에 쓰면 묻혀서 면 위계가 깨진다.
-   * ⚠️ 이 토큰은 치아미백 한 페이지에서만 쓴다. 사이트 전역에 퍼뜨리지 말 것.
-   */
-  --color-abyss: #2b1e14;   /* 어두운 면 · 본문 글자(밝은 면) */
-  --color-bone: #ffffff;    /* 밝은 면 바탕 */
-  --color-graphite: #55432f;/* 보조 글 · 어두운 면 헤어라인 */
-  --color-lichen: #c9bda6;  /* 밝은 면 헤어라인 */
-  --color-tissue: #f4efe6;  /* 밝은 면 보조 카드 */
-  --color-lime: #e7bd72;    /* 강조 — 미세 면에만 */
-  --color-void: #180f09;    /* 푸터 전용 */
+  /* brand — 50~400 아이보리·토프 축, 500~900 블루그레이 축 */
+  --color-brand-50: #fbfaf7;
+  --color-brand-100: #efece5;
+  --color-brand-200: #e4e0d7;
+  --color-brand-300: #c9c3b8;
+  --color-brand-400: #a89f93;
+  --color-brand-500: #6f7c85;
+  --color-brand-600: #5e6c75;
+  --color-brand-700: #53616a; /* ← 기준색. 헤더·버튼·푸터가 쓴다 */
+  --color-brand-800: #414c54;
+  --color-brand-900: #2e373d;
 
-  /*
-   * ★★ 다크룸 축 — 사랑니 페이지 전용 (2026-08-27, 오너가 스타일 레퍼런스로 지목) ★★
-   *   따뜻한 어둠 위에 크림색 글자만 띄우는 제품 사진 문법.
-   * ⚠️ 순백(#fff)과 순검정(#000)을 쓰지 말 것 — 이 시스템은 **따뜻하게 틀어진** 흑백이
-   *    정체성이다. 순수한 값을 쓰면 그 순간 다른 사이트가 된다.
-   * ⚠️ ember(주황)는 크레딧·링크 같은 편집 요소에만. **버튼에 쓰지 말 것.**
-   * ⚠️ 그림자 금지. 깊이는 walnut→bark 두 단계 면 차이로만 만든다.
-   * ⚠️ 이 토큰은 사랑니 한 페이지에서만 쓴다.
-   */
-  --color-walnut: #1e1710;  /* 캔버스 — 따뜻한 near-black */
-  --color-bark: #33261a;    /* 유일한 채워진 버튼 면 */
-  --color-cork: #4b3a22;    /* 헤어라인 · 점선 구분선 */
-  /*
-   * ⚠️ #6c5f51 → #a6957f 로 올렸다 (2026-08-27, 실측).
-   *   walnut(#100904) 위에서 3.19:1 이라 12px 라벨이 사실상 안 읽혔다.
-   *   지금 값은 walnut 위 6.15:1, bark 위 5.11:1 이다. 두 면 모두에서 쓰이므로
-   *   더 어둡게 되돌리려면 **두 면 다** 다시 재 볼 것.
-   */
-  --color-driftwood: #bdac93;
-  /*
-   * ⚠️ 이름이 cream 이었다가 oat 로 바꿨다 (2026-08-27).
-   *   사이트 바탕색도 --color-cream(#faf8f6) 이라 **같은 이름이 두 번** 정의됐고,
-   *   뒤에 온 사이트 값이 이겨서 이 페이지 글자 27곳이 전부 #faf8f6 으로 그려지고 있었다.
-   *   반대로 순서가 바뀌면 사이트 전체 배경이 주황빛이 된다. 이름을 갈라야만 풀린다.
-   */
-  --color-oat: #fffaf3;     /* 글자 — 순백 금지 */
-  --color-ember: #d9a441;   /* 편집 강조 전용 */
+  --color-night: #262b2f;   /* 화면 바탕(어두운) */
+  --color-night-2: #333a3f; /* 한 단 올린 띠 */
 
-  /*
-   * 기술 라벨용 고정폭 — 치아미백 페이지의 구간 번호·태그·버튼 글자.
-   * ⚠️ 레퍼런스는 Roboto Mono 를 지정하지만 **웹폰트를 새로 받지 않는다.**
-   *    이 저장소는 폰트 로딩 비용을 깐깐하게 관리한다(layout.tsx 주석 참고). 라벨 몇 줄을
-   *    위해 폰트 파일을 받는 것은 값이 안 맞아 시스템 고정폭 스택을 쓴다.
-   *    고정폭이 주는 계측기 느낌은 그대로 남는다.
-   */
+  --color-paper: #f7f5f0;
+  --color-paper-2: #efece5;
+  --color-inkw: #242521;
+  --color-stone: #5b5852;
+  --color-hairline: #e4e0d7;
+  --color-grass: #53616a;
+  --color-coral: #53616a;
+  --color-sky: #b9c4ca;
+  --color-sun: #c9c3b8;
+
+  --color-abyss: #262b2f;
+  --color-bone: #f7f5f0;
+  --color-graphite: #5b5852;
+  --color-lichen: #e4e0d7;
+  --color-tissue: #efece5;
+  --color-lime: #b9c4ca;
+  --color-void: #1e2326;
+
+  --color-walnut: #262b2f;
+  --color-bark: #53616a;
+  --color-cork: #414c54;
+  --color-driftwood: #a89f93;
+  --color-oat: #fbfaf7;
+  --color-ember: #b9c4ca;
+
   --font-mono:
     ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 
-  /*
-   * 첫 화면·오늘 표시가 쓰는 이름. 초록 시절의 잔재라 이름은 'mint' 지만 값은 웜이다.
-   * ⚠️ 이름만 보고 민트라고 생각하지 말 것 — 여기 값을 볼 것.
-   * ⚠️ mint-500 은 brand-700 과 같은 값이다. 히어로 버튼과 헤더 버튼이 같은 색이어야
-   *    한 화면에 같은 글자의 버튼이 두 색으로 보이지 않는다(2026-08-25에 겪은 일).
-   */
-  --color-mint-400: #9aa09a;
-  --color-mint-500: #1f1f29;
+  --color-mint-400: #a89f93;
+  --color-mint-500: #53616a;
 
-  /*
-   * 강조색 — 클레이 (2026-08-26).
-   *
-   * ★★ 왜 넣었나 ★★
-   *   진료 페이지가 밋밋한 실체는 **강조색이 정의돼 있는데 안 쓴다** 였다. 임플란트 페이지
-   *   전체에서 gold 사용이 딱 1곳이었고 나머지는 전부 brand-* (웜 그레이) 라, 베이지 위에
-   *   회갈색만 남아 시선이 걸리는 지점이 한 곳도 없었다.
-   *
-   * ★★ 값을 어디서 가져왔나 — 중요 ★★
-   *   처음에는 경쟁 병원(이고운치과)의 CSS 변수를 그대로 옮겨 왔다(#ff7e5f · #b8462c).
-   *   그 결과가 그 병원 페이지와 구분이 안 돼 오너가 즉시 지적했다. **경쟁사 팔레트를
-   *   복사하지 말 것.** 지금 값은 이 사이트가 원래 갖고 있던 gold(로즈/테라코타, #c08a72)
-   *   와 **같은 색상각**에서 채도만 올린 것이다. 남의 색이 아니라 우리 색의 진한 판이다.
-   *
-   * ★ 대비는 실측해서 골랐다(흰 면 / 크림 #faf8f6 / 어두운 면 brand-900):
-   *     clay-300  2.57 / 2.43 / 6.31   ← 어두운 면 **본문**
-   *     clay-400  3.45 / 3.25 / 4.71   ← 어두운 면 숫자·아이콘
-   *     clay-500  4.89 / 4.61 / 3.32   ← 버튼 바탕(흰 글자 4.89:1)
-   *     clay-600  6.39 / 6.03 / 2.54   ← 밝은 바탕의 **강조 글자**
-   * ⚠️ clay-300/400 을 밝은 바탕의 작은 글자로 쓰지 말 것(3.5:1 미만). 밝은 쪽은 clay-600.
-   * ⚠️ gold 를 지우지 말 것 — 기존 20개 파일이 쓰고 있다. clay 는 gold 를 대체하지 않고 옆에 선다.
-   */
-  /*
-   * ⚠️ 사진 위 **작은** 금색 글자(13~13.5px 눈썹)는 여기를 쓴다 — clay-300 은
-   *    덮개를 한 단 걷은 뒤로 4.26:1 이라 4.5:1 에 못 미쳤다(2026-09-02 실측).
-   *    큰 글자·어두운 판 위 본문은 그대로 clay-300 을 쓴다.
-   */
-  --color-clay-200: #f4dfb6; /* 사진 위 작은 금색 글자 */
-  --color-clay-300: #e8c98f; /* 어두운 면 본문 */
-  --color-clay-400: #cba869; /* 어두운 면 숫자·아이콘·테두리 */
-  --color-clay-500: #4a3826; /* 버튼 바탕 */
-  --color-clay-600: #4a3826; /* 밝은 바탕의 강조 글자 */
-  --color-clay-700: #3b2c1e;
-  --color-clay-tint: #efe6d6; /* 아주 옅은 면 */
+  /* 강조 — 이름은 clay 지만 값은 블루그레이 */
+  --color-clay-200: #cdd6db; /* 사진 위 작은 글자 */
+  --color-clay-300: #b9c4ca; /* 어두운 면 본문 (wine-deep 위 6.9:1) */
+  --color-clay-400: #8fa0a9; /* 어두운 면 숫자·아이콘·테두리 */
+  --color-clay-500: #53616a; /* 버튼 바탕 (흰 글자 6.4:1) */
+  --color-clay-600: #53616a; /* 밝은 바탕의 강조 글자 (아이보리 위 5.9:1) */
+  --color-clay-700: #46535b; /* 링크·라벨·채운 버튼 (아이보리 위 7.2:1) */
+  --color-clay-tint: #e9ecec;
 
-  /* 강조 — 원본의 로즈/테라코타. 면적을 크게 쓰지 말 것. */
-  --color-gold-400: #c9bda6;
-  --color-gold-500: #55432f;
-  --color-gold-600: #4a3826;
+  --color-gold-400: #a89f93;
+  --color-gold-500: #6f7c85;
+  --color-gold-600: #53616a;
 
-  /*
-   * ⚠️ 페이지 바탕이다(body). 2026-08-28 에 버건디로 맞췄다 — 투명한 카드는 바탕에
-   *   색이 있어야 보이고, 그 색이 페이지마다 다르면 카드가 어떤 데서는 사라진다.
-   *   --color-wine-bg 와 **같은 값**이어야 한다. 한쪽만 바꾸지 말 것.
-   */
-  --color-cream: #ffffff;
-  --color-cream-deep: #f4efe6;
+  /* 페이지 바탕(body) = Warm Ivory. --color-wine-bg 와 같은 값이어야 한다. */
+  --color-cream: #f7f5f0;
+  --color-cream-deep: #efece5;
 
-  /*
-   * ★★ 홈 전용 축 — GIC(General Intelligence Company) 문법 (2026-08-27, 오너 지목) ★★
-   *
-   *   왜 바꾸나 — 홈이 "이고운치과 + 예전 동그라미" 에서 벗어나지 못한다는 지적.
-   *   두 참고 사이트의 공통점은 **크고 굵은 글씨로 크게 말하는 것**이다(900 굵기,
-   *   자간 -0.042em, 영문 대문자 눈썹). GIC 는 정반대로 간다 — 세리프 400 굵기로
-   *   조용히 말하고, 색을 거의 안 쓰고, 흰 카드를 아주 옅은 실선으로만 가른다.
-   *   같은 내용을 그대로 두고 **말하는 크기만 낮추는 것**이 이 시스템의 전부다.
-   *
-   * ⚠️ signal(#41a1cf)로 **글자를 쓰지 말 것.** parchment 위에서 2.90:1 이라 본문
-   *    기준(4.5:1)에 한참 못 미친다(실측). 밝은 면에서는 **테두리 전용**이다.
-   *    어두운 dusk 위에서는 5.62:1 이라 글자로 써도 된다 — 전화번호가 그 자리다.
-   * ⚠️ 채워진 버튼은 dusk 하나뿐이다. signal 을 배경으로 채우는 순간 흔한 SaaS 가 된다.
-   * ⚠️ 순검정(#000)을 쓰지 말 것 — 글자는 charcoal/twilight 까지만 내려간다.
-   * ⚠️ 이 토큰들은 홈에서만 쓴다. 다른 페이지로 번지면 사이트가 두 벌로 갈린다.
-   */
-  /*
-   * ★★ 스톤 축 — 홈 바탕 한 벌 ★★
-   *   2026-08-28 오너: "버건디 신경쓰지말고, 지금 카드 보고 배경 어떻게 들어가면
-   *   전문적으로 잘 어울릴지" → 붉은 기를 빼고 **따뜻한 석재(그레이지)** 로 옮겼다.
-   *
-   * ★★★ 카드 색은 이 값을 따라온다 ★★★
-   *   진료 카드는 rgba(23,23,26,0.1~0.32) 반투명이다. 즉 **바탕이 비쳐서 만들어진 색**이다
-   *   (실측: 바탕 #f5edf0 일 때 카드 #686366 — 붉은 기가 카드까지 올라와 있었다).
-   *   그래서 바탕만 바꾸면 카드도 같이 옮겨 앉는다. 카드 색을 따로 손대지 말 것.
-   *
-   * ★ 왜 그레이지인가 — 강조색이 금색(--color-signal #d9a441)이다. 붉은 바탕에서는
-   *   금색이 같은 붉은 계열에 묻히고, 푸른 바탕에서는 금색이 튄다. 따뜻한 회색이
-   *   금색을 **받쳐 주는** 유일한 자리다.
-   * ⚠️ 채도를 올리지 말 것 — 색으로 읽히면 과한 것이다. 지금은 흰색과 구별은 되지만
-   *    '무슨 색' 이라고 말하기 어려운 선이고, 그것이 의도다.
-   * ⚠️ 토큰 이름은 wine-* 그대로 둔다. 725곳이 이 이름을 쓰고 있어 이름을 바꾸면
-   *    전 페이지를 다시 손대야 한다. **이름이 아니라 값이 디자인이다.**
-   */
-  /*
-   * ⚠️ 캔버스를 흰색 쪽으로 올리지 말 것.
-   *   전에 거의 흰색(#faf5f6)이었을 때 **유리 카드가 흰 카드와 구별되지 않았다** —
-   *   투명함은 뒤가 비쳐 보일 때만 보이는데, 뒤가 카드와 같은 색이었다.
-   *   지금은 카드가 바탕보다 한 단 위에 떠서 유리로 읽힌다. .card-glass 와 한 쌍이다.
-   */
-  --color-wine-bg: #ffffff;      /* 캔버스 */
-  --color-wine-soft: #ece5d8;    /* 한 단 들어간 면 */
-  --color-wine-line: #c9bda6;    /* 실선 */
-  --color-wine-deep: #241a12;    /* 어두운 큰 면 (parchment 글자 15.9:1) */
-  --color-wine-deep-2: #33261a;  /* 그 위 한 단 */
+  --color-wine-bg: #f7f5f0;      /* 캔버스 */
+  --color-wine-soft: #efece5;    /* 한 단 들어간 면 */
+  --color-wine-line: #e4e0d7;    /* 실선 */
+  --color-wine-deep: #2e373d;    /* 어두운 큰 면 — 블루그레이 딥 */
+  --color-wine-deep-2: #3a454c;
 
-  --color-parchment: #f4efe6; /* 캔버스 — 크림(#faf8f6)보다 차고 밝다 */
-  --color-mist: #c9bda6;      /* 카드 실선 */
-  --color-mist-soft: #ded4c1; /* 더 옅은 구분선 */
-  --color-charcoal: #2b1e14;  /* 고동 — 제목 (11.41:1) */
-  --color-twilight: #3b2c1e;  /* 고동 — 본문 (10.12:1) */
-  --color-ash: #55432f; /* ⚠️ 한 칸 내려앉은 면(wine-soft) 위 카드에서 4.42:1 로 미달해 한 단 내렸다 (2026-08-28) */       /* 보조 글자 (6.47:1) */
-  --color-dusk: #241a12;      /* 유일한 채워진 버튼 · 어두운 큰 면 */
-  --color-signal: #d9a441;    /* 강조 — 어두운 면 글자 7.42:1 / 밝은 면은 테두리 전용(2.08:1) */
+  --color-parchment: #efece5; /* 한 단 들어간 면(구획 바탕). 그 안의 카드는 흰색(아래 중첩 규칙) */
+  --color-mist: #e4e0d7;      /* 카드 실선 */
+  --color-mist-soft: #ece9e1;
+  --color-charcoal: #242521;  /* 제목 */
+  --color-twilight: #3a3b36;  /* 본문 */
+  --color-ash: #6b675f;       /* 보조 글자 (5.2:1) */
+  --color-dusk: #53616a;      /* 유일한 채워진 버튼 · 포인트 */
+  --color-signal: #53616a;    /* 강조 — 밝은 면 5.9:1 */
 
   --font-sans:
     'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Malgun Gothic',
     sans-serif;
 
   /*
-   * 한글 세리프 — GIC 의 정체성은 **세리프를 400 굵기로 크게 쓰는 것** 하나다.
-   *
-   * ★ Marcellus 는 라틴 전용이라 한글 제목에 못 쓴다. 고운바탕(1.8MB)을 **홈 제목에
-   *   실제로 쓰는 글자만 남겨 31KB 로 잘라** 쓴다(scripts/subset-gowun.py).
-   * ⚠️⚠️ 제목 문구를 바꾸면 그 글자가 이 파일에 없어 **그 글자만 Pretendard 로 떨어진다**
-   *    — 한 문장 안에서 글꼴이 두 벌로 보인다. 문구를 바꿀 때는 반드시
-   *    scripts/subset-gowun.py 의 TEXT 에 새 문구를 넣고 다시 돌릴 것.
-   * ⚠️ 본문에 쓰지 말 것. 27px 이상 제목과 인용에만 쓴다 — 작은 글씨의 세리프는
-   *    한글에서 획이 뭉개져 오히려 읽기 어렵다.
+   * 한글 세리프 — 큰 제목 전용(요청서 목업: 명조 제목 + 산세리프 본문).
+   * ⚠️ 제목 문구를 바꾸면 npm run build → py -3 scripts/subset-gowun.py 로 서브셋을 다시 만들 것.
    */
-  /*
-   * ⚠️⚠️ 2026-08-28 현재 **안 쓴다** ⚠️⚠️
-   *   제목을 Pretendard 한 벌로 통일하면서 .display / .display-sm / .display-ko 가
-   *   모두 이 변수를 참조하지 않게 됐다. 안 쓰는 글꼴은 브라우저가 요청하지 않으므로
-   *   남겨 둬도 비용이 0 이고, 되살릴 때 서브셋을 다시 만들 필요가 없다.
-   * ⚠️ 되살릴 거면 scripts/subset-gowun.py 를 먼저 돌릴 것 — 잘라낸 글꼴에 없는 글자는
-   *    그 글자만 Pretendard 로 떨어져 한 줄에 글꼴이 두 벌 보인다.
-   */
-  --font-display-ko: 'Gowun Batang', 'Marcellus', var(--font-sans);
-
-  /**
-   * 영문 전용 세리프 (2026-08-18).
-   *
-   * ★★ 왜 한 벌 더 두나 ★★
-   *   본문·제목은 전부 Pretendard 다. 좋은 선택이지만 **영문이 밋밋하다** —
-   *   Pretendard 의 라틴 글자는 한글과 어울리도록 만들어진 것이라 그 자체로는 개성이 없다.
-   *   참고 사이트(LU치과)가 본문은 Pretendard, 영문 표제만 세리프로 갈라 쓰는데
-   *   그 한 겹이 인상을 크게 바꾼다.
-   *
-   * ★ 라틴 글자만 받는다 — 14.5KB 한 파일이다. 한글은 이 글꼴에 아예 없으므로
-   *   한글이 섞이면 자동으로 Pretendard 로 떨어진다(폴백이 곧 규칙이 된다).
-   * ⚠️ 본문에 쓰지 말 것. **병원 영문명과 번호**처럼 라틴 문자만 있는 짧은 자리에만 쓴다.
-   *   한글 문장에 세리프가 섞이면 폰트가 두 벌 보이는 것이 아니라 그냥 어색해 보인다.
-   */
+  --font-display-ko: 'Gowun Batang', 'Noto Serif KR', serif;
   --font-display-en: 'Marcellus', 'Times New Roman', serif;
 
-  /**
-   * 반경 스케일 — Tailwind 기본값을 통째로 낮춘다.
-   * 이렇게 하면 코드의 rounded-xl / rounded-2xl 을 그대로 두고도 전체가 덜 둥글어진다.
-   */
   --radius-sm: 0.1875rem;
   --radius-md: 0.3125rem;
   --radius-lg: 0.4375rem;
@@ -333,10 +157,9 @@
   --radius-2xl: 0.6875rem;
   --radius-3xl: 0.875rem;
 
-  /* 두 겹 그림자 — 가까운 그림자로 윤곽을, 먼 그림자로 깊이를 만든다. */
-  --shadow-soft: 0 1px 2px rgba(34, 32, 29, 0.05), 0 8px 24px -10px rgba(34, 32, 29, 0.14);
-  --shadow-lift: 0 2px 4px rgba(34, 32, 29, 0.06), 0 20px 44px -14px rgba(34, 32, 29, 0.22);
-  --shadow-btn: 0 2px 6px rgba(68, 60, 55, 0.24), 0 12px 26px -10px rgba(68, 60, 55, 0.4);
+  --shadow-soft: 0 1px 2px rgba(36, 37, 33, 0.04), 0 6px 18px -12px rgba(36, 37, 33, 0.1);
+  --shadow-lift: 0 2px 4px rgba(36, 37, 33, 0.05), 0 16px 36px -18px rgba(36, 37, 33, 0.16);
+  --shadow-btn: 0 1px 2px rgba(83, 97, 106, 0.18), 0 10px 22px -12px rgba(83, 97, 106, 0.35);
 }
 
 /*
@@ -380,10 +203,13 @@
  *    사이트의 모든 제목이 Pretendard 한 벌이다. 여기만 다른 글꼴을 넣지 말 것.
  */
 .display-ko {
-  font-weight: 700;
-  letter-spacing: -0.032em;
-  line-height: 1.26;
+  font-family: var(--font-display-ko);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
   font-variant-numeric: tabular-nums;
+  text-wrap: balance;
+  word-break: keep-all;
 }
 
 /**
@@ -447,15 +273,21 @@ body {
  *    합성 볼드가 걸리면 한글 획이 뭉개진다.
  */
 .display {
-  /*
-   * ★ 접힐 때 줄 길이를 고르게 나눈다 — 마지막 줄에 한 낱말만 남는 모양을 막는다.
-   * ⚠️ 이것이 '한 줄로 만드는' 기능은 아니다. 한 줄로 두려면 max-w 를 넉넉히 줘야 한다.
-   *    그리고 그 max-w 는 **em 단위**여야 한다 — ch 는 한글에서 절반으로 계산된다.
-   */
+  font-family: var(--font-display-ko);
   text-wrap: balance;
-  font-weight: 700;
-  letter-spacing: -0.032em;
-  line-height: 1.22;
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  line-height: 1.3;
+  word-break: keep-all;
+}
+
+/* 세리프 제목 — 하위 페이지 h1/h2(SectionHead·PageHero·ContactCta)가 쓴다. */
+.serif-head {
+  font-family: var(--font-display-ko);
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  line-height: 1.3;
+  text-wrap: balance;
   word-break: keep-all;
 }
 
@@ -854,37 +686,10 @@ time,
  * ⚠️ 카드 안 사진은 불투명하다. 유리는 사진 바깥 여백에서만 보인다 — 그게 맞다.
  */
 .card-glass {
-  /*
-   * ★★ 헤더 알약과 **같은 재질** (2026-08-28 오너: "내가 말한 투명 배경은 우리 헤더같은 느낌") ★★
-   *   유리로 읽히게 하는 것은 '얼마나 투명한가' 가 아니라 네 겹의 조합이다 —
-   *     ① 흰빛을 대각선으로 옅게 흘린 면   ② 아주 센 흐림(40px)
-   *     ③ 위 모서리 안쪽의 밝은 실선(빛을 받는 윗면)  ④ 아래로 깔리는 부드러운 그림자
-   *   이 넷이 있으면 평평한 바탕 위에서도 '유리판' 으로 보인다.
-   *
-   * ⚠️ 채움을 20% 언저리로 낮추지 말 것 — 카드가 바탕에 묻혀 사라진다(그렇게 해 봤다).
-   * ⚠️ 흐림을 줄이지 말 것 — 값이 작으면 그냥 반투명 종이가 된다.
-   * ⚠️ 이 재질을 헤더(components/SiteHeader.tsx)와 따로 놀게 두지 말 것.
-   *    한쪽만 바꾸면 화면에 유리가 두 종류로 보인다.
-   * ⚠️ 이 요소 **안쪽**에 backdrop-filter 를 또 걸지 말 것 — 안쪽 것이 죽는다.
-   */
-  /*
-   * ⚠️⚠️ 채움을 rgba(254,255,252,...) 로 되돌리지 말 것 (2026-09-02) ⚠️⚠️
-   *   그건 **거의 순백**이라, 캔버스가 흰색이 된 뒤로는 흰 바탕에 흰 유리라
-   *   카드가 통째로 사라졌다(오너: "배경흰색이랑 너무 구분 안되잖아").
-   *   지금은 베이지를 채운다 — 사진 위에서는 여전히 유리로 비치고,
-   *   흰 바탕 위에서는 한 단 내려앉은 면으로 읽힌다.
-   */
-  background-image: linear-gradient(
-    135deg,
-    rgba(246, 241, 232, 0.92),
-    rgba(240, 233, 220, 0.8)
-  );
-  backdrop-filter: blur(40px) saturate(1.6);
-  -webkit-backdrop-filter: blur(40px) saturate(1.6);
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 10px 20px -12px rgba(40, 26, 31, 0.14),
-    0 24px 50px -26px rgba(40, 26, 31, 0.26);
+    0 8px 18px -12px rgba(36, 37, 33, 0.1);
 }
 
 /*
@@ -911,30 +716,17 @@ time,
  * ⚠️ 글자는 charcoal 로 둔다. 흰 면 위 17.9:1 이다.
  */
 .btn-pane {
-  /*
-   * ⚠️ 0.1 로 되돌리지 말 것 (2026-09-02 실측) — 밝은 결에서 테두리가 1.22:1 이라
-   *    버튼 모양이 그림자로만 남았다. 고동색 0.26 이면 1.8:1 로 윤곽이 보인다.
-   */
-  border-color: rgba(58, 43, 34, 0.26);
-  background-color: color-mix(in srgb, var(--color-parchment) 88%, transparent);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 1px 2px rgba(23, 23, 23, 0.06),
-    0 14px 28px -16px rgba(23, 23, 23, 0.4);
+  border-color: rgba(36, 37, 33, 0.28);
+  background-color: transparent;
   transition:
-    background-color 0.3s cubic-bezier(0, 0, 0.2, 1),
-    box-shadow 0.3s cubic-bezier(0, 0, 0.2, 1),
-    border-color 0.3s cubic-bezier(0, 0, 0.2, 1);
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
 }
 .btn-pane:hover {
-  border-color: rgba(58, 43, 34, 0.42);
-  background-color: var(--color-parchment);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    0 2px 4px rgba(23, 23, 23, 0.08),
-    0 20px 40px -18px rgba(23, 23, 23, 0.45);
+  border-color: var(--color-charcoal);
+  background-color: var(--color-charcoal);
+  color: var(--color-parchment);
 }
 
 /*
@@ -1065,17 +857,10 @@ time,
 }
 
 .pane-glass {
-  /* ⚠️ 위 .card-glass 와 같은 이유로 베이지다. 순백으로 되돌리지 말 것. */
-  background-image: linear-gradient(
-    135deg,
-    rgba(246, 241, 232, 0.96),
-    rgba(238, 231, 218, 0.88)
-  );
-  backdrop-filter: blur(28px) saturate(1.5);
-  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.97), rgba(255, 255, 255, 0.92));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    0 10px 24px -14px rgba(40, 26, 31, 0.45);
+    0 8px 20px -14px rgba(36, 37, 33, 0.14);
 }
 
 /*
@@ -1782,8 +1567,8 @@ time,
   align-items: center;
   gap: 0.5rem;
   font-size: 0.8125rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   line-height: 1.5;
 }
 /* 라벨 끝의 짧은 눈금 — 상자를 대신해 '여기서 구획이 시작한다' 를 표시한다. */

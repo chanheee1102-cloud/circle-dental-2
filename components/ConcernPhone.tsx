@@ -324,7 +324,7 @@ export function ConcernPhone({ heading }: { heading: ReactNode }) {
                           </p>
                         ) : (
                           <span key={m.key} className="flex max-w-[86%] flex-col items-end gap-1.5 self-end">
-                            <span className="rounded-2xl rounded-tr-md bg-signal px-4 py-3 text-[14px] leading-[1.75] font-medium text-charcoal shadow-[0_2px_8px_-4px_rgba(0,0,0,.25)]">
+                            <span className="rounded-2xl rounded-tr-md bg-clay-tint px-4 py-3 text-[14px] leading-[1.75] font-medium text-charcoal shadow-[0_2px_8px_-4px_rgba(0,0,0,.25)]">
                               <Sentences text={m.text} />
                             </span>
                             {/*

@@ -72,7 +72,7 @@ export function AboutHero({
         <Breadcrumb trail={trail} tone="dark" />
         <h1
           id={typeof title === 'string' ? headingId(title) : undefined}
-          className="display-sm mt-8 max-w-[17em] scroll-mt-28 text-[clamp(30px,4.4vw,54px)] leading-[1.2] tracking-[-0.03em] text-parchment"
+          className="serif-head mt-8 max-w-[17em] scroll-mt-28 text-[clamp(30px,4.4vw,54px)] text-parchment"
         >
           {/* ⚠️ 관형형+의존명사를 묶어 준다 — '살리는 / 것이' 같은 끊김을 막는다(bindKo). */}
           {typeof title === 'string' ? bindKo(title) : title}

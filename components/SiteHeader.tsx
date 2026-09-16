@@ -218,7 +218,7 @@ export function SiteHeader() {
                 /* ★ 2026-09-03 — 순백(254,255,252) → brand-50(248,243,234). 캔버스가 흰색이 된 뒤로
                 //   순백 유리는 흰 페이지 위에서 '띠' 로 안 읽혔다. 베이지 한 단이 경계를 만든다.
                 //   흐림·채도는 그대로다(아래 ⚠️). */
-                'border-b border-charcoal/20 bg-[linear-gradient(180deg,rgba(248,243,234,0.92),rgba(248,243,234,0.80))] backdrop-blur-[40px] backdrop-saturate-[1.6] shadow-[0_8px_20px_-16px_rgba(43,30,20,0.28)]'
+                'border-b border-charcoal/20 bg-[linear-gradient(180deg,rgba(247,245,240,0.92),rgba(247,245,240,0.80))] backdrop-blur-[40px] backdrop-saturate-[1.6] shadow-[0_8px_20px_-16px_rgba(36,37,33,0.28)]'
           }`}
         >
           {/* ⚠️ 띠는 화면 폭, 내용은 본문 폭 — 안쪽 상자만 max-w 를 진다.
@@ -521,7 +521,7 @@ export function SiteHeader() {
           <div className="absolute top-full right-0 left-0 z-10 hidden lg:block">
             <div
               ref={panelRef}
-              className="mega-in relative w-full overflow-hidden border-b border-charcoal/12 bg-[linear-gradient(180deg,rgba(254,255,252,0.94),rgba(254,255,252,0.86))] px-4 py-8 shadow-[0_18px_40px_-22px_rgba(43,30,20,0.35)] backdrop-blur-[40px] backdrop-saturate-[1.6]"
+              className="mega-in relative w-full overflow-hidden border-b border-charcoal/12 bg-[linear-gradient(180deg,rgba(254,255,252,0.94),rgba(254,255,252,0.86))] px-4 py-8 shadow-[0_18px_40px_-22px_rgba(36,37,33,0.35)] backdrop-blur-[40px] backdrop-saturate-[1.6]"
               onMouseLeave={() => setOpenMenu(null)}
             >
               {/*

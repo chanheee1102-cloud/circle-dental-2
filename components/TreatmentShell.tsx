@@ -88,7 +88,7 @@ export function TreatmentHero({
       {/* 위에서 스미는 금빛 — 강조색은 금색 하나뿐이다. 다른 색을 가져오지 말 것. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(56%_42%_at_50%_-6%,rgba(217,164,65,0.14)_0%,transparent_66%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(56%_42%_at_50%_-6%,rgba(185,196,202,0.14)_0%,transparent_66%)]"
       />
 
       <Container className="relative text-center">
@@ -101,7 +101,7 @@ export function TreatmentHero({
           {eyebrow}
         </p>
 
-        <h1 className="line-rise reveal display-sm mx-auto mt-7 max-w-[16em] text-[clamp(32px,5.4vw,62px)] leading-[1.14] tracking-[-0.03em] text-parchment">
+        <h1 className="line-rise reveal serif-head mx-auto mt-7 max-w-[16em] text-[clamp(32px,5.4vw,62px)] leading-[1.2] text-parchment">
           {/*
             ⚠️ 줄 끝의 공백 한 칸을 지우지 말 것 (2026-09-01) — 제목을 줄마다 span 으로
               쪼개면 기계가 읽는 문자열이 '어떤 경우에어떤 진료를' 처럼 붙어 버린다.
