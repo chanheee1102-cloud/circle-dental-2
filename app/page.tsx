@@ -118,8 +118,15 @@ function Hero() {
       />
       <div aria-hidden className="hero-shade absolute inset-0 -z-10" />
 
-      <div className="mx-auto flex w-full max-w-[1440px] flex-col justify-end px-5 pt-[120px] pb-[104px] sm:px-8 lg:min-h-[100svh] lg:pt-[160px] lg:pb-[108px] xl:px-16">
-        <div className="max-w-[34em]">
+      {/*
+        ⚠️ 여기서 폭을 따로 잡지 말 것 (2026-09-17 오너: "너무 왼쪽에 쏠린 거 아니야?").
+           히어로만 max-w-[1440px] + xl:px-16 을 쓰고 있어서, 넓은 화면에서 제목의 왼쪽 끝이
+           아래 구획들(Container 1320px)보다 더 바깥에서 시작했다 — 페이지 전체가 어긋나 보인다.
+           **아래 모든 구획과 같은 Container** 를 쓴다. 제목·본문·SCROLL 줄이 한 세로선에 선다.
+      */}
+      <Container className="flex flex-col justify-end pt-[120px] pb-[104px] lg:min-h-[100svh] lg:pt-[160px] lg:pb-[108px]">
+        {/* ⚠️ 34em(544px)에서는 "한 번 더 살펴봅니다." 가 세 줄로 접혔다 — 두 줄로 서게 폭을 준다. */}
+        <div className="max-w-[46rem]">
           <h1 className="enter serif-head on-photo text-[clamp(38px,5.4vw,66px)] text-white">
             뽑기 전에,
             <br />
@@ -171,7 +178,7 @@ function Hero() {
             smile
           </p>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

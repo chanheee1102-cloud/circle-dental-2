@@ -112,7 +112,7 @@ export function LogoMark({ size = 44, tone = 'brand' }: { size?: number; tone?: 
  *    다른 글자로 바꾸면 scripts/subset-gowun.py 를 다시 돌릴 것.
  * ⚠️ 푸터는 그대로 그림 로고(LogoLockup)를 쓴다 — 간판·명함과 같은 실물 로고가 한 군데는 있어야 한다.
  */
-export function Wordmark({ tone = 'brand' }: { tone?: 'brand' | 'light' }) {
+export function Wordmark({ tone = 'brand', tight = false }: { tone?: 'brand' | 'light'; tight?: boolean }) {
   const light = tone === 'light';
   return (
     <span className="flex items-center gap-2.5">
@@ -129,7 +129,18 @@ export function Wordmark({ tone = 'brand' }: { tone?: 'brand' | 'light' }) {
         priority
         className={`h-[36px] w-auto sm:h-[40px] ${light ? 'brightness-0 invert' : ''}`}
       />
-      <span className="flex flex-col leading-none">
+      {/*
+        ⚠️⚠️ 1024~1159px 에서는 **글자를 접고 마크만** 둔다(tight) ⚠️⚠️
+          이 구간은 데스크톱 메뉴가 켜지는 첫 구간인데 메뉴 여섯 개가 아직 넉넉히 안 들어간다.
+          실측(2026-09-17): 워드마크 201 + 메뉴 752 + 예약 111 + 간격 16 = 1080px 인데
+          1024px 창의 안쪽 폭은 960px 이라 **가로 스크롤이 생겼다**(문서 폭 1128px).
+          마크만 두면 40 + 879 = 919px 로 들어간다. 링크와 aria-label 은 바깥(SiteHeader)에 있어
+          글자가 접혀도 병원 이름은 읽힌다.
+        ⚠️ `lg:hidden` + `min-[1160px]:block` 으로 나눠 적지 말 것 — 두 규칙의 순서를 Tailwind 가 정해
+          1160px 이상에서도 lg:hidden 이 이겨 워드마크가 영영 안 나온다(2026-09-14 실측).
+          `lg:max-[1159px]:hidden` 은 미디어 쿼리 한 줄이라 기본값과 부딪히지 않는다.
+      */}
+      <span className={`flex flex-col leading-none ${tight ? 'lg:max-[1159px]:hidden' : ''}`}>
       <span
         className={`serif-head text-[21px] tracking-[-0.01em] sm:text-[23px] ${light ? 'text-white' : 'text-charcoal'}`}
       >

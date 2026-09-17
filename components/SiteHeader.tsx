@@ -226,7 +226,7 @@ export function SiteHeader() {
               ⚠️ gap-6 → gap-4 (2026-09-14). 로고·메뉴·버튼이 1320px 안에서 48px 모자랐다.
                  자세한 내력은 아래 로고 칸의 shrink-0 주석에 있다. */}
           <div
-            className={`mx-auto flex w-full max-w-[1600px] items-center justify-between gap-4 px-5 transition-all duration-300 lg:px-8 ${
+            className={`mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4 px-5 transition-all duration-300 lg:px-8 ${
               // ⚠️ 히어로의 -mt-[68px] sm:-mt-[94px] 와 **같은 값**이어야 한다.
               scrolled ? 'h-[60px] sm:h-[74px]' : 'h-[68px] sm:h-[94px]'
             }`}
@@ -268,7 +268,7 @@ export function SiteHeader() {
           >
             {/* ⚠️ tightWidths — 1024~1159px 에서만 워드마크를 접는다. 왜인지는 Logo.tsx 주석에.
                 푸터는 자리가 넉넉하므로 이 값을 주지 않는다. */}
-            <Wordmark tone={overHero ? 'light' : 'brand'} />
+            <Wordmark tone={overHero ? 'light' : 'brand'} tight />
           </Link>
         </div>
 
@@ -433,7 +433,11 @@ export function SiteHeader() {
 
             ⚠️ 테두리만 두고 안은 비운다 — 바로 왼쪽의 예약하기가 채운 버튼이라
                둘 다 채우면 무엇을 먼저 눌러야 할지가 사라진다.
-            ⚠️ xl(1280px) 부터 보인다 — lg(1024)에서는 메뉴 여섯 개와 부딪힌다(실측).
+            ⚠️ **1360px 부터** 보인다 (2026-09-17 실측으로 1280 → 1360 상향).
+               로고가 글자 워드마크가 되면서 201px 로 넓어져, 1280px 에서
+               워드마크 201 + 메뉴 752 + 예약 111 + 전화 164 + 간격 = 1228px 가
+               안쪽 폭 1216px 을 넘어 **가로 스크롤이 생겼다**(문서 폭 1300px).
+               1360px 이면 안쪽 1296px 이라 들어간다.
                그 아래에서는 하단 고정 바와 모바일 서랍이 같은 전화를 그대로 한다.
             ⚠️ tabular-nums 를 빼지 말 것 — 스크롤로 헤더가 h-94 → h-74 로 줄 때
                숫자 폭이 흔들리면 버튼이 좌우로 떤다.
@@ -445,7 +449,7 @@ export function SiteHeader() {
               (예약하기는 43px 다 — 헤더가 통째로 어긋났다).
             ⚠️ 버튼 쪽 `whitespace-nowrap` 도 같은 이유다. 둘 다 있어야 한다.
           */}
-          <div ref={phone.wrapRef} className="relative hidden shrink-0 xl:block">
+          <div ref={phone.wrapRef} className="relative hidden shrink-0 min-[1360px]:block">
             <button
               type="button"
               onClick={() => {
