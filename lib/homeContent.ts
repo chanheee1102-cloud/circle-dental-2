@@ -109,33 +109,13 @@ export const TOUR_PHOTOS = {
 } as const;
 
 /**
- * 이야기 — 채널로 이어지는 사진 타일. 문구는 브랜드 슬로건이지 치료 결과 서술이 아니다.
- * ⚠️ 실제 게시물을 흉내 낸 '피드' 를 그리지 않는다. 계정 링크는 lib/clinic.ts 의 확인된 주소만.
+ * 인사이트 최신 글 카드의 **대체 표지** — 표지 없는 글(중앙 글에 흔하다)에 번갈아 쓴다. AI 생성 정물(PRESERVE_PHOTO 주석).
+ * (2026-09-17: 슬로건 타일 STORY_TILES 는 폐기 — 눌러도 갈 곳이 없는 장식이라 최신 글로 바꿨다. app/page.tsx StorySection.)
  */
-export const STORY_TILES = [
-  {
-    src: `${P}/20210923_ed347b4ffee21.jpg`,
-    alt: '창가에 유닛체어가 나란히 놓인 진료실 — 로고가 새겨진 유리 파티션',
-    line: '지키는 치료가\n더 좋은 미소를\n만듭니다.',
-  },
-  {
-    /* AI 생성 정물(PRESERVE_PHOTO 주석). 전 사진(20210916_a6f79ab10cf95)은 어두운 방이라 타일에서 검게만 보였다. */
-    src: `${P}/gen/story-linen.jpg`,
-    alt: '아이보리 린넨 위의 흰 치아 모형과 작은 치과용 거울',
-    line: '뽑기 전에,\n한 번 더.',
-  },
-  {
-    src: `${P}/20210923_72fa74e154297.jpg`,
-    alt: '멸균 포장된 진료 기구를 소독기에서 꺼내는 장면',
-    line: '좋은 치아가\n좋은 일상을\n만듭니다.',
-  },
+export const STORY_FALLBACK_COVERS = [
+  { src: `${P}/gen/story-olive.jpg`, alt: '아이보리 선반 위의 작은 올리브 화분과 흰 치아 모형' },
+  { src: `${P}/gen/story-linen.jpg`, alt: '아이보리 린넨 위의 흰 치아 모형과 작은 치과용 거울' },
 ] as const;
-
-/** 이야기 네 번째 타일 — 사진 위 아이보리 판에 병원 영문명. AI 생성 정물(PRESERVE_PHOTO 주석). */
-export const STORY_BRAND_TILE = {
-  src: `${P}/gen/story-olive.jpg`,
-  alt: '아이보리 선반 위의 작은 올리브 화분과 흰 치아 모형',
-} as const;
 
 /**
  * 의료진 사진 — 배경 톤을 맞춰 둔 판(-bg)이 있는 사람은 그것을 쓴다(scripts/normalizeDoctorBg.mjs).

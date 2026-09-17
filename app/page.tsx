@@ -10,10 +10,11 @@ import {
   HOME_CONCERNS,
   PRESERVE_PHOTO,
   TOUR_PHOTOS,
-  STORY_TILES,
-  STORY_BRAND_TILE,
+  STORY_FALLBACK_COVERS,
   doctorPhoto,
 } from '@/lib/homeContent';
+import { allPostsMerged } from '@/lib/insightFeed';
+import type { BlogPost } from '@/lib/blog';
 import { Container, Sentences, SeqLetters } from '@/components/ui';
 import { HomeHead, FillBtn, LineBtn, QuietLink } from '@/components/home';
 import { CredentialFan } from '@/components/CredentialFan';
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
  *   4 Preserve    자연치아 보존 — 어두운 블루그레이 띠 (페이지에서 유일한 어두운 면)
  *   5 Doctors     한 사람씩 크게(사진·이름·경력 펼침면, 이름 탭·‹ 1/3 ›) + 인증패 넷(CredentialFan) + 논문 배너(라이브 짜임, 색만 블루그레이)
  *   6 Tour        둘러보기
- *   7 Story       인스타그램 줄 + 2×2 타일
+ *   7 Story       인사이트 최신 글 4장(로컬+중앙 합본) + 인스타그램·블로그 줄
  *   8 Visit       원 안 아이콘 세 줄(주소·진료시간·전화) + 예약·전화 버튼 + 지도
  *
  * ⚠️ 목업과 일부러 다르게 둔 것 (사실 관계)
@@ -57,14 +58,18 @@ export const metadata: Metadata = {
  *     디자이너 임시 표기라 쓰지 않는다(components/Logo.tsx Wordmark).
  *   · 의료진 사진은 **본인이 확인되는 사진**만 쓴다(lib/doctors.ts). 목업의 진료 장면 사진은
  *     누구인지 특정할 수 없어 이름 아래 둘 수 없다. 원장 말투의 인용문도 본인 말이 아니면 넣지 않는다.
- *   · 이야기 타일의 재생 표시는 영상 채널이 없어 넣지 않았다(재생 표시는 영상이 있다는 약속이다).
+ *   · 목업의 이야기(SNS 피드) 타일은 갈 곳 없는 장식이라 인사이트 최신 글로 바꿨다(오너 결정).
  * ⚠️ 사진은 이 병원의 실제 사진이다(lib/homeContent.ts). 스톡을 넣지 말 것.
- *    예외는 AI 생성 정물 3장(gen/ — 보존 띠·이야기 2·4번 타일, 2026-09-17 오너 GO)뿐이며 사물만 그렸다.
+ *    예외는 AI 생성 정물 3장(gen/ — 보존 띠 + 표지 없는 인사이트 글의 대체 표지 둘, 2026-09-17 오너 GO)뿐이며 사물만 그렸다.
  * ⚠️ 채운 버튼은 화면당 하나 — 히어로 '진료 알아보기', 오시는 길 '네이버 예약하기'.
  * ⚠️ FAQ 구획을 되살리려면 faqSchema 도 함께 되살릴 것(보이는 것과 알리는 것이 어긋난다).
  */
-export default function HomePage() {
+/* 인사이트 최신 글이 홈에 실린다 — 한 시간마다 다시 그린다(인사이트 허브와 같은 주기). */
+export const revalidate = 3600;
+
+export default async function HomePage() {
   const heroImage = imageMeta(HERO_PHOTO.src, HERO_PHOTO.alt);
+  const posts = (await allPostsMerged()).slice(0, 4);
 
   return (
     <>
@@ -85,7 +90,7 @@ export default function HomePage() {
       <PreserveBand />
       <DoctorsSection />
       <TourSection />
-      <StorySection />
+      <StorySection posts={posts} />
       <VisitSection />
     </>
   );
@@ -493,12 +498,25 @@ function TourSection() {
 }
 
 /* ─────────────────────────── 7. 이야기 ─────────────────────────── */
-function StorySection() {
+/*
+ * ★★ 슬로건 타일 → **인사이트 최신 글** (2026-09-17 오너: "여기는 무슨 목적으로?" → "1번(최신 글)으로 가자") ★★
+ *   목업 7번째 화면을 옮긴 사진+슬로건 타일은 눌러도 갈 곳이 없는 장식이었다. 이 사이트는 자체 블로그(인사이트)가
+ *   계속 발행되므로, 그 최신 글 넷을 여기 둔다 — 홈에 새 내용이 자동으로 돌고 내부 링크가 생긴다.
+ * ★ 글은 lib/insightFeed.allPostsMerged() — 로컬(content/blog) + 중앙(winaid) 합본, 최신순. 쪽은 ISR 3600 으로 다시 그린다.
+ * ★ 표지 없는 글(중앙 글에 흔하다)은 gen/ 의 AI 정물 두 장을 번갈아 표지로 쓴다 — 빈 상자보다 낫고 결이 같다.
+ * ⚠️ 글이 하나도 없으면 구획을 통째로 숨긴다(빈 제목만 남기지 않는다).
+ */
+function StorySection({ posts }: { posts: BlogPost[] }) {
+  if (!posts.length) return null;
+  const ko = (iso: string) => {
+    const [y, m, d] = iso.split('-');
+    return `${y}년 ${Number(m)}월 ${Number(d)}일`;
+  };
   return (
     <section className="section-y-home border-t border-wine-line">
       <Container>
         <HomeHead
-          label="이야기"
+          label="인사이트"
           title={
             <>
               더 건강한 미소를 위한
@@ -506,14 +524,53 @@ function StorySection() {
               동그라미의 이야기
             </>
           }
+          desc="진료실에서 다 담기 어려운 이야기를 글로 적습니다. 새 글이 올라오면 이 자리에 먼저 보입니다."
+          aside={<QuietLink href="/insight/blog">블로그 전체 보기</QuietLink>}
         />
-        {/* 인스타그램 줄 — 왼쪽에 아이콘과 계정, 오른쪽 끝에 화살표(목업). 블로그는 그 옆에 조용히. */}
-        <div className="reveal mt-8 flex items-center justify-between gap-6 border-y border-wine-line py-4">
+
+        <ul className="reveal-stack mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {posts.map((p, i) => {
+            const cover = p.image ?? STORY_FALLBACK_COVERS[i % STORY_FALLBACK_COVERS.length].src;
+            const coverAlt = p.image ? (p.imageAlt ?? '') : '';
+            return (
+              <li key={p.slug}>
+                <Link
+                  href={`/insight/blog/${p.slug}`}
+                  className="photo-card group flex h-full flex-col overflow-hidden rounded-[6px] border border-wine-line bg-white transition-colors hover:border-brand-300"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-wine-soft">
+                    <Image src={cover} alt={coverAlt} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover" />
+                  </div>
+                  <div className="flex flex-1 flex-col px-5 pt-5 pb-6">
+                    <p className="flex items-center gap-2 text-[12.5px] text-ash">
+                      <time dateTime={p.date} className="tabular-nums">
+                        {ko(p.date)}
+                      </time>
+                      {p.category ? <span aria-hidden>·</span> : null}
+                      {p.category ? <span>{p.category}</span> : null}
+                    </p>
+                    <h3 className="mt-2.5 line-clamp-2 text-[17px] leading-[1.45] font-medium text-charcoal">{p.title}</h3>
+                    <p className="mt-2 line-clamp-2 text-[14.5px] leading-[1.7] text-ash">{p.summary}</p>
+                    <span className="mt-auto flex items-center gap-1.5 pt-4 text-[13.5px] text-charcoal/70">
+                      읽어보기
+                      <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
+                        →
+                      </span>
+                    </span>
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* 채널 줄 — 인스타그램·네이버 블로그. 글 카드 아래로 내려 '더 보려면' 의 자리에 둔다. */}
+        <div className="reveal mt-8 flex items-center justify-between gap-6 border-t border-wine-line pt-5">
           <a
             href={CLINIC.social.instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex min-w-0 items-center gap-3 text-[15.5px] font-medium text-charcoal"
+            className="group inline-flex min-w-0 items-center gap-3 text-[15px] font-medium text-charcoal"
           >
             <span className="icon-ring icon-ring-sm">
               <InstagramGlyph />
@@ -532,36 +589,6 @@ function StorySection() {
             네이버 블로그 <span aria-hidden>→</span>
           </a>
         </div>
-        <ul className="reveal-stack mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
-          {STORY_TILES.map((t) => (
-            <li key={t.src} className="relative aspect-[4/5] overflow-hidden rounded-[6px] bg-wine-soft">
-              <Image src={t.src} alt={t.alt} fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover" />
-              <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-wine-deep/75 via-wine-deep/20 to-transparent" />
-              <p className="serif-head on-photo absolute inset-x-5 bottom-5 whitespace-pre-line text-[clamp(18px,1.7vw,24px)] leading-[1.45] text-parchment">
-                {t.line}
-              </p>
-            </li>
-          ))}
-          {/* 네 번째 — 앞의 셋과 **같은 타일**(2026-09-17 오너: "마지막 카드 통일"). 사진 + 덮개 + 흰 세리프 한 줄. */}
-          <li className="relative aspect-[4/5] overflow-hidden rounded-[6px] bg-wine-soft">
-            <Image
-              src={STORY_BRAND_TILE.src}
-              alt={STORY_BRAND_TILE.alt}
-              fill
-              sizes="(max-width: 1024px) 50vw, 25vw"
-              className="object-cover"
-            />
-            <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-wine-deep/75 via-wine-deep/20 to-transparent" />
-            <div className="absolute inset-x-5 bottom-5">
-              <p className="kicker on-photo mb-2 text-[10.5px] text-parchment/80">{CLINIC.nameEn}</p>
-              <p className="serif-head on-photo text-[clamp(18px,1.7vw,24px)] leading-[1.45] text-parchment">
-                통증과 불편함을
-                <br />
-                고려하는 치과
-              </p>
-            </div>
-          </li>
-        </ul>
       </Container>
     </section>
   );
