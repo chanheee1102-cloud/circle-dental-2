@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
-import { IMG } from '@/lib/assets';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
 import {
   HERO_PHOTO,
@@ -15,8 +14,10 @@ import {
   STORY_BRAND_TILE,
   doctorPhoto,
 } from '@/lib/homeContent';
-import { Container, Sentences } from '@/components/ui';
+import { Container, Sentences, SeqLetters } from '@/components/ui';
 import { HomeHead, FillBtn, LineBtn, QuietLink } from '@/components/home';
+import { CredentialFan } from '@/components/CredentialFan';
+import { HeroMarquee } from '@/components/HeroMarquee';
 import { PRINCIPLE_ICONS } from '@/components/PrincipleIcons';
 import { DoctorShowcase } from '@/components/DoctorShowcase';
 import { CopyButton } from '@/components/CopyButton';
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
  *   2 Principles  동그라미가 가장 먼저 생각하는 것 — 원 안 선 아이콘 + 01~04, 그 아래 한 문장
  *   3 Concerns    어떤 고민이 있으신가요? — 사진 왼쪽·말 오른쪽의 가로 카드(아이보리 한 단)
  *   4 Preserve    자연치아 보존 — 어두운 블루그레이 띠 (페이지에서 유일한 어두운 면)
- *   5 Doctors     한 사람씩 크게(사진·이름·경력 펼침면, 이름 탭·‹ 1/3 ›) + 아래 블루그레이 면에 논문·인증
+ *   5 Doctors     한 사람씩 크게(사진·이름·경력 펼침면, 이름 탭·‹ 1/3 ›) + 인증패 넷(CredentialFan) + 논문 배너(라이브 짜임, 색만 블루그레이)
  *   6 Tour        둘러보기
  *   7 Story       인스타그램 줄 + 2×2 타일
  *   8 Visit       원 안 아이콘 세 줄(주소·진료시간·전화) + 예약·전화 버튼 + 지도
@@ -381,58 +382,67 @@ function DoctorsSection() {
         ⚠️ 라벨·문구는 lib/assets.ts / lib/doctors.ts 원문 그대로다. 새 인증을 여기서 적지 않는다.
       */}
       {/*
-        ★ 블루그레이 면 (2026-09-17 오너: "논문·인증 쪽 블루그레이로 전문적으로").
-          요청서의 포인트 색을 **면**으로 쓰는 자리는 페이지에서 여기와 보존 띠뿐이다 — 더 늘리지 말 것.
-          글자는 흰색·parchment, 선은 흰색 18%, 표식은 흰 원. 논문 사진은 종이가 보이게 **아래를 맞춘다**
-          (원본 768×800 의 위 절반은 흐린 배경이고 논문 제목은 아래에 있다).
+        ★★ 인증패 + 논문 배너 — **라이브(b9adf93) 홈의 짜임 그대로, 색만 새 팔레트** ★★
+          (2026-09-17 오너: "여기는 기존 디자인에서 색감만 바꾸는 느낌으로".)
+          한 줄짜리 인증 목록으로 바꿨던 판은 걷어냈다. 인증패 넷이 하나씩 떠오르는 CredentialFan,
+          그 뒤로 흐르는 영문 마퀴, 아래에 가로 배너(왼쪽 글·오른쪽 노트북 논문 사진)가 원래 짜임이다.
+        ⚠️ 배너의 어두운 판은 고동(36,20,23)이 아니라 **블루그레이 딥(46,55,61)** — 바뀐 것은 이 색뿐이다.
+        ⚠️ 논문 제목은 원문 그대로 산세리프 — 잘라낸 세리프 글꼴에 없는 글자가 섞인다(라이브 주석과 같다).
       */}
-      <div className="mt-20 bg-dusk text-parchment lg:mt-28">
-        <Container className="py-16 lg:py-24">
-          <div className="reveal grid gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-24">
-            <div className="grid gap-7 sm:grid-cols-[168px_minmax(0,1fr)] sm:gap-9">
-              <div className="relative aspect-[24/25] w-[168px] overflow-hidden rounded-[6px] bg-white/10 ring-1 ring-white/15">
-                <Image
-                  src={PUBLICATION_DETAIL.image}
-                  alt="발표 논문 첫 장 — 제목과 저자"
-                  fill
-                  sizes="168px"
-                  className="object-cover object-bottom"
-                />
-              </div>
-              <div>
-                <p className="eyebrow-chip text-mist/75">발표 논문</p>
-                <p className="serif-head mt-4 text-[clamp(20px,1.8vw,25px)] leading-[1.45] text-white">
-                  {PUBLICATION_DETAIL.title}
-                </p>
-                <p className="mt-3 text-[14px] text-mist/70">{PUBLICATION_DETAIL.authors}</p>
-                <p className="mt-5 max-w-[36em] text-[15.5px] leading-[1.85] text-parchment/85">
-                  {PUBLICATION_DETAIL.relevanceKo}
-                </p>
+      <Container>
+        <div className="relative mt-20 overflow-hidden lg:mt-28">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute top-[42%] left-1/2 z-0 w-screen -translate-x-1/2 -translate-y-1/2"
+          >
+            <HeroMarquee
+              text="Circle Dental Clinic ·"
+              seconds={46}
+              size="clamp(64px, 9.5vw, 176px)"
+              colorClass="text-dusk/[0.10]"
+            />
+          </div>
+          <CredentialFan />
+        </div>
+
+        <div className="mt-12 border-t border-wine-line pt-10">
+          <div className="seq relative overflow-hidden rounded-[24px] bg-wine-deep lg:grid lg:grid-cols-[54%_minmax(0,1fr)]">
+            <div className="relative z-10 px-7 py-12 sm:px-10 lg:py-16 xl:py-20">
+              <p className="eyebrow-chip text-clay-300">
+                <SeqLetters text="발표논문" step={90} />
+              </p>
+              <p className="mt-5 text-[19px] leading-[1.6] font-semibold text-parchment sm:text-[21px]">
+                <SeqLetters text={PUBLICATION_DETAIL.title} step={11} start={420} />
+              </p>
+              <p className="seq-fade mt-3 text-[16px] text-clay-300/80" style={{ ['--d' as string]: '1400ms' }}>
+                {PUBLICATION_DETAIL.authors}
+              </p>
+              <div className="seq-fade mt-8 flex flex-wrap gap-2.5" style={{ ['--d' as string]: '1560ms' }}>
+                <FillBtn href="/about/trust" tone="dark">
+                  주요 이력 전체 보기
+                </FillBtn>
+                <LineBtn href="/about/doctors" tone="dark">
+                  의료진 소개
+                </LineBtn>
               </div>
             </div>
 
-            <div>
-              <p className="eyebrow-chip text-mist/75">인증 · 수료</p>
-              <ul className="mt-4 divide-y divide-white/15 border-y border-white/15">
-                {IMG.credentials.map((c, i) => (
-                  <li key={c.src} className="flex items-center gap-4 py-4">
-                    <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-white ring-1 ring-white/40">
-                      <Image src={c.src} alt="" fill sizes="44px" className="object-cover" />
-                    </span>
-                    <span className="kicker w-6 text-[11px] text-white/60">0{i + 1}</span>
-                    <span className="text-[15.5px] leading-[1.5] text-white">{c.label}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-7">
-                <QuietLink href="/about/trust" tone="dark">
-                  근거 · 인증 전체 보기
-                </QuietLink>
-              </div>
+            {/* 사진 — 배너 전체에 깔리고 왼쪽 글 뒤만 덮는다. 큰 화면은 왼쪽만 짙게, 노트북이 있는 오른쪽은 비운다. */}
+            <div aria-hidden className="seq-fade absolute inset-0" style={{ ['--d' as string]: '1180ms' }}>
+              <Image
+                src={PUBLICATION_DETAIL.banner}
+                alt=""
+                fill
+                loading="lazy"
+                sizes="(max-width: 1024px) 100vw, 1320px"
+                className="object-cover object-right"
+              />
+              <div className="absolute inset-0 bg-wine-deep/82 lg:hidden" />
+              <div className="absolute inset-0 hidden lg:block lg:bg-[linear-gradient(90deg,rgba(46,55,61,0.97)_0%,rgba(46,55,61,0.94)_40%,rgba(46,55,61,0.72)_56%,rgba(46,55,61,0)_74%)]" />
             </div>
           </div>
-        </Container>
-      </div>
+        </div>
+      </Container>
     </section>
   );
 }
@@ -532,21 +542,22 @@ function StorySection() {
               </p>
             </li>
           ))}
-          {/* 네 번째 — 사진 위, 아이보리 판 아래(목업). 병원 영문명과 한 줄. */}
-          <li className="flex aspect-[4/5] flex-col overflow-hidden rounded-[6px] border border-wine-line bg-white">
-            <div className="relative min-h-0 flex-1">
-              <Image
-                src={STORY_BRAND_TILE.src}
-                alt={STORY_BRAND_TILE.alt}
-                fill
-                sizes="(max-width: 1024px) 50vw, 25vw"
-                className="object-cover"
-              />
-            </div>
-            <div className="px-4 pt-4 pb-4 lg:px-5">
-              <p className="kicker text-[10.5px]">{CLINIC.nameEn}</p>
-              <p className="serif-head mt-1.5 text-[clamp(15px,1.3vw,19px)] leading-[1.4] text-charcoal">
-                {CLINIC.tagline}
+          {/* 네 번째 — 앞의 셋과 **같은 타일**(2026-09-17 오너: "마지막 카드 통일"). 사진 + 덮개 + 흰 세리프 한 줄. */}
+          <li className="relative aspect-[4/5] overflow-hidden rounded-[6px] bg-wine-soft">
+            <Image
+              src={STORY_BRAND_TILE.src}
+              alt={STORY_BRAND_TILE.alt}
+              fill
+              sizes="(max-width: 1024px) 50vw, 25vw"
+              className="object-cover"
+            />
+            <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-wine-deep/75 via-wine-deep/20 to-transparent" />
+            <div className="absolute inset-x-5 bottom-5">
+              <p className="kicker on-photo mb-2 text-[10.5px] text-parchment/80">{CLINIC.nameEn}</p>
+              <p className="serif-head on-photo text-[clamp(18px,1.7vw,24px)] leading-[1.45] text-parchment">
+                통증과 불편함을
+                <br />
+                고려하는 치과
               </p>
             </div>
           </li>
