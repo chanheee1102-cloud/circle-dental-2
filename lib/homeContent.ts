@@ -85,8 +85,14 @@ export const HOME_CONCERNS = [
  * 자연치아 보존 띠 — 유닛 트레이의 핸드피스 근접. 어둡고 형태가 단순해 덮개 아래서 결만 남는다.
  * ⚠️ 멸균 트레이 사진(72fa74e154297)은 포장지 글자가 많아 덮어도 어지러웠다(실측). 되돌리지 말 것.
  */
+/*
+ * ★ 2026-09-17 오너: "사진 부족한 건 GPT 로 넣어, 메인 페이지만 우선" — 아래 gen/ 세 장은 **AI 생성 이미지**다
+ *   (OpenAI gpt-image, C:/tmp/gen-home-images.mjs 로 만들었다). 사람·손·글자 없이 **사물만**(치아 모형·올리브·린넨).
+ *   진료 장면·의료진·환자를 생성해 넣지 말 것 — 사물 정물은 분위기이지 사실 주장이 아니라서 허용했다.
+ * ⚠️ 위 원칙("사진은 전부 실제 사진")의 예외는 이 세 장뿐이다. 다른 자리에 넓히려면 오너 GO 필요.
+ */
 export const PRESERVE_PHOTO = {
-  src: `${P}/20210923_bfab24c2d7395.jpg`,
+  src: `${P}/gen/preserve.jpg`,
   alt: '',
 };
 
@@ -113,8 +119,9 @@ export const STORY_TILES = [
     line: '지키는 치료가\n더 좋은 미소를\n만듭니다.',
   },
   {
-    src: `${P}/20210916_a6f79ab10cf95.jpg`,
-    alt: '모니터의 파노라마 엑스레이를 보며 진료 계획을 설명하는 모습',
+    /* AI 생성 정물(PRESERVE_PHOTO 주석). 전 사진(20210916_a6f79ab10cf95)은 어두운 방이라 타일에서 검게만 보였다. */
+    src: `${P}/gen/story-linen.jpg`,
+    alt: '아이보리 린넨 위의 흰 치아 모형과 작은 치과용 거울',
     line: '뽑기 전에,\n한 번 더.',
   },
   {
@@ -123,6 +130,12 @@ export const STORY_TILES = [
     line: '좋은 치아가\n좋은 일상을\n만듭니다.',
   },
 ] as const;
+
+/** 이야기 네 번째 타일 — 사진 위 아이보리 판에 병원 영문명. AI 생성 정물(PRESERVE_PHOTO 주석). */
+export const STORY_BRAND_TILE = {
+  src: `${P}/gen/story-olive.jpg`,
+  alt: '아이보리 선반 위의 작은 올리브 화분과 흰 치아 모형',
+} as const;
 
 /**
  * 의료진 사진 — 배경 톤을 맞춰 둔 판(-bg)이 있는 사람은 그것을 쓴다(scripts/normalizeDoctorBg.mjs).

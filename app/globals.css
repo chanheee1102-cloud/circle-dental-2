@@ -2811,7 +2811,13 @@ body:has([data-admin]) > :is(header, footer, .fixed) {
 /* 사진 위 블루그레이 덮개 — 어두운 띠 구획 */
 .tint-bluegray {
   background:
-    linear-gradient(90deg, rgba(46, 55, 61, 0.94) 0%, rgba(46, 55, 61, 0.82) 55%, rgba(46, 55, 61, 0.62) 100%);
+    linear-gradient(90deg, rgba(46, 55, 61, 0.92) 0%, rgba(46, 55, 61, 0.7) 45%, rgba(46, 55, 61, 0.18) 100%);
+}
+/* 좁은 화면은 글이 위, 사진이 아래(목업 4번째 화면) — 위를 누르고 아래는 열어 둔다 */
+@media (max-width: 1023px) {
+  .tint-bluegray {
+    background: linear-gradient(180deg, rgba(46, 55, 61, 0.94) 0%, rgba(46, 55, 61, 0.8) 55%, rgba(46, 55, 61, 0.25) 100%);
+  }
 }
 
 /* 번호 원 — '동그라미' 모티프. 정원(正圓)은 브랜드라 각지게 만들지 말 것. */

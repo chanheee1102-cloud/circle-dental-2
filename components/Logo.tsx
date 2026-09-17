@@ -115,7 +115,21 @@ export function LogoMark({ size = 44, tone = 'brand' }: { size?: number; tone?: 
 export function Wordmark({ tone = 'brand' }: { tone?: 'brand' | 'light' }) {
   const light = tone === 'light';
   return (
-    <span className="flex flex-col leading-none">
+    <span className="flex items-center gap-2.5">
+      {/*
+        ★ 동그라미 마크 — 실제 로고 파일(IMG.logo)에서 마크 부분만 잘라 낸 것(public/img/logo-mark.png).
+          2026-09-17 오너: "헤더에 동그라미치과 로고 들어가야지". 글자 워드마크 왼쪽에 실물 마크를 둔다.
+        ⚠️ 그린 SVG(LogoMark)가 아니라 **원본 로고의 마크**다 — 간판·명함과 같은 모양이어야 한다.
+      */}
+      <Image
+        src="/img/logo-mark.png"
+        alt=""
+        width={112}
+        height={106}
+        priority
+        className={`h-[36px] w-auto sm:h-[40px] ${light ? 'brightness-0 invert' : ''}`}
+      />
+      <span className="flex flex-col leading-none">
       <span
         className={`serif-head text-[21px] tracking-[-0.01em] sm:text-[23px] ${light ? 'text-white' : 'text-charcoal'}`}
       >
@@ -127,6 +141,7 @@ export function Wordmark({ tone = 'brand' }: { tone?: 'brand' | 'light' }) {
         }`}
       >
         Circle Dental Clinic
+      </span>
       </span>
     </span>
   );

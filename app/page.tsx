@@ -12,6 +12,7 @@ import {
   PRESERVE_PHOTO,
   TOUR_PHOTOS,
   STORY_TILES,
+  STORY_BRAND_TILE,
   doctorPhoto,
 } from '@/lib/homeContent';
 import { Container, Sentences } from '@/components/ui';
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
  *   2 Principles  동그라미가 가장 먼저 생각하는 것 — 원 안 선 아이콘 + 01~04, 그 아래 한 문장
  *   3 Concerns    어떤 고민이 있으신가요? — 사진 왼쪽·말 오른쪽의 가로 카드(아이보리 한 단)
  *   4 Preserve    자연치아 보존 — 어두운 블루그레이 띠 (페이지에서 유일한 어두운 면)
- *   5 Doctors     한 사람씩 크게(사진·이름·경력 펼침면, 이름 탭·‹ 1/3 ›) + 아래 아이보리 면에 논문·인증
+ *   5 Doctors     한 사람씩 크게(사진·이름·경력 펼침면, 이름 탭·‹ 1/3 ›) + 아래 블루그레이 면에 논문·인증
  *   6 Tour        둘러보기
  *   7 Story       인스타그램 줄 + 2×2 타일
  *   8 Visit       원 안 아이콘 세 줄(주소·진료시간·전화) + 예약·전화 버튼 + 지도
@@ -56,7 +57,8 @@ export const metadata: Metadata = {
  *   · 의료진 사진은 **본인이 확인되는 사진**만 쓴다(lib/doctors.ts). 목업의 진료 장면 사진은
  *     누구인지 특정할 수 없어 이름 아래 둘 수 없다. 원장 말투의 인용문도 본인 말이 아니면 넣지 않는다.
  *   · 이야기 타일의 재생 표시는 영상 채널이 없어 넣지 않았다(재생 표시는 영상이 있다는 약속이다).
- * ⚠️ 사진은 전부 이 병원의 실제 사진이다(lib/homeContent.ts). 스톡을 넣지 말 것.
+ * ⚠️ 사진은 이 병원의 실제 사진이다(lib/homeContent.ts). 스톡을 넣지 말 것.
+ *    예외는 AI 생성 정물 3장(gen/ — 보존 띠·이야기 2·4번 타일, 2026-09-17 오너 GO)뿐이며 사물만 그렸다.
  * ⚠️ 채운 버튼은 화면당 하나 — 히어로 '진료 알아보기', 오시는 길 '네이버 예약하기'.
  * ⚠️ FAQ 구획을 되살리려면 faqSchema 도 함께 되살릴 것(보이는 것과 알리는 것이 어긋난다).
  */
@@ -304,10 +306,10 @@ function PreserveBand() {
         aria-hidden
         fill
         sizes="100vw"
-        className="-z-20 scale-105 object-cover blur-[1.5px]"
+        className="-z-20 object-cover object-[70%_60%] lg:object-[80%_50%]"
       />
       <div aria-hidden className="tint-bluegray absolute inset-0 -z-10" />
-      <Container className="py-28 lg:py-40">
+      <Container className="py-28 pb-[60vw] sm:pb-[44vw] lg:py-40">
         <div className="reveal max-w-[34em]">
           <p className="kicker text-parchment/70">
             Natural
@@ -378,45 +380,54 @@ function DoctorsSection() {
         ★ 논문은 한 줄이 아니라 제 자리를 준다 — 세로 사진(768×800)과 제목, 한국어 풀이 한 문장.
         ⚠️ 라벨·문구는 lib/assets.ts / lib/doctors.ts 원문 그대로다. 새 인증을 여기서 적지 않는다.
       */}
-      <div className="mt-20 bg-wine-soft lg:mt-28">
-        <Container className="py-16 lg:py-20">
-          <div className="reveal grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-20">
-            <div className="grid gap-7 sm:grid-cols-[160px_minmax(0,1fr)] sm:gap-8">
-              <div className="relative aspect-[24/25] w-[160px] overflow-hidden rounded-[6px] bg-white">
+      {/*
+        ★ 블루그레이 면 (2026-09-17 오너: "논문·인증 쪽 블루그레이로 전문적으로").
+          요청서의 포인트 색을 **면**으로 쓰는 자리는 페이지에서 여기와 보존 띠뿐이다 — 더 늘리지 말 것.
+          글자는 흰색·parchment, 선은 흰색 18%, 표식은 흰 원. 논문 사진은 종이가 보이게 **아래를 맞춘다**
+          (원본 768×800 의 위 절반은 흐린 배경이고 논문 제목은 아래에 있다).
+      */}
+      <div className="mt-20 bg-dusk text-parchment lg:mt-28">
+        <Container className="py-16 lg:py-24">
+          <div className="reveal grid gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-24">
+            <div className="grid gap-7 sm:grid-cols-[168px_minmax(0,1fr)] sm:gap-9">
+              <div className="relative aspect-[24/25] w-[168px] overflow-hidden rounded-[6px] bg-white/10 ring-1 ring-white/15">
                 <Image
                   src={PUBLICATION_DETAIL.image}
-                  alt="발표 논문 표지"
+                  alt="발표 논문 첫 장 — 제목과 저자"
                   fill
-                  sizes="160px"
-                  className="object-cover object-top"
+                  sizes="168px"
+                  className="object-cover object-bottom"
                 />
               </div>
               <div>
-                <p className="eyebrow-chip text-ash">발표 논문</p>
-                <p className="serif-head mt-4 text-[clamp(20px,1.8vw,24px)] leading-[1.45] text-charcoal">
+                <p className="eyebrow-chip text-mist/75">발표 논문</p>
+                <p className="serif-head mt-4 text-[clamp(20px,1.8vw,25px)] leading-[1.45] text-white">
                   {PUBLICATION_DETAIL.title}
                 </p>
-                <p className="mt-3 text-[14px] text-ash">{PUBLICATION_DETAIL.authors}</p>
-                <p className="mt-4 max-w-[36em] text-[15.5px] leading-[1.8] text-charcoal/80">
+                <p className="mt-3 text-[14px] text-mist/70">{PUBLICATION_DETAIL.authors}</p>
+                <p className="mt-5 max-w-[36em] text-[15.5px] leading-[1.85] text-parchment/85">
                   {PUBLICATION_DETAIL.relevanceKo}
                 </p>
               </div>
             </div>
 
             <div>
-              <p className="eyebrow-chip text-ash">인증 · 수료</p>
-              <ul className="mt-4 divide-y divide-brand-300/60 border-y border-brand-300/60">
-                {IMG.credentials.map((c) => (
-                  <li key={c.src} className="flex items-center gap-4 py-3.5">
-                    <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-white">
+              <p className="eyebrow-chip text-mist/75">인증 · 수료</p>
+              <ul className="mt-4 divide-y divide-white/15 border-y border-white/15">
+                {IMG.credentials.map((c, i) => (
+                  <li key={c.src} className="flex items-center gap-4 py-4">
+                    <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-white ring-1 ring-white/40">
                       <Image src={c.src} alt="" fill sizes="44px" className="object-cover" />
                     </span>
-                    <span className="text-[15.5px] leading-[1.5] text-charcoal">{c.label}</span>
+                    <span className="kicker w-6 text-[11px] text-white/60">0{i + 1}</span>
+                    <span className="text-[15.5px] leading-[1.5] text-white">{c.label}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-6">
-                <QuietLink href="/about/trust">근거 · 인증 전체 보기</QuietLink>
+              <div className="mt-7">
+                <QuietLink href="/about/trust" tone="dark">
+                  근거 · 인증 전체 보기
+                </QuietLink>
               </div>
             </div>
           </div>
@@ -521,14 +532,21 @@ function StorySection() {
               </p>
             </li>
           ))}
-          <li className="flex aspect-[4/5] flex-col justify-between rounded-[6px] border border-wine-line bg-white p-5">
-            <p className="kicker">{CLINIC.nameEn}</p>
-            <div>
-              <p className="serif-head text-[clamp(18px,1.7vw,24px)] leading-[1.45] text-charcoal">
+          {/* 네 번째 — 사진 위, 아이보리 판 아래(목업). 병원 영문명과 한 줄. */}
+          <li className="flex aspect-[4/5] flex-col overflow-hidden rounded-[6px] border border-wine-line bg-white">
+            <div className="relative min-h-0 flex-1">
+              <Image
+                src={STORY_BRAND_TILE.src}
+                alt={STORY_BRAND_TILE.alt}
+                fill
+                sizes="(max-width: 1024px) 50vw, 25vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="px-4 pt-4 pb-4 lg:px-5">
+              <p className="kicker text-[10.5px]">{CLINIC.nameEn}</p>
+              <p className="serif-head mt-1.5 text-[clamp(15px,1.3vw,19px)] leading-[1.4] text-charcoal">
                 {CLINIC.tagline}
-              </p>
-              <p className="mt-3 text-[14px] leading-[1.7] text-ash">
-                {CLINIC.address.locality} {CLINIC.address.dong}
               </p>
             </div>
           </li>
