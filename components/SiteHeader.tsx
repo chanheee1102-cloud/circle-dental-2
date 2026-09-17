@@ -226,7 +226,7 @@ export function SiteHeader() {
               ⚠️ gap-6 → gap-4 (2026-09-14). 로고·메뉴·버튼이 1320px 안에서 48px 모자랐다.
                  자세한 내력은 아래 로고 칸의 shrink-0 주석에 있다. */}
           <div
-            className={`mx-auto flex w-full max-w-[1320px] items-center justify-between gap-4 px-5 transition-all duration-300 lg:px-8 ${
+            className={`mx-auto flex w-full max-w-[1600px] items-center justify-between gap-4 px-5 transition-all duration-300 lg:px-8 ${
               // ⚠️ 히어로의 -mt-[68px] sm:-mt-[94px] 와 **같은 값**이어야 한다.
               scrolled ? 'h-[60px] sm:h-[74px]' : 'h-[68px] sm:h-[94px]'
             }`}

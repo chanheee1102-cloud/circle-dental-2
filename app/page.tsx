@@ -17,7 +17,7 @@ import {
 import { Container, Sentences } from '@/components/ui';
 import { HomeHead, FillBtn, LineBtn, QuietLink } from '@/components/home';
 import { PRINCIPLE_ICONS } from '@/components/PrincipleIcons';
-import { DoctorCarousel } from '@/components/DoctorCarousel';
+import { DoctorShowcase } from '@/components/DoctorShowcase';
 import { CopyButton } from '@/components/CopyButton';
 import { ClinicMap } from '@/components/ClinicMap';
 import { Reveal } from '@/components/Reveal';
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
  *   2 Principles  동그라미가 가장 먼저 생각하는 것 — 원 안 선 아이콘 + 01~04, 그 아래 한 문장
  *   3 Concerns    어떤 고민이 있으신가요? — 사진 왼쪽·말 오른쪽의 가로 카드(아이보리 한 단)
  *   4 Preserve    자연치아 보존 — 어두운 블루그레이 띠 (페이지에서 유일한 어두운 면)
- *   5 Doctors     한 사람씩 넘기는 큰 카드(좁은 화면) · 세 사람 한 줄(넓은 화면) + 근거 한 줄
+ *   5 Doctors     한 사람씩 크게(사진·이름·경력 펼침면, 이름 탭·‹ 1/3 ›) + 아래 아이보리 면에 논문·인증
  *   6 Tour        둘러보기
  *   7 Story       인스타그램 줄 + 2×2 타일
  *   8 Visit       원 안 아이콘 세 줄(주소·진료시간·전화) + 예약·전화 버튼 + 지도
@@ -256,9 +256,14 @@ function ConcernsSection() {
         <ul className="reveal-stack mt-10 grid grid-cols-1 gap-3 lg:mt-12 lg:grid-cols-5 lg:gap-4">
           {HOME_CONCERNS.map((c) => (
             <li key={c.href + c.quote}>
+              {/*
+                ⚠️ 카드 높이는 다섯 장이 같아야 한다 (2026-09-17 오너: "카드 크기 다 맞춰. 뒤죽박죽").
+                   말의 길이가 한 줄·두 줄로 달라서 카드마다 키가 달랐다 → 카드는 h-full 로 줄 높이를
+                   다 채우고, 글 칸은 flex-1, 진료 이름은 mt-auto 로 **바닥에 정렬**한다.
+              */}
               <Link
                 href={c.href}
-                className="photo-card group flex overflow-hidden rounded-[6px] bg-wine-soft transition-colors hover:bg-brand-200/70 lg:flex-col"
+                className="photo-card group flex h-full overflow-hidden rounded-[6px] bg-wine-soft transition-colors hover:bg-brand-200/70 lg:flex-col"
               >
                 <div className="relative aspect-[4/3] w-[42%] shrink-0 overflow-hidden lg:w-full">
                   <Image
@@ -269,11 +274,11 @@ function ConcernsSection() {
                     className="object-cover"
                   />
                 </div>
-                <div className="flex min-w-0 flex-col justify-center px-5 py-4 lg:px-5 lg:py-5">
+                <div className="flex min-w-0 flex-1 flex-col justify-center px-5 py-4 lg:justify-start lg:px-5 lg:py-5">
                   <p className="text-[16.5px] leading-[1.45] font-medium text-charcoal lg:text-[17px]">
                     {c.quote}
                   </p>
-                  <p className="mt-2 flex items-center gap-1.5 text-[13.5px] text-ash">
+                  <p className="mt-2 flex items-center gap-1.5 text-[13.5px] text-ash lg:mt-auto lg:pt-3">
                     {c.tag}
                     <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
                       →
@@ -339,6 +344,8 @@ function DoctorsSection() {
     role: d.role,
     license: d.license,
     keyCareer: d.keyCareer,
+    careerCount: d.career.length,
+    societyCount: d.societies.length,
     photo: doctorPhoto(d.slug, d.photo),
   }));
   return (
@@ -360,34 +367,61 @@ function DoctorsSection() {
           desc="경희대학교 치의학전문대학원 외래교수인 대표원장과 보건복지부 인정 통합치의학과 전문의로 구성된 의료진이 진료합니다."
         />
 
-        <div className="reveal mt-12">
-          <DoctorCarousel doctors={doctors} />
-        </div>
-
-        {/*
-          근거 — 크게 말하지 않는다. 인증패 넷과 논문 한 줄만 조용히 두고 전체는 /about/trust.
-          ⚠️ 라벨·문구는 lib/assets.ts / lib/doctors.ts 원문 그대로다.
-        */}
-        <div className="reveal mt-16 grid gap-8 border-t border-wine-line pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-14">
-          <ul className="grid grid-cols-4 gap-3">
-            {IMG.credentials.map((c) => (
-              <li key={c.src} className="flex flex-col items-center gap-2">
-                <div className="relative h-[72px] w-full sm:h-[88px]">
-                  <Image src={c.src} alt={c.label} fill sizes="120px" className="object-contain" />
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div>
-            <p className="eyebrow-chip text-ash">발표 논문</p>
-            <p className="mt-2 text-[15.5px] leading-[1.7] text-charcoal">{PUBLICATION_DETAIL.title}</p>
-            <p className="mt-1 text-[14px] text-ash">{PUBLICATION_DETAIL.authors}</p>
-            <div className="mt-4">
-              <QuietLink href="/about/trust">근거 · 인증 전체 보기</QuietLink>
-            </div>
-          </div>
+        <div className="reveal mt-12 lg:mt-16">
+          <DoctorShowcase doctors={doctors} />
         </div>
       </Container>
+
+      {/*
+        근거 · 인증 — 의료진 아래 한 단 들어간 아이보리 면 (2026-09-17 오너: "인증 쪽 전문적으로").
+        ★ 인증패 사진은 원본이 236px 라 크게 쓰면 뭉개진다 → 작은 표식으로만 두고 **이름을 글자로** 읽힌다.
+        ★ 논문은 한 줄이 아니라 제 자리를 준다 — 세로 사진(768×800)과 제목, 한국어 풀이 한 문장.
+        ⚠️ 라벨·문구는 lib/assets.ts / lib/doctors.ts 원문 그대로다. 새 인증을 여기서 적지 않는다.
+      */}
+      <div className="mt-20 bg-wine-soft lg:mt-28">
+        <Container className="py-16 lg:py-20">
+          <div className="reveal grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-20">
+            <div className="grid gap-7 sm:grid-cols-[160px_minmax(0,1fr)] sm:gap-8">
+              <div className="relative aspect-[24/25] w-[160px] overflow-hidden rounded-[6px] bg-white">
+                <Image
+                  src={PUBLICATION_DETAIL.image}
+                  alt="발표 논문 표지"
+                  fill
+                  sizes="160px"
+                  className="object-cover object-top"
+                />
+              </div>
+              <div>
+                <p className="eyebrow-chip text-ash">발표 논문</p>
+                <p className="serif-head mt-4 text-[clamp(20px,1.8vw,24px)] leading-[1.45] text-charcoal">
+                  {PUBLICATION_DETAIL.title}
+                </p>
+                <p className="mt-3 text-[14px] text-ash">{PUBLICATION_DETAIL.authors}</p>
+                <p className="mt-4 max-w-[36em] text-[15.5px] leading-[1.8] text-charcoal/80">
+                  {PUBLICATION_DETAIL.relevanceKo}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <p className="eyebrow-chip text-ash">인증 · 수료</p>
+              <ul className="mt-4 divide-y divide-brand-300/60 border-y border-brand-300/60">
+                {IMG.credentials.map((c) => (
+                  <li key={c.src} className="flex items-center gap-4 py-3.5">
+                    <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-white">
+                      <Image src={c.src} alt="" fill sizes="44px" className="object-cover" />
+                    </span>
+                    <span className="text-[15.5px] leading-[1.5] text-charcoal">{c.label}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6">
+                <QuietLink href="/about/trust">근거 · 인증 전체 보기</QuietLink>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </div>
     </section>
   );
 }
