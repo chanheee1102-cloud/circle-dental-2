@@ -2861,3 +2861,33 @@ body:has([data-admin]) > :is(header, footer, .fixed) {
   line-height: 1.6;
   color: var(--color-ash);
 }
+
+/* ══ 홈 — 목업(2026-09-17 재작업) 보강 ═══════════════════════════════════ */
+
+/* 가로 넘김 트랙 — 스크롤바만 숨긴다(넘기기는 그대로 된다). 의료진 넘김판. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* 선 아이콘을 담는 얇은 원 — 진료 원칙·오시는 길. num-ring 과 같은 결(정원, 1px 토프 선). */
+.icon-ring {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 1px solid var(--color-brand-300);
+  color: var(--color-brand-700);
+  background-color: transparent;
+}
+/* 같은 원, 작은 판(인스타그램 줄). ⚠️ 유틸리티 h-9 로 덮으려 하지 말 것 — 이 규칙은 레이어 밖이라 유틸리티가 진다. */
+.icon-ring-sm {
+  width: 36px;
+  height: 36px;
+}

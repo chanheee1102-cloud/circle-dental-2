@@ -20,6 +20,7 @@ export function HomeHead({
   aside,
   tone = 'light',
   reveal = true,
+  asideInline = false,
   className = '',
 }: {
   label?: string;
@@ -28,13 +29,16 @@ export function HomeHead({
   aside?: ReactNode;
   tone?: 'light' | 'dark';
   reveal?: boolean;
+  /** 곁다리 링크를 좁은 화면에서도 제목 오른쪽 같은 줄에 둔다(목업 "어떤 고민이 있으신가요? · 전체 보기"). */
+  asideInline?: boolean;
   className?: string;
 }) {
   const dark = tone === 'dark';
+  const row = asideInline
+    ? 'flex-row items-end justify-between'
+    : 'flex-col sm:flex-row sm:items-end sm:justify-between';
   return (
-    <div
-      className={`${reveal ? 'reveal' : ''} flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between ${className}`}
-    >
+    <div className={`${reveal ? 'reveal' : ''} flex gap-6 ${row} ${className}`}>
       <div className="max-w-[40em]">
         {label ? (
           <p className={`eyebrow-chip ${dark ? 'text-mist/80' : 'text-ash'}`}>{label}</p>
