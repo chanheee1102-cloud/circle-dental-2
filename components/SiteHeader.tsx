@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { NAV, headerChildren, groupedChildren } from '@/lib/nav';
 import { CLINIC } from '@/lib/clinic';
-import { LogoLockup } from '@/components/Logo';
+import { Wordmark } from '@/components/Logo';
 import { Sentences } from '@/components/ui';
 import { PhoneGlyph, PhonePopover, usePhonePopover } from '@/components/PhonePopover';
 
@@ -69,7 +69,8 @@ export function SiteHeader() {
    * ⚠️ 다시 켜려면 로고 tone · 메뉴 글자색 · 테두리 · 그림자 네 가지를 **함께** 뒤집어야
    *   한다(아래 overHero 분기 전부). 하나만 켜면 하위 페이지에서 흰 글자가 사라진다.
    */
-  const overHero = false;
+  /* ★ 2026-09-17 오너: '히어로 사진을 배경으로' — 홈 첫 화면 위에서만 다시 투명 헤더. app/page.tsx Hero 의 -mt 가 짝이다. */
+  const overHero = pathname === '/' && !scrolled && !mobileOpen;
 
   const headerRef = useRef<HTMLElement>(null);
 
@@ -212,13 +213,13 @@ export function SiteHeader() {
             overHero
               ? // 사진 위 — 뒤가 훤히 비쳐야 한다. 흐림을 약하게 두어 형체가 남고,
                 //   밝기만 눌러 흰 글자의 대비를 만든다.
-                'border-b border-white/16 bg-[linear-gradient(180deg,rgba(23,23,26,0.30),rgba(23,23,26,0.10))] backdrop-blur-[7px] backdrop-brightness-[0.76] backdrop-saturate-150'
+                'bg-[linear-gradient(180deg,rgba(23,26,29,0.42),rgba(23,26,29,0))]'
               : // ⚠️ 흐림을 줄이지 말 것 — 어두운 글자는 밝기를 눌러도 안 지워지므로,
                 //    옅은 면 + 약한 흐림이면 본문이 헤더 글자와 겹쳐 읽힌다(실제로 겪었다).
                 /* ★ 2026-09-03 — 순백(254,255,252) → brand-50(248,243,234). 캔버스가 흰색이 된 뒤로
                 //   순백 유리는 흰 페이지 위에서 '띠' 로 안 읽혔다. 베이지 한 단이 경계를 만든다.
                 //   흐림·채도는 그대로다(아래 ⚠️). */
-                'border-b border-charcoal/20 bg-[linear-gradient(180deg,rgba(247,245,240,0.92),rgba(247,245,240,0.80))] backdrop-blur-[40px] backdrop-saturate-[1.6] shadow-[0_8px_20px_-16px_rgba(36,37,33,0.28)]'
+                'border-b border-wine-line bg-[rgba(247,245,240,0.92)] backdrop-blur-[24px]'
           }`}
         >
           {/* ⚠️ 띠는 화면 폭, 내용은 본문 폭 — 안쪽 상자만 max-w 를 진다.
@@ -267,7 +268,7 @@ export function SiteHeader() {
           >
             {/* ⚠️ tightWidths — 1024~1159px 에서만 워드마크를 접는다. 왜인지는 Logo.tsx 주석에.
                 푸터는 자리가 넉넉하므로 이 값을 주지 않는다. */}
-            <LogoLockup tone={overHero ? 'light' : 'brand'} tightWidths />
+            <Wordmark tone={overHero ? 'light' : 'brand'} />
           </Link>
         </div>
 
@@ -487,8 +488,8 @@ export function SiteHeader() {
             onClick={() => setMobileOpen((v) => !v)}
             /* ⚠️ ☰ ✕ 같은 유니코드 글리프로 되돌리지 말 것 — 글꼴마다 굵기·크기가 달라
                같은 헤더 안의 SVG 화살표(예약하기)와 획 두께가 안 맞는다. */
-            className={`inline-flex h-11 w-11 items-center justify-center rounded-full border outline-none focus-visible:ring-2 focus-visible:ring-clay-700/60 lg:hidden ${
-              overHero ? 'border-white/40 text-white' : 'border-wine-line text-charcoal'
+            className={`-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-clay-700/60 lg:hidden ${
+              overHero ? 'text-white' : 'text-charcoal'
             }`}
             aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
             aria-expanded={mobileOpen}

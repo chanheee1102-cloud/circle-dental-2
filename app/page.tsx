@@ -51,8 +51,8 @@ export const metadata: Metadata = {
  *   8 Visit       원 안 아이콘 세 줄(주소·진료시간·전화) + 예약·전화 버튼 + 지도
  *
  * ⚠️ 목업과 일부러 다르게 둔 것 (사실 관계)
- *   · 헤더는 병원의 **실제 로고 파일**을 쓴다. 목업의 타자 워드마크 'DONGGRAMI DENTAL CLINIC' 은
- *     디자이너의 임시 표기이고, 병원 영문명은 CIRCLE DENTAL CLINIC 이다(lib/clinic.ts).
+ *   · 헤더 워드마크의 영문은 CIRCLE DENTAL CLINIC 이다(lib/clinic.ts). 목업의 'DONGGRAMI DENTAL CLINIC' 은
+ *     디자이너 임시 표기라 쓰지 않는다(components/Logo.tsx Wordmark).
  *   · 의료진 사진은 **본인이 확인되는 사진**만 쓴다(lib/doctors.ts). 목업의 진료 장면 사진은
  *     누구인지 특정할 수 없어 이름 아래 둘 수 없다. 원장 말투의 인용문도 본인 말이 아니면 넣지 않는다.
  *   · 이야기 타일의 재생 표시는 영상 채널이 없어 넣지 않았다(재생 표시는 영상이 있다는 약속이다).
@@ -89,73 +89,79 @@ export default function HomePage() {
 }
 
 /* ─────────────────────────── 1. 첫 화면 ─────────────────────────── */
+/*
+ * ★ 사진이 **배경**이다 (2026-09-17 오너: "히어로 섹션 사진을 배경으로 넣어").
+ *   헤더 아래로 파고들어(-mt) 화면 맨 위부터 사진이고, 헤더는 그 위에서 투명하다
+ *   (SiteHeader 의 overHero — 홈 맨 위에서만). ⚠️ -mt 값은 헤더 높이(68/94)와 같아야 한다.
+ * ★ 글자는 사진의 아래·왼쪽에 선다. 그 자리만 .hero-shade 가 어둡게 눌러 흰 글자가 읽힌다.
+ * ★ 채운 버튼은 사진 위에서 **흰색**(FillBtn tone=dark) — 어두운 덮개 위에 dusk 를 채우면 묻힌다.
+ * ⚠️ 좁은 화면의 아래 여백(pb)은 하단 고정 바(QuickMenu) 높이만큼 더 둔다. 안 그러면 버튼이 바 밑에 깔린다.
+ */
 function Hero() {
   return (
-    <section className="relative border-b border-wine-line bg-wine-bg">
-      <div className="mx-auto grid max-w-[1440px] lg:min-h-[calc(100svh-94px)] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
-        {/* 사진 — 좁은 화면에서는 위, 넓은 화면에서는 오른쪽 끝까지. */}
-        <div className="hero-fade relative order-1 aspect-[4/5] overflow-hidden sm:aspect-[16/10] lg:order-2 lg:aspect-auto lg:min-h-full">
-          <Image
-            src={HERO_PHOTO.src}
-            alt={HERO_PHOTO.alt}
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 60vw"
-            className="object-cover object-[58%_30%]"
-          />
+    <section className="relative isolate -mt-[68px] flex min-h-[100svh] flex-col justify-end overflow-hidden bg-wine-deep text-parchment sm:-mt-[94px]">
+      <Image
+        src={HERO_PHOTO.src}
+        alt={HERO_PHOTO.alt}
+        fill
+        priority
+        sizes="100vw"
+        className="-z-20 object-cover object-[62%_30%]"
+      />
+      <div aria-hidden className="hero-shade absolute inset-0 -z-10" />
+
+      <div className="mx-auto flex w-full max-w-[1440px] flex-col justify-end px-5 pt-[120px] pb-[104px] sm:px-8 lg:min-h-[100svh] lg:pt-[160px] lg:pb-[108px] xl:px-16">
+        <div className="max-w-[34em]">
+          <h1 className="enter serif-head on-photo text-[clamp(38px,5.4vw,66px)] text-white">
+            뽑기 전에,
+            <br />
+            한 번 더 살펴봅니다.
+          </h1>
+          <p
+            className="enter on-photo mt-6 max-w-[30em] text-[17.5px] leading-[1.9] text-white/88 sm:text-[18.5px]"
+            style={{ animationDelay: '80ms' }}
+          >
+            자연치아를 오래 사용할 수 있도록
+            <br /> 필요한 치료부터 함께 판단합니다.
+          </p>
+          <div
+            className="enter mt-9 flex flex-wrap items-center gap-3"
+            style={{ animationDelay: '160ms' }}
+          >
+            <FillBtn href="/treatment" tone="dark">
+              진료 알아보기
+            </FillBtn>
+            <LineBtn href={CLINIC.booking.naver} external tone="dark">
+              예약하기
+            </LineBtn>
+          </div>
+          {/* ⚠️ 지역명은 첫 화면에 남긴다 — "화정동 치과" 질의의 근거가 이 자리다. */}
+          <p
+            className="enter on-photo mt-7 text-[14px] text-white/75"
+            style={{ animationDelay: '240ms' }}
+          >
+            {CLINIC.address.locality} {CLINIC.address.dong} · {CLINIC.nearestStation} 인근 ·{' '}
+            <a href={CLINIC.phoneHref} className="tabular-nums hover:text-white">
+              {CLINIC.phone}
+            </a>
+          </p>
         </div>
 
-        <div className="order-2 flex flex-col justify-between px-5 pt-9 pb-10 sm:px-8 lg:order-1 lg:pt-20 lg:pb-12 lg:pl-8 lg:pr-16 xl:pl-16">
-          <div className="lg:my-auto">
-            <h1 className="enter serif-head text-[clamp(36px,5.2vw,64px)] text-charcoal">
-              뽑기 전에,
-              <br />
-              한 번 더 살펴봅니다.
-            </h1>
-            <p
-              className="enter mt-6 max-w-[30em] text-[17.5px] leading-[1.9] text-ash sm:text-[18.5px]"
-              style={{ animationDelay: '80ms' }}
-            >
-              자연치아를 오래 사용할 수 있도록
-              <br /> 필요한 치료부터 함께 판단합니다.
-            </p>
-            <div
-              className="enter mt-9 flex flex-wrap items-center gap-3"
-              style={{ animationDelay: '160ms' }}
-            >
-              <FillBtn href="/treatment">진료 알아보기</FillBtn>
-              <LineBtn href={CLINIC.booking.naver} external>
-                예약하기
-              </LineBtn>
-            </div>
-            {/* ⚠️ 지역명은 첫 화면에 남긴다 — "화정동 치과" 질의의 근거가 이 자리다. */}
-            <p
-              className="enter mt-7 text-[14px] text-ink-muted"
-              style={{ animationDelay: '240ms' }}
-            >
-              {CLINIC.address.locality} {CLINIC.address.dong} · {CLINIC.nearestStation} 인근 ·{' '}
-              <a href={CLINIC.phoneHref} className="tabular-nums hover:text-charcoal">
-                {CLINIC.phone}
-              </a>
-            </p>
-          </div>
-
-          {/* 목업의 바닥 줄 — 왼쪽 SCROLL 과 세로선, 오른쪽에 네 줄 영문. 좁은 화면에도 둔다. */}
-          <div
-            className="enter mt-12 flex items-end justify-between lg:mt-14"
-            style={{ animationDelay: '360ms' }}
-          >
-            <p className="scroll-cue kicker">Scroll</p>
-            <p className="kicker text-right leading-[1.9]">
-              For a
-              <br />
-              longer
-              <br />
-              healthier
-              <br />
-              smile
-            </p>
-          </div>
+        {/* 목업의 바닥 줄 — 왼쪽 SCROLL 과 세로선, 오른쪽에 네 줄 영문. 좁은 화면에도 둔다. */}
+        <div
+          className="enter mt-12 flex items-end justify-between text-white/75 lg:mt-16"
+          style={{ animationDelay: '360ms' }}
+        >
+          <p className="scroll-cue kicker text-inherit">Scroll</p>
+          <p className="kicker text-right leading-[1.9] text-inherit">
+            For a
+            <br />
+            longer
+            <br />
+            healthier
+            <br />
+            smile
+          </p>
         </div>
       </div>
     </section>

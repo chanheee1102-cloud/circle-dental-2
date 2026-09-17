@@ -2796,7 +2796,7 @@ body:has([data-admin]) > :is(header, footer, .fixed) {
   width: 1px;
   height: 44px;
   margin-top: 10px;
-  background: linear-gradient(to bottom, var(--color-charcoal), transparent);
+  background: linear-gradient(to bottom, currentColor, transparent); /* 글자색을 따른다 — 사진 위에서는 흰 선 */
   animation: scrollCue 2.2s ease-in-out infinite;
 }
 @keyframes scrollCue {
@@ -2890,4 +2890,17 @@ body:has([data-admin]) > :is(header, footer, .fixed) {
 .icon-ring-sm {
   width: 36px;
   height: 36px;
+}
+
+/* 첫 화면 사진 위 덮개 — 아래·왼쪽으로 갈수록 블루그레이 딥. 글자가 서는 자리만 어둡다. */
+.hero-shade {
+  background:
+    linear-gradient(180deg, rgba(23, 26, 29, 0.18) 0%, rgba(23, 26, 29, 0) 28%, rgba(46, 55, 61, 0.42) 58%, rgba(46, 55, 61, 0.9) 100%);
+}
+@media (min-width: 1024px) {
+  .hero-shade {
+    background:
+      linear-gradient(90deg, rgba(46, 55, 61, 0.78) 0%, rgba(46, 55, 61, 0.42) 42%, rgba(46, 55, 61, 0.08) 100%),
+      linear-gradient(180deg, rgba(23, 26, 29, 0.22) 0%, rgba(23, 26, 29, 0) 30%, rgba(46, 55, 61, 0.55) 100%);
+  }
 }

@@ -102,3 +102,32 @@ export function LogoMark({ size = 44, tone = 'brand' }: { size?: number; tone?: 
     </svg>
   );
 }
+
+/**
+ * 글자 워드마크 — 헤더 전용 (2026-09-17 오너: "헤더도 목업에 맞게").
+ *
+ * ★ 목업의 머리는 세리프 '동그라미치과' 와 그 아래 작은 영문 한 줄이다. 그림 로고 대신 글자로 쓴다.
+ * ⚠️ 영문은 병원의 실제 영문명(CIRCLE DENTAL CLINIC)이다 — 목업의 'DONGGRAMI' 는 디자이너 임시 표기.
+ * ⚠️ 한글은 서브셋 글꼴(Gowun Batang)이다. '동그라미치과' 여섯 자는 홈 제목에 이미 있어 서브셋에 들어 있다.
+ *    다른 글자로 바꾸면 scripts/subset-gowun.py 를 다시 돌릴 것.
+ * ⚠️ 푸터는 그대로 그림 로고(LogoLockup)를 쓴다 — 간판·명함과 같은 실물 로고가 한 군데는 있어야 한다.
+ */
+export function Wordmark({ tone = 'brand' }: { tone?: 'brand' | 'light' }) {
+  const light = tone === 'light';
+  return (
+    <span className="flex flex-col leading-none">
+      <span
+        className={`serif-head text-[21px] tracking-[-0.01em] sm:text-[23px] ${light ? 'text-white' : 'text-charcoal'}`}
+      >
+        동그라미치과
+      </span>
+      <span
+        className={`display-en mt-1 text-[8.5px] tracking-[0.26em] uppercase sm:text-[9.5px] ${
+          light ? 'text-white/70' : 'text-ash'
+        }`}
+      >
+        Circle Dental Clinic
+      </span>
+    </span>
+  );
+}
