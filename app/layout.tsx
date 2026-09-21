@@ -108,7 +108,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                  자바스크립트를 끈 사람에게 그 글이 통째로 안 보인다.
                  (.wipe / .seq / .reveal-stack 이 실제로 빠져 있었다) */
               __html:
-                '.reveal,.concern,.wipe,.seq,.reveal-stack>*{opacity:1!important;transform:none!important;clip-path:none!important}',
+                '.reveal,.concern,.wipe,.seq,.reveal-stack>*{opacity:1!important;transform:none!important;clip-path:none!important}.hstage{--p:1!important}',
             }}
           />
         </noscript>
