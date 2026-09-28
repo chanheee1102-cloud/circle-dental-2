@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { ArticleMeta, headingId } from '@/components/article';
 import { CLINIC, UNVERIFIED } from '@/lib/clinic';
-import { Container, PageHero, Sentences } from '@/components/ui';
+import { Container, Sentences } from '@/components/ui';
+import { AboutHero } from '@/components/AboutHero';
 import { ClinicMap } from '@/components/ClinicMap';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, alt } from '@/lib/seo';
@@ -71,12 +72,13 @@ export default function VisitPage() {
     <>
       <JsonLd data={breadcrumbSchema(TRAIL)} />
 
-      <PageHero
+      {/* 치과소개 메뉴의 한 칸이라 치과소개 머리(사진 배경)와 같게 — 2026-09-28 오너 "그것만 통일해" */}
+      <AboutHero
         trail={TRAIL}
         photo="corridor"
         eyebrow="내원 안내"
         title="화정동 현창빌딩 3층에서 진료합니다"
-        desc={`${CLINIC.nearestStation} 인근이며, ${CLINIC.serviceArea.slice(0, 4).join(' · ')} 에서 오십니다.`}
+        lead={`${CLINIC.nearestStation} 인근이며, ${CLINIC.serviceArea.slice(0, 4).join(' · ')} 에서 오십니다.`}
       />
 
       <Container className="py-12 sm:py-16 lg:py-20">
