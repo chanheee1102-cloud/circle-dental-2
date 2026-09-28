@@ -1,0 +1,846 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+ * 더뉴 문법 이식 (2026-09-28 오너: "thenewdent.com 메인의 모션이랑 디자인들을 동그라미에 적용")
+ *   세 구획 — 주요 진료(.cl-*) · 의료진(.dp-*) · 특별함(.sp-*) — 과 관성 스크롤(.lenis).
+ *   값은 더뉴 style.css 를 실측해 옮겼다: 진료 카드 20%→40%·.5s / 특별함 400×600·모서리 20→60px·설명 열림 /
+ *   원장 판 이름 translateY(100px) 빠짐·경력 올라옴. 색·글꼴은 요청서 팔레트(아이보리·차콜·블루그레이·토프)와
+ *   이 사이트의 세리프(고운바탕)·영문(Marcellus) 그대로.
+ * ★ 파일을 따로 둔 이유 — 되돌릴 때 app/layout.tsx 의 import 한 줄과 홈 구획 셋만 걷으면 된다.
+ * ⚠️ 이 파일은 레이어 밖이다 — 같은 요소에 유틸리티 클래스로 같은 속성을 덮으려 하지 말 것(유틸리티가 진다).
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 관성 스크롤(components/SmoothScroll.tsx) — lenis.css 에서 필요한 줄만 ── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+/* html 의 scroll-behavior: smooth 와 겹치면 한 프레임씩 두 번 미끄러진다 */
+html.lenis {
+  scroll-behavior: auto !important;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-horizontal] {
+  overscroll-behavior: contain;
+}
+
+/* ── 가운데 머리말(의료진·특별함) — 더뉴의 영문 한 줄 + 큰 제목 ── */
+.c-head {
+  text-align: center;
+}
+.c-head .kicker {
+  font-size: 13px;
+  letter-spacing: 0.3em;
+}
+.c-head h2 {
+  margin-top: 14px;
+  font-family: var(--font-display-ko);
+  font-weight: 400;
+  font-size: clamp(30px, 4.2vw, 48px);
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+  color: var(--color-charcoal);
+  text-wrap: balance;
+}
+.c-head p {
+  margin: 20px auto 0;
+  max-width: 38em;
+  font-size: 17px;
+  line-height: 1.9;
+  color: var(--color-ash);
+}
+
+/* ── 1) 주요 진료 — 넓은 화면은 올린 카드만 두 배 폭, 좁은 화면은 옆으로 넘기는 세로 카드 ── */
+.cl-acc {
+  list-style: none;
+  margin: 44px -20px 0;
+  padding: 0 20px 4px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 20px;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.cl-acc::-webkit-scrollbar {
+  display: none;
+}
+.cl-card {
+  position: relative;
+  flex: 0 0 min(78vw, 360px);
+  height: 520px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--color-wine-soft);
+  scroll-snap-align: start;
+  isolation: isolate;
+}
+.cl-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: inherit;
+  outline: none;
+}
+.cl-link:focus-visible {
+  box-shadow: inset 0 0 0 3px var(--color-dusk);
+  border-radius: 20px;
+}
+.cl-img {
+  z-index: -1;
+  object-fit: cover;
+  object-position: 50% 100%;
+  /* 정물은 사진 아래 1/3 에 작게 찍혀 있다(윗부분은 글 자리) — 바닥을 붙인 채 키워 존재감을 준다 */
+  transform: translateY(6%) scale(1.3);
+  transform-origin: 50% 100%;
+  transition: transform 1.1s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.cl-light {
+  color: var(--color-charcoal);
+}
+.cl-dark {
+  color: #f7f5f0;
+}
+.cl-text {
+  position: absolute;
+  top: 34px;
+  left: 28px;
+  right: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.cl-kicker {
+  font-family: var(--font-display-en);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+.cl-en {
+  margin-top: 6px;
+  max-width: 5.6em;
+  font-family: var(--font-display-en);
+  font-size: 28px;
+  line-height: 1.12;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.cl-name {
+  margin-top: 14px;
+  font-family: var(--font-display-ko);
+  font-size: 20px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.cl-more {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.cl-quote {
+  margin-top: 20px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.cl-copy {
+  display: none;
+  margin-top: 10px;
+  font-size: 15.5px;
+  line-height: 1.75;
+  opacity: 0.8;
+}
+.cl-btn {
+  margin-top: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 48px;
+  padding: 0 26px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color 0.25s,
+    color 0.25s,
+    border-color 0.25s;
+}
+.cl-light .cl-link:hover .cl-btn,
+.cl-light .cl-link:focus-visible .cl-btn {
+  background: var(--color-charcoal);
+  border-color: var(--color-charcoal);
+  color: #f7f5f0;
+}
+.cl-dark .cl-link:hover .cl-btn,
+.cl-dark .cl-link:focus-visible .cl-btn {
+  background: #f7f5f0;
+  border-color: #f7f5f0;
+  color: var(--color-charcoal);
+}
+/* 동그라미 — 켜진 카드 오른쪽 위에서 한 바퀴 그려진다(더뉴는 로고가 뜨는 자리) */
+.cl-ring {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 40px;
+  height: 40px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  opacity: 0.75;
+  transform: rotate(-90deg);
+}
+@media (min-width: 640px) {
+  .cl-copy {
+    display: block;
+  }
+  .cl-card {
+    height: 560px;
+  }
+}
+@media (min-width: 1024px) {
+  .cl-acc {
+    margin: 48px 0 0;
+    padding: 0;
+    gap: 20px;
+    height: clamp(540px, 42vw, 620px);
+    overflow: visible;
+  }
+  .cl-card {
+    flex: 1 1 0;
+    min-width: 0;
+    height: auto;
+    transition: flex-grow 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .cl-card.is-on {
+    flex-grow: 2;
+  }
+  .cl-img {
+    transform: scale(1.4);
+  }
+  /* 켜지면 정물이 조금 내려앉는다 — 올라온 글 아래로 비켜선다 */
+  .cl-card.is-on .cl-img {
+    transform: translateY(8%) scale(1.4);
+  }
+  /* 1024~1279 는 카드 키가 540 으로 낮아 글이 정물에 더 가깝다 — 조금 더 내린다 */
+  @media (max-width: 1279px) {
+    .cl-card.is-on .cl-img {
+      transform: translateY(12%) scale(1.4);
+    }
+  }
+  .cl-text {
+    top: 56px;
+    left: clamp(24px, 2.4vw, 36px);
+    right: auto;
+    transition: left 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .cl-card.is-on .cl-text {
+    left: clamp(34px, 3.8vw, 56px);
+  }
+  .cl-en {
+    font-size: clamp(21px, 2.05vw, 30px);
+  }
+  .cl-name {
+    font-size: clamp(17px, 1.45vw, 21px);
+  }
+  /* 펼친 글의 폭을 켜진 카드 폭에 미리 맞춘다 — 카드가 넓어지는 동안 줄이 다시 접히지 않게 */
+  .cl-more {
+    width: min(400px, calc(0.4 * (min(100vw, 1320px) - 124px) - 100px));
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px);
+    transition:
+      opacity 0.25s,
+      transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1),
+      visibility 0s 0.45s;
+  }
+  .cl-card.is-on .cl-more {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 0.45s 0.24s,
+      transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) 0.24s,
+      visibility 0s;
+  }
+  .cl-quote {
+    margin-top: 40px;
+    font-family: var(--font-display-ko);
+    font-weight: 400;
+    font-size: clamp(22px, 1.9vw, 27px);
+    line-height: 1.4;
+  }
+  .cl-copy {
+    margin-top: 14px;
+  }
+  .cl-btn {
+    margin-top: 34px;
+    height: 54px;
+    padding: 0 30px;
+  }
+  .cl-ring {
+    top: 44px;
+    right: 40px;
+    width: 46px;
+    height: 46px;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 1.1s cubic-bezier(0.6, 0, 0.2, 1) 0.2s;
+  }
+  .cl-card.is-on .cl-ring {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ── 2) 의료진 판 — 반은 사진, 반은 이름. 올리면 이름이 빠지고 경력이 올라온다 ── */
+.dp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 56px;
+}
+.dp-card {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #fbfaf7;
+  border: 1px solid var(--color-wine-line);
+}
+.dp-photo {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: min(92vw, 420px);
+  overflow: hidden;
+  background: var(--dp-bg);
+}
+.dp-img {
+  height: 100%;
+  width: auto;
+  max-width: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%);
+}
+.dp-tag {
+  display: none;
+}
+.dp-side {
+  position: relative;
+  padding: 30px 26px 34px;
+}
+.dp-ring {
+  display: none;
+}
+.dp-role {
+  display: block;
+  font-size: 15px;
+  color: var(--color-ash);
+}
+.dp-big {
+  margin-top: 6px;
+  font-family: var(--font-display-ko);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: var(--color-charcoal);
+}
+.dp-spec {
+  display: block;
+  margin-top: 8px;
+  font-size: 16px;
+  color: var(--color-twilight);
+}
+.dp-orn {
+  display: none;
+}
+.dp-info ul {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 20px 0 0;
+  border-top: 1px solid var(--color-wine-line);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dp-info li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--color-twilight);
+}
+.dp-info li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.68em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-driftwood);
+}
+.dp-count {
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-ash);
+}
+.dp-btn {
+  margin-top: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 50px;
+  padding: 0 26px;
+  border: 1px solid var(--color-charcoal);
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-charcoal);
+  transition:
+    background-color 0.25s,
+    color 0.25s;
+}
+.dp-btn:hover,
+.dp-btn:focus-visible {
+  background: var(--color-charcoal);
+  color: #f7f5f0;
+}
+@media (min-width: 1024px) {
+  .dp-card {
+    grid-template-columns: 1fr 1fr;
+    height: clamp(480px, 38vw, 540px);
+  }
+  .dp-flip .dp-photo {
+    order: 2;
+  }
+  .dp-photo {
+    display: block;
+    height: 100%;
+  }
+  .dp-img {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: left 0.75s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .dp-tag {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    bottom: 0;
+    right: clamp(26px, 3vw, 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    text-align: right;
+    color: var(--color-charcoal);
+    opacity: 0;
+    transform: translateX(-24px);
+    transition:
+      opacity 0.35s,
+      transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .dp-flip .dp-tag {
+    right: auto;
+    left: clamp(26px, 3vw, 48px);
+    align-items: flex-start;
+    text-align: left;
+    transform: translateX(24px);
+  }
+  .dp-tag-role {
+    font-size: 16px;
+  }
+  .dp-tag-name {
+    margin-top: 4px;
+    font-family: var(--font-display-ko);
+    font-size: clamp(40px, 4vw, 58px);
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+  }
+  .dp-tag-spec {
+    margin-top: 8px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .dp-side {
+    padding: 0;
+    overflow: hidden;
+  }
+  .dp-ring {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: clamp(340px, 30vw, 440px);
+    height: clamp(340px, 30vw, 440px);
+    transform: translate(-50%, -50%);
+    fill: none;
+    stroke: var(--color-driftwood);
+    stroke-width: 0.7;
+    opacity: 0.55;
+    transition:
+      transform 0.9s cubic-bezier(0.25, 0.8, 0.25, 1),
+      opacity 0.5s;
+  }
+  .dp-name {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition:
+      opacity 0.3s,
+      transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .dp-role {
+    font-size: 17px;
+  }
+  .dp-big {
+    margin-top: 8px;
+    font-size: clamp(52px, 5vw, 76px);
+  }
+  .dp-spec {
+    margin-top: 12px;
+    font-size: 18px;
+  }
+  .dp-orn {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-driftwood);
+  }
+  .dp-orn i {
+    display: block;
+    width: 44px;
+    height: 1px;
+    background: currentColor;
+  }
+  .dp-orn b {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+  }
+  .dp-info {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 clamp(36px, 4.6vw, 76px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(70px);
+    transition:
+      opacity 0.25s,
+      transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
+      visibility 0s 0.5s;
+  }
+  .dp-info ul {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    gap: 12px;
+  }
+  .dp-info li {
+    font-size: 17px;
+  }
+  .dp-btn {
+    margin-top: 30px;
+    height: 56px;
+    padding: 0 32px;
+  }
+  /* 켠 상태 — 마우스를 올렸을 때 · 키보드 초점이 안에 있을 때 */
+  .dp-card:is(:hover, :focus-within) .dp-name {
+    opacity: 0;
+    transform: translateY(70px);
+  }
+  .dp-card:is(:hover, :focus-within) .dp-info {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 0.45s 0.12s,
+      transform 0.65s cubic-bezier(0.25, 0.8, 0.25, 1) 0.12s,
+      visibility 0s;
+  }
+  .dp-card:is(:hover, :focus-within) .dp-img {
+    left: 36%;
+  }
+  .dp-flip:is(:hover, :focus-within) .dp-img {
+    left: 64%;
+  }
+  .dp-card:is(:hover, :focus-within) .dp-tag {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.45s 0.18s,
+      transform 0.7s cubic-bezier(0.25, 0.8, 0.25, 1) 0.18s;
+  }
+  /* 이름과 함께 원도 오므라들며 사라진다 — 올라온 경력 글자를 가로지르지 않게 */
+  .dp-card:is(:hover, :focus-within) .dp-ring {
+    transform: translate(-50%, -50%) scale(0.82);
+    opacity: 0;
+  }
+}
+/* 올릴 마우스가 없는 넓은 화면(태블릿 가로) — 처음부터 켠 상태로 둔다 */
+@media (min-width: 1024px) and (hover: none) {
+  .dp-name {
+    opacity: 0;
+  }
+  .dp-info {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .dp-img {
+    left: 36%;
+  }
+  .dp-flip .dp-img {
+    left: 64%;
+  }
+  .dp-tag {
+    opacity: 1;
+    transform: none;
+  }
+  .dp-ring {
+    opacity: 0;
+  }
+}
+
+/* ── 3) 특별함 — 세로 사진 카드. 올리면 모서리가 둥글어지고 토프에 잠기며 설명이 열린다 ── */
+.sp-sec {
+  background: var(--color-wine-soft);
+}
+.sp-wrap {
+  position: relative;
+  margin-top: 52px;
+}
+/* 줄은 본문 왼쪽 끝에서 시작해 화면 오른쪽 끝까지 흐른다(더뉴처럼 오른쪽이 열려 있다) */
+.sp-track {
+  list-style: none;
+  margin: 0 calc((100vw - 100%) / -2) 0 0;
+  padding: 0 20px 6px 0;
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.sp-track::-webkit-scrollbar {
+  display: none;
+}
+.sp-card {
+  position: relative;
+  flex: 0 0 clamp(250px, 70vw, 400px);
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: 20px;
+  scroll-snap-align: start;
+  isolation: isolate;
+  transform: translateZ(0);
+  transition: border-radius 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.sp-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: #fff;
+  outline: none;
+}
+.sp-link:focus-visible {
+  box-shadow: inset 0 0 0 3px #f7f5f0;
+}
+.sp-bg {
+  position: absolute;
+  inset: 0;
+  background: #1c2124;
+  transition: background-color 0.4s;
+}
+.sp-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(28, 33, 36, 0) 38%, rgba(28, 33, 36, 0.72) 100%);
+  transition: opacity 0.4s;
+}
+.sp-img {
+  object-fit: cover;
+  opacity: 0.82;
+  transition:
+    opacity 0.4s,
+    transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.sp-text {
+  position: absolute;
+  z-index: 2;
+  left: clamp(24px, 2.6vw, 38px);
+  right: clamp(24px, 2.6vw, 38px);
+  bottom: clamp(26px, 2.8vw, 40px);
+}
+.sp-ico {
+  display: block;
+  width: 46px;
+  height: 46px;
+  color: #fff;
+}
+.sp-ico svg {
+  width: 100%;
+  height: 100%;
+}
+.sp-title {
+  display: block;
+  margin-top: 18px;
+  font-size: clamp(19px, 1.6vw, 23px);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+/* 설명 — 높이 0 에서 제 높이까지 열린다(grid 0fr → 1fr) */
+.sp-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.55s cubic-bezier(0.25, 0.8, 0.25, 1),
+    opacity 0.4s;
+}
+.sp-body-in {
+  min-height: 0;
+  overflow: hidden;
+}
+.sp-desc {
+  display: block;
+  padding-top: 16px;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.92);
+}
+.sp-go {
+  display: inline-flex;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+.sp-card:is(:hover, :focus-within) {
+  border-radius: 60px;
+}
+.sp-card:is(:hover, :focus-within) .sp-bg {
+  /* Warm Taupe 를 흰 글자가 읽히는 깊이로(대비 4.6:1). 더뉴의 베이지 #c5ad8e 자리 */
+  background: #7d7468;
+}
+.sp-card:is(:hover, :focus-within) .sp-bg::after {
+  opacity: 0;
+}
+.sp-card:is(:hover, :focus-within) .sp-img {
+  opacity: 0.1;
+  transform: scale(1.06);
+}
+.sp-card:is(:hover, :focus-within) .sp-body {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+/* 터치 화면 — 올릴 수가 없으니 설명을 처음부터 연다(더뉴 모바일과 같다) */
+@media (hover: none) {
+  .sp-body {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  .sp-bg::after {
+    background: linear-gradient(180deg, rgba(28, 33, 36, 0) 22%, rgba(28, 33, 36, 0.82) 100%);
+  }
+  .sp-card:is(:hover, :focus-within) {
+    border-radius: 20px;
+  }
+  .sp-card:is(:hover, :focus-within) .sp-bg {
+    background: #1c2124;
+  }
+  .sp-card:is(:hover, :focus-within) .sp-bg::after {
+    opacity: 1;
+  }
+  .sp-card:is(:hover, :focus-within) .sp-img {
+    opacity: 0.82;
+    transform: none;
+  }
+}
+.sp-nav {
+  display: none;
+}
+@media (min-width: 768px) {
+  .sp-track {
+    gap: 20px;
+  }
+  .sp-card {
+    flex-basis: clamp(270px, 28vw, 400px);
+  }
+  .sp-nav {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-top: -26px;
+    border-radius: 50%;
+    border: 1px solid var(--color-wine-line);
+    background: #fff;
+    color: var(--color-charcoal);
+    cursor: pointer;
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .sp-nav:hover,
+  .sp-nav:focus-visible {
+    background: var(--color-charcoal);
+    border-color: var(--color-charcoal);
+    color: #f7f5f0;
+  }
+  .sp-prev {
+    left: -26px;
+  }
+  .sp-next {
+    right: -26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cl-card,
+  .cl-text,
+  .cl-more,
+  .cl-img,
+  .cl-ring,
+  .dp-img,
+  .dp-name,
+  .dp-info,
+  .dp-tag,
+  .dp-ring,
+  .sp-card,
+  .sp-bg,
+  .sp-img,
+  .sp-body {
+    transition: none !important;
+  }
+}

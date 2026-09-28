@@ -117,6 +117,101 @@ export const STORY_FALLBACK_COVERS = [
   { src: `${P}/gen/story-linen.jpg`, alt: '아이보리 린넨 위의 흰 치아 모형과 작은 치과용 거울' },
 ] as const;
 
+/*
+ * ─────────────── 2026-09-28 더뉴치과 메인의 짜임·움직임 이식 (오너: "저 모션들이랑 디자인들을 적용해보자") ───────────────
+ *   가져온 것 셋 — ① 주요 진료 과목(올리면 넓어지는 카드) ② 대표원장(올리면 이름이 빠지고 경력이 올라오는 판)
+ *   ③ 특별함(세로로 긴 사진 카드, 올리면 모서리가 둥글어지며 설명이 열림). 색·글꼴·틀은 동그라미 그대로.
+ */
+
+/**
+ * 주요 진료 네 장 — 더뉴의 '주요 진료 과목'처럼 카드마다 바탕 색이 다른 사물 정물.
+ * ★ 사진은 **AI 생성 정물**이다(2026-09-28 오너: "이미지도 AI 사용해도 되니까 내용에 맞게").
+ *   C:/tmp/cd-new/gen-clinic-cards.mjs(gpt-image-2). 사람·손·글자 없이 치아 모형·임플란트 모형·베니어만.
+ *   바탕 색은 요청서 팔레트 안에서 골랐다 — 블루그레이 / 토프 / 아이보리 / 블루그레이 딥.
+ * ★ tone = 사진 윗부분(글자가 서는 자리)의 밝기. 밝은 세 장은 차콜 글자, 어두운 한 장만 흰 글자
+ *   (밝은 파스텔 위 흰 글자는 대비 2:1 안팎이라 읽히지 않는다 — 더뉴처럼 전부 흰 글자로 하지 않은 이유).
+ * ★ name·copy·href 는 lib/clinic.ts TREATMENT_PILLARS 원문, quote 는 위 HOME_CONCERNS 의 환자 말 그대로.
+ */
+/** 고민 카드의 환자 말을 그대로 가져온다 — 같은 말을 두 곳에 적어 두면 어긋난다 */
+const quoteOf = (href: string): string => HOME_CONCERNS.find((c) => c.href === href)?.quote ?? '';
+
+export const CLINIC_CARDS = [
+  {
+    key: 'natural',
+    en: 'Natural Tooth',
+    quote: quoteOf('/treatment/save-natural-tooth'),
+    tone: 'light',
+    photo: { src: `${P}/gen/care-natural.jpg`, alt: '블루그레이 바탕에서 작은 흰 접시 위에 놓인 치아 모형과 초록 잎' },
+  },
+  {
+    key: 'implant',
+    en: 'Implant',
+    quote: quoteOf('/treatment/implant'),
+    tone: 'light',
+    photo: { src: `${P}/gen/care-implant.jpg`, alt: '토프색 바탕의 돌 받침 위에 선 임플란트 나사와 흰 크라운 모형' },
+  },
+  {
+    key: 'aesthetic',
+    en: 'Aesthetic',
+    quote: quoteOf('/treatment/aesthetic'),
+    tone: 'light',
+    photo: { src: `${P}/gen/care-aesthetic.jpg`, alt: '아이보리 바탕에 한 줄로 놓인 도자기 베니어와 둥근 거울' },
+  },
+  {
+    key: 'wisdom',
+    en: 'Wisdom Tooth',
+    quote: quoteOf('/treatment/wisdom-tooth'),
+    tone: 'dark',
+    photo: { src: `${P}/gen/care-wisdom.jpg`, alt: '어두운 슬레이트 바탕에 옆으로 누운 뿌리가 긴 사랑니 모형' },
+  },
+] as const;
+
+/**
+ * 특별함 카드 — 세로로 긴 카드(2:3)에 맞춰 **실제 병원 사진**을 고르고 잘라 쓸 자리를 정한다.
+ * ★ 글(title·body)은 lib/specials.ts 원문. 사진만 카드 비율에 맞는 것으로 고른다(원래 사진은 대부분 가로 1056px 라
+ *   세로로 자르면 절반이 버려진다 → 해상도가 되는 사진은 그대로, 안 되는 자리는 같은 내용의 1920px 사진으로).
+ * ★ medical-team 제목만 카드용으로 바꾼다 — 원문 '10년 이상 경력의 대학병원…' 은 우리가 확인한 사실이 아니라
+ *   (lib/specials.ts 주석) 홈에서는 쓰지 않아 왔다. 홈 의료진 구획과 같은 기준('10년 이상'·'교수 출신' 안 씀)으로, 확인된 자격(lib/doctors.ts license)만 적는다.
+ */
+export const SPECIAL_CARD_ART: Record<string, { src: string; alt: string; pos: string; title?: string }> = {
+  'medical-team': {
+    src: '/img/clinic/doctor-desk.webp',
+    alt: '초록 진료복을 입은 원장이 책상에 앉아 차트를 적는 모습',
+    pos: '50% 20%',
+    title: '보건복지부인증 전문의 의료진',
+  },
+  'digital-diagnosis': {
+    src: '/img/special/20210903_a7607dc6f00a6.jpg',
+    alt: '태블릿에 띄운 3차원 구강 스캔 결과를 환자에게 가리켜 설명하는 모습',
+    pos: '62% 50%',
+  },
+  'custom-implant': {
+    src: `${P}/20210923_956b5d44b57ef.jpg`,
+    alt: '상담실에서 파노라마 엑스레이 화면과 치아 모형으로 설명하는 모습',
+    pos: '42% 50%',
+  },
+  'low-dose-ct': {
+    src: '/img/special/20210903_9e70d783f0043.jpg',
+    alt: '치과용 CT 장비에서 촬영을 준비하는 환자',
+    pos: '55% 50%',
+  },
+  hygiene: {
+    src: `${P}/20210923_72fa74e154297.jpg`,
+    alt: '멸균 포장된 진료 기구를 소독기에서 꺼내는 장면',
+    pos: '50% 50%',
+  },
+  'pain-control': {
+    src: '/img/special/20210927_ab779fb49387d.jpg',
+    alt: '진료 중인 대표원장과 진료 보조 스태프',
+    pos: '60% 50%',
+  },
+  warranty: {
+    src: '/img/special/20211103_53aaffd64e862.jpg',
+    alt: '임플란트 부품과 임플란트 보증서(IMPLANT WARRANTY CERTIFICATE)',
+    pos: '60% 50%',
+  },
+};
+
 /**
  * 의료진 사진 — 배경 톤을 맞춰 둔 판(-bg)이 있는 사람은 그것을 쓴다(scripts/normalizeDoctorBg.mjs).
  * 대표원장은 -bg 판이 없어 원본을 쓴다.

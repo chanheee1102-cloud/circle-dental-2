@@ -1,13 +1,15 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { CLINIC, UNVERIFIED } from '@/lib/clinic';
+import { CLINIC, UNVERIFIED, TREATMENT_PILLARS } from '@/lib/clinic';
+import { SPECIALS } from '@/lib/specials';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
 import {
   HERO_PHOTO,
   PRINCIPLES,
   PRINCIPLE_STATEMENT,
-  HOME_CONCERNS,
+  CLINIC_CARDS,
+  SPECIAL_CARD_ART,
   PRESERVE_PHOTO,
   TOUR_PHOTOS,
   STORY_FALLBACK_COVERS,
@@ -16,11 +18,13 @@ import {
 import { allPostsMerged } from '@/lib/insightFeed';
 import type { BlogPost } from '@/lib/blog';
 import { Container, Sentences, SeqLetters } from '@/components/ui';
-import { HomeHead, FillBtn, LineBtn, QuietLink } from '@/components/home';
+import { HomeHead, CenterHead, FillBtn, LineBtn, QuietLink } from '@/components/home';
 import { CredentialFan } from '@/components/CredentialFan';
 import { HeroMarquee } from '@/components/HeroMarquee';
 import { PRINCIPLE_ICONS } from '@/components/PrincipleIcons';
-import { DoctorShowcase } from '@/components/DoctorShowcase';
+import { DoctorPanels } from '@/components/DoctorPanels';
+import { ClinicAccordion } from '@/components/ClinicAccordion';
+import { SpecialSlider } from '@/components/SpecialSlider';
 import { CopyButton } from '@/components/CopyButton';
 import { ClinicMap } from '@/components/ClinicMap';
 import { Reveal } from '@/components/Reveal';
@@ -46,9 +50,10 @@ export const metadata: Metadata = {
  * ★ 구획 순서 (목업 순서 그대로)
  *   1 Hero        뽑기 전에, 한 번 더 살펴봅니다 — 아래에 SCROLL · FOR A LONGER HEALTHIER SMILE
  *   2 Principles  동그라미가 가장 먼저 생각하는 것 — 원 안 선 아이콘 + 01~04, 그 아래 한 문장
- *   3 Concerns    어떤 고민이 있으신가요? — 사진 왼쪽·말 오른쪽의 가로 카드(아이보리 한 단)
+ *   3 Clinic      주요 진료 과목 — 더뉴치과 짜임(2026-09-28): 올린 카드만 두 배로 넓어지는 네 장, 켜진 카드에 환자의 말
  *   4 Preserve    자연치아 보존 — 어두운 블루그레이 띠 (페이지에서 유일한 어두운 면)
- *   5 Doctors     한 사람씩 크게(사진·이름·경력 펼침면, 이름 탭·‹ 1/3 ›) + 인증패 넷(CredentialFan) + 논문 배너(라이브 짜임, 색만 블루그레이)
+ *   5 Doctors     더뉴치과 짜임(2026-09-28): 한 사람당 가로 판, 올리면 이름이 빠지고 경력이 올라옴 + 인증패 넷(CredentialFan) + 논문 배너(라이브 짜임, 색만 블루그레이)
+ *   5-1 Special   동그라미치과의 특별함 — 더뉴치과 짜임(2026-09-28): 세로 사진 카드 일곱 장이 3초마다 흐름, 올리면 토프에 잠기며 설명
  *   6 Tour        둘러보기
  *   7 Story       인사이트 최신 글 4장(로컬+중앙 합본) + 인스타그램·블로그 줄
  *   8 Visit       원 안 아이콘 세 줄(주소·진료시간·전화) + 예약·전화 버튼 + 지도
@@ -86,9 +91,10 @@ export default async function HomePage() {
       />
       <Hero />
       <PrinciplesSection />
-      <ConcernsSection />
+      <ClinicSection />
       <PreserveBand />
       <DoctorsSection />
+      <SpecialSection />
       <TourSection />
       <StorySection posts={posts} />
       <VisitSection />
@@ -253,57 +259,30 @@ function LeafDeco() {
   );
 }
 
-/* ─────────────────────────── 3. 어떤 고민이 있으신가요 ─────────────────────────── */
-function ConcernsSection() {
+/* ─────────────────────────── 3. 주요 진료 ─────────────────────────── */
+/*
+ * ★★ '어떤 고민이 있으신가요?' 다섯 카드 → 더뉴치과 '주요 진료 과목' 짜임 (2026-09-28 오너) ★★
+ *   네 진료(자연치아살리기·임플란트·심미치료·사랑니발치 = 헤더 메뉴 넷)가 한 줄에 서고, 마우스가 올라간 카드만
+ *   두 배로 넓어지며 환자의 말·설명·'자세히 보기' 가 올라온다(components/ClinicAccordion).
+ * ★ 고민 카드의 **환자의 말은 그대로 옮겼다** — 켜진 카드의 첫 줄이 그 말이다(lib/homeContent CLINIC_CARDS.quote).
+ *   빠진 것은 '이가 아파요 → 충치/신경치료' 한 장뿐이고, 그 길은 '전체 보기'(/treatment)에 있다.
+ * ★ 이름·설명·주소는 lib/clinic.ts TREATMENT_PILLARS 원문. 여기서 진료 문구를 새로 쓰지 않는다.
+ */
+function ClinicSection() {
+  const cards = CLINIC_CARDS.map((c) => {
+    const p = TREATMENT_PILLARS.find((x) => x.key === c.key)!;
+    return { key: c.key, en: c.en, quote: c.quote, tone: c.tone, photo: c.photo, name: p.name, copy: p.copy, href: p.href };
+  });
   return (
     <section className="section-y-home border-t border-wine-line">
       <Container>
         <HomeHead
           label="진료"
-          title="어떤 고민이 있으신가요?"
+          title="주요 진료 과목"
           asideInline
           aside={<QuietLink href="/treatment">전체 보기</QuietLink>}
         />
-        {/*
-          가로 카드 — 사진 왼쪽, 환자의 말 오른쪽, 아이보리 한 단 들어간 면(목업).
-          넓은 화면에서는 다섯 장이 한 줄에 서야 하므로 사진을 위로 올린다(같은 카드, 방향만 다르다).
-        */}
-        <ul className="reveal-stack mt-10 grid grid-cols-1 gap-3 lg:mt-12 lg:grid-cols-5 lg:gap-4">
-          {HOME_CONCERNS.map((c) => (
-            <li key={c.href + c.quote}>
-              {/*
-                ⚠️ 카드 높이는 다섯 장이 같아야 한다 (2026-09-17 오너: "카드 크기 다 맞춰. 뒤죽박죽").
-                   말의 길이가 한 줄·두 줄로 달라서 카드마다 키가 달랐다 → 카드는 h-full 로 줄 높이를
-                   다 채우고, 글 칸은 flex-1, 진료 이름은 mt-auto 로 **바닥에 정렬**한다.
-              */}
-              <Link
-                href={c.href}
-                className="photo-card group flex h-full overflow-hidden rounded-[6px] bg-wine-soft transition-colors hover:bg-brand-200/70 lg:flex-col"
-              >
-                <div className="relative aspect-[4/3] w-[42%] shrink-0 overflow-hidden lg:w-full">
-                  <Image
-                    src={c.photo.src}
-                    alt={c.photo.alt}
-                    fill
-                    sizes="(max-width: 1024px) 42vw, 20vw"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex min-w-0 flex-1 flex-col justify-center px-5 py-4 lg:justify-start lg:px-5 lg:py-5">
-                  <p className="text-[16.5px] leading-[1.45] font-medium text-charcoal lg:text-[17px]">
-                    {c.quote}
-                  </p>
-                  <p className="mt-2 flex items-center gap-1.5 text-[13.5px] text-ash lg:mt-auto lg:pt-3">
-                    {c.tag}
-                    <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
-                      →
-                    </span>
-                  </p>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <ClinicAccordion cards={cards} />
       </Container>
     </section>
   );
@@ -366,25 +345,17 @@ function DoctorsSection() {
   return (
     <section className="section-y-home">
       <Container>
-        <HomeHead
-          label="의료진"
-          title={
-            <>
-              동그라미치과의
-              <br />
-              의료진을 소개합니다.
-            </>
-          }
-          /*
-           * ⚠️ 문구는 lib/doctors.ts 로 확인되는 범위만 — '10년 이상 경력'·'교수 출신' 은
-           *    근거가 없어 쓰지 않는다(app/page.tsx 이전 판의 주석과 같은 이유).
-           */
+        {/*
+          ★★ 더뉴치과 '대표원장 소개' 짜임 (2026-09-28 오너) — 가운데 머리말 + 한 사람당 가로 판(components/DoctorPanels).
+             이름 탭·‹ 1/3 › 로 넘기던 DoctorShowcase 는 홈에서 걷었다(세 사람이 한 화면에 다 선다).
+          ⚠️ 문구는 lib/doctors.ts 로 확인되는 범위만 — '10년 이상 경력'·'교수 출신' 은 근거가 없어 쓰지 않는다.
+        */}
+        <CenterHead
+          en="Circle Doctors"
+          title="동그라미치과의 의료진을 소개합니다"
           desc="경희대학교 치의학전문대학원 외래교수인 대표원장과 보건복지부 인정 통합치의학과 전문의로 구성된 의료진이 진료합니다."
         />
-
-        <div className="reveal mt-12 lg:mt-16">
-          <DoctorShowcase doctors={doctors} />
-        </div>
+        <DoctorPanels doctors={doctors} />
       </Container>
 
       {/*
@@ -454,6 +425,35 @@ function DoctorsSection() {
             </div>
           </div>
         </div>
+      </Container>
+    </section>
+  );
+}
+
+/* ─────────────────────────── 5-1. 특별함 ─────────────────────────── */
+/*
+ * ★★ 더뉴치과 '더뉴 치과의 특별함' 짜임 (2026-09-28 오너) ★★
+ *   세로로 긴 사진 카드 일곱 장이 흐르고 3초마다 넘어간다. 올리면 모서리가 둥글어지고 사진이 토프에 잠기며
+ *   설명이 열린다(components/SpecialSlider). 카드마다 /about/special/<slug> 로 간다.
+ * ★ 글은 lib/specials.ts 원문(단, medical-team 제목만 확인된 범위로 — lib/homeContent SPECIAL_CARD_ART 주석).
+ * ★ 사진은 전부 이 병원의 실제 사진 — 세로 카드에 맞는 것을 골라 잘라 쓴다(SPECIAL_CARD_ART).
+ */
+function SpecialSection() {
+  const cards = SPECIALS.map((s) => {
+    const art = SPECIAL_CARD_ART[s.slug];
+    return {
+      slug: s.slug,
+      key: s.key,
+      title: art?.title ?? s.title,
+      body: s.body,
+      photo: art ?? { src: s.thumb?.src ?? s.image, alt: s.thumb?.alt ?? s.alt, pos: s.thumb?.position ?? '50% 50%' },
+    };
+  });
+  return (
+    <section className="sp-sec section-y-home overflow-x-clip">
+      <Container>
+        <CenterHead en="Circle Speciality" title="동그라미치과의 특별함" />
+        <SpecialSlider cards={cards} />
       </Container>
     </section>
   );

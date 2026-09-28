@@ -71,7 +71,8 @@ def used_glyphs():
         for m in re.finditer(
             # display-ko(홈) 뿐 아니라 display / display-sm(전 페이지)도 세리프다.
             # 2026-09-16: 세리프 = .display / .display-ko / .serif-head (.display-sm 은 산세리프지만 여유로 포함).
-            r'<(h1|h2|h3|h4|p|span|div|a|li|strong)\b[^>]*class="[^"]*\b(?:display(?:-ko|-sm)?|serif-head)\b[^"]*"[^>]*>(.*?)</\1>',
+            # 2026-09-28: 더뉴 문법 이식(app/thenew.css)의 세리프 자리 — 진료 카드 이름·환자의 말, 원장 이름(판·이름표).
+            r'<(h1|h2|h3|h4|p|span|div|a|li|strong)\b[^>]*class="[^"]*\b(?:display(?:-ko|-sm)?|serif-head|cl-name|cl-quote|dp-big|dp-tag-name)\b[^"]*"[^>]*>(.*?)</\1>',
             html,
             re.S,
         ):

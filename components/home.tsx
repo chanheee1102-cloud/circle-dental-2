@@ -65,6 +65,24 @@ export function HomeHead({
   );
 }
 
+/**
+ * 가운데 머리말 — 더뉴치과 메인 문법(영문 한 줄 + 큰 제목 + 한두 줄 설명, 가운데 정렬). 2026-09-28.
+ * 의료진·특별함처럼 더뉴에서 옮긴 구획만 쓴다. 영문 줄은 라틴 문자 자리라 .kicker(Marcellus).
+ */
+export function CenterHead({ en, title, desc }: { en: string; title: ReactNode; desc?: string }) {
+  return (
+    <div className="c-head reveal">
+      <p className="kicker">{en}</p>
+      <h2 className="serif-head">{title}</h2>
+      {desc ? (
+        <p>
+          <Sentences text={desc} />
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 const ARROW = (
   <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
     →

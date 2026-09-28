@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+/* 더뉴치과 메인의 짜임·움직임을 옮긴 홈 구획 셋 + 관성 스크롤 (2026-09-28). 되돌리려면 이 줄과 <SmoothScroll /> 를 지운다. */
+import './thenew.css';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { QuickMenu } from '@/components/QuickMenu';
 import { RevealScript } from '@/components/RevealScript';
+import { SmoothScroll } from '@/components/SmoothScroll';
 import { CLINIC } from '@/lib/clinic';
 
 /**
@@ -130,6 +133,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           화면에 아무것도 그리지 않는다(null 반환). components/RevealScript.tsx 머리말 참조.
         */}
         <RevealScript />
+        <SmoothScroll />
       </body>
     </html>
   );
