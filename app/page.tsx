@@ -6,6 +6,7 @@ import { SPECIALS } from '@/lib/specials';
 import { DOCTORS, PUBLICATION_DETAIL } from '@/lib/doctors';
 import {
   HERO_PHOTO,
+  HERO_WARM_SRC,
   PRINCIPLES,
   PRINCIPLE_STATEMENT,
   CLINIC_CARDS,
@@ -104,84 +105,64 @@ export default async function HomePage() {
 
 /* ─────────────────────────── 1. 첫 화면 ─────────────────────────── */
 /*
- * ★ 사진이 **배경**이다 (2026-09-17 오너: "히어로 섹션 사진을 배경으로 넣어").
- *   헤더 아래로 파고들어(-mt) 화면 맨 위부터 사진이고, 헤더는 그 위에서 투명하다
- *   (SiteHeader 의 overHero — 홈 맨 위에서만). ⚠️ -mt 값은 헤더 높이(68/94)와 같아야 한다.
- * ★ 글자는 사진의 아래·왼쪽에 선다. 그 자리만 .hero-shade 가 어둡게 눌러 흰 글자가 읽힌다.
- * ★ 채운 버튼은 사진 위에서 **흰색**(FillBtn tone=dark) — 어두운 덮개 위에 dusk 를 채우면 묻힌다.
- * ⚠️ 좁은 화면의 아래 여백(pb)은 하단 고정 바(QuickMenu) 높이만큼 더 둔다. 안 그러면 버튼이 바 밑에 깔린다.
+ * ★★ 밝은 첫 화면 (2026-09-28 오너: 목업 캡처를 주며 "메인 히어로도 저런 느낌과 색상으로") ★★
+ *   어두운 블루그레이 덮개 + 흰 글자 → **따뜻한 아이보리 바탕 + 차콜 세리프 글자**.
+ *   사진은 오른쪽 70% 에 깔리고, 왼쪽 글자 자리는 아이보리로 부드럽게 번진다(.hero-lt-fade).
+ *   목업 색은 캡처에서 잰 값: 바탕 #ebe5de · 채운 버튼 #313e51 · 제목 #2d2824.
+ * ★ 사진은 **같은 실제 사진**(HERO_PHOTO)을 결만 다듬은 판 — public/img/hero-warm.jpg
+ *   (C:/tmp/cd-new/hero-grade.cjs: 검은 곳을 들고 채도를 낮춰 따뜻한 빛, 왼쪽 앞의 환자만 흐리게 = 얕은 심도).
+ *   목업의 사진은 AI 로 그린 가상 인물이라 쓰지 않는다 — 결과 분위기만 옮겼다.
+ * ★ 헤더는 이제 사진 위에 뜨지 않는다(SiteHeader overHero=false) — 밝은 첫 화면이라 헤더도 아이보리 띠. 그래서 -mt 도 없다.
+ * ⚠️ 지역명 줄은 남긴다 — "화정동 치과" 질의의 근거가 이 자리다.
+ * ⚠️ 좁은 화면의 아래 여백(pb)은 하단 고정 바(QuickMenu) 높이만큼 더 둔다.
  */
 function Hero() {
   return (
-    <section className="relative isolate -mt-[68px] flex min-h-[100svh] flex-col justify-end overflow-hidden bg-wine-deep text-parchment sm:-mt-[94px]">
-      <Image
-        src={HERO_PHOTO.src}
-        alt={HERO_PHOTO.alt}
-        fill
-        priority
-        sizes="100vw"
-        className="-z-20 object-cover object-[62%_30%]"
-      />
-      <div aria-hidden className="hero-shade absolute inset-0 -z-10" />
+    <section className="hero-lt">
+      <div className="hero-lt-photo">
+        <Image src={HERO_WARM_SRC} alt={HERO_PHOTO.alt} fill priority sizes="(max-width: 1023px) 100vw, 72vw" className="hero-lt-img" />
+      </div>
+      <div aria-hidden className="hero-lt-fade" />
+      <div aria-hidden className="hero-lt-sun" />
 
-      {/*
-        ⚠️ 여기서 폭을 따로 잡지 말 것 (2026-09-17 오너: "너무 왼쪽에 쏠린 거 아니야?").
-           히어로만 max-w-[1440px] + xl:px-16 을 쓰고 있어서, 넓은 화면에서 제목의 왼쪽 끝이
-           아래 구획들(Container 1320px)보다 더 바깥에서 시작했다 — 페이지 전체가 어긋나 보인다.
-           **아래 모든 구획과 같은 Container** 를 쓴다. 제목·본문·SCROLL 줄이 한 세로선에 선다.
-      */}
-      <Container className="flex flex-col justify-end pt-[120px] pb-[104px] lg:min-h-[100svh] lg:pt-[160px] lg:pb-[108px]">
-        {/* ⚠️ 34em(544px)에서는 "한 번 더 살펴봅니다." 가 세 줄로 접혔다 — 두 줄로 서게 폭을 준다. */}
-        <div className="max-w-[46rem]">
-          <h1 className="enter serif-head on-photo text-[clamp(38px,5.4vw,66px)] text-white">
+      <Container className="hero-lt-in">
+        <div className="hero-lt-copy">
+          <p className="enter kicker hero-lt-kicker">
+            Preserve
+            <br />
+            your natural smile
+          </p>
+          <h1 className="enter serif-head hero-lt-h1" style={{ animationDelay: '60ms' }}>
             뽑기 전에,
             <br />
             한 번 더 살펴봅니다.
           </h1>
-          <p
-            className="enter on-photo mt-6 max-w-[30em] text-[17.5px] leading-[1.9] text-white/88 sm:text-[18.5px]"
-            style={{ animationDelay: '80ms' }}
-          >
+          <p className="enter hero-lt-lead" style={{ animationDelay: '140ms' }}>
             자연치아를 오래 사용할 수 있도록
             <br /> 필요한 치료부터 함께 판단합니다.
           </p>
-          <div
-            className="enter mt-9 flex flex-wrap items-center gap-3"
-            style={{ animationDelay: '160ms' }}
-          >
-            <FillBtn href="/treatment" tone="dark">
+          <div className="enter hero-lt-cta" style={{ animationDelay: '220ms' }}>
+            <FillBtn href="/treatment" className="hero-lt-fill">
               진료 알아보기
             </FillBtn>
-            <LineBtn href={CLINIC.booking.naver} external tone="dark">
+            <LineBtn href={CLINIC.booking.naver} external className="hero-lt-line">
               예약하기
             </LineBtn>
           </div>
-          {/* ⚠️ 지역명은 첫 화면에 남긴다 — "화정동 치과" 질의의 근거가 이 자리다. */}
-          <p
-            className="enter on-photo mt-7 text-[14px] text-white/75"
-            style={{ animationDelay: '240ms' }}
-          >
+          <p className="enter hero-lt-loc" style={{ animationDelay: '300ms' }}>
             {CLINIC.address.locality} {CLINIC.address.dong} · {CLINIC.nearestStation} 인근 ·{' '}
-            <a href={CLINIC.phoneHref} className="tabular-nums hover:text-white">
+            <a href={CLINIC.phoneHref} className="tabular-nums">
               {CLINIC.phone}
             </a>
           </p>
         </div>
 
-        {/* 목업의 바닥 줄 — 왼쪽 SCROLL 과 세로선, 오른쪽에 네 줄 영문. 좁은 화면에도 둔다. */}
-        <div
-          className="enter mt-12 flex items-end justify-between text-white/75 lg:mt-16"
-          style={{ animationDelay: '360ms' }}
-        >
-          <p className="scroll-cue kicker text-inherit">Scroll</p>
-          <p className="kicker text-right leading-[1.9] text-inherit">
-            For a
-            <br />
-            longer
-            <br />
-            healthier
-            <br />
-            smile
+        {/* 목업의 바닥 줄 — 왼쪽 SCROLL 과 세로선, 오른쪽 사진 위 반투명 판의 영문 세 줄 */}
+        <div className="enter hero-lt-foot" style={{ animationDelay: '420ms' }}>
+          <p className="scroll-cue kicker hero-lt-scroll">Scroll</p>
+          <p className="kicker hero-lt-note">
+            Better choices
+            <br />~<br />a healthier tomorrow
           </p>
         </div>
       </Container>

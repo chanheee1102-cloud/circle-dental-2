@@ -29,6 +29,26 @@ export function SpecialSlider({ cards }: { cards: SpecialCard[] }) {
   const track = useRef<HTMLUListElement>(null);
   const hold = useRef(false);
   const lastUser = useRef(0);
+  const bar = useRef<HTMLElement>(null);
+
+  /* 아래 가는 선 — 보이는 폭만큼의 막대가 지금 자리에 선다(다시 그리지 않고 스타일만 바꾼다) */
+  useEffect(() => {
+    const el = track.current;
+    const b = bar.current;
+    if (!el || !b) return;
+    const draw = () => {
+      const sw = el.scrollWidth || 1;
+      b.style.width = `${Math.min(100, (el.clientWidth / sw) * 100)}%`;
+      b.style.transform = `translateX(${(el.scrollLeft / el.clientWidth) * 100}%)`;
+    };
+    draw();
+    el.addEventListener('scroll', draw, { passive: true });
+    window.addEventListener('resize', draw);
+    return () => {
+      el.removeEventListener('scroll', draw);
+      window.removeEventListener('resize', draw);
+    };
+  }, []);
 
   const step = useCallback((dir: 1 | -1) => {
     const el = track.current;
@@ -102,16 +122,25 @@ export function SpecialSlider({ cards }: { cards: SpecialCard[] }) {
           </li>
         ))}
       </ul>
-      <button type="button" className="sp-nav sp-prev" aria-label="이전 카드" onClick={() => (touch(), step(-1))}>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-          <path d="M10.5 2.5 5 8l5.5 5.5" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      </button>
-      <button type="button" className="sp-nav sp-next" aria-label="다음 카드" onClick={() => (touch(), step(1))}>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-          <path d="M5.5 2.5 11 8l-5.5 5.5" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      </button>
+      {/*
+        ★ 넘김 단추는 카드 **아래 줄**에 둔다 (2026-09-28 오너: "왼쪽 오른쪽 버튼이 카드랑 겹치잖아").
+          카드 가장자리에 반쯤 걸쳐 두던 더뉴 방식은 사진·제목을 가렸다. 왼쪽엔 지금 어디쯤인지 보이는 가는 선.
+      */}
+      <div className="sp-ctrl">
+        <span className="sp-bar" aria-hidden>
+          <i ref={bar} />
+        </span>
+        <button type="button" className="sp-nav" aria-label="이전 카드" onClick={() => (touch(), step(-1))}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+            <path d="M10.5 2.5 5 8l5.5 5.5" stroke="currentColor" strokeWidth="1.5" />
+          </svg>
+        </button>
+        <button type="button" className="sp-nav" aria-label="다음 카드" onClick={() => (touch(), step(1))}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+            <path d="M5.5 2.5 11 8l-5.5 5.5" stroke="currentColor" strokeWidth="1.5" />
+          </svg>
+        </button>
+      </div>
     </div>
   );
 }

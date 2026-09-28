@@ -70,7 +70,8 @@ export function SiteHeader() {
    *   한다(아래 overHero 분기 전부). 하나만 켜면 하위 페이지에서 흰 글자가 사라진다.
    */
   /* ★ 2026-09-17 오너: '히어로 사진을 배경으로' — 홈 첫 화면 위에서만 다시 투명 헤더. app/page.tsx Hero 의 -mt 가 짝이다. */
-  const overHero = pathname === '/' && !scrolled && !mobileOpen;
+  /* ★ 2026-09-28 오너: 첫 화면을 밝은 아이보리로(목업) — 사진 위에 뜨는 흰 글자 헤더는 쓰지 않는다. 되살리려면 Hero 에 -mt 도 함께. */
+  const overHero = false && pathname === '/' && !scrolled && !mobileOpen;
 
   const headerRef = useRef<HTMLElement>(null);
 

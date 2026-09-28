@@ -17,6 +17,12 @@ export const HERO_PHOTO = {
   alt: '진료실에서 의료진이 모니터의 파노라마 엑스레이와 태블릿의 구강 사진을 나란히 놓고 환자에게 설명하는 모습',
 };
 
+/**
+ * 첫 화면에 실제로 깔리는 판 — HERO_PHOTO 와 **같은 사진**을 따뜻한 아이보리 결로 다듬고 왼쪽 앞(환자)만 흐리게 한 것(2026-09-28).
+ * 만든 법: C:/tmp/cd-new/hero-grade.cjs(sharp). 구조화 데이터·공유 이미지는 원본(HERO_PHOTO)을 그대로 쓴다.
+ */
+export const HERO_WARM_SRC = `${P}/hero-warm.jpg`;
+
 /** 동그라미가 가장 먼저 생각하는 것 — 진료 전에 스스로 묻는 네 가지. 순서가 곧 순위다. */
 export const PRINCIPLES = [
   { n: '01', title: '정말 치료가 필요한가' },
