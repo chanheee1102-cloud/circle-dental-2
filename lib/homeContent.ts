@@ -19,9 +19,9 @@ export const HERO_PHOTO = {
 
 /**
  * 첫 화면에 실제로 깔리는 판 — HERO_PHOTO 와 **같은 사진**을 따뜻한 아이보리 결로 다듬고 왼쪽 앞(환자)만 흐리게 한 것(2026-09-28).
- * 만든 법: C:/tmp/cd-new/hero-grade.cjs(sharp). 구조화 데이터·공유 이미지는 원본(HERO_PHOTO)을 그대로 쓴다.
+ * 만든 법: C:/tmp/cd-new/hero-grade2.cjs(sharp). ★ 2판(2026-09-28 색 검토): 벽이 푸른 회색이라 아이보리 바탕과 섞이는 가운데가 탁했다 → 채널별로 파랑을 눌러 벽을 따뜻하게(#e1e2e2 → #eadfc9). 구조화 데이터·공유 이미지는 원본(HERO_PHOTO)을 그대로 쓴다.
  */
-export const HERO_WARM_SRC = `${P}/hero-warm.jpg`;
+export const HERO_WARM_SRC = `${P}/hero-warm-2.jpg`;
 
 /** 동그라미가 가장 먼저 생각하는 것 — 진료 전에 스스로 묻는 네 가지. 순서가 곧 순위다. */
 export const PRINCIPLES = [
@@ -31,8 +31,11 @@ export const PRINCIPLES = [
   { n: '04', title: '환자가 치료 내용을 충분히 이해하고 있는가' },
 ] as const;
 
-export const PRINCIPLE_STATEMENT =
-  '가능하다면 내 치아를 오래 사용하는 것. 그것이 치료의 첫 번째 선택이어야 한다고 생각합니다.';
+/*
+ * ★ 2026-09-28 홈 전문가 검토(내용 중복) — 옛 문장 '가능하다면 내 치아를 오래 사용하는 것…' 은 첫 화면 소개글·원칙 02 를
+ *   다시 말했다(첫 네 화면에 '자연치아를 살린다/오래 쓴다' 가 11번). 네 물음을 묶는 말로 바꿨다 — 사실 주장이 없는 문장.
+ */
+export const PRINCIPLE_STATEMENT = '이 네 가지를 먼저 묻고, 그다음에 치료를 이야기합니다.';
 
 /**
  * 어떤 고민이 있으신가요 — 환자의 말 → 갈 곳.
@@ -110,7 +113,8 @@ export const TOUR_PHOTOS = {
   },
   sub: [
     { src: `${P}/20210923_14482879bf993.jpg`, alt: '유닛체어와 모니터가 놓인 독립 진료실' },
-    { src: `${P}/20210923_5e82b10a99850.jpg`, alt: '유리 파티션으로 나뉜 개별 상담 부스' },
+    /* 2026-09-28: 상담 부스(5e82b10a99850)는 접수 사진처럼 하얗고 평평해 창가 진료실로 — 창·로고 유리·화분이 보인다 */
+    { src: `${P}/20210923_ed347b4ffee21.jpg`, alt: '창가에 진료 의자가 나란히 놓인 진료실 — 동그라미치과 로고가 새겨진 유리 파티션' },
   ],
 } as const;
 
@@ -146,8 +150,11 @@ export const CLINIC_CARDS = [
     key: 'natural',
     en: 'Natural Tooth',
     quote: quoteOf('/treatment/save-natural-tooth'),
+    /* 원문 '…최대한 살리는 것이 진료 철학입니다' 는 바로 위 환자 말·진료 철학 구획과 같은 말 → 홈에서만 이 카드가 무엇을 모았는지로(메뉴 이름은 lib/nav.ts 하위 메뉴 그대로). */
+    copy: '충치치료·신경치료·잇몸치료처럼 지금 있는 치아를 치료하는 진료를 모았습니다.',
     tone: 'light',
-    photo: { src: `${P}/gen/care-natural.jpg`, alt: '블루그레이 바탕에서 작은 흰 접시 위에 놓인 치아 모형과 초록 잎' },
+    /* 2판(2026-09-28): 옛 그림(접시 위 치아+초록 잎)이 바로 아래 보존 띠(치아+올리브 가지)와 소재가 겹쳐 유리 덮개로 — '지킨다' */
+    photo: { src: `${P}/gen/care-save-2.jpg`, alt: '블루그레이 바탕에서 유리 덮개 안 돌 받침 위에 놓인 흰 치아 모형' },
   },
   {
     key: 'implant',
@@ -179,22 +186,27 @@ export const CLINIC_CARDS = [
  * ★ medical-team 제목만 카드용으로 바꾼다 — 원문 '10년 이상 경력의 대학병원…' 은 우리가 확인한 사실이 아니라
  *   (lib/specials.ts 주석) 홈에서는 쓰지 않아 왔다. 홈 의료진 구획과 같은 기준('10년 이상'·'교수 출신' 안 씀)으로, 확인된 자격(lib/doctors.ts license)만 적는다.
  */
-export const SPECIAL_CARD_ART: Record<string, { src: string; alt: string; pos: string; title?: string }> = {
+export const SPECIAL_CARD_ART: Record<string, { src: string; alt: string; pos: string; title?: string; skip?: boolean }> = {
+  /* 홈에서는 뺀다(2026-09-28 전문가 검토) — 바로 위 의료진 구획이 같은 말(전문의)을 머리말과 판 세 장으로 이미 한다. 상세 페이지는 그대로. */
   'medical-team': {
+    skip: true,
     src: '/img/clinic/doctor-desk.webp',
     alt: '초록 진료복을 입은 원장이 책상에 앉아 차트를 적는 모습',
     pos: '50% 20%',
     title: '보건복지부인증 전문의 의료진',
   },
+  /* ⚠️ 옛 사진(special/20210903_a7607…)은 첫 화면 사진과 **같은 촬영 컷**이었다(전문가 검토 실측) — 사람 없는 스캐너 화면으로. */
   'digital-diagnosis': {
-    src: '/img/special/20210903_a7607dc6f00a6.jpg',
-    alt: '태블릿에 띄운 3차원 구강 스캔 결과를 환자에게 가리켜 설명하는 모습',
-    pos: '62% 50%',
+    src: '/img/clinic/aes-scanner.webp',
+    alt: '진료실 구강 스캐너 화면에 위아래 치열의 3차원 스캔 데이터가 표시되어 있다.',
+    pos: '50% 50%',
   },
   'custom-implant': {
     src: `${P}/20210923_956b5d44b57ef.jpg`,
     alt: '상담실에서 파노라마 엑스레이 화면과 치아 모형으로 설명하는 모습',
     pos: '42% 50%',
+    /* 원문 '개인에 맞는 맞춤형 임플란트' — 같은 말이 겹친다 */
+    title: '맞춤형 임플란트',
   },
   'low-dose-ct': {
     src: '/img/special/20210903_9e70d783f0043.jpg',
@@ -205,6 +217,8 @@ export const SPECIAL_CARD_ART: Record<string, { src: string; alt: string; pos: s
     src: `${P}/20210923_72fa74e154297.jpg`,
     alt: '멸균 포장된 진료 기구를 소독기에서 꺼내는 장면',
     pos: '50% 50%',
+    /* 원문 '철저한 소독과 멸균 시스템' — '철저한'은 근거 없는 강조(본문이 뒷받침하는 건 교육·매일 확인) */
+    title: '소독·멸균 관리',
   },
   'pain-control': {
     src: '/img/special/20210927_ab779fb49387d.jpg',

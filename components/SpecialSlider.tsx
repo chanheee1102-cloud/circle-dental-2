@@ -99,7 +99,12 @@ export function SpecialSlider({ cards }: { cards: SpecialCard[] }) {
                   src={c.photo.src}
                   alt=""
                   fill
-                  sizes="(max-width: 640px) 78vw, 400px"
+                  /*
+                   * ⚠️ 카드 폭이 아니라 **그려지는 사진 폭**으로 적는다 (2026-09-28 실측: 뿌얬던 원인).
+                   *   가로 사진(1056×575 등)을 세로 카드에 꽉 채우면 사진은 카드 높이 × 가로비만큼 넓게 그려진다
+                   *   (440 × 1.84 ≈ 810px). sizes 를 카드 폭(400px)으로 적었더니 640px 판을 받아 1.7배로 늘려 그렸다.
+                   */
+                  sizes="(max-width: 767px) 160vw, 820px"
                   className="sp-img"
                   style={{ objectPosition: c.photo.pos }}
                 />

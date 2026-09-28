@@ -9,7 +9,7 @@ import Image from 'next/image';
  *   사진 쪽에 이름표가 서고, 비워진 반쪽으로 경력이 올라온다. 두 번째 판은 좌우를 뒤집는다.
  * ★ 이름 뒤의 얇은 원은 '동그라미' — 더뉴가 인증 엠블럼을 두는 자리에 병원 이름의 원을 둔다.
  * ★ 올릴 마우스가 없는 화면(터치)·좁은 화면에서는 처음부터 경력까지 다 보인다.
- * ⚠️ 경력 줄은 lib/doctors.ts 의 license + keyCareer 그대로(원문 부분집합 — 그 파일의 assert 가 지킨다).
+ * ⚠️ 경력 줄은 lib/doctors.ts 의 keyCareer 그대로(원문 부분집합 — 그 파일의 assert 가 지킨다). 자격(license)은 이름 아래 한 번만.
  *    "경력 싹다 보여주는 것보다 중요한 경력만"(2026-08-31 운영자) — 전체 줄 수는 개수로만 적는다.
  * ⚠️ 사진 반쪽의 바탕색(bg)은 사진의 스튜디오 바탕을 잰 값이다. 사진 가장자리를 흐려 그 색에 녹인다.
  */
@@ -40,6 +40,7 @@ export function DoctorPanels({ doctors }: { doctors: DoctorPanel[] }) {
           <article
             key={d.slug}
             className={`dp-card reveal${i % 2 ? ' dp-flip' : ''}`}
+            data-doc={d.slug}
             style={{ ['--dp-bg' as string]: PHOTO_BG[d.slug] ?? '#cfd2d9' }}
             aria-labelledby={`dp-${d.slug}`}
           >
@@ -77,16 +78,16 @@ export function DoctorPanels({ doctors }: { doctors: DoctorPanel[] }) {
                 </span>
               </div>
               <div className="dp-info">
+                {/*
+                  2026-09-28 전문가 검토: 자격 줄(license)은 뺐다 — 이름 아래 '통합치의학과 전문의' 와 바로 겹쳤고,
+                  '학력·경력 N줄 · 학회 N곳' 줄도 뺐다 — 바로 아래 단추가 같은 일을 하고, 줄 수는 만든 사람의 말이다.
+                  (자격은 구획 머리말 '세 원장 모두 보건복지부인증 통합치의학과 전문의' 가 한 번에 말한다.)
+                */}
                 <ul>
-                  <li>{d.license}</li>
                   {d.keyCareer.filter((c) => c !== d.license).map((c) => (
                     <li key={c}>{c}</li>
                   ))}
                 </ul>
-                <p className="dp-count">
-                  학력·경력 {d.careerCount}줄
-                  {d.societyCount > 0 ? ` · 학회 활동 ${d.societyCount}곳` : ''} — 전체는 의료진 페이지에서
-                </p>
                 <Link href={`/about/doctors#${d.slug}`} className="dp-btn">
                   {d.name} {d.role} 자세히 보기
                   <svg width="18" height="10" viewBox="0 0 18 10" fill="none" aria-hidden>

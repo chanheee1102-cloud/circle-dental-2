@@ -33,6 +33,7 @@ export function ClinicAccordion({ cards }: { cards: ClinicCard[] }) {
         <li
           key={c.key}
           className={`cl-card cl-${c.tone}${i === on ? ' is-on' : ''}`}
+          data-key={c.key}
           onMouseEnter={() => setOn(i)}
         >
           <Link href={c.href} className="cl-link" onFocus={() => setOn(i)}>
@@ -42,7 +43,6 @@ export function ClinicAccordion({ cards }: { cards: ClinicCard[] }) {
               <circle cx="24" cy="24" r="21" pathLength={1} />
             </svg>
             <span className="cl-text">
-              <span className="cl-kicker">Circle</span>
               <span className="cl-en">{c.en}</span>
               <span className="cl-name">{c.name}</span>
               <span className="cl-more">

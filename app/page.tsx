@@ -109,8 +109,8 @@ export default async function HomePage() {
  *   어두운 블루그레이 덮개 + 흰 글자 → **따뜻한 아이보리 바탕 + 차콜 세리프 글자**.
  *   사진은 오른쪽 70% 에 깔리고, 왼쪽 글자 자리는 아이보리로 부드럽게 번진다(.hero-lt-fade).
  *   목업 색은 캡처에서 잰 값: 바탕 #ebe5de · 채운 버튼 #313e51 · 제목 #2d2824.
- * ★ 사진은 **같은 실제 사진**(HERO_PHOTO)을 결만 다듬은 판 — public/img/hero-warm.jpg
- *   (C:/tmp/cd-new/hero-grade.cjs: 검은 곳을 들고 채도를 낮춰 따뜻한 빛, 왼쪽 앞의 환자만 흐리게 = 얕은 심도).
+ * ★ 사진은 **같은 실제 사진**(HERO_PHOTO)을 결만 다듬은 판 — public/img/hero-warm-2.jpg
+ *   (C:/tmp/cd-new/hero-grade2.cjs: 검은 곳을 들고 채도를 낮춰 따뜻한 빛, 왼쪽 앞의 환자만 흐리게 = 얕은 심도).
  *   목업의 사진은 AI 로 그린 가상 인물이라 쓰지 않는다 — 결과 분위기만 옮겼다.
  * ★ 헤더는 이제 사진 위에 뜨지 않는다(SiteHeader overHero=false) — 밝은 첫 화면이라 헤더도 아이보리 띠. 그래서 -mt 도 없다.
  * ⚠️ 지역명 줄은 남긴다 — "화정동 치과" 질의의 근거가 이 자리다.
@@ -208,7 +208,8 @@ function PrinciplesSection() {
           </ol>
 
           {/* 한 문장과 다음 페이지로 가는 줄 — 좁은 화면에서는 목록 아래, 넓은 화면에서는 제목 아래. */}
-          <div className="reveal lg:col-start-1 lg:self-end">
+          {/* ⚠️ lg:self-end 를 되살리지 말 것 — 문장이 바닥으로 내려가 왼쪽 열 가운데가 170px 비었다(2026-09-28 전문가 검토). */}
+          <div className="reveal lg:col-start-1">
             <p className="max-w-[26em] text-[17px] leading-[1.9] text-charcoal/85">
               <Sentences text={PRINCIPLE_STATEMENT} />
             </p>
@@ -252,7 +253,7 @@ function LeafDeco() {
 function ClinicSection() {
   const cards = CLINIC_CARDS.map((c) => {
     const p = TREATMENT_PILLARS.find((x) => x.key === c.key)!;
-    return { key: c.key, en: c.en, quote: c.quote, tone: c.tone, photo: c.photo, name: p.name, copy: p.copy, href: p.href };
+    return { key: c.key, en: c.en, quote: c.quote, tone: c.tone, photo: c.photo, name: p.name, copy: 'copy' in c ? c.copy : p.copy, href: p.href };
   });
   return (
     <section className="section-y-home border-t border-wine-line">
@@ -284,20 +285,14 @@ function PreserveBand() {
       <div aria-hidden className="tint-bluegray absolute inset-0 -z-10" />
       <Container className="py-28 pb-[60vw] sm:pb-[44vw] lg:py-40">
         <div className="reveal max-w-[34em]">
-          <p className="kicker text-parchment/70">
-            Natural
-            <br />
-            together
-            <br />
-            for a longer smile
-          </p>
-          <h2 className="serif-head mt-7 text-[clamp(30px,4.4vw,50px)] text-parchment">
+          {/* 영문 'NATURAL TOGETHER FOR A LONGER SMILE' 은 뺐다(2026-09-28) — 영어 문장이 되지 않고 첫 화면 영문과 같은 뜻이었다. */}
+          <h2 className="serif-head text-[clamp(30px,4.4vw,50px)] text-parchment">
             자연치아 보존,
             <br />
             가능할 때가 가장 좋습니다.
           </h2>
           <p className="mt-7 max-w-[28em] text-[17.5px] leading-[1.9] text-parchment/85">
-            살릴 수 있는 치아인지 정확하게 판단하고,
+            살릴 수 있는 치아인지 확인하고,
             <br className="hidden sm:block" /> 가능한 방법을 함께 찾아갑니다.
           </p>
           <div className="mt-9">
@@ -330,11 +325,12 @@ function DoctorsSection() {
           ★★ 더뉴치과 '대표원장 소개' 짜임 (2026-09-28 오너) — 가운데 머리말 + 한 사람당 가로 판(components/DoctorPanels).
              이름 탭·‹ 1/3 › 로 넘기던 DoctorShowcase 는 홈에서 걷었다(세 사람이 한 화면에 다 선다).
           ⚠️ 문구는 lib/doctors.ts 로 확인되는 범위만 — '10년 이상 경력'·'교수 출신' 은 근거가 없어 쓰지 않는다.
+             '인정' 이 아니라 '보건복지부인증'(전 페이지 통일, lib/doctors.ts 머리말). 옛 문장은 대표원장이 전문의가 아닌 것처럼 읽혔다.
         */}
         <CenterHead
-          en="Circle Doctors"
+          label="의료진"
           title="동그라미치과의 의료진을 소개합니다"
-          desc="경희대학교 치의학전문대학원 외래교수인 대표원장과 보건복지부 인정 통합치의학과 전문의로 구성된 의료진이 진료합니다."
+          desc="세 원장 모두 보건복지부인증 통합치의학과 전문의이며, 대표원장은 경희대학교 치의학전문대학원 외래교수입니다."
         />
         <DoctorPanels doctors={doctors} />
       </Container>
@@ -363,7 +359,7 @@ function DoctorsSection() {
               text="Circle Dental Clinic ·"
               seconds={46}
               size="clamp(64px, 9.5vw, 176px)"
-              colorClass="text-dusk/[0.10]"
+              colorClass="text-driftwood/[0.16]"
             />
           </div>
           <CredentialFan />
@@ -420,7 +416,7 @@ function DoctorsSection() {
  * ★ 사진은 전부 이 병원의 실제 사진 — 세로 카드에 맞는 것을 골라 잘라 쓴다(SPECIAL_CARD_ART).
  */
 function SpecialSection() {
-  const cards = SPECIALS.map((s) => {
+  const cards = SPECIALS.filter((s) => !SPECIAL_CARD_ART[s.slug]?.skip).map((s) => {
     const art = SPECIAL_CARD_ART[s.slug];
     return {
       slug: s.slug,
@@ -433,7 +429,7 @@ function SpecialSection() {
   return (
     <section className="sp-sec section-y-home overflow-x-clip">
       <Container>
-        <CenterHead en="Circle Speciality" title="동그라미치과의 특별함" />
+        <CenterHead label="특별함" title="동그라미치과의 특별함" />
         <SpecialSlider cards={cards} />
       </Container>
     </section>
@@ -441,19 +437,21 @@ function SpecialSection() {
 }
 
 /* ─────────────────────────── 6. 둘러보기 ─────────────────────────── */
+/*
+ * ★ 2026-09-28 전문가 검토 반영 — 머리말 한 줄(제목·설명·링크를 위에 모음, 주요 진료와 같은 짜임), 작은 사진 16:10,
+ *   상담 부스 사진(접수 사진처럼 하얗고 평평했다) → 창가 진료실(창·로고 유리·화분). 문장은 사진이 보여 주는 것만.
+ *   옛 문장 '편안하고 안전한 진료 환경에서 늘 같은 마음으로' 는 '안전한' 단정 + 빈말이라 뺐다.
+ */
 function TourSection() {
   return (
     <section className="section-y-home border-t border-wine-line">
       <Container>
         <HomeHead
           label="공간"
-          title={
-            <>
-              동그라미치과
-              <br />
-              둘러보기
-            </>
-          }
+          title="동그라미치과 둘러보기"
+          desc="접수·대기 공간과 진료실을 미리 둘러보세요."
+          asideInline
+          aside={<QuietLink href="/about/tour">둘러보기</QuietLink>}
         />
         <div className="reveal mt-12 grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
           <div className="img-in relative aspect-[4/3] overflow-hidden rounded-[8px] bg-wine-soft lg:aspect-auto">
@@ -467,18 +465,11 @@ function TourSection() {
           </div>
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
             {TOUR_PHOTOS.sub.map((s) => (
-              <div key={s.src} className="img-in relative aspect-[4/3] overflow-hidden rounded-[8px] bg-wine-soft">
+              <div key={s.src} className="img-in relative aspect-[4/3] overflow-hidden rounded-[8px] bg-wine-soft lg:aspect-[16/10]">
                 <Image src={s.src} alt={s.alt} fill sizes="(max-width: 1024px) 50vw, 40vw" className="object-cover" />
               </div>
             ))}
           </div>
-        </div>
-        <div className="reveal mt-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <p className="max-w-[26em] text-[17px] leading-[1.9] text-ash">
-            편안하고 안전한 진료 환경에서
-            <br className="hidden sm:block" /> 늘 같은 마음으로 진료합니다.
-          </p>
-          <QuietLink href="/about/tour">둘러보기</QuietLink>
         </div>
       </Container>
     </section>
@@ -501,7 +492,8 @@ function StorySection({ posts }: { posts: BlogPost[] }) {
     return `${y}년 ${Number(m)}월 ${Number(d)}일`;
   };
   return (
-    <section className="section-y-home border-t border-wine-line">
+    /* 바탕 한 단 들어간 면(#efece5) — 둘러보기·오시는 길의 아이보리와 번갈아 서도록(2026-09-28 색 검토). 색이 경계라 위 실선은 뺐다. */
+    <section className="section-y-home bg-wine-soft">
       <Container>
         <HomeHead
           label="인사이트"
@@ -512,16 +504,19 @@ function StorySection({ posts }: { posts: BlogPost[] }) {
               동그라미의 이야기
             </>
           }
-          desc="진료실에서 다 담기 어려운 이야기를 글로 적습니다. 새 글이 올라오면 이 자리에 먼저 보입니다."
+          desc="진료실에서 다 담기 어려운 이야기를 글로 적습니다."
           aside={<QuietLink href="/insight/blog">블로그 전체 보기</QuietLink>}
         />
 
         <ul className="reveal-stack mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {posts.map((p, i) => {
+            /* 요약 첫머리 '결론부터 말씀드리면' 이 네 장 중 세 장에 되풀이돼 홈 카드에서만 뗀다(글 본문은 그대로). */
+            const summary = (p.summary ?? '').replace(/^결론부터 말씀드리면[,，]?[ ]*/, '');
             const cover = p.image ?? STORY_FALLBACK_COVERS[i % STORY_FALLBACK_COVERS.length].src;
             const coverAlt = p.image ? (p.imageAlt ?? '') : '';
             return (
-              <li key={p.slug}>
+              /* 휴대폰은 두 장만 — 세로로 네 장이 쌓이면 이 구획만 2,500px 였다 */
+              <li key={p.slug} className={i >= 2 ? 'max-sm:hidden' : undefined}>
                 <Link
                   href={`/insight/blog/${p.slug}`}
                   className="photo-card group flex h-full flex-col overflow-hidden rounded-[6px] border border-wine-line bg-white transition-colors hover:border-brand-300"
@@ -538,7 +533,7 @@ function StorySection({ posts }: { posts: BlogPost[] }) {
                       {p.category ? <span>{p.category}</span> : null}
                     </p>
                     <h3 className="mt-2.5 line-clamp-2 text-[17px] leading-[1.45] font-medium text-charcoal">{p.title}</h3>
-                    <p className="mt-2 line-clamp-2 text-[14.5px] leading-[1.7] text-ash">{p.summary}</p>
+                    <p className="mt-2 line-clamp-2 text-[14.5px] leading-[1.7] text-ash">{summary}</p>
                     <span className="mt-auto flex items-center gap-1.5 pt-4 text-[13.5px] text-charcoal/70">
                       읽어보기
                       <span aria-hidden className="transition-transform group-hover:translate-x-0.5">

@@ -67,12 +67,13 @@ export function HomeHead({
 
 /**
  * 가운데 머리말 — 더뉴치과 메인 문법(영문 한 줄 + 큰 제목 + 한두 줄 설명, 가운데 정렬). 2026-09-28.
- * 의료진·특별함처럼 더뉴에서 옮긴 구획만 쓴다. 영문 줄은 라틴 문자 자리라 .kicker(Marcellus).
+ * 의료진·특별함처럼 더뉴에서 옮긴 구획만 쓴다.
+ * ★ 머리표는 한글(2026-09-28 전문가 검토) — 다른 구획 다섯 곳이 한글 머리표(진료·공간·인사이트…)인데 여기 둘만 영문이라 체계가 섞였다.
  */
-export function CenterHead({ en, title, desc }: { en: string; title: ReactNode; desc?: string }) {
+export function CenterHead({ label, title, desc }: { label: string; title: ReactNode; desc?: string }) {
   return (
     <div className="c-head reveal">
-      <p className="kicker">{en}</p>
+      <p className="c-label">{label}</p>
       <h2 className="serif-head">{title}</h2>
       {desc ? (
         <p>
