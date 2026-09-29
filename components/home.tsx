@@ -27,7 +27,7 @@ export function HomeHead({
 }: {
   label?: string;
   title?: ReactNode;
-  /** 줄마다 가림막에서 올라오는 제목(2026-09-29). 강조 표시 ==…==(색 번짐) · __…__(색 + 가는 선) 를 쓸 수 있다(components/motion). title 대신 쓴다. */
+  /** 줄마다 가림막에서 올라오는 제목(2026-09-29). 강조 표시 ==…== · __…__(형광펜 밑줄)를 쓸 수 있다(components/motion). title 대신 쓴다. */
   split?: readonly string[];
   desc?: ReactNode;
   aside?: ReactNode;
@@ -84,7 +84,7 @@ export function CenterHead({
   title?: ReactNode;
   /** 줄 가림막 제목(HomeHead 와 같다). */
   split?: readonly string[];
-  /** ** 로 감싼 곳은 굵게 + 보일 때 색이 번진다(.em-strong). */
+  /** ** 로 감싼 곳은 굵게 + 보일 때 형광펜 밑줄(.em-strong). */
   desc?: string;
 }) {
   return (

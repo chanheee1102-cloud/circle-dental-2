@@ -3,14 +3,14 @@
  *   같은 날 2차 — "마우스 커서 모션은 없애고, 문구 강조는 색감이나 진중한 모션으로, 서브페이지도 전부"
  *
  * ★ 주제는 병원 이름 — **동그라미**. 첫 화면 사진이 동그랗게 열리고, 옅은 원이 떠다니고, 보존 띠에 원이 번진다.
- *   문구 강조는 모양(손그림 원·형광펜)을 걷고 **색이 천천히 번지는 것**으로 바꿨다 — 진중하게.
+ *   문구 강조는 형광펜 밑줄 — 글자 아래 40% 에 띠가 왼쪽에서 오른쪽으로 그어진다(3차, 아래 문구 강조 머리말).
  *   커서를 따라다니던 원·자석 단추는 뺐다.
  * ★ 짜임·색·문구는 그대로다(09-21 재조판 두 판 반려 — 틀은 건드리지 않는다). 얹은 것은 움직임과 강조 색뿐.
  * ★ 하위 페이지: 머리말(TreatmentHero·AboutHero·PageHero) 사진이 가라앉고 내리면 시차, 제목 어절 가림막,
  *   라벨 눈금이 그어지고, 사진은 아래에서 걷히고, 카드는 차례로 솟는다(globals.css 의 .img-in · .reveal-stack 값을 같이 올림).
  *   마무리 문장(TreatmentClosing·ContactCta)은 광화문 선치과처럼 낱말이 차례로 짙어진다.
  * ★ 누가 켜나
- *     .split-in · .em · .em-strong · .draw-in · .clip-in · .rows-in · .late-in → RevealScript 의 늦은 관찰자(화면 안 12%)
+ *     .split-in · .em(형광펜) · .em-strong · .draw-in · .clip-in · .rows-in · .late-in → RevealScript 의 늦은 관찰자(화면 안 12%)
  *     --hp · --py · --p · --sp · .w.on                                       → components/ScrollMotion (스크롤 숫자, 레이아웃에 하나)
  *     .em-now · 첫 화면 · 하위 머리말                                          → 페이지가 열리면 바로(CSS animation)
  * ★ 기존 hover 움직임(더뉴 이식, thenew.css)은 transform 을 쓴다. 여기 등장 효과는 **개별 속성**
@@ -39,102 +39,64 @@
   transform: scaleX(var(--sp, 0));
 }
 
-/* ══ 문구 강조 — 색이 번진다 ══════════════════════════════════════════════
+/* ══ 문구 강조 — 형광펜 밑줄 ══════════════════════════════════════════════
  *
- * ★★ 손그림 원·형광펜 → 색과 가는 선 (2026-09-29 오너: "문구 강조하는건 색감이나 진중한 모션으로") ★★
- *   강조 낱말의 글자색이 **왼쪽에서 오른쪽으로 천천히** 블루그레이(사이트 기준색)로 번진다.
- *   눈에 띄는 모양을 얹지 않고 색 하나로만 가리킨다 — 진료 안내 사이트의 목소리에 맞는 세기.
- *
- * 원리: 글자를 투명하게 칠하고(-webkit-text-fill-color) 배경을 글자 모양으로 잘라(background-clip:text)
- *       '강조색 | 원래색' 두 칸짜리 배경을 오른쪽 → 왼쪽으로 민다. 경계는 12% 폭으로 부드럽게 섞인다.
- *   ★ 원래색 칸은 currentColor — 부르는 쪽 글자색을 그대로 따른다(밝은 면·어두운 면 따로 적을 필요 없음).
- *     color 는 건드리지 않고 text-fill-color 만 투명으로 두므로 currentColor 가 살아 있다.
- *   ★ 줄이 바뀌면 줄마다 따로 번진다(box-decoration-break: clone).
- * ⚠️ 이 요소 안에 opacity·filter 로 움직이는 자식을 두지 말 것 — 움직이는 동안 그 글자가 배경 틀에서 빠져 안 보인다
- *    (그래서 첫 화면 한 글자씩 제목은 .ch-em 이 글자마다 색을 바꾼다).
- * ⚠️ 인쇄·고대비 모드는 배경을 안 그린다 → 맨 아래에서 글자를 강조색으로 바로 칠한다.
+ * ★★ 3차 (2026-09-29 오너: "강조색이 너무 안보이네 차라리 강조 형광펜으로 하든지" + "밑줄치는 그런거") ★★
+ *   1차 손그림 원·옅은 형광펜 → 2차 글자색 번짐(블루그레이) → "너무 안 보인다" → 지금: **형광펜으로 밑줄을 긋듯**
+ *   글자 아래쪽 40% 에 띠가 왼쪽에서 오른쪽으로 그어진다. 글자색은 그대로라 읽기는 원문 그대로다.
+ * ⚠️ 2차의 교훈 — 블루그레이 글자색은 차콜 옆에서 '다른 색' 으로 안 읽힌다(명도 차가 작다). 강조는 **면**으로 줄 것.
+ * ⚠️ 띠를 옅게 되돌리지 말 것 — 1차(taupe 40%)도 잘 안 보였다. 대신 띠 높이를 글자 아래 40% 로만 둬 글자를 덮지 않는다.
+ * ★ 줄이 바뀌면 줄마다 따로 그어진다(box-decoration-break: clone).
+ * ★ 표시 문법 [[ ]] · == · __ 는 전부 같은 형광펜 밑줄이다(components/motion).
  */
 :root {
-  --em-accent: var(--color-clay-600); /* 밝은 면 — 아이보리 위 5.9:1, 굵은 글(**) 강조와 같은 색 */
+  --mk: #cbd9e2; /* 밝은 면 — 사이트 기준색(블루그레이)을 옅게. 위 글자: 차콜 12:1 · 굵은 글(clay-700) 5.4:1 */
+  /* ⚠️ 0.42em·#d3dee5 는 본문(17px) 에서 띠가 7px 로 가늘어 안 보였다(실측) → 0.48em·한 단 짙게 */
+  --mk-h: 0.48em;
 }
 .on-dark {
-  /* 어두운 면 — 아이보리 글자(따뜻한 흰색) 옆에서 차갑게 갈리는 블루그레이. wine-deep 위 ≈7:1.
-     ⚠️ #c6d3db(더 옅게)는 실측에서 아이보리와 거의 구분이 안 됐다 — 색기를 조금 더 남긴다. */
-  --em-accent: #a9bfcd;
+  --mk: rgba(169, 191, 205, 0.36); /* 어두운 면 — 같은 블루그레이를 비친 띠. 위 아이보리 글자 4.8:1 (0.3 은 본문에서 안 보였다) */
 }
-.em-tone,
-.em-ink,
+.em-mark,
 .em-strong {
-  background-image: linear-gradient(90deg, var(--em-to, var(--em-accent)) 0 44%, currentColor 56% 100%);
-  background-size: 230% 100%;
-  background-position: 100% 0;
+  background-image: linear-gradient(var(--mk), var(--mk));
   background-repeat: no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background-position: 0 90%;
+  background-size: 0% var(--mk-h);
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  transition: background-position 1.7s var(--ease-draw) var(--ed, 0ms);
+  padding: 0 0.06em;
+  transition: background-size 1.15s var(--ease-draw) var(--ed, 0ms);
 }
-.em-tone.is-shown,
-.split-in.is-shown .em-tone,
-.em-line.is-shown .em-ink,
-.split-in.is-shown .em-ink,
+.em-mark.is-shown,
+.split-in.is-shown .em-mark,
 .em-strong.is-shown {
-  background-position: 0 0;
-}
-/* 가는 선 — 색이 거의 다 번졌을 때 왼쪽에서 오른쪽으로 1px 가 그어진다 */
-.em-line {
-  background-image: linear-gradient(var(--em-accent), var(--em-accent));
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 0% 1px;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  padding-bottom: 0.04em;
-  transition: background-size 1.3s var(--ease-draw) calc(var(--ed, 0ms) + 700ms);
-}
-.em-line.is-shown,
-.split-in.is-shown .em-line {
-  background-size: 100% 1px;
+  background-size: 100% var(--mk-h);
 }
 /*
- * 설명 속 굵은 글(** … **, components/ui Marked) — 사이트 전체.
- * ★ 원래 강조색은 클래스(text-clay-600 · 어두운 면 text-ember)가 정해 둔다. 그 색을 번질 색(--em-to)으로 쓰고,
- *   글자색 자체는 둘레 글에 맞춘다(color: inherit) — 굵기만 먼저 보이고, 보일 때 색이 번진다.
+ * 설명 속 굵은 글(** … **, components/ui Marked) — 보일 때 조금 뒤 그어진다.
+ * ★ 띠 위에서도 읽히게 글자를 한 단 짙게: 밝은 면 clay-600 → clay-700(5.4:1), 어두운 면 ember → 아이보리(4.8:1).
+ * ⚠️ 어두운 면 판정은 .on-dark 가 아니라 **글자 클래스(text-ember)** 로 한다 — 진료 머리말(사진 위)처럼
+ *    .on-dark 없이 어두운 자리도 Marked 는 tone="dark" 로 text-ember 를 준다. 밝은 띠가 깔리면 글자가 사라진다.
  */
 .em-strong {
-  color: inherit;
-  --em-to: var(--color-clay-600);
   transition-delay: 0.35s;
 }
+.em-strong.text-clay-600 {
+  color: var(--color-clay-700);
+}
 .em-strong.text-ember {
-  --em-to: var(--color-ember);
+  --mk: rgba(169, 191, 205, 0.36);
+  color: #efece5;
 }
 /* 첫 화면 — 관찰자 없이 페이지가 열리면 바로 */
-.em-now.em-tone {
+.em-now.em-mark {
   transition: none;
-  animation: tone 1.7s var(--ease-draw) var(--ed, 0ms) forwards;
+  animation: mark 1.15s var(--ease-draw) var(--ed, 0ms) forwards;
 }
-@keyframes tone {
+@keyframes mark {
   to {
-    background-position: 0 0;
-  }
-}
-@media print {
-  .em-tone,
-  .em-ink,
-  .em-strong {
-    background: none;
-    -webkit-text-fill-color: var(--em-to, var(--em-accent));
-  }
-}
-@media (forced-colors: active) {
-  .em-tone,
-  .em-ink,
-  .em-strong {
-    background: none;
-    -webkit-text-fill-color: currentColor;
+    background-size: 100% var(--mk-h);
   }
 }
 
@@ -225,17 +187,6 @@ html.mo-on .words .w.on {
     opacity: 1;
     top: 0;
     filter: none;
-  }
-}
-/* 강조 글자('한 번 더') — 다 선 뒤 한 글자씩 차례로 강조색이 된다(--td, components/motion Chars) */
-.hero-lt-h1 .ch-em {
-  animation:
-    ch 1.05s var(--ease-out-expo) var(--d, 0ms) forwards,
-    ch-tone 1.1s var(--ease-draw) var(--td, 0ms) forwards;
-}
-@keyframes ch-tone {
-  to {
-    color: var(--em-accent);
   }
 }
 /* 햇살이 천천히 숨 쉰다 */
@@ -830,7 +781,7 @@ html.mo-on .words .w.on {
   .hero-badge,
   .hero-badge svg,
   .leaf-sway,
-  .em-now.em-tone,
+  .em-now.em-mark,
   .hero-sub-photo,
   .hero-frame,
   .hero-frame img {
@@ -844,17 +795,9 @@ html.mo-on .words .w.on {
   .hero-badge {
     opacity: 1;
   }
-  .hero-lt-h1 .ch-em {
-    color: var(--em-accent);
-  }
-  .em-tone,
-  .em-ink,
+  .em-mark,
   .em-strong {
-    background-position: 0 0 !important;
-    transition: none !important;
-  }
-  .em-line {
-    background-size: 100% 1px !important;
+    background-size: 100% var(--mk-h) !important;
     transition: none !important;
   }
   .hero-sub-photo,

@@ -141,14 +141,14 @@ function Hero() {
             <br />
             your natural smile
           </p>
-          {/* 한 글자씩 흐림 속에서 떠오르고, 마지막 글자가 서면 '한 번 더' 가 한 글자씩 블루그레이로 물든다(components/motion Chars). */}
+          {/* 한 글자씩 흐림 속에서 떠오르고, 마지막 글자가 서면 '한 번 더' 에 형광펜 밑줄이 그어진다(components/motion Chars). */}
           <h1 className="serif-head hero-lt-h1">
             <Chars lines={['뽑기 전에,', '[[한 번 더]] 살펴봅니다.']} start={220} />
           </h1>
           <p className="enter hero-lt-lead" style={{ animationDelay: '760ms' }}>
             자연치아를 오래 사용할 수 있도록
             <br />{' '}
-            <span className="em em-tone em-now" style={{ ['--ed' as string]: '1650ms' }}>
+            <span className="em em-mark em-now" style={{ ['--ed' as string]: '1650ms' }}>
               필요한 치료부터
             </span>{' '}
             함께 판단합니다.
@@ -242,7 +242,7 @@ function PrinciplesSection() {
           {/* 한 문장과 다음 페이지로 가는 줄 — 좁은 화면에서는 목록 아래, 넓은 화면에서는 제목 아래. */}
           {/* ⚠️ lg:self-end 를 되살리지 말 것 — 문장이 바닥으로 내려가 왼쪽 열 가운데가 170px 비었다(2026-09-28 전문가 검토). */}
           <div className="reveal lg:col-start-1">
-            {/* 네 물음을 묶는 말 — '네 가지를 먼저 묻고' 가 굵게 + 보일 때 색이 번진다(.em-strong, components/ui Marked). 문구는 lib 원문 그대로. */}
+            {/* 네 물음을 묶는 말 — '네 가지를 먼저 묻고' 가 굵게 + 보일 때 형광펜 밑줄(.em-strong, components/ui Marked). 문구는 lib 원문 그대로. */}
             <p className="max-w-[26em] text-[17px] leading-[1.9] text-charcoal/85">
               <Sentences text={PRINCIPLE_STATEMENT.replace('네 가지를 먼저 묻고', '**네 가지를 먼저 묻고**')} />
             </p>
