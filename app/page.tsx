@@ -29,6 +29,8 @@ import { SpecialSlider } from '@/components/SpecialSlider';
 import { CopyButton } from '@/components/CopyButton';
 import { ClinicMap } from '@/components/ClinicMap';
 import { Reveal } from '@/components/Reveal';
+import { Chars, Em, SplitLines } from '@/components/motion';
+import { HomeMotion } from '@/components/HomeMotion';
 import { JsonLd } from '@/components/JsonLd';
 import { medicalWebPageSchema, imageObjectSchema } from '@/lib/seo';
 import { imageMeta } from '@/lib/imageSize';
@@ -90,8 +92,10 @@ export default async function HomePage() {
           heroImage ? imageObjectSchema({ path: '/', ...heroImage }) : null,
         ]}
       />
+      <HomeMotion />
       <Hero />
       <PrinciplesSection />
+      <KineticBand />
       <ClinicSection />
       <PreserveBand />
       <DoctorsSection />
@@ -118,12 +122,19 @@ export default async function HomePage() {
  */
 function Hero() {
   return (
-    <section className="hero-lt">
+    <section className="hero-lt" data-hero>
+      {/* 2026-09-29 모션: 사진이 동그랗게 열리고(.hero-lt-photo) 제자리로 가라앉는다(.hero-pan). 내리면 느리게 커진다(--hp, HomeMotion). */}
       <div className="hero-lt-photo">
-        <Image src={HERO_WARM_SRC} alt={HERO_PHOTO.alt} fill priority sizes="(max-width: 1023px) 100vw, 72vw" className="hero-lt-img" />
+        <div className="hero-pan">
+          <Image src={HERO_WARM_SRC} alt={HERO_PHOTO.alt} fill priority sizes="(max-width: 1023px) 100vw, 72vw" className="hero-lt-img" />
+        </div>
       </div>
       <div aria-hidden className="hero-lt-fade" />
       <div aria-hidden className="hero-lt-sun" />
+      <div aria-hidden className="hero-orbs">
+        <i />
+        <i />
+      </div>
 
       <Container className="hero-lt-in">
         <div className="hero-lt-copy">
@@ -132,16 +143,19 @@ function Hero() {
             <br />
             your natural smile
           </p>
-          <h1 className="enter serif-head hero-lt-h1" style={{ animationDelay: '60ms' }}>
-            뽑기 전에,
-            <br />
-            한 번 더 살펴봅니다.
+          {/* 한 글자씩 흐림 속에서 떠오르고, 마지막 글자가 서면 '한 번 더' 를 손으로 그린 동그라미가 두른다(components/motion Chars). */}
+          <h1 className="serif-head hero-lt-h1">
+            <Chars lines={['뽑기 전에,', '[[한 번 더]] 살펴봅니다.']} start={220} />
           </h1>
-          <p className="enter hero-lt-lead" style={{ animationDelay: '140ms' }}>
+          <p className="enter hero-lt-lead" style={{ animationDelay: '760ms' }}>
             자연치아를 오래 사용할 수 있도록
-            <br /> 필요한 치료부터 함께 판단합니다.
+            <br />{' '}
+            <span className="em em-mark em-now" style={{ ['--ed' as string]: '1650ms' }}>
+              필요한 치료부터
+            </span>{' '}
+            함께 판단합니다.
           </p>
-          <div className="enter hero-lt-cta" style={{ animationDelay: '220ms' }}>
+          <div className="enter hero-lt-cta" data-magnet style={{ animationDelay: '900ms' }}>
             <FillBtn href="/treatment" className="hero-lt-fill">
               진료 알아보기
             </FillBtn>
@@ -149,7 +163,7 @@ function Hero() {
               예약하기
             </LineBtn>
           </div>
-          <p className="enter hero-lt-loc" style={{ animationDelay: '300ms' }}>
+          <p className="enter hero-lt-loc" style={{ animationDelay: '1000ms' }}>
             {CLINIC.address.locality} {CLINIC.address.dong} · {CLINIC.nearestStation} 인근 ·{' '}
             <a href={CLINIC.phoneHref} className="tabular-nums">
               {CLINIC.phone}
@@ -158,7 +172,7 @@ function Hero() {
         </div>
 
         {/* 목업의 바닥 줄 — 왼쪽 SCROLL 과 세로선, 오른쪽 사진 위 반투명 판의 영문 세 줄 */}
-        <div className="enter hero-lt-foot" style={{ animationDelay: '420ms' }}>
+        <div className="enter hero-lt-foot" style={{ animationDelay: '1150ms' }}>
           <p className="scroll-cue kicker hero-lt-scroll">Scroll</p>
           <p className="kicker hero-lt-note">
             Better choices
@@ -166,6 +180,26 @@ function Hero() {
           </p>
         </div>
       </Container>
+
+      {/* 도는 글자 원 — 누르면 다음 구획으로. 1280px 이상에서만(좁으면 버튼과 겹친다). 문구는 첫 화면 영문 그대로. */}
+      <a href="#philosophy" className="hero-badge" aria-label="진료 철학으로 내려가기">
+        <svg viewBox="0 0 128 128" aria-hidden focusable="false">
+          <defs>
+            <path id="hero-badge-path" d="M64 64m-50 0a50 50 0 1 1 100 0a50 50 0 1 1-100 0" />
+          </defs>
+          <text>
+            {/* 둘레(2π×50≈314)에 꼭 맞게 글자 사이를 늘린다 — 안 맞추면 끝과 시작이 겹친다(실측) */}
+            <textPath href="#hero-badge-path" textLength={310} lengthAdjust="spacing">
+              PRESERVE YOUR NATURAL SMILE · CIRCLE DENTAL ·
+            </textPath>
+          </text>
+        </svg>
+        <span className="hero-badge-dot">
+          <svg viewBox="0 0 14 20" fill="none" aria-hidden focusable="false">
+            <path d="M7 1v17M1.5 12.5 7 18l5.5-5.5" stroke="currentColor" strokeWidth="1.3" />
+          </svg>
+        </span>
+      </a>
     </section>
   );
 }
@@ -173,33 +207,33 @@ function Hero() {
 /* ─────────────────────────── 2. 가장 먼저 생각하는 것 ─────────────────────────── */
 function PrinciplesSection() {
   return (
-    <section className="section-y-home">
+    <section id="philosophy" className="section-y-home">
       <Container>
         <div className="grid gap-x-20 gap-y-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_1fr]">
           {/* 제목 — 오른쪽 위에 옅은 잎 장식(목업). 장식이라 색을 아주 옅게, 글을 가리지 않게. */}
           <div className="reveal relative lg:col-start-1">
             <LeafDeco />
             <p className="eyebrow-chip text-ash">진료 철학</p>
-            <h2 className="serif-head mt-4 text-[clamp(28px,4vw,44px)] text-charcoal">
-              동그라미가
-              <br />
-              가장 먼저 생각하는 것
+            <h2 className="serif-head split-in mt-4 text-[clamp(28px,4vw,44px)] text-charcoal">
+              <SplitLines lines={['동그라미가', '==가장 먼저== 생각하는 것']} />
             </h2>
           </div>
 
           {/* 01~04 — 원 안 선 아이콘, 작은 번호, 한 줄 제목. 좁은 화면에서는 제목 바로 아래. */}
-          <ol className="reveal-stack divide-y divide-wine-line border-b border-wine-line lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:border-t">
+          {/* 2026-09-29 모션: 줄이 오른쪽에서 차례로 들어오고, 원이 한 바퀴 그려진 뒤 아이콘이 돌며 들어서고, 줄 아래로 선이 스친다(.rows-in). */}
+          <ol className="rows-in divide-y divide-wine-line border-b border-wine-line lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:border-t">
             {PRINCIPLES.map((p, i) => {
               const Icon = PRINCIPLE_ICONS[i] ?? PRINCIPLE_ICONS[0];
               return (
-                <li key={p.n} className="flex items-center gap-5 py-6 first:pt-0 lg:py-7 lg:first:pt-7">
+                <li key={p.n} className="flex items-center gap-5 py-6 first:pt-0 lg:py-7 lg:first:pt-7" style={{ ['--i' as string]: i }}>
                   <span className="icon-ring">
+                    <RingSvg />
                     <Icon />
                   </span>
                   <span className="min-w-0">
                     <span className="kicker block text-[11px]">{p.n}</span>
                     <span className="mt-1 block text-[17.5px] leading-[1.5] text-charcoal sm:text-[19px]">
-                      {p.title}
+                      <KeyWord text={p.title} word={PRINCIPLE_KEYS[i]} />
                     </span>
                   </span>
                 </li>
@@ -210,8 +244,9 @@ function PrinciplesSection() {
           {/* 한 문장과 다음 페이지로 가는 줄 — 좁은 화면에서는 목록 아래, 넓은 화면에서는 제목 아래. */}
           {/* ⚠️ lg:self-end 를 되살리지 말 것 — 문장이 바닥으로 내려가 왼쪽 열 가운데가 170px 비었다(2026-09-28 전문가 검토). */}
           <div className="reveal lg:col-start-1">
-            <p className="max-w-[26em] text-[17px] leading-[1.9] text-charcoal/85">
-              <Sentences text={PRINCIPLE_STATEMENT} />
+            {/* 네 물음을 묶는 말 — '네 가지를 먼저 묻고' 에 형광펜(보일 때 칠해진다, .em-scope strong). 문구는 lib 원문 그대로. */}
+            <p className="em-scope max-w-[26em] text-[17px] leading-[1.9] text-charcoal/85">
+              <Sentences text={PRINCIPLE_STATEMENT.replace('네 가지를 먼저 묻고', '**네 가지를 먼저 묻고**')} />
             </p>
             <div className="mt-7">
               <QuietLink href="/about">동그라미의 진료 철학</QuietLink>
@@ -223,6 +258,23 @@ function PrinciplesSection() {
   );
 }
 
+/*
+ * 네 물음의 열쇠말 — 굵게 + 블루그레이(2026-09-29 오너 "문구 강조도"). 문구는 lib/homeContent 원문 그대로, 모양만 얹는다.
+ * ⚠️ 원문에 그 낱말이 없으면(문구가 바뀌면) 조용히 강조 없이 그린다.
+ */
+const PRINCIPLE_KEYS = ['정말', '살릴 방법', '지금 꼭', '충분히 이해'] as const;
+function KeyWord({ text, word }: { text: string; word?: string }) {
+  const at = word ? text.indexOf(word) : -1;
+  if (!word || at < 0) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, at)}
+      <strong className="font-semibold text-clay-700">{word}</strong>
+      {text.slice(at + word.length)}
+    </>
+  );
+}
+
 /** 잎 장식 — 목업 두 번째 화면의 옅은 가지. 단색 면, 아주 옅게. 뜻이 없으므로 aria-hidden. */
 function LeafDeco() {
   return (
@@ -230,7 +282,7 @@ function LeafDeco() {
       aria-hidden
       focusable="false"
       viewBox="0 0 120 170"
-      className="pointer-events-none absolute -top-14 right-0 h-[170px] w-[120px] text-brand-400 opacity-[0.16] lg:-top-16 lg:right-6"
+      className="leaf-sway pointer-events-none absolute -top-14 right-0 h-[170px] w-[120px] text-brand-400 opacity-[0.16] lg:-top-16 lg:right-6"
     >
       <path d="M52 166C56 122 66 80 100 24" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" />
       <path d="M72 96c-3-20 9-36 30-38-1 20-12 35-30 38Z" fill="currentColor" />
@@ -260,7 +312,7 @@ function ClinicSection() {
       <Container>
         <HomeHead
           label="진료"
-          title="주요 진료 과목"
+          split={['주요 진료 과목']}
           asideInline
           aside={<QuietLink href="/treatment">전체 보기</QuietLink>}
         />
@@ -273,26 +325,31 @@ function ClinicSection() {
 /* ─────────────────────────── 4. 자연치아 보존 띠 ─────────────────────────── */
 function PreserveBand() {
   return (
-    <section className="relative isolate overflow-hidden bg-wine-deep text-parchment">
-      <Image
-        src={PRESERVE_PHOTO.src}
-        alt=""
-        aria-hidden
-        fill
-        sizes="100vw"
-        className="-z-20 object-cover object-[70%_60%] lg:object-[80%_50%]"
-      />
+    <section className="on-dark relative isolate overflow-hidden bg-wine-deep text-parchment">
+      {/* 2026-09-29 모션: 사진은 틀보다 위아래 12% 크게 두고 스크롤 반대로 민다(시차, data-par). 뒤로 번지는 동그라미 셋(--p). */}
+      <div aria-hidden className="par-img -z-20" data-par="0.1">
+        <Image
+          src={PRESERVE_PHOTO.src}
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover object-[70%_60%] lg:object-[80%_50%]"
+        />
+      </div>
       <div aria-hidden className="tint-bluegray absolute inset-0 -z-10" />
+      <div aria-hidden className="pv-rings" data-scrub>
+        <i />
+        <i />
+        <i />
+      </div>
       <Container className="py-28 pb-[60vw] sm:pb-[44vw] lg:py-40">
         <div className="reveal max-w-[34em]">
           {/* 영문 'NATURAL TOGETHER FOR A LONGER SMILE' 은 뺐다(2026-09-28) — 영어 문장이 되지 않고 첫 화면 영문과 같은 뜻이었다. */}
-          <h2 className="serif-head text-[clamp(30px,4.4vw,50px)] text-parchment">
-            자연치아 보존,
-            <br />
-            가능할 때가 가장 좋습니다.
+          <h2 className="serif-head split-in text-[clamp(30px,4.4vw,50px)] text-parchment">
+            <SplitLines lines={['자연치아 보존,', '가능할 때가 __가장 좋습니다.__']} />
           </h2>
           <p className="mt-7 max-w-[28em] text-[17.5px] leading-[1.9] text-parchment/85">
-            살릴 수 있는 치아인지 확인하고,
+            <Em text="==살릴 수 있는 치아인지== 확인하고," delay={300} />
             <br className="hidden sm:block" /> 가능한 방법을 함께 찾아갑니다.
           </p>
           <div className="mt-9">
@@ -329,8 +386,8 @@ function DoctorsSection() {
         */}
         <CenterHead
           label="의료진"
-          title="동그라미치과의 의료진을 소개합니다"
-          desc="세 원장 모두 보건복지부인증 통합치의학과 전문의이며, 대표원장은 경희대학교 치의학전문대학원 외래교수입니다."
+          split={['동그라미치과의 의료진을 소개합니다']}
+          desc="세 원장 모두 **보건복지부인증 통합치의학과 전문의**이며, 대표원장은 경희대학교 치의학전문대학원 외래교수입니다."
         />
         <DoctorPanels doctors={doctors} />
       </Container>
@@ -429,7 +486,7 @@ function SpecialSection() {
   return (
     <section className="sp-sec section-y-home overflow-x-clip">
       <Container>
-        <CenterHead label="특별함" title="동그라미치과의 특별함" />
+        <CenterHead label="특별함" split={['동그라미치과의 ==특별함==']} />
         <SpecialSlider cards={cards} />
       </Container>
     </section>
@@ -448,25 +505,34 @@ function TourSection() {
       <Container>
         <HomeHead
           label="공간"
-          title="동그라미치과 둘러보기"
+          split={['동그라미치과 둘러보기']}
           desc="접수·대기 공간과 진료실을 미리 둘러보세요."
           asideInline
           aside={<QuietLink href="/about/tour">둘러보기</QuietLink>}
         />
-        <div className="reveal mt-12 grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-          <div className="img-in relative aspect-[4/3] overflow-hidden rounded-[8px] bg-wine-soft lg:aspect-auto">
-            <Image
-              src={TOUR_PHOTOS.main.src}
-              alt={TOUR_PHOTOS.main.alt}
-              fill
-              sizes="(max-width: 1024px) 100vw, 60vw"
-              className="object-cover"
-            />
+        {/* 2026-09-29 모션: 사진마다 아래에서 막이 걷히며(.clip-in) 가라앉고, 스크롤에 따라 틀 안에서 천천히 흐른다(data-par). */}
+        <div className="mt-12 grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+          <div className="tour-shot clip-in relative aspect-[4/3] overflow-hidden rounded-[8px] bg-wine-soft lg:aspect-auto">
+            <div className="par-img" data-par="0.1">
+              <Image
+                src={TOUR_PHOTOS.main.src}
+                alt={TOUR_PHOTOS.main.alt}
+                fill
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                className="object-cover"
+              />
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
-            {TOUR_PHOTOS.sub.map((s) => (
-              <div key={s.src} className="img-in relative aspect-[4/3] overflow-hidden rounded-[8px] bg-wine-soft lg:aspect-[16/10]">
-                <Image src={s.src} alt={s.alt} fill sizes="(max-width: 1024px) 50vw, 40vw" className="object-cover" />
+            {TOUR_PHOTOS.sub.map((s, i) => (
+              <div
+                key={s.src}
+                className="tour-shot clip-in relative aspect-[4/3] overflow-hidden rounded-[8px] bg-wine-soft lg:aspect-[16/10]"
+                style={{ ['--i' as string]: i + 1 }}
+              >
+                <div className="par-img" data-par="0.1">
+                  <Image src={s.src} alt={s.alt} fill sizes="(max-width: 1024px) 50vw, 40vw" className="object-cover" />
+                </div>
               </div>
             ))}
           </div>
@@ -497,13 +563,7 @@ function StorySection({ posts }: { posts: BlogPost[] }) {
       <Container>
         <HomeHead
           label="인사이트"
-          title={
-            <>
-              더 건강한 미소를 위한
-              <br />
-              동그라미의 이야기
-            </>
-          }
+          split={['더 건강한 미소를 위한', '==동그라미의 이야기==']}
           desc="진료실에서 다 담기 어려운 이야기를 글로 적습니다."
           aside={<QuietLink href="/insight/blog">블로그 전체 보기</QuietLink>}
         />
@@ -585,16 +645,17 @@ function VisitSection() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
           <div>
-            <HomeHead label="내원 안내" title="오시는 길" />
+            <HomeHead label="내원 안내" split={['오시는 길']} />
 
             {/*
               원 안 아이콘 세 줄(목업) — 주소 · 진료시간 · 전화. 주차는 /visit 에 있다.
               ⚠️ 라벨 글자 대신 아이콘이 뜻을 지므로 sr-only 로 이름을 남긴다.
             */}
             <Reveal delay={60}>
-              <ul className="mt-10 space-y-8">
-                <li className="flex items-start gap-5">
+              <ul className="rows-in mt-10 space-y-8">
+                <li className="flex items-start gap-5" style={{ ['--i' as string]: 0 }}>
                   <span className="icon-ring">
+                    <RingSvg />
                     <PinIcon />
                   </span>
                   <div className="min-w-0 pt-1.5 text-[16.5px] leading-[1.75] text-charcoal">
@@ -610,8 +671,9 @@ function VisitSection() {
                 </li>
 
                 {hours.verified && (
-                  <li className="flex items-start gap-5">
+                  <li className="flex items-start gap-5" style={{ ['--i' as string]: 1 }}>
                     <span className="icon-ring">
+                      <RingSvg />
                       <ClockIcon />
                     </span>
                     <div className="min-w-0 flex-1 pt-1.5 text-[16.5px] leading-[1.75] text-charcoal">
@@ -630,8 +692,9 @@ function VisitSection() {
                   </li>
                 )}
 
-                <li className="flex items-center gap-5">
+                <li className="flex items-center gap-5" style={{ ['--i' as string]: 2 }}>
                   <span className="icon-ring">
+                    <RingSvg />
                     <PhoneIcon />
                   </span>
                   <div>
@@ -666,7 +729,8 @@ function VisitSection() {
           </div>
 
           <Reveal delay={80}>
-            <div className="overflow-hidden rounded-[8px] lg:h-full [&>div>div]:rounded-[8px] [&>div>div]:border-wine-line [&>div>div]:shadow-none">
+            {/* 지도는 가운데에서 동그랗게 번지며 열린다(.clip-circle) */}
+            <div className="clip-in clip-circle overflow-hidden rounded-[8px] lg:h-full [&>div>div]:rounded-[8px] [&>div>div]:border-wine-line [&>div>div]:shadow-none">
               <ClinicMap height={520} variant="compact" />
             </div>
             <div className="mt-4">
@@ -676,6 +740,31 @@ function VisitSection() {
         </div>
       </Container>
     </section>
+  );
+}
+
+/** 원 안 아이콘의 테두리 — .rows-in 안에서 한 바퀴 그려진다(app/motion.css .ring-svg). */
+function RingSvg() {
+  return (
+    <svg className="ring-svg" viewBox="0 0 50 50" aria-hidden focusable="false">
+      <circle cx="25" cy="25" r="24.5" pathLength={1} />
+    </svg>
+  );
+}
+
+/*
+ * 흐르는 큰 글자 — 진료 철학과 주요 진료 사이 (2026-09-29 오너: "모션그래픽 엄청").
+ *   스크롤한 만큼 두 줄이 서로 반대로 흐른다(--p, HomeMotion). 속이 빈 큰 글자 한 줄 + 옅게 채운 작은 글자 한 줄.
+ * ★ 문구는 첫 화면의 영문 두 줄 그대로(새 문장 없음). 장식이라 보조기기에는 숨긴다.
+ */
+function KineticBand() {
+  const a = 'Preserve your natural smile';
+  const b = 'Better choices ~ a healthier tomorrow';
+  return (
+    <div aria-hidden className="kin" data-scrub>
+      <p className="kin-row kin-a">{[a, a, a].join('  ·  ')}</p>
+      <p className="kin-row kin-b">{[b, b, b, b].join('  ·  ')}</p>
+    </div>
   );
 }
 

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Sentences } from '@/components/ui';
+import { SplitLines } from '@/components/motion';
 import type { ReactNode } from 'react';
 
 /*
@@ -16,6 +17,7 @@ import type { ReactNode } from 'react';
 export function HomeHead({
   label,
   title,
+  split,
   desc,
   aside,
   tone = 'light',
@@ -24,7 +26,9 @@ export function HomeHead({
   className = '',
 }: {
   label?: string;
-  title: ReactNode;
+  title?: ReactNode;
+  /** 줄마다 가림막에서 올라오는 제목(2026-09-29). 강조 표시 ==…== · __…__ 를 쓸 수 있다(components/motion). title 대신 쓴다. */
+  split?: readonly string[];
   desc?: ReactNode;
   aside?: ReactNode;
   tone?: 'light' | 'dark';
@@ -46,13 +50,13 @@ export function HomeHead({
         <h2
           className={`serif-head mt-4 text-[clamp(28px,4vw,44px)] ${
             dark ? 'text-parchment' : 'text-charcoal'
-          }`}
+          }${split ? ' split-in' : ''}`}
         >
-          {title}
+          {split ? <SplitLines lines={split} /> : title}
         </h2>
         {desc ? (
           <p
-            className={`mt-5 max-w-[42em] text-[17px] leading-[1.9] ${
+            className={`em-scope mt-5 max-w-[42em] text-[17px] leading-[1.9] ${dark ? 'on-dark ' : ''}${
               dark ? 'text-mist/80' : 'text-ash'
             }`}
           >
@@ -70,13 +74,25 @@ export function HomeHead({
  * 의료진·특별함처럼 더뉴에서 옮긴 구획만 쓴다.
  * ★ 머리표는 한글(2026-09-28 전문가 검토) — 다른 구획 다섯 곳이 한글 머리표(진료·공간·인사이트…)인데 여기 둘만 영문이라 체계가 섞였다.
  */
-export function CenterHead({ label, title, desc }: { label: string; title: ReactNode; desc?: string }) {
+export function CenterHead({
+  label,
+  title,
+  split,
+  desc,
+}: {
+  label: string;
+  title?: ReactNode;
+  /** 줄 가림막 제목(HomeHead 와 같다). */
+  split?: readonly string[];
+  /** ** 로 감싼 곳은 굵게 + 형광펜(보일 때 칠해진다). */
+  desc?: string;
+}) {
   return (
     <div className="c-head reveal">
       <p className="c-label">{label}</p>
-      <h2 className="serif-head">{title}</h2>
+      <h2 className={`serif-head${split ? ' split-in' : ''}`}>{split ? <SplitLines lines={split} /> : title}</h2>
       {desc ? (
-        <p>
+        <p className="em-scope">
           <Sentences text={desc} />
         </p>
       ) : null}

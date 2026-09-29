@@ -28,7 +28,7 @@ export interface ClinicCard {
 export function ClinicAccordion({ cards }: { cards: ClinicCard[] }) {
   const [on, setOn] = useState(0);
   return (
-    <ul className="cl-acc reveal" data-lenis-prevent-horizontal>
+    <ul className="cl-acc late-in" data-lenis-prevent-horizontal>
       {cards.map((c, i) => (
         <li
           key={c.key}

@@ -84,7 +84,7 @@ export function SpecialSlider({ cards }: { cards: SpecialCard[] }) {
 
   return (
     <div
-      className="sp-wrap"
+      className="sp-wrap late-in"
       onMouseEnter={() => (hold.current = true)}
       onMouseLeave={() => (hold.current = false)}
       onFocus={() => (hold.current = true)}

@@ -39,12 +39,39 @@ export function RevealScript() {
     const targets = document.querySelectorAll<HTMLElement>(
       '.reveal, .reveal-stack, .step-in, .concern, .wipe, .seq, .img-in, .line-in, .count-in, .line-rise, .depth-fill, .bar-grow, .focus-in, .card-draw, .plaque-in',
     );
+    /*
+     * ★★ 늦은 관찰자 — '보는 동안' 움직여야 하는 것 (2026-09-29 오너: "모션그래픽 엄청 + 문구 강조") ★★
+     *   아래 첫 관찰자는 화면 아래 18% 앞에서 미리 켠다(오너 "바로바로 나오게"). 등장에는 맞지만,
+     *   줄 가림막·동그라미·형광펜처럼 **그려지는 과정이 곧 볼거리**인 것은 눈에 들어오기 전에 끝나 버린다.
+     *   그래서 이것들만 화면 안으로 12% 들어왔을 때 켠다. 관찰자는 두 개로 끝 — 요소마다 만들지 않는다.
+     *   .split-in 제목 줄 가림막 · .em 문구 강조 · .em-scope 안의 굵은 글(**) 형광펜 · .draw-in 선 그리기
+     *   .clip-in 사진 가림막 · .rows-in 목록 줄 · .late-in 그 밖(app/motion.css)
+     */
+    /* ⚠️ 제목(.split-in) 안의 강조는 따로 보지 않는다 — 줄 가림막 속에 숨어 있어 관찰자가 '안 보임' 으로 판정하고,
+          빨리 지나가면 영영 안 켜졌다(2026-09-29 실측). 제목이 켜지면 CSS(.split-in.is-shown .em-…)가 함께 그린다. */
+    const late = [
+      ...document.querySelectorAll<HTMLElement>('.split-in, .em-scope, .draw-in, .clip-in, .rows-in, .late-in'),
+      ...[...document.querySelectorAll<HTMLElement>('.em:not(.em-now)')].filter((el) => !el.closest('.split-in')),
+    ];
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reduce) {
       targets.forEach((el) => el.classList.add('is-shown'));
+      late.forEach((el) => el.classList.add('is-shown'));
       return;
     }
+
+    const lateIo = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add('is-shown');
+          lateIo.unobserve(e.target);
+        }
+      },
+      { rootMargin: '0px 0px -12% 0px' },
+    );
+    late.forEach((el) => lateIo.observe(el));
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -102,7 +129,7 @@ export function RevealScript() {
      *    등장 연출 없이 그냥 나타난다. 관찰자가 할 일을 다 한 뒤에 남은 것만 줍는다.
      */
     const rescue = window.setTimeout(() => {
-      targets.forEach((el) => {
+      [...targets, ...late].forEach((el) => {
         if (el.classList.contains('is-shown')) return;
         if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-shown');
       });
@@ -129,6 +156,7 @@ export function RevealScript() {
 
     return () => {
       io.disconnect();
+      lateIo.disconnect();
       window.clearTimeout(rescue);
       if (hasCards) document.removeEventListener('pointermove', onMove);
     };

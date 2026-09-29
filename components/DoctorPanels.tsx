@@ -39,7 +39,7 @@ export function DoctorPanels({ doctors }: { doctors: DoctorPanel[] }) {
         return (
           <article
             key={d.slug}
-            className={`dp-card reveal${i % 2 ? ' dp-flip' : ''}`}
+            className={`dp-card late-in${i % 2 ? ' dp-flip' : ''}`}
             data-doc={d.slug}
             style={{ ['--dp-bg' as string]: PHOTO_BG[d.slug] ?? '#cfd2d9' }}
             aria-labelledby={`dp-${d.slug}`}

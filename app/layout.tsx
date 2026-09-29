@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 /* 더뉴치과 메인의 짜임·움직임을 옮긴 홈 구획 셋 + 관성 스크롤 (2026-09-28). 되돌리려면 이 줄과 <SmoothScroll /> 를 지운다. */
 import './thenew.css';
+/* 홈 모션그래픽·문구 강조(2026-09-29) — 줄 가림막·동그라미·형광펜·시차. 되돌리려면 이 줄과 app/page.tsx 의 <HomeMotion /> 를 지운다. */
+import './motion.css';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { QuickMenu } from '@/components/QuickMenu';
@@ -111,7 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                  자바스크립트를 끈 사람에게 그 글이 통째로 안 보인다.
                  (.wipe / .seq / .reveal-stack 이 실제로 빠져 있었다) */
               __html:
-                '.reveal,.concern,.wipe,.seq,.reveal-stack>*{opacity:1!important;transform:none!important;clip-path:none!important}',
+                '.reveal,.concern,.wipe,.seq,.reveal-stack>*,.ln-in,.rows-in>*,.clip-in,.clip-in *,.late-in,.late-in *{opacity:1!important;transform:none!important;clip-path:none!important}',
             }}
           />
         </noscript>
