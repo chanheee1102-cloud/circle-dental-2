@@ -42,15 +42,15 @@ export function RevealScript() {
     /*
      * ★★ 늦은 관찰자 — '보는 동안' 움직여야 하는 것 (2026-09-29 오너: "모션그래픽 엄청 + 문구 강조") ★★
      *   아래 첫 관찰자는 화면 아래 18% 앞에서 미리 켠다(오너 "바로바로 나오게"). 등장에는 맞지만,
-     *   줄 가림막·동그라미·형광펜처럼 **그려지는 과정이 곧 볼거리**인 것은 눈에 들어오기 전에 끝나 버린다.
+     *   줄 가림막·색 번짐처럼 **그려지는 과정이 곧 볼거리**인 것은 눈에 들어오기 전에 끝나 버린다.
      *   그래서 이것들만 화면 안으로 12% 들어왔을 때 켠다. 관찰자는 두 개로 끝 — 요소마다 만들지 않는다.
-     *   .split-in 제목 줄 가림막 · .em 문구 강조 · .em-scope 안의 굵은 글(**) 형광펜 · .draw-in 선 그리기
+     *   .split-in 제목 줄 가림막 · .em 문구 강조(색 번짐) · .em-strong 설명 속 굵은 글(**) 색 번짐 — 사이트 전체 · .draw-in 선 그리기
      *   .clip-in 사진 가림막 · .rows-in 목록 줄 · .late-in 그 밖(app/motion.css)
      */
     /* ⚠️ 제목(.split-in) 안의 강조는 따로 보지 않는다 — 줄 가림막 속에 숨어 있어 관찰자가 '안 보임' 으로 판정하고,
           빨리 지나가면 영영 안 켜졌다(2026-09-29 실측). 제목이 켜지면 CSS(.split-in.is-shown .em-…)가 함께 그린다. */
     const late = [
-      ...document.querySelectorAll<HTMLElement>('.split-in, .em-scope, .draw-in, .clip-in, .rows-in, .late-in'),
+      ...document.querySelectorAll<HTMLElement>('.split-in, .em-strong, .draw-in, .clip-in, .rows-in, .late-in'),
       ...[...document.querySelectorAll<HTMLElement>('.em:not(.em-now)')].filter((el) => !el.closest('.split-in')),
     ];
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -135,30 +135,10 @@ export function RevealScript() {
       });
     }, 800);
 
-    /*
-     * 고민 카드의 스포트라이트 — 커서 자리에서 빛이 번진다.
-     *
-     * ★ 카드마다 핸들러를 달지 않고 문서 하나에 위임한다. 카드가 여섯 장이든 스무 장이든
-     *   리스너는 하나다.
-     * ★ 카드가 없는 페이지에서는 **아예 걸지 않는다** — 대부분의 페이지가 여기 해당한다.
-     * ⚠️ 좌표는 state 가 아니라 CSS 변수로 바로 쓴다. 리렌더가 끼면 마우스를 움직이는
-     *    내내 프레임이 떨어진다.
-     */
-    const hasCards = document.querySelector('.concern-card');
-    const onMove = (e: PointerEvent) => {
-      const card = (e.target as Element | null)?.closest?.('.concern-card') as HTMLElement | null;
-      if (!card) return;
-      const r = card.getBoundingClientRect();
-      card.style.setProperty('--mx', `${e.clientX - r.left}px`);
-      card.style.setProperty('--my', `${e.clientY - r.top}px`);
-    };
-    if (hasCards) document.addEventListener('pointermove', onMove, { passive: true });
-
     return () => {
       io.disconnect();
       lateIo.disconnect();
       window.clearTimeout(rescue);
-      if (hasCards) document.removeEventListener('pointermove', onMove);
     };
   }, [pathname]);
 

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { CLINIC } from '@/lib/clinic';
 import { IMG } from '@/lib/assets';
-import { Container, Breadcrumb, Sentences, bindKo } from '@/components/ui';
+import { Container, Breadcrumb, Sentences, MaskWords } from '@/components/ui';
 import { headingId } from '@/components/article';
 
 /**
@@ -57,18 +57,21 @@ export function AboutHero({
   const brow = eyebrow ?? `${CLINIC.address.locality} ${CLINIC.address.dong} · ${CLINIC.name}`;
   return (
     /* ⚠️ 음수 margin + 같은 값의 padding — 띠가 헤더 뒤까지 올라간다. TreatmentHero 와 같은 수치. */
-    <section className="relative isolate -mt-[68px] overflow-hidden bg-night pt-[112px] pb-16 sm:-mt-[94px] sm:pt-[154px] sm:pb-24 lg:pb-32">
+    <section data-hero className="relative isolate -mt-[68px] overflow-hidden bg-night pt-[112px] pb-16 sm:-mt-[94px] sm:pt-[154px] sm:pb-24 lg:pb-32">
       {/* ⚠️ alt 를 채우지 말 것 — 장식 사진이다. 뜻은 제목이 전부 진다. */}
-      <Image
-        src={PHOTOS[photo].src}
-        alt=""
-        aria-hidden
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-        style={{ objectPosition: position }}
-      />
+      {/* 2026-09-29 모션: TreatmentHero 와 같다 — 사진이 스며 나오며 가라앉고, 내리면 느리게 내려간다(.hero-sub-photo). */}
+      <div aria-hidden className="hero-sub-photo">
+        <Image
+          src={PHOTOS[photo].src}
+          alt=""
+          aria-hidden
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+          style={{ objectPosition: position }}
+        />
+      </div>
 
       {/* 두 겹 덮개 — 방사형(가운데를 살림) + 선형(위아래를 눌러 줌). TreatmentHero 와 같은 값. */}
       <div
@@ -90,7 +93,7 @@ export function AboutHero({
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(56%_42%_at_50%_-6%,rgba(185,196,202,0.14)_0%,transparent_66%)]"
       />
 
-      <Container className="relative text-center">
+      <Container className="hero-sub-copy relative text-center">
         <div className="mb-10 flex justify-center">
           <Breadcrumb trail={trail} tone="dark" />
         </div>
@@ -101,11 +104,10 @@ export function AboutHero({
 
         <h1
           id={typeof title === 'string' ? headingId(title) : undefined}
-          className="enter serif-head mx-auto mt-7 max-w-[16em] scroll-mt-28 text-[clamp(32px,5.4vw,62px)] leading-[1.2] text-parchment"
-          style={{ animationDelay: '120ms' }}
+          className="hero-words serif-head mx-auto mt-7 max-w-[16em] scroll-mt-28 text-[clamp(32px,5.4vw,62px)] leading-[1.2] text-parchment"
         >
-          {/* ⚠️ 관형형+의존명사를 묶어 준다 — '살리는 / 것이' 같은 끊김을 막는다(bindKo). */}
-          {typeof title === 'string' ? bindKo(title) : title}
+          {/* 어절이 가림막 뒤에서 차례로 솟는다(페이지가 열리면 바로). ⚠️ 관형형+의존명사 묶음(bindKo)은 MaskWords 안에서 한다. */}
+          {typeof title === 'string' ? <MaskWords text={title} mode="load" start={120} /> : title}
         </h1>
 
         {lead ? (

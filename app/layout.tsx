@@ -2,13 +2,14 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 /* 더뉴치과 메인의 짜임·움직임을 옮긴 홈 구획 셋 + 관성 스크롤 (2026-09-28). 되돌리려면 이 줄과 <SmoothScroll /> 를 지운다. */
 import './thenew.css';
-/* 홈 모션그래픽·문구 강조(2026-09-29) — 줄 가림막·동그라미·형광펜·시차. 되돌리려면 이 줄과 app/page.tsx 의 <HomeMotion /> 를 지운다. */
+/* 모션그래픽·문구 강조(2026-09-29) — 줄 가림막·색 번짐·시차, 하위 페이지 머리말. 되돌리려면 이 줄과 아래 <ScrollMotion /> 를 지운다. */
 import './motion.css';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { QuickMenu } from '@/components/QuickMenu';
 import { RevealScript } from '@/components/RevealScript';
 import { SmoothScroll } from '@/components/SmoothScroll';
+import { ScrollMotion } from '@/components/ScrollMotion';
 import { CLINIC } from '@/lib/clinic';
 
 /**
@@ -113,7 +114,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                  자바스크립트를 끈 사람에게 그 글이 통째로 안 보인다.
                  (.wipe / .seq / .reveal-stack 이 실제로 빠져 있었다) */
               __html:
-                '.reveal,.concern,.wipe,.seq,.reveal-stack>*,.ln-in,.rows-in>*,.clip-in,.clip-in *,.late-in,.late-in *{opacity:1!important;transform:none!important;clip-path:none!important}',
+                '.reveal,.concern,.wipe,.seq,.reveal-stack>*,.step-in,.img-in img,.word-mask>span,.line-rise>span>span,.ln-in,.rows-in>*,.clip-in,.clip-in *,.late-in,.late-in *{opacity:1!important;transform:none!important;clip-path:none!important}',
             }}
           />
         </noscript>
@@ -136,6 +137,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         */}
         <RevealScript />
         <SmoothScroll />
+        {/* 스크롤 숫자(시차·첫 화면 빠짐·낱말 짙어짐·진행선) — 전 페이지 하나. components/ScrollMotion 머리말 참조. */}
+        <ScrollMotion />
       </body>
     </html>
   );

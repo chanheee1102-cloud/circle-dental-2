@@ -5,6 +5,7 @@ import { IMG } from '@/lib/assets';
 import { CLINIC, MEDICAL_DISCLAIMER } from '@/lib/clinic';
 import { headingId } from '@/components/article';
 import { BookingButtons } from '@/components/BrandIcons';
+import { Words } from '@/components/motion';
 
 /**
  * 페이지 폭을 한 곳에서 통제한다. 페이지마다 max-w 를 따로 적으면 반드시 어긋난다.
@@ -107,7 +108,7 @@ function Marked({ text, tone }: { text: string; tone: 'light' | 'dark' }) {
         i % 2 === 1 ? (
           <strong
             key={`${i}-${b.slice(0, 6)}`}
-            className={`font-semibold ${tone === 'dark' ? 'text-ember' : 'text-clay-600'}`}
+            className={`em-strong font-semibold ${tone === 'dark' ? 'text-ember' : 'text-clay-600'}`}
           >
             {b}
           </strong>
@@ -294,6 +295,42 @@ export function Sentences({ text, tone = 'light' }: { text: string; tone?: 'ligh
   );
 }
 
+/**
+ * 어절 가면 — 어절마다 보이지 않는 틀을 씌워 아래에서 밀어 올린다(.word-mask). SectionHead · 머리말 제목이 같이 쓴다.
+ *   mode 'scroll' = 부모가 is-shown 이 될 때 솟는다(transition, RevealScript 관찰자)
+ *   mode 'load'   = 페이지가 열리면 바로 솟는다(animation — 제목에 .hero-words 를 붙일 것, app/motion.css)
+ * ⚠️ 어절 사이 공백은 가면 **바깥**에 둔다 — 안에 두면 inline-block 이 공백을 먹어 기계가 읽는 제목이 붙는다.
+ */
+export function MaskWords({
+  text,
+  step = 85,
+  start = 0,
+  mode = 'scroll',
+}: {
+  text: string;
+  step?: number;
+  start?: number;
+  mode?: 'scroll' | 'load';
+}) {
+  return (
+    <>
+      {bindKo(text)
+        .split(' ')
+        .map((w, i, arr) => {
+          const ms = `${start + i * step}ms`;
+          return (
+            <span key={`${i}-${w}`}>
+              <span className="word-mask">
+                <span style={mode === 'load' ? { animationDelay: ms } : { transitionDelay: ms }}>{w}</span>
+              </span>
+              {i < arr.length - 1 ? ' ' : ''}
+            </span>
+          );
+        })}
+    </>
+  );
+}
+
 export function SectionHead({
   eyebrow,
   title,
@@ -363,18 +400,7 @@ export function SectionHead({
              크롤러와 답변 엔진이 읽는 제목만 망가진다. (히어로 마퀴에서 실제로 겪은 일)
           ⚠️ 제목이 JSX 면 쪼개지 않는다. 문자열이 아니면 어절을 알 수 없다.
         */}
-        {typeof title === 'string'
-          ? bindKo(title)
-              .split(' ')
-              .map((w, i, arr) => (
-              <span key={`${i}-${w}`}>
-                <span className="word-mask">
-                  <span style={{ transitionDelay: `${i * 85}ms` }}>{w}</span>
-                </span>
-                {i < arr.length - 1 ? ' ' : ''}
-              </span>
-            ))
-          : title}
+        {typeof title === 'string' ? <MaskWords text={title} /> : title}
       </H>
       {/*
         설명은 **문장 단위로** 줄을 나눈다 (2026-08-14 운영자: "전 페이지로 해").
@@ -466,25 +492,31 @@ export function PageHero({
       >
         <div className="flex flex-col gap-10">
           <Breadcrumb trail={trail} />
+          {/* 2026-09-29 모션(홈과 한 벌): 라벨 눈금이 그어지고 → 제목 어절이 가림막에서 솟고 → 설명이 뒤따른다.
+              오른쪽 사진 액자는 아래에서 걷힌다(.hero-frame). 전부 페이지가 열리면 바로(app/motion.css). */}
           <div className="max-w-[30em]">
-            <p className="eyebrow-chip text-ash">{eyebrow}</p>
+            <p className="enter eyebrow-chip text-ash">{eyebrow}</p>
             <h1
               id={typeof title === 'string' ? headingId(title) : undefined}
-              className="serif-head mt-4 scroll-mt-28 text-[32px] text-charcoal sm:text-[42px] lg:text-[48px]"
+              className="hero-words serif-head mt-4 scroll-mt-28 text-[32px] text-charcoal sm:text-[42px] lg:text-[48px]"
             >
-              {/* ⚠️ 관형형+의존명사를 묶어 준다 — '살리는 / 것이' 같은 끊김을 막는다(bindKo). */}
-              {typeof title === 'string' ? bindKo(title) : title}
+              {/* ⚠️ 관형형+의존명사를 묶어 준다 — '살리는 / 것이' 같은 끊김을 막는다(MaskWords 안의 bindKo). */}
+              {typeof title === 'string' ? <MaskWords text={title} mode="load" start={120} /> : title}
             </h1>
             {desc ? (
-              <p className="mt-6 max-w-[34em] text-[17px] leading-[1.9] text-ash sm:text-[18px]">
+              <p className="enter mt-6 max-w-[34em] text-[17px] leading-[1.9] text-ash sm:text-[18px]" style={{ animationDelay: '380ms' }}>
                 <Sentences text={desc} />
               </p>
             ) : null}
-            {children ? <div className="mt-8">{children}</div> : null}
+            {children ? (
+              <div className="enter mt-8" style={{ animationDelay: '480ms' }}>
+                {children}
+              </div>
+            ) : null}
           </div>
         </div>
         {photo ? (
-          <div className="relative hidden aspect-[4/3] overflow-hidden rounded-[8px] bg-wine-soft lg:block">
+          <div className="hero-frame relative hidden aspect-[4/3] overflow-hidden rounded-[8px] bg-wine-soft lg:block">
             <Image
               src={HERO_PHOTOS[photo].src}
               alt=""
@@ -695,7 +727,10 @@ export function ContactCta({
         */}
         <div className="max-w-[40em]">
           <p className="eyebrow-chip text-clay-700">예약 · 상담</p>
-          <h2 className="serif-head mt-5 max-w-[14em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink">{title}</h2>
+          {/* 낱말이 스크롤을 따라 차례로 짙어진다(광화문 선치과 문단 강조, components/motion Words · ScrollMotion). */}
+          <h2 className="words serif-head mt-5 max-w-[14em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink" data-words>
+            <Words text={bindKo(title)} />
+          </h2>
           <p className="mt-8 max-w-[36em] text-[17.5px] leading-[1.9] text-twilight">
             <Sentences text={desc} />
           </p>

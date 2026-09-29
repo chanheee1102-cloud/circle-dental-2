@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { CLINIC } from '@/lib/clinic';
-import { Container, Sentences } from '@/components/ui';
+import { Container, Sentences, bindKo } from '@/components/ui';
+import { Words } from '@/components/motion';
 import { BookingButtons } from '@/components/BrandIcons';
 
 /**
@@ -61,8 +62,12 @@ export function TreatmentClosing({
         {/* ★ 글 위 · 카드 넉 장 아래 — components/ui.tsx ContactCta 와 같은 규칙(2026-09-07). 2단으로 되돌리지 말 것. */}
         <div className="max-w-[40em]">
           <p className="reveal eyebrow-chip text-clay-700">예약 · 상담</p>
-          <h2 className="reveal display-sm mt-5 max-w-[14em] text-[clamp(26px,3.8vw,44px)] leading-[1.16] tracking-[-0.025em] text-ink">
-            {title}
+          {/* 낱말이 스크롤을 따라 차례로 짙어진다(광화문 선치과 문단 강조, 2026-09-29 — components/motion Words · ScrollMotion). */}
+          <h2
+            className="reveal words display-sm mt-5 max-w-[14em] text-[clamp(26px,3.8vw,44px)] leading-[1.16] tracking-[-0.025em] text-ink"
+            data-words
+          >
+            <Words text={bindKo(title)} />
           </h2>
           <p className="reveal mt-7 max-w-[34em] text-[17.5px] leading-[1.9] text-twilight">
             <Sentences text={lead} />

@@ -150,7 +150,7 @@ export default function SpacePage() {
  * ══════════════════════════════════════════════════════ */
 function Hero() {
   return (
-    <section className="relative flex min-h-[92vh] items-center overflow-hidden">
+    <section data-hero className="relative flex min-h-[92vh] items-center overflow-hidden">
       {/* 폴백 배경 — 사진마저 늦게 뜨는 회선에서도 화면이 비지 않는다. */}
       <div aria-hidden className="absolute inset-0 bg-brand-900" />
       {/*
@@ -160,7 +160,10 @@ function Hero() {
           (components/HeroMedia.tsx 의 성능 주석 참조).
         ⚠️ 영상이 막히거나 늦으면 사진이 그대로 남는다. HeroMedia 가 그렇게 짜여 있다.
       */}
-      <HeroMedia />
+      {/* 2026-09-29 모션: 하위 머리말과 같다 — 스며 나오며 가라앉고, 내리면 느리게 내려간다(.hero-sub-photo). */}
+      <div aria-hidden className="hero-sub-photo">
+        <HeroMedia />
+      </div>
       {/*
         왼쪽만 눌러 주는 스크림 — 위 주석 참조.
         ⚠️⚠️ 여기 대비가 1.01:1 로 나온다는 측정을 믿지 말 것 (2026-08-28) ⚠️⚠️
@@ -183,7 +186,7 @@ function Hero() {
         ⚠️ 아래쪽에 채널 버튼이 붙으므로 본문을 그만큼 위로 올린다.
            안 그러면 "오시는 길 / 전화번호" 바로 아래에 알약이 붙어 뭉친다(실측).
       */}
-      <div className="relative w-full px-6 pb-[190px] lg:px-16">
+      <div className="hero-sub-copy relative w-full px-6 pb-[190px] lg:px-16">
         <p className="sp-label on-photo sp-rise !text-white" style={{ animationDelay: '80ms' }}>
           {CLINIC.nameEn}
         </p>

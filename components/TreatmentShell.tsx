@@ -46,7 +46,7 @@ export function TreatmentHero({
   trail: { name: string; path: string }[];
   /** 금색 한 줄 — 지역명 + 진료명 + 확인되는 자격까지. */
   eyebrow: string;
-  /** 줄 단위로 넘긴다. 줄마다 아래에서 밀려 올라온다(.line-rise). */
+  /** 줄 단위로 넘긴다. 줄마다 가림막 뒤에서 조금 기울어진 채 솟는다(.line-rise + .hero-lines, 페이지가 열리면 바로). */
   title: string[];
   lead: string;
   photo?: HeroPhoto;
@@ -55,19 +55,22 @@ export function TreatmentHero({
     /* ⚠️ 음수 margin + 같은 값의 padding — 띠가 헤더 뒤까지 올라간다. 수치를 페이지마다 바꾸지 말 것. */
     /* ⚠️ 휴대폰 값(pt-[112px] pb-16)은 버튼을 감춘 뒤 다시 잡은 것이다 — 되돌리면 첫 화면에
          빈 자리가 남는다. sm 부터는 예전 값 그대로다. */
-    <section className="relative isolate -mt-[68px] overflow-hidden bg-night pt-[112px] pb-16 sm:-mt-[94px] sm:pt-[154px] sm:pb-16 sm:pb-24 lg:pb-32">
+    <section data-hero className="relative isolate -mt-[68px] overflow-hidden bg-night pt-[112px] pb-16 sm:-mt-[94px] sm:pt-[154px] sm:pb-16 sm:pb-24 lg:pb-32">
       {/* ⚠️ alt 는 비운다 — 장식 사진이다. 뜻은 아래 제목이 전부 진다. */}
+      {/* 2026-09-29 모션: 어둠 속에서 사진이 스며 나오며 가라앉고, 내리면 느리게 내려간다(.hero-sub-photo, --hp · app/motion.css). */}
       {photo && (
-        <Image
-          src={photo.src}
-          alt=""
-          aria-hidden
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-          style={photo.position ? { objectPosition: photo.position } : undefined}
-        />
+        <div aria-hidden className="hero-sub-photo">
+          <Image
+            src={photo.src}
+            alt=""
+            aria-hidden
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+            style={photo.position ? { objectPosition: photo.position } : undefined}
+          />
+        </div>
       )}
 
       {/* 두 겹 덮개 — 방사형(가운데를 살림) + 선형(위아래를 눌러 줌). */}
@@ -91,7 +94,7 @@ export function TreatmentHero({
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(56%_42%_at_50%_-6%,rgba(185,196,202,0.14)_0%,transparent_66%)]"
       />
 
-      <Container className="relative text-center">
+      <Container className="hero-sub-copy relative text-center">
         {/* ⚠️ 손으로 다시 그리지 말 것 — 공용 부품이라야 규칙이 바뀔 때 같이 따라온다. */}
         <div className="mb-10 flex justify-center">
           <Breadcrumb trail={trail} tone="dark" />
@@ -101,7 +104,7 @@ export function TreatmentHero({
           {eyebrow}
         </p>
 
-        <h1 className="line-rise reveal serif-head mx-auto mt-7 max-w-[16em] text-[clamp(32px,5.4vw,62px)] leading-[1.2] text-parchment">
+        <h1 className="line-rise hero-lines serif-head mx-auto mt-7 max-w-[16em] text-[clamp(32px,5.4vw,62px)] leading-[1.2] text-parchment">
           {/*
             ⚠️ 줄 끝의 공백 한 칸을 지우지 말 것 (2026-09-01) — 제목을 줄마다 span 으로
               쪼개면 기계가 읽는 문자열이 '어떤 경우에어떤 진료를' 처럼 붙어 버린다.

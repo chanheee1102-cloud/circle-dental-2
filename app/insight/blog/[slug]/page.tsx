@@ -9,7 +9,7 @@ import { CLINIC } from '@/lib/clinic';
 import { DOCTORS } from '@/lib/doctors';
 import { allPosts, publishedIso } from '@/lib/blog';
 import { postBySlugMerged, extractFaq } from '@/lib/insightFeed';
-import { Container, ContactCta, Breadcrumb, Sentences } from '@/components/ui';
+import { Container, ContactCta, Breadcrumb, Sentences, MaskWords } from '@/components/ui';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema, abs, og, medicalWebPageSchema, alt } from '@/lib/seo';
 
@@ -122,17 +122,20 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           )}
         </div>
 
-        <h1 className="serif-head mt-4 max-w-[20em] text-[clamp(28px,3.6vw,44px)] text-ink">
-          {post.title}
+        {/* 2026-09-29 모션(하위 머리말과 한 벌): 제목 어절이 가림막에서 솟고, 요약이 뒤따르고, 대표 사진은 아래에서 걷힌다. */}
+        <h1 className="hero-words serif-head mt-4 max-w-[20em] text-[clamp(28px,3.6vw,44px)] text-ink">
+          <MaskWords text={post.title} mode="load" start={80} step={60} />
         </h1>
-        <p className="mt-6 max-w-[46em] text-[18px] leading-[1.9] text-twilight"><Sentences text={post.summary} /></p>
+        <p className="enter mt-6 max-w-[46em] text-[18px] leading-[1.9] text-twilight" style={{ animationDelay: '360ms' }}>
+          <Sentences text={post.summary} />
+        </p>
 
         {/*
           대표 사진 — 요약 **다음**에 온다. 먼저 읽혀야 할 것은 제목과 요약이고, 사진은 그 답이
           무엇에 대한 것인지 붙여 주는 역할이다(증상 쪽과 같은 순서). 3:2 는 생성 원본(1536×1024) 비율.
         */}
         {post.image && (
-          <figure className="mt-10 max-w-[56em] overflow-hidden rounded-2xl border border-brand-200/70 bg-brand-100">
+          <figure className="hero-frame mt-10 max-w-[56em] overflow-hidden rounded-2xl border border-brand-200/70 bg-brand-100">
             <div className="relative aspect-[3/2]">
               <Image src={post.image} alt={post.imageAlt ?? ''} fill priority sizes="(min-width: 1024px) 900px, 100vw" className="object-cover" />
             </div>

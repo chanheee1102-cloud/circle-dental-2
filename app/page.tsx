@@ -30,7 +30,6 @@ import { CopyButton } from '@/components/CopyButton';
 import { ClinicMap } from '@/components/ClinicMap';
 import { Reveal } from '@/components/Reveal';
 import { Chars, Em, SplitLines } from '@/components/motion';
-import { HomeMotion } from '@/components/HomeMotion';
 import { JsonLd } from '@/components/JsonLd';
 import { medicalWebPageSchema, imageObjectSchema } from '@/lib/seo';
 import { imageMeta } from '@/lib/imageSize';
@@ -92,7 +91,6 @@ export default async function HomePage() {
           heroImage ? imageObjectSchema({ path: '/', ...heroImage }) : null,
         ]}
       />
-      <HomeMotion />
       <Hero />
       <PrinciplesSection />
       <KineticBand />
@@ -123,7 +121,7 @@ export default async function HomePage() {
 function Hero() {
   return (
     <section className="hero-lt" data-hero>
-      {/* 2026-09-29 모션: 사진이 동그랗게 열리고(.hero-lt-photo) 제자리로 가라앉는다(.hero-pan). 내리면 느리게 커진다(--hp, HomeMotion). */}
+      {/* 2026-09-29 모션: 사진이 동그랗게 열리고(.hero-lt-photo) 제자리로 가라앉는다(.hero-pan). 내리면 느리게 커진다(--hp, ScrollMotion). */}
       <div className="hero-lt-photo">
         <div className="hero-pan">
           <Image src={HERO_WARM_SRC} alt={HERO_PHOTO.alt} fill priority sizes="(max-width: 1023px) 100vw, 72vw" className="hero-lt-img" />
@@ -143,19 +141,19 @@ function Hero() {
             <br />
             your natural smile
           </p>
-          {/* 한 글자씩 흐림 속에서 떠오르고, 마지막 글자가 서면 '한 번 더' 를 손으로 그린 동그라미가 두른다(components/motion Chars). */}
+          {/* 한 글자씩 흐림 속에서 떠오르고, 마지막 글자가 서면 '한 번 더' 가 한 글자씩 블루그레이로 물든다(components/motion Chars). */}
           <h1 className="serif-head hero-lt-h1">
             <Chars lines={['뽑기 전에,', '[[한 번 더]] 살펴봅니다.']} start={220} />
           </h1>
           <p className="enter hero-lt-lead" style={{ animationDelay: '760ms' }}>
             자연치아를 오래 사용할 수 있도록
             <br />{' '}
-            <span className="em em-mark em-now" style={{ ['--ed' as string]: '1650ms' }}>
+            <span className="em em-tone em-now" style={{ ['--ed' as string]: '1650ms' }}>
               필요한 치료부터
             </span>{' '}
             함께 판단합니다.
           </p>
-          <div className="enter hero-lt-cta" data-magnet style={{ animationDelay: '900ms' }}>
+          <div className="enter hero-lt-cta" style={{ animationDelay: '900ms' }}>
             <FillBtn href="/treatment" className="hero-lt-fill">
               진료 알아보기
             </FillBtn>
@@ -244,8 +242,8 @@ function PrinciplesSection() {
           {/* 한 문장과 다음 페이지로 가는 줄 — 좁은 화면에서는 목록 아래, 넓은 화면에서는 제목 아래. */}
           {/* ⚠️ lg:self-end 를 되살리지 말 것 — 문장이 바닥으로 내려가 왼쪽 열 가운데가 170px 비었다(2026-09-28 전문가 검토). */}
           <div className="reveal lg:col-start-1">
-            {/* 네 물음을 묶는 말 — '네 가지를 먼저 묻고' 에 형광펜(보일 때 칠해진다, .em-scope strong). 문구는 lib 원문 그대로. */}
-            <p className="em-scope max-w-[26em] text-[17px] leading-[1.9] text-charcoal/85">
+            {/* 네 물음을 묶는 말 — '네 가지를 먼저 묻고' 가 굵게 + 보일 때 색이 번진다(.em-strong, components/ui Marked). 문구는 lib 원문 그대로. */}
+            <p className="max-w-[26em] text-[17px] leading-[1.9] text-charcoal/85">
               <Sentences text={PRINCIPLE_STATEMENT.replace('네 가지를 먼저 묻고', '**네 가지를 먼저 묻고**')} />
             </p>
             <div className="mt-7">
@@ -754,7 +752,7 @@ function RingSvg() {
 
 /*
  * 흐르는 큰 글자 — 진료 철학과 주요 진료 사이 (2026-09-29 오너: "모션그래픽 엄청").
- *   스크롤한 만큼 두 줄이 서로 반대로 흐른다(--p, HomeMotion). 속이 빈 큰 글자 한 줄 + 옅게 채운 작은 글자 한 줄.
+ *   스크롤한 만큼 두 줄이 서로 반대로 흐른다(--p, ScrollMotion). 속이 빈 큰 글자 한 줄 + 옅게 채운 작은 글자 한 줄.
  * ★ 문구는 첫 화면의 영문 두 줄 그대로(새 문장 없음). 장식이라 보조기기에는 숨긴다.
  */
 function KineticBand() {
