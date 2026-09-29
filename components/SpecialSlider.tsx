@@ -2,18 +2,23 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { StrengthIcon } from '@/components/StrengthIcons';
 
 /**
  * 동그라미치과의 특별함 — 더뉴치과 메인 '특별함' 줄을 옮긴 것 (2026-09-28 오너).
  *
- * ★ 세로로 긴 사진 카드(2:3)가 가로로 흐르고 3초마다 한 장씩 넘어간다(더뉴 autoplay 3000ms).
- *   마우스를 올린 카드는 모서리가 20px → 60px 로 둥글어지고, 사진이 토프 색에 거의 잠기며
- *   아래에 설명이 열린다(더뉴는 베이지 #c5ad8e — 여기선 요청서의 Warm Taupe 를 흰 글자가 읽히는 깊이로).
- * ★ 넘김은 스크롤 스냅 위에서 한다 — 손가락·트랙패드로 밀어도 되고, 끝에 닿으면 처음으로 돌아간다.
- * ★ 멈추는 때: 마우스가 올라가 있을 때 · 키보드 초점이 안에 있을 때 · 손으로 밀고 난 직후 ·
- *   화면 밖에 있을 때 · 움직임 줄이기 설정. (보고 있는 카드를 빼앗지 않는다.)
+ * ★ 세로로 긴 사진 카드(3:4)가 가로로 흐른다. 마우스를 올린 카드는 모서리가 20px → 60px 로 둥글어지고,
+ *   사진이 토프 색에 거의 잠기며 아래에 설명이 열린다(더뉴는 베이지 #c5ad8e — 여기선 흰 글자가 읽히는 깊이로).
+ *
+ * ★★ 넘기는 법 — 단추 대신 **스크롤** (2026-09-29 오너: "버튼으로 넘기는거 말고 방법 없나? 좀 세련된") ★★
+ *   넓은 화면(마우스): 구획이 화면에 고정되고, 아래로 내리는 만큼 카드 줄이 옆으로 흐른다(가로 스크롤 고정 무대).
+ *     광화문 선치과의 '구역이 지나가는 만큼 옆으로 흐르는 사진 띠'를 한 단 더 — 끝 카드까지 다 보여 준 뒤에 풀린다.
+ *     내린 거리 1px = 옆으로 1px. 구획 높이 = 화면 높이 + 옆으로 갈 거리(JS 가 잰다).
+ *   좁은 화면·터치: 손가락으로 밀고(스크롤 스냅), 3초마다 한 장씩 넘어간다(더뉴 autoplay 3000ms).
+ *   ⚠️ 단추를 되살리지 말 것 — 오너가 '세련되지 않다' 고 뺀 것이다. 지금 어디쯤인지는 아래 가는 선이 보여 준다.
+ * ★ 키보드: 고정 무대에서 Tab 으로 화면 밖 카드에 초점이 가면 그 카드가 보이는 자리까지 페이지를 내려 준다.
+ * ★ 자동 넘김이 멈추는 때(좁은 화면): 마우스·키보드 초점이 안에 있을 때 · 손으로 밀고 난 직후 · 화면 밖 · 움직임 줄이기.
  */
 export interface SpecialCard {
   slug: string;
@@ -24,18 +29,93 @@ export interface SpecialCard {
 }
 
 const DELAY = 3000;
+/** 고정 무대를 쓰는 화면 — 마우스가 있는 넓은 화면. 터치 노트북·태블릿은 손가락으로 미는 쪽이 자연스럽다. */
+const PIN_QUERY = '(min-width: 1024px) and (hover: hover) and (pointer: fine)';
 
-export function SpecialSlider({ cards }: { cards: SpecialCard[] }) {
+export function SpecialSlider({ cards, head }: { cards: SpecialCard[]; /** 고정 무대 안에 같이 세울 머리말 */ head?: ReactNode }) {
+  const pin = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLUListElement>(null);
+  const bar = useRef<HTMLElement>(null);
   const hold = useRef(false);
   const lastUser = useRef(0);
-  const bar = useRef<HTMLElement>(null);
+  const [pinned, setPinned] = useState(false);
 
-  /* 아래 가는 선 — 보이는 폭만큼의 막대가 지금 자리에 선다(다시 그리지 않고 스타일만 바꾼다) */
+  /* 어느 방식인지 — 화면 폭·입력 장치가 바뀌면 다시 고른다 */
+  useEffect(() => {
+    const mq = window.matchMedia(PIN_QUERY);
+    const set = () => setPinned(mq.matches);
+    set();
+    mq.addEventListener('change', set);
+    return () => mq.removeEventListener('change', set);
+  }, []);
+
+  /* ── 고정 무대: 내린 만큼 옆으로 ── */
+  useEffect(() => {
+    const box = pin.current;
+    const el = track.current;
+    const b = bar.current;
+    if (!pinned || !box || !el || !b) return;
+    let shift = 0; // 옆으로 갈 수 있는 거리(px)
+    const measure = () => {
+      const last = el.lastElementChild as HTMLElement | null;
+      const pad = parseFloat(getComputedStyle(el).paddingRight) || 0;
+      shift = last ? Math.max(0, last.offsetLeft + last.offsetWidth + pad - el.clientWidth) : 0;
+      box.style.height = `calc(100vh + ${shift}px)`;
+      b.style.width = `${Math.min(100, (el.clientWidth / (el.clientWidth + shift || 1)) * 100)}%`;
+    };
+    let raf = 0;
+    const frame = () => {
+      raf = 0;
+      const top = box.getBoundingClientRect().top;
+      const x = Math.min(shift, Math.max(0, -top));
+      el.style.transform = `translate3d(${-x}px, 0, 0)`;
+      const p = shift ? x / shift : 0;
+      const w = parseFloat(b.style.width) || 100;
+      b.style.transform = `translateX(${((100 - w) / w) * 100 * p}%)`;
+    };
+    const ask = () => {
+      if (!raf) raf = requestAnimationFrame(frame);
+    };
+    const onResize = () => {
+      measure();
+      ask();
+    };
+    measure();
+    frame();
+    window.addEventListener('scroll', ask, { passive: true });
+    window.addEventListener('resize', onResize);
+    /* 사진이 늦게 뜨면 카드 폭이 바뀔 수 있다 — 크기가 바뀌면 다시 잰다 */
+    const ro = new ResizeObserver(onResize);
+    ro.observe(el);
+
+    /* Tab 으로 화면 밖 카드에 초점 → 그 카드가 보이는 자리까지 페이지를 내린다 */
+    const onFocus = (e: FocusEvent) => {
+      const li = (e.target as Element | null)?.closest?.('.sp-card') as HTMLElement | null;
+      if (!li) return;
+      const want = Math.min(shift, Math.max(0, li.offsetLeft + li.offsetWidth - el.clientWidth + 40));
+      const boxTop = box.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: boxTop + want, behavior: 'instant' as ScrollBehavior });
+      el.scrollLeft = 0; // 브라우저가 초점 요소를 보이려 줄을 밀어 두는 것을 되돌린다(움직임은 transform 이 맡는다)
+    };
+    el.addEventListener('focusin', onFocus);
+
+    return () => {
+      window.removeEventListener('scroll', ask);
+      window.removeEventListener('resize', onResize);
+      el.removeEventListener('focusin', onFocus);
+      ro.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+      box.style.height = '';
+      el.style.transform = '';
+      b.style.transform = '';
+    };
+  }, [pinned]);
+
+  /* ── 손가락으로 미는 줄(좁은 화면·터치): 가는 선 + 3초 자동 넘김 ── */
   useEffect(() => {
     const el = track.current;
     const b = bar.current;
-    if (!el || !b) return;
+    if (pinned || !el || !b) return;
     const draw = () => {
       const sw = el.scrollWidth || 1;
       b.style.width = `${Math.min(100, (el.clientWidth / sw) * 100)}%`;
@@ -44,107 +124,95 @@ export function SpecialSlider({ cards }: { cards: SpecialCard[] }) {
     draw();
     el.addEventListener('scroll', draw, { passive: true });
     window.addEventListener('resize', draw);
+
+    let t = 0;
+    let io: IntersectionObserver | null = null;
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let visible = false;
+      io = new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0.3 });
+      io.observe(el);
+      t = window.setInterval(() => {
+        if (!visible || hold.current || document.hidden) return;
+        if (performance.now() - lastUser.current < DELAY * 2) return;
+        const first = el.firstElementChild as HTMLElement | null;
+        const gap = parseFloat(getComputedStyle(el).columnGap || '14') || 14;
+        const w = (first?.offsetWidth ?? 300) + gap;
+        if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 2) el.scrollTo({ left: 0, behavior: 'smooth' });
+        else el.scrollBy({ left: w, behavior: 'smooth' });
+      }, DELAY);
+    }
     return () => {
       el.removeEventListener('scroll', draw);
       window.removeEventListener('resize', draw);
-    };
-  }, []);
-
-  const step = useCallback((dir: 1 | -1) => {
-    const el = track.current;
-    if (!el) return;
-    const first = el.firstElementChild as HTMLElement | null;
-    const gap = parseFloat(getComputedStyle(el).columnGap || '20') || 20;
-    const w = (first?.offsetWidth ?? 400) + gap;
-    const max = el.scrollWidth - el.clientWidth - 2;
-    if (dir === 1 && el.scrollLeft >= max) el.scrollTo({ left: 0, behavior: 'smooth' });
-    else if (dir === -1 && el.scrollLeft <= 2) el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
-    else el.scrollBy({ left: dir * w, behavior: 'smooth' });
-  }, []);
-
-  useEffect(() => {
-    const el = track.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let visible = false;
-    const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0.3 });
-    io.observe(el);
-    const t = window.setInterval(() => {
-      if (!visible || hold.current || document.hidden) return;
-      if (performance.now() - lastUser.current < DELAY * 2) return;
-      step(1);
-    }, DELAY);
-    return () => {
       window.clearInterval(t);
-      io.disconnect();
+      io?.disconnect();
     };
-  }, [step]);
+  }, [pinned]);
 
   const touch = () => (lastUser.current = performance.now());
 
   return (
-    <div
-      className="sp-wrap late-in"
-      onMouseEnter={() => (hold.current = true)}
-      onMouseLeave={() => (hold.current = false)}
-      onFocus={() => (hold.current = true)}
-      onBlur={() => (hold.current = false)}
-    >
-      <ul ref={track} className="sp-track" data-lenis-prevent-horizontal onPointerDown={touch} onWheel={touch} onTouchStart={touch}>
-        {cards.map((c) => (
-          <li key={c.slug} className="sp-card">
-            <Link href={`/about/special/${c.slug}`} className="sp-link">
-              <span className="sp-bg" aria-hidden>
-                <Image
-                  src={c.photo.src}
-                  alt=""
-                  fill
-                  /*
-                   * ⚠️ 카드 폭이 아니라 **그려지는 사진 폭**으로 적는다 (2026-09-28 실측: 뿌얬던 원인).
-                   *   가로 사진(1056×575 등)을 세로 카드에 꽉 채우면 사진은 카드 높이 × 가로비만큼 넓게 그려진다
-                   *   (440 × 1.84 ≈ 810px). sizes 를 카드 폭(400px)으로 적었더니 640px 판을 받아 1.7배로 늘려 그렸다.
-                   */
-                  sizes="(max-width: 767px) 160vw, 820px"
-                  className="sp-img"
-                  style={{ objectPosition: c.photo.pos }}
-                />
-              </span>
-              <span className="sp-text">
-                <span className="sp-ico">
-                  <StrengthIcon name={c.key} />
-                </span>
-                <span className="sp-title">{c.title}</span>
-                <span className="sp-body">
-                  <span className="sp-body-in">
-                    <span className="sp-desc">{c.body}</span>
-                    <span className="sp-go">
-                      자세히 보기 <span aria-hidden>→</span>
+    <div ref={pin} className={`sp-pin${pinned ? ' is-pinned' : ''}`}>
+      <div className="sp-stick">
+        {head}
+        <div
+          className="sp-wrap late-in"
+          onMouseEnter={() => (hold.current = true)}
+          onMouseLeave={() => (hold.current = false)}
+          onFocus={() => (hold.current = true)}
+          onBlur={() => (hold.current = false)}
+        >
+          <ul
+            ref={track}
+            className="sp-track"
+            data-lenis-prevent-horizontal={pinned ? undefined : true}
+            onPointerDown={touch}
+            onWheel={touch}
+            onTouchStart={touch}
+          >
+            {cards.map((c) => (
+              <li key={c.slug} className="sp-card">
+                <Link href={`/about/special/${c.slug}`} className="sp-link">
+                  <span className="sp-bg" aria-hidden>
+                    <Image
+                      src={c.photo.src}
+                      alt=""
+                      fill
+                      /*
+                       * ⚠️ 카드 폭이 아니라 **그려지는 사진 폭**으로 적는다 (2026-09-28 실측: 뿌얬던 원인).
+                       *   가로 사진(1056×575 등)을 세로 카드에 꽉 채우면 사진은 카드 높이 × 가로비만큼 넓게 그려진다
+                       *   (440 × 1.84 ≈ 810px). sizes 를 카드 폭(400px)으로 적었더니 640px 판을 받아 1.7배로 늘려 그렸다.
+                       */
+                      sizes="(max-width: 767px) 160vw, 820px"
+                      className="sp-img"
+                      style={{ objectPosition: c.photo.pos }}
+                    />
+                  </span>
+                  <span className="sp-text">
+                    <span className="sp-ico">
+                      <StrengthIcon name={c.key} />
+                    </span>
+                    <span className="sp-title">{c.title}</span>
+                    <span className="sp-body">
+                      <span className="sp-body-in">
+                        <span className="sp-desc">{c.body}</span>
+                        <span className="sp-go">
+                          자세히 보기 <span aria-hidden>→</span>
+                        </span>
+                      </span>
                     </span>
                   </span>
-                </span>
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-      {/*
-        ★ 넘김 단추는 카드 **아래 줄**에 둔다 (2026-09-28 오너: "왼쪽 오른쪽 버튼이 카드랑 겹치잖아").
-          카드 가장자리에 반쯤 걸쳐 두던 더뉴 방식은 사진·제목을 가렸다. 왼쪽엔 지금 어디쯤인지 보이는 가는 선.
-      */}
-      <div className="sp-ctrl">
-        <span className="sp-bar" aria-hidden>
-          <i ref={bar} />
-        </span>
-        <button type="button" className="sp-nav" aria-label="이전 카드" onClick={() => (touch(), step(-1))}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-            <path d="M10.5 2.5 5 8l5.5 5.5" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-        </button>
-        <button type="button" className="sp-nav" aria-label="다음 카드" onClick={() => (touch(), step(1))}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-            <path d="M5.5 2.5 11 8l-5.5 5.5" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-        </button>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {/* 지금 어디쯤인지 — 가는 선 하나. 단추는 두지 않는다(2026-09-29 오너). */}
+          <div className="sp-ctrl" aria-hidden>
+            <span className="sp-bar">
+              <i ref={bar} />
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

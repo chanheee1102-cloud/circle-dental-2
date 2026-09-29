@@ -465,7 +465,7 @@ function DoctorsSection() {
 /* ─────────────────────────── 5-1. 특별함 ─────────────────────────── */
 /*
  * ★★ 더뉴치과 '더뉴 치과의 특별함' 짜임 (2026-09-28 오너) ★★
- *   세로로 긴 사진 카드 일곱 장이 흐르고 3초마다 넘어간다. 올리면 모서리가 둥글어지고 사진이 토프에 잠기며
+ *   세로로 긴 사진 카드가 흐른다(넓은 화면 = 내리는 만큼 옆으로, 좁은 화면 = 손가락·3초 자동). 올리면 모서리가 둥글어지고 사진이 토프에 잠기며
  *   설명이 열린다(components/SpecialSlider). 카드마다 /about/special/<slug> 로 간다.
  * ★ 글은 lib/specials.ts 원문(단, medical-team 제목만 확인된 범위로 — lib/homeContent SPECIAL_CARD_ART 주석).
  * ★ 사진은 전부 이 병원의 실제 사진 — 세로 카드에 맞는 것을 골라 잘라 쓴다(SPECIAL_CARD_ART).
@@ -484,8 +484,8 @@ function SpecialSection() {
   return (
     <section className="sp-sec section-y-home overflow-x-clip">
       <Container>
-        <CenterHead label="특별함" split={['동그라미치과의 ==특별함==']} />
-        <SpecialSlider cards={cards} />
+        {/* 머리말도 고정 무대 안에 같이 선다 — 넓은 화면에서 내리는 동안 카드 줄이 옆으로 흐른다(components/SpecialSlider). */}
+        <SpecialSlider cards={cards} head={<CenterHead label="특별함" split={['동그라미치과의 ==특별함==']} />} />
       </Container>
     </section>
   );

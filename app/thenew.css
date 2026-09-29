@@ -809,7 +809,7 @@ html.lenis {
     transform: none;
   }
 }
-/* 넘김 줄 — 카드 아래. 왼쪽 가는 선(지금 자리), 오른쪽 단추 둘. 카드를 가리지 않는다(2026-09-28 오너) */
+/* 넘김 줄 — 카드 아래 가는 선(지금 자리). 단추는 뺐다(2026-09-29 오너 — 넓은 화면은 스크롤, 좁은 화면은 손가락) */
 .sp-ctrl {
   display: flex;
   align-items: center;
@@ -820,7 +820,6 @@ html.lenis {
   position: relative;
   flex: 1;
   height: 2px;
-  margin-right: 18px;
   overflow: hidden;
   background: var(--color-wine-line);
   border-radius: 2px;
@@ -833,27 +832,50 @@ html.lenis {
   border-radius: 2px;
   transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
-.sp-nav {
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 1px solid rgba(36, 37, 33, 0.18);
-  background: transparent;
-  color: var(--color-charcoal);
-  cursor: pointer;
-  transition:
-    background-color 0.2s,
-    color 0.2s,
-    border-color 0.2s;
+/*
+ * ★★ 고정 무대 — 넓은 화면(마우스) 에서 단추 대신 스크롤로 넘긴다 (2026-09-29 오너: "버튼 말고 좀 세련된") ★★
+ *   구획(.sp-pin)이 화면 높이 + 옆으로 갈 거리만큼 길어지고(JS), 안쪽 무대(.sp-stick)가 화면에 붙는다.
+ *   내리는 동안 카드 줄은 transform 으로 옆으로 흐른다(components/SpecialSlider).
+ * ⚠️ 위 여백 74px = 스크롤한 뒤의 헤더 높이(SiteHeader h-[74px]). 헤더 높이를 바꾸면 같이.
+ * ⚠️ 카드 높이는 화면 높이에 맞춘다 — 768px 노트북에서 440px 카드를 고집하면 무대가 화면보다 커져 머리말이 헤더 밑으로 숨는다.
+ */
+.sp-pin.is-pinned .sp-stick {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 74px;
+  /* ⚠️ 1536 아래는 하단 고정 바(QuickMenu, 73px)가 뜬다 — 비워 두지 않으면 1366×768 에서 진행선이 그 밑에 숨었다(실측) */
+  padding-bottom: 73px;
 }
-.sp-nav:hover,
-.sp-nav:focus-visible {
-  background: var(--color-charcoal);
-  border-color: var(--color-charcoal);
-  color: #f7f5f0;
+@media (min-width: 1536px) {
+  .sp-pin.is-pinned .sp-stick {
+    padding-bottom: 0;
+  }
+}
+.sp-pin.is-pinned .sp-wrap {
+  margin-top: clamp(28px, 4.5vh, 52px);
+}
+.sp-pin.is-pinned .sp-track {
+  overflow: visible;
+  scroll-snap-type: none;
+  will-change: transform;
+}
+.sp-pin.is-pinned .sp-card {
+  flex: 0 0 auto;
+  height: min(440px, calc(100vh - 400px));
+  width: auto;
+}
+@media (min-width: 1536px) {
+  .sp-pin.is-pinned .sp-card {
+    height: min(440px, calc(100vh - 330px));
+  }
+}
+/* 선은 스크롤을 그대로 따라간다(늦게 따라오면 무대와 어긋나 보인다) */
+.sp-pin.is-pinned .sp-bar i {
+  transition: none;
 }
 @media (min-width: 768px) {
   .sp-track {
