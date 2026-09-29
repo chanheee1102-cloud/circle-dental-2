@@ -3,14 +3,14 @@
  *   같은 날 2차 — "마우스 커서 모션은 없애고, 문구 강조는 색감이나 진중한 모션으로, 서브페이지도 전부"
  *
  * ★ 주제는 병원 이름 — **동그라미**. 첫 화면 사진이 동그랗게 열리고, 옅은 원이 떠다니고, 보존 띠에 원이 번진다.
- *   문구 강조는 형광펜 밑줄 — 글자 아래 40% 에 띠가 왼쪽에서 오른쪽으로 그어진다(3차, 아래 문구 강조 머리말).
+ *   문구 강조는 광화문 선치과 방식 — 네이비 글자 + 얇은 밑줄 획이 왼쪽에서 오른쪽으로 그어진다(4차, 아래 문구 강조 머리말).
  *   커서를 따라다니던 원·자석 단추는 뺐다.
  * ★ 짜임·색·문구는 그대로다(09-21 재조판 두 판 반려 — 틀은 건드리지 않는다). 얹은 것은 움직임과 강조 색뿐.
  * ★ 하위 페이지: 머리말(TreatmentHero·AboutHero·PageHero) 사진이 가라앉고 내리면 시차, 제목 어절 가림막,
  *   라벨 눈금이 그어지고, 사진은 아래에서 걷히고, 카드는 차례로 솟는다(globals.css 의 .img-in · .reveal-stack 값을 같이 올림).
  *   마무리 문장(TreatmentClosing·ContactCta)은 광화문 선치과처럼 낱말이 차례로 짙어진다.
  * ★ 누가 켜나
- *     .split-in · .em(형광펜) · .em-strong · .draw-in · .clip-in · .rows-in · .late-in → RevealScript 의 늦은 관찰자(화면 안 12%)
+ *     .split-in · .em(색+밑줄 획) · .em-strong · .draw-in · .clip-in · .rows-in · .late-in → RevealScript 의 늦은 관찰자(화면 안 12%)
  *     --hp · --py · --p · --sp · .w.on                                       → components/ScrollMotion (스크롤 숫자, 레이아웃에 하나)
  *     .em-now · 첫 화면 · 하위 머리말                                          → 페이지가 열리면 바로(CSS animation)
  * ★ 기존 hover 움직임(더뉴 이식, thenew.css)은 transform 을 쓴다. 여기 등장 효과는 **개별 속성**
@@ -39,34 +39,36 @@
   transform: scaleX(var(--sp, 0));
 }
 
-/* ══ 문구 강조 — 형광펜 밑줄 ══════════════════════════════════════════════
+/* ══ 문구 강조 — 색 + 얇은 밑줄 획(광화문 선치과 방식) ══════════════════════════
  *
- * ★★ 3차 (2026-09-29 오너: "강조색이 너무 안보이네 차라리 강조 형광펜으로 하든지" + "밑줄치는 그런거") ★★
- *   1차 손그림 원·옅은 형광펜 → 2차 글자색 번짐(블루그레이) → "너무 안 보인다" → 지금: **형광펜으로 밑줄을 긋듯**
- *   글자 아래쪽 40% 에 띠가 왼쪽에서 오른쪽으로 그어진다. 글자색은 그대로라 읽기는 원문 그대로다.
- * ⚠️ 2차의 교훈 — 블루그레이 글자색은 차콜 옆에서 '다른 색' 으로 안 읽힌다(명도 차가 작다). 강조는 **면**으로 줄 것.
- * ⚠️ 띠를 옅게 되돌리지 말 것 — 1차(taupe 40%)도 잘 안 보였다. 대신 띠 높이를 글자 아래 40% 로만 둬 글자를 덮지 않는다.
+ * ★★ 4차 (2026-09-29 오너: "광화문선 참고해서 형광펜 스타일 바꿔. 색깔은 저 네이비 그대로") ★★
+ *   광화문 선치과 .accent — "색과 함께 밑에 얇은 획 하나. 형광펜처럼 넓게 칠하지 않는다"(글자 남색 + 0.14em 획, 글자 밑 92%).
+ *   여기서는 그 모양을 그대로 쓰고 색만 이 사이트 것으로: 글자 = 네이비(clay-700, 헤더 '예약하기' 단추와 같은 색),
+ *   획 = 3차 형광펜 띠 색(#cbd9e2) 그대로. 획은 보일 때 왼쪽에서 오른쪽으로 그어진다(이 사이트의 움직임).
+ *   이력: 1차 손그림원·옅은 형광펜 → 2차 글자색 번짐("안 보인다") → 3차 넓은 형광펜 띠 → 4차 색 + 얇은 획.
+ * ⚠️ 2차처럼 글자색만 두면 차콜 옆에서 안 읽힌다 — 획을 빼지 말 것. 색과 획이 같이 있어야 강조로 읽힌다.
  * ★ 줄이 바뀌면 줄마다 따로 그어진다(box-decoration-break: clone).
- * ★ 표시 문법 [[ ]] · == · __ 는 전부 같은 형광펜 밑줄이다(components/motion).
+ * ★ 표시 문법 [[ ]] · == · __ 는 전부 같은 모양이다(components/motion).
  */
 :root {
-  --mk: #cbd9e2; /* 밝은 면 — 사이트 기준색(블루그레이)을 옅게. 위 글자: 차콜 12:1 · 굵은 글(clay-700) 5.4:1 */
-  /* ⚠️ 0.42em·#d3dee5 는 본문(17px) 에서 띠가 7px 로 가늘어 안 보였다(실측) → 0.48em·한 단 짙게 */
-  --mk-h: 0.48em;
+  --em-c: var(--color-clay-700); /* 네이비 글자 — 아이보리 위 7.2:1 */
+  --mk: #cbd9e2; /* 밑줄 획 — 3차 띠 색 그대로 */
+  --mk-h: 0.15em;
 }
 .on-dark {
-  --mk: rgba(169, 191, 205, 0.36); /* 어두운 면 — 같은 블루그레이를 비친 띠. 위 아이보리 글자 4.8:1 (0.3 은 본문에서 안 보였다) */
+  --em-c: #a9bfcd; /* 어두운 면 — 같은 네이비 계열을 밝게(wine-deep 위 ≈7:1). 네이비 그대로는 어두운 바탕에서 안 읽힌다 */
+  --mk: rgba(169, 191, 205, 0.5);
 }
 .em-mark,
 .em-strong {
+  color: var(--em-c);
   background-image: linear-gradient(var(--mk), var(--mk));
   background-repeat: no-repeat;
-  background-position: 0 90%;
+  background-position: 0 92%;
   background-size: 0% var(--mk-h);
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  padding: 0 0.06em;
-  transition: background-size 1.15s var(--ease-draw) var(--ed, 0ms);
+  transition: background-size 1s var(--ease-draw) var(--ed, 0ms);
 }
 .em-mark.is-shown,
 .split-in.is-shown .em-mark,
@@ -74,25 +76,21 @@
   background-size: 100% var(--mk-h);
 }
 /*
- * 설명 속 굵은 글(** … **, components/ui Marked) — 보일 때 조금 뒤 그어진다.
- * ★ 띠 위에서도 읽히게 글자를 한 단 짙게: 밝은 면 clay-600 → clay-700(5.4:1), 어두운 면 ember → 아이보리(4.8:1).
+ * 설명 속 굵은 글(** … **, components/ui Marked) — 글자는 원래 강조색 자리(clay-600)를 네이비로, 보일 때 조금 뒤 획이 그어진다.
  * ⚠️ 어두운 면 판정은 .on-dark 가 아니라 **글자 클래스(text-ember)** 로 한다 — 진료 머리말(사진 위)처럼
- *    .on-dark 없이 어두운 자리도 Marked 는 tone="dark" 로 text-ember 를 준다. 밝은 띠가 깔리면 글자가 사라진다.
+ *    .on-dark 없이 어두운 자리도 Marked 는 tone="dark" 로 text-ember 를 준다. 네이비 글자가 깔리면 안 읽힌다.
  */
 .em-strong {
   transition-delay: 0.35s;
 }
-.em-strong.text-clay-600 {
-  color: var(--color-clay-700);
-}
 .em-strong.text-ember {
-  --mk: rgba(169, 191, 205, 0.36);
-  color: #efece5;
+  --em-c: var(--color-ember);
+  --mk: rgba(169, 191, 205, 0.5);
 }
 /* 첫 화면 — 관찰자 없이 페이지가 열리면 바로 */
 .em-now.em-mark {
   transition: none;
-  animation: mark 1.15s var(--ease-draw) var(--ed, 0ms) forwards;
+  animation: mark 1s var(--ease-draw) var(--ed, 0ms) forwards;
 }
 @keyframes mark {
   to {
