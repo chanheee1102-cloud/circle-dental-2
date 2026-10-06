@@ -79,6 +79,7 @@ export function CenterHead({
   title,
   split,
   desc,
+  still = false,
 }: {
   label: string;
   title?: ReactNode;
@@ -86,11 +87,18 @@ export function CenterHead({
   split?: readonly string[];
   /** ** 로 감싼 곳은 굵게 + 보일 때 형광펜 밑줄(.em-strong). */
   desc?: string;
+  /**
+   * 스크롤 등장 없이 처음부터 다 보인 상태로 둔다 — 줄 가림막·떠오름·밑줄 그어짐 없음(.mo-still, app/motion.css).
+   * 2026-10-06 오너: 의료진 구획 "스크롤 모션 없애자, 그냥 기본 상태로" — 마우스를 올렸을 때의 움직임은 그대로다.
+   */
+  still?: boolean;
 }) {
   return (
-    <div className="c-head reveal">
+    <div className={`c-head${still ? ' mo-still' : ' reveal'}`}>
       <p className="c-label">{label}</p>
-      <h2 className={`serif-head${split ? ' split-in' : ''}`}>{split ? <SplitLines lines={split} /> : title}</h2>
+      <h2 className={`serif-head${split && !still ? ' split-in' : ''}`}>
+        {split ? still ? split.join(' ') : <SplitLines lines={split} /> : title}
+      </h2>
       {desc ? (
         <p>
           <Sentences text={desc} />
