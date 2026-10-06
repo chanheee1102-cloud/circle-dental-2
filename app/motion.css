@@ -608,47 +608,102 @@ html.mo-on .stm-sub {
   }
 }
 
-/* ══ 4) 자연치아 보존 띠 — 사진 시차 + 번지는 동그라미 ══ */
+/* 사진 시차 틀(data-par) — 둘러보기 등에서 쓴다 */
 .par-img {
   position: absolute;
   inset: -12% 0;
   translate: 0 var(--py, 0px);
   will-change: translate;
 }
-.pv-rings {
+/*
+ * ══ 4) 살릴 수 있는지부터 — 어두운 띠 + 동그라미 창 (2026-10-06, 요청서 목업 판을 갈아 끼움) ══
+ *   왼쪽 글 · 오른쪽 둥근 창 안에 병원 상담 영상. 창은 가운데에서 둥글게 열리고(.clip-in.clip-circle),
+ *   둘레 궤도선은 --p(구획이 화면을 지나는 정도)로 한 바퀴 그려지며, 작은 점이 궤도 위를 따라 돈다.
+ *   ⚠️ 영상은 object-position 으로 모니터·짚는 손·환자가 창 가운데 오게(원본 781×434 가로 영상).
+ */
+.pv {
+  --qo: clamp(0, calc((var(--p, 1) - 0.12) / 0.5), 1);
+}
+.pv-glow {
   position: absolute;
-  z-index: -5;
-  left: 0;
-  top: 50%;
-  width: 0;
-  height: 0;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(42% 60% at 74% 50%, rgba(169, 191, 205, 0.13), rgba(169, 191, 205, 0) 70%);
+}
+.pv-in {
+  display: grid;
+  gap: 56px;
+  padding-block: 96px 104px;
+}
+.pv-stage {
+  position: relative;
+  justify-self: center;
+  width: min(78vw, 340px);
+  aspect-ratio: 1;
+}
+.pv-lens {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #1f2529;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.55);
+}
+.pv-lens .pv-video {
+  object-position: 62% 50%;
+  scale: 1.02;
+}
+/* 궤도선 — 창보다 한 뼘 크게, 아주 옅게 */
+.pv-orbit {
+  position: absolute;
+  inset: -9%;
+  width: 118%;
+  height: 118%;
+  overflow: visible;
+  rotate: calc(-90deg + var(--qo) * 60deg);
   pointer-events: none;
 }
-.pv-rings i {
+.pv-orbit circle {
+  fill: none;
+  stroke: rgba(239, 236, 229, 0.28);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+html.mo-on .pv-orbit circle {
+  stroke-dashoffset: calc(1 - var(--qo));
+}
+/* 궤도 위의 점 — 궤도선 끝을 따라간다(점 자리 = 궤도 반지름, 회전 = 그려진 만큼) */
+.pv-dot {
   position: absolute;
-  left: 0;
-  top: 0;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
   border-radius: 50%;
-  border: 1px dashed rgba(239, 236, 229, 0.16);
-  translate: -50% -50%;
-  rotate: calc(var(--p, 0) * 140deg);
-  scale: calc(0.75 + var(--p, 0) * 0.45);
+  background: #a9bfcd;
+  box-shadow: 0 0 0 5px rgba(169, 191, 205, 0.16);
+  /* 궤도선은 12시에서 시작해 (그려진 만큼 360° + 궤도 자체 회전 60°) 앞서 간다 → 점도 같은 각도(420° × 진행) */
+  rotate: calc(var(--qo) * 420deg);
+  transform: translateY(calc(min(78vw, 340px) * -0.59));
 }
-.pv-rings i:nth-child(1) {
-  width: 46vmax;
-  height: 46vmax;
-}
-.pv-rings i:nth-child(2) {
-  width: 72vmax;
-  height: 72vmax;
-  border-style: solid;
-  border-color: rgba(239, 236, 229, 0.08);
-  rotate: calc(var(--p, 0) * -90deg);
-}
-.pv-rings i:nth-child(3) {
-  width: 100vmax;
-  height: 100vmax;
-  border-color: rgba(239, 236, 229, 0.1);
+@media (min-width: 1024px) {
+  .pv-in {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 72px;
+    padding-block: 144px;
+  }
+  .pv-stage {
+    width: clamp(380px, 33vw, 480px);
+    margin-right: 4%;
+  }
+  .pv-dot {
+    transform: translateY(calc(clamp(380px, 33vw, 480px) * -0.59));
+  }
 }
 /* ══ 5) 의료진 — 스크롤 등장 없음 (2026-10-06 오너 "스크롤 모션 없애자, 그냥 기본 상태로") ══
  *   판이 솟고 사진이 닦이던 등장(.dp-card.late-in, fade-up·wipe-l/r·sink-soft·ring-in)은 지웠다. 올렸을 때 움직임은 app/thenew.css.

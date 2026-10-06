@@ -74,7 +74,7 @@ export function CredentialFan({ href = '/about/doctors' }: { href?: string | nul
     : ({ children }: { label: string; children: React.ReactNode }) => <div>{children}</div>;
 
   return (
-    <ul className="relative z-10 mt-10 grid grid-cols-2 gap-x-6 gap-y-12 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-10">
+    <ul className="cf-list relative z-10 mt-10 grid grid-cols-2 gap-x-6 gap-y-12 sm:gap-x-8 lg:grid-cols-4 lg:gap-x-10">
       {items.map((c, i) => (
         /*
           ⚠️ 하나씩 올라오게 만드는 것은 이 delay 다. 다 같이 올라오면 '한 덩어리가
@@ -110,7 +110,7 @@ export function CredentialFan({ href = '/about/doctors' }: { href?: string | nul
                   ⚠️ object-bottom — 밑변 정렬이 여기서 지켜진다. 가운데 정렬로 두면
                      납작한 세 번째(236×178)만 혼자 떠 보인다.
                 */}
-                <div className={`relative ${SHELF}`}>
+                <div className={`cf-shelf relative ${SHELF}`}>
                   <Image
                     src={c.src}
                     alt={c.label}
@@ -144,7 +144,7 @@ export function CredentialFan({ href = '/about/doctors' }: { href?: string | nul
                 */}
                 <figcaption
                   /* ⚠️ text-ash 로 되돌리지 말 것 — 어두운 구획에서 1.7:1 로 안 보인다(app/page.tsx 주석). */
-                  className="relative mt-6 flex min-h-[3.2rem] items-start justify-center text-center text-[16.5px] leading-snug font-medium text-ink-soft"
+                  className="cf-cap relative mt-6 flex min-h-[3.2rem] items-start justify-center text-center text-[16.5px] leading-snug font-medium text-ink-soft"
                   style={{ transform: 'translateZ(20px)' }}
                 >
                   {c.label}

@@ -37,20 +37,16 @@ export const PRINCIPLES = [
  */
 export const PRINCIPLE_STATEMENT = '이 네 가지를 먼저 묻고, 그다음에 치료를 이야기합니다.';
 
-/**
- * 자연치아 보존 띠 — 유닛 트레이의 핸드피스 근접. 어둡고 형태가 단순해 덮개 아래서 결만 남는다.
- * ⚠️ 멸균 트레이 사진(72fa74e154297)은 포장지 글자가 많아 덮어도 어지러웠다(실측). 되돌리지 말 것.
- */
 /*
  * ★ 2026-09-17 오너: "사진 부족한 건 GPT 로 넣어, 메인 페이지만 우선" — 아래 gen/ 세 장은 **AI 생성 이미지**다
  *   (OpenAI gpt-image, C:/tmp/gen-home-images.mjs 로 만들었다). 사람·손·글자 없이 **사물만**(치아 모형·올리브·린넨).
  *   진료 장면·의료진·환자를 생성해 넣지 말 것 — 사물 정물은 분위기이지 사실 주장이 아니라서 허용했다.
  * ⚠️ 위 원칙("사진은 전부 실제 사진")의 예외는 이 세 장뿐이다. 다른 자리에 넓히려면 오너 GO 필요.
  */
-export const PRESERVE_PHOTO = {
-  src: `${P}/gen/preserve.jpg`,
-  alt: '',
-};
+/*
+ * (2026-10-06) 보존 띠의 AI 정물 PRESERVE_PHOTO(gen/preserve.jpg)는 걷었다 — 요청서 목업과 똑같다는 오너 지적.
+ *   그 자리는 이제 병원 상담 영상(public/video/consult-xray, app/page.tsx PreserveBand)이다.
+ */
 
 /** 둘러보기 — 큰 사진 하나 + 작은 사진 둘. 전체는 /about/tour. */
 export const TOUR_PHOTOS = {
@@ -66,7 +62,7 @@ export const TOUR_PHOTOS = {
 } as const;
 
 /**
- * 인사이트 최신 글 카드의 **대체 표지** — 표지 없는 글(중앙 글에 흔하다)에 번갈아 쓴다. AI 생성 정물(PRESERVE_PHOTO 주석).
+ * 인사이트 최신 글 카드의 **대체 표지** — 표지 없는 글(중앙 글에 흔하다)에 번갈아 쓴다. AI 생성 정물(위 gen/ 주석).
  * (2026-09-17: 슬로건 타일 STORY_TILES 는 폐기 — 눌러도 갈 곳이 없는 장식이라 최신 글로 바꿨다. app/page.tsx StorySection.)
  */
 export const STORY_FALLBACK_COVERS = [
