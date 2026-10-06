@@ -10,6 +10,9 @@ import { CLINIC } from '@/lib/clinic';
  *   사진 쪽에 이름표가 서고, 비워진 반쪽으로 경력이 올라온다. 두 번째 판은 좌우를 뒤집는다.
  * ★ 이름 뒤의 얇은 원은 '동그라미' — 더뉴가 인증 엠블럼을 두는 자리에 병원 이름의 원을 둔다.
  * ★ 올릴 마우스가 없는 화면(터치)·좁은 화면에서는 처음부터 경력까지 다 보인다.
+ * ★★ 스크롤 등장은 없다 (2026-10-06 오너: "의료진 부분은 스크롤 모션 없애자. 그냥 기본 상태로, 마우스 갖다대면 모션 나오는 건 좋아") ★★
+ *   옛 판은 판이 솟고 사진이 옆에서 닦이고 이름·원이 뒤따랐다(.late-in, 2026-09-29). 되살리려면 오너 GO.
+ *   ⚠️ late-in 클래스를 다시 붙이지 말 것 — 올렸을 때 움직임(app/thenew.css :hover)과는 무관하다.
  * ⚠️ 경력 줄은 lib/doctors.ts 의 keyCareer 그대로(원문 부분집합 — 그 파일의 assert 가 지킨다). 자격(license)은 이름 아래 한 번만.
  *    "경력 싹다 보여주는 것보다 중요한 경력만"(2026-08-31 운영자) — 전체 줄 수는 개수로만 적는다.
  * ★ 2026-10-06 오너 "문구들은 웬만하면 처음 버전 그대로" — 처음 판 의료진 무대(DoctorStage)와 같은 표기로:
@@ -44,7 +47,7 @@ export function DoctorPanels({ doctors }: { doctors: DoctorPanel[] }) {
         return (
           <article
             key={d.slug}
-            className={`dp-card late-in${i % 2 ? ' dp-flip' : ''}`}
+            className={`dp-card${i % 2 ? ' dp-flip' : ''}`}
             data-doc={d.slug}
             style={{ ['--dp-bg' as string]: PHOTO_BG[d.slug] ?? '#cfd2d9' }}
             aria-labelledby={`dp-${d.slug}`}
