@@ -11,7 +11,6 @@ import {
   PRINCIPLE_STATEMENT,
   CLINIC_CARDS,
   SPECIAL_CARD_ART,
-  PRESERVE_PHOTO,
   TOUR_PHOTOS,
   STORY_FALLBACK_COVERS,
   doctorPhoto,
@@ -31,6 +30,7 @@ import { ClinicMap } from '@/components/ClinicMap';
 import { Reveal } from '@/components/Reveal';
 import { Chars, Em, SplitLines } from '@/components/motion';
 import { JsonLd } from '@/components/JsonLd';
+import { Clip, ClipStill } from '@/components/Clip';
 import { medicalWebPageSchema, imageObjectSchema } from '@/lib/seo';
 import { imageMeta } from '@/lib/imageSize';
 
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
  *   1 Hero        환자 중심 진료, 소통하는 치과(처음 판 문구) — 아래에 SCROLL · BETTER CHOICES ~ A HEALTHIER TOMORROW
  *   2 Principles  동그라미가 가장 먼저 생각하는 것 — 원 안 선 아이콘 + 01~04, 그 아래 한 문장
  *   3 Clinic      주요 진료 과목 — 더뉴치과 짜임(2026-09-28): 올린 카드만 두 배로 넓어지는 네 장, 켜진 카드에 환자의 말
- *   4 Preserve    자연치아 보존 — 어두운 블루그레이 띠 (페이지에서 유일한 어두운 면)
+ *   4 Preserve    살릴 수 있는지부터, 솔직하게 — 어두운 띠 + 동그라미 창 속 병원 상담 영상 (페이지에서 유일한 어두운 면)
  *   5 Doctors     더뉴치과 짜임(2026-09-28): 한 사람당 가로 판, 올리면 이름이 빠지고 경력이 올라옴 + 인증패 넷(CredentialFan) + 논문 배너(라이브 짜임, 색만 블루그레이)
  *   5-1 Special   동그라미치과의 특별함 — 더뉴치과 짜임(2026-09-28): 세로 사진 카드 일곱 장이 3초마다 흐름, 올리면 토프에 잠기며 설명
  *   6 Tour        둘러보기
@@ -337,39 +337,48 @@ function ClinicSection() {
 }
 
 /* ─────────────────────────── 4. 자연치아 보존 띠 ─────────────────────────── */
+/*
+ * ★★ 우리만의 판 (2026-10-06 오너: "예시로 원장이 보낸 거랑 아예 똑같잖아. 우리만의 분위기랑 문구로 바꿔") ★★
+ *   옛 판은 요청서 목업 그대로였다 — 어두운 블루그레이 위 AI 정물(치아+올리브 가지) + '자연치아 보존, 가능할 때가 가장 좋습니다'.
+ *   이제는 **이 병원이 직접 찍은 상담 영상**(원장이 파노라마 사진을 짚으며 설명하는 장면, public/video/consult-xray)을
+ *   병원 이름의 '동그라미' 창 안에 틀고, 그 둘레를 가는 궤도선이 스크롤을 따라 한 바퀴 그린다.
+ * ★ 문구는 처음 판 원문(lib/concerns.ts '꼭 치료해야 하는지 몰라서'·'과잉진료가 걱정돼서' 답)에서 가져왔다 —
+ *   제목 '살릴 수 있는지부터, 솔직하게 말씀드립니다.' 만 새로 세웠고, 아래 두 문장과 링크 이름('살릴 수 있는지 보기')은 원문 그대로다.
+ *   '뽑기 전에' 는 일부러 쓰지 않았다(요청서 목업 첫 화면 문구와 겹친다).
+ * ★ 영상: 소리 없음·반복·인라인(components/Clip). 움직임 줄이기면 첫 장면 사진(ClipStill)만.
+ * ⚠️ 옛 AI 정물(gen/preserve.jpg)은 홈에서 걷었다 — 파일은 남겨 둔다.
+ */
 function PreserveBand() {
   return (
-    <section className="on-dark relative isolate overflow-hidden bg-wine-deep text-parchment">
-      {/* 2026-09-29 모션: 사진은 틀보다 위아래 12% 크게 두고 스크롤 반대로 민다(시차, data-par). 뒤로 번지는 동그라미 셋(--p). */}
-      <div aria-hidden className="par-img -z-20" data-par="0.1">
-        <Image
-          src={PRESERVE_PHOTO.src}
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover object-[70%_60%] lg:object-[80%_50%]"
-        />
-      </div>
-      <div aria-hidden className="tint-bluegray absolute inset-0 -z-10" />
-      <div aria-hidden className="pv-rings" data-scrub>
-        <i />
-        <i />
-        <i />
-      </div>
-      <Container className="py-28 pb-[60vw] sm:pb-[44vw] lg:py-40">
-        <div className="reveal max-w-[34em]">
-          {/* 영문 'NATURAL TOGETHER FOR A LONGER SMILE' 은 뺐다(2026-09-28) — 영어 문장이 되지 않고 첫 화면 영문과 같은 뜻이었다. */}
-          <h2 className="serif-head split-in text-[clamp(30px,4.4vw,50px)] text-parchment">
-            <SplitLines lines={['자연치아 보존,', '가능할 때가 __가장 좋습니다.__']} />
+    <section className="pv on-dark relative isolate overflow-hidden bg-wine-deep text-parchment" data-scrub>
+      <div aria-hidden className="pv-glow" />
+      <Container className="pv-in">
+        <div className="pv-copy reveal">
+          <p className="eyebrow-chip text-mist/80">자연치아살리기</p>
+          <h2 className="serif-head split-in mt-5 text-[clamp(30px,4.2vw,50px)] text-parchment">
+            <SplitLines lines={['살릴 수 있는지부터,', '==솔직하게== 말씀드립니다.']} />
           </h2>
-          <p className="mt-7 max-w-[28em] text-[17.5px] leading-[1.9] text-parchment/85">
-            <Em text="==살릴 수 있는 치아인지== 확인하고," delay={300} />
-            <br className="hidden sm:block" /> 가능한 방법을 함께 찾아갑니다.
+          <p className="mt-7 max-w-[27em] text-[17px] leading-[1.9] text-parchment/85 sm:text-[17.5px]">
+            지금 손대야 하는 것과 지켜봐도 되는 것을 나눠 말씀드립니다.{' '}
+            <br className="max-lg:hidden" />
+            다만 살릴 수 없는 치아를 억지로 끌고 가지도 않습니다.
           </p>
           <div className="mt-9">
             <QuietLink href="/treatment/save-natural-tooth" tone="dark">
-              자연치아 보존 자세히 보기
+              살릴 수 있는지 보기
             </QuietLink>
+          </div>
+        </div>
+
+        {/* 동그라미 창 — 가운데에서 둥글게 열리고(.clip-circle), 둘레 궤도선은 --p 로 그려진다 */}
+        <div className="pv-stage">
+          <svg aria-hidden className="pv-orbit" viewBox="0 0 200 200" focusable="false">
+            <circle cx="100" cy="100" r="99" pathLength={1} />
+          </svg>
+          <span aria-hidden className="pv-dot" />
+          <div className="pv-lens clip-in clip-circle">
+            <Clip base="consult-xray" label="원장이 모니터의 파노라마 방사선 사진을 짚으며 환자에게 설명하는 상담 장면" className="pv-video" />
+            <ClipStill base="consult-xray" alt="원장이 모니터의 파노라마 방사선 사진을 짚으며 환자에게 설명하는 상담 장면" className="pv-video" />
           </div>
         </div>
       </Container>
@@ -429,14 +438,15 @@ function DoctorsSection() {
             처음 판 문구 그대로 — 오너가 두 안 중 고른 첫째 안(2026-09-03). 아래 넉 장(위촉패·수료패·수료증·회원증)이 무엇인지 말해 준다.
           ⚠️ '인증' 으로 바꾸지 말 것 — 바로 위 '보건복지부인증 전문의' 와 같은 것처럼 읽힌다(처음 판 주석).
         */}
-        <div className="c-head c-head-sub reveal mt-24 lg:mt-32">
+        <div className="c-head c-head-sub reveal mt-14 sm:mt-24 lg:mt-32">
           <p className="c-label">경력</p>
           <h3 className="serif-head">더 나은 진료를 위해, 배움과 경험을 이어갑니다</h3>
         </div>
-        <div className="relative mt-6 overflow-hidden lg:mt-8">
+        {/* home-cred — 휴대폰에서 인증패를 작게(app/thenew.css 「휴대폰 간추림」). /about/doctors 의 같은 부품은 그대로다. */}
+        <div className="home-cred relative mt-6 overflow-hidden lg:mt-8">
           <div
             aria-hidden
-            className="pointer-events-none absolute top-[42%] left-1/2 z-0 w-screen -translate-x-1/2 -translate-y-1/2"
+            className="pointer-events-none absolute top-[42%] left-1/2 z-0 w-screen -translate-x-1/2 -translate-y-1/2 max-md:hidden"
           >
             <HeroMarquee
               text="Circle Dental Clinic ·"
@@ -448,13 +458,13 @@ function DoctorsSection() {
           <CredentialFan />
         </div>
 
-        <div className="mt-12 border-t border-wine-line pt-10">
+        <div className="mt-8 border-t border-wine-line pt-8 sm:mt-12 sm:pt-10">
           <div className="seq relative overflow-hidden rounded-[24px] bg-wine-deep lg:grid lg:grid-cols-[54%_minmax(0,1fr)]">
-            <div className="relative z-10 px-7 py-12 sm:px-10 lg:py-16 xl:py-20">
+            <div className="relative z-10 px-6 py-9 sm:px-10 sm:py-12 lg:py-16 xl:py-20">
               <p className="eyebrow-chip text-clay-300">
                 <SeqLetters text="발표논문" step={90} />
               </p>
-              <p className="mt-5 text-[19px] leading-[1.6] font-semibold text-parchment sm:text-[21px]">
+              <p className="mt-4 text-[17px] leading-[1.6] font-semibold text-parchment sm:mt-5 sm:text-[21px]">
                 <SeqLetters text={PUBLICATION_DETAIL.title} step={11} start={420} />
               </p>
               <p className="seq-fade mt-3 text-[16px] text-clay-300/80" style={{ ['--d' as string]: '1400ms' }}>
