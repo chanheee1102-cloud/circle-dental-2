@@ -8,7 +8,8 @@ import { useState } from 'react';
  * 주요 진료 — 더뉴치과 메인 '주요 진료 과목'의 움직임을 옮긴 카드 줄 (2026-09-28 오너).
  *
  * ★ 넓은 화면: 네 장이 한 줄. 마우스가 올라간(또는 키보드로 닿은) 카드만 두 배로 넓어지고
- *   (flex-grow 1 → 2, 20% → 40%), 그 카드에서만 환자의 말·설명·'자세히 보기' 가 올라온다.
+ *   (flex-grow 1 → 2, 20% → 40%), 그 카드에서만 설명·'자세히 보기' 가 올라온다.
+ *   (2026-10-06: 첫 줄의 환자 말 인용은 뺐다 — 처음 판에 없던 문구. 설명은 lib/clinic.ts TREATMENT_PILLARS 원문.)
  *   오른쪽 위에는 동그라미가 한 바퀴 그려진다(더뉴는 로고가 뜨는 자리 — 여기선 이름의 원).
  * ★ 좁은 화면: 세로로 쌓고 전부 펼친 채로 둔다(올릴 마우스가 없다).
  * ★ 카드 전체가 링크다 — 넓어진 카드를 누르면 그 진료 페이지로 간다.
@@ -18,7 +19,6 @@ export interface ClinicCard {
   key: string;
   en: string;
   name: string;
-  quote: string;
   copy: string;
   href: string;
   tone: 'light' | 'dark';
@@ -46,7 +46,6 @@ export function ClinicAccordion({ cards }: { cards: ClinicCard[] }) {
               <span className="cl-en">{c.en}</span>
               <span className="cl-name">{c.name}</span>
               <span className="cl-more">
-                <span className="cl-quote">“{c.quote}”</span>
                 <span className="cl-copy">{c.copy}</span>
                 <span className="cl-btn">
                   자세히 보기

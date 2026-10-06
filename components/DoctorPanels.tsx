@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { CLINIC } from '@/lib/clinic';
 
 /**
  * 의료진 — 더뉴치과 메인 '대표원장 소개' 판을 옮긴 것 (2026-09-28 오너).
@@ -11,6 +12,8 @@ import Image from 'next/image';
  * ★ 올릴 마우스가 없는 화면(터치)·좁은 화면에서는 처음부터 경력까지 다 보인다.
  * ⚠️ 경력 줄은 lib/doctors.ts 의 keyCareer 그대로(원문 부분집합 — 그 파일의 assert 가 지킨다). 자격(license)은 이름 아래 한 번만.
  *    "경력 싹다 보여주는 것보다 중요한 경력만"(2026-08-31 운영자) — 전체 줄 수는 개수로만 적는다.
+ * ★ 2026-10-06 오너 "문구들은 웬만하면 처음 버전 그대로" — 처음 판 의료진 무대(DoctorStage)와 같은 표기로:
+ *   직함은 '동그라미치과 대표원장/원장', 자격은 '보건복지부인증 통합치의학과 전문의' 전체를 적는다(앞말을 떼지 않는다).
  * ⚠️ 사진 반쪽의 바탕색(bg)은 사진의 스튜디오 바탕을 잰 값이다. 사진 가장자리를 흐려 그 색에 녹인다.
  */
 export interface DoctorPanel {
@@ -35,7 +38,9 @@ export function DoctorPanels({ doctors }: { doctors: DoctorPanel[] }) {
   return (
     <div className="dp-list">
       {doctors.map((d, i) => {
-        const spec = d.license.replace('보건복지부인증 ', '');
+        const spec = d.license;
+        /* ⚠️ 한 문자열로 낸다 — `{CLINIC.shortName} {d.role}` 로 나누면 사이에 주석 노드가 낀다(DoctorStage 주석) */
+        const role = `${CLINIC.shortName} ${d.role}`;
         return (
           <article
             key={d.slug}
@@ -55,7 +60,7 @@ export function DoctorPanels({ doctors }: { doctors: DoctorPanel[] }) {
               />
               {/* 사진 쪽 이름표 — 올렸을 때만. 이름은 아래 제목이 이미 읽히므로 보조기기에는 숨긴다. */}
               <div className="dp-tag" aria-hidden>
-                <span className="dp-tag-role">{d.role}</span>
+                <span className="dp-tag-role">{role}</span>
                 <span className="dp-tag-name">{d.name}</span>
                 <span className="dp-tag-spec">{spec}</span>
               </div>
@@ -66,7 +71,7 @@ export function DoctorPanels({ doctors }: { doctors: DoctorPanel[] }) {
                 <circle cx="100" cy="100" r="98" />
               </svg>
               <div className="dp-name">
-                <span className="dp-role">{d.role}</span>
+                <span className="dp-role">{role}</span>
                 <h3 id={`dp-${d.slug}`} className="dp-big">
                   {d.name}
                 </h3>

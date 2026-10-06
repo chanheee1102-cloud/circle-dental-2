@@ -38,59 +38,6 @@ export const PRINCIPLES = [
 export const PRINCIPLE_STATEMENT = '이 네 가지를 먼저 묻고, 그다음에 치료를 이야기합니다.';
 
 /**
- * 어떤 고민이 있으신가요 — 환자의 말 → 갈 곳.
- * ⚠️ quote 는 환자의 말이다. 병원 말투로 다듬지 않는다.
- * ⚠️ tag 는 lib/nav.ts 의 진료 이름과 같은 말을 쓴다(새 진료명을 만들지 않는다).
- */
-export const HOME_CONCERNS = [
-  {
-    quote: '이가 아파요.',
-    tag: '충치 / 신경치료',
-    href: '/treatment/cavity',
-    photo: {
-      src: `${P}/20250507_d47b45c0c33ce.jpg`,
-      alt: '상담실에서 의료진이 모니터를 보며 환자와 이야기하는 모습',
-    },
-  },
-  {
-    quote: '치아를 뽑아야 한다고 들었어요.',
-    tag: '발치 전 상담 / 임플란트',
-    href: '/treatment/implant',
-    photo: {
-      src: `${P}/20210923_67b5506b18b26.jpg`,
-      alt: '파노라마 엑스레이 촬영 장면',
-    },
-  },
-  {
-    quote: '사랑니가 아파요.',
-    tag: '사랑니 발치',
-    href: '/treatment/wisdom-tooth',
-    photo: {
-      src: `${P}/20250509_db27dda8e4fa2.jpg`,
-      alt: '진료실에서 의료진 두 사람이 진료 중인 모습',
-    },
-  },
-  {
-    quote: '치아가 조금 더 예뻤으면 좋겠어요.',
-    tag: '심미치료',
-    href: '/treatment/aesthetic',
-    photo: {
-      src: `${P}/20210923_956b5d44b57ef.jpg`,
-      alt: '상담실에서 치아 모형과 파노라마 화면으로 설명하는 모습',
-    },
-  },
-  {
-    quote: '치아를 살릴 수 있을까요?',
-    tag: '자연치아 살리기',
-    href: '/treatment/save-natural-tooth',
-    photo: {
-      src: `${P}/20250507_da92f28e449a4.jpg`,
-      alt: '모니터 앞에서 의료진이 환자에게 진료 계획을 설명하는 모습',
-    },
-  },
-] as const;
-
-/**
  * 자연치아 보존 띠 — 유닛 트레이의 핸드피스 근접. 어둡고 형태가 단순해 덮개 아래서 결만 남는다.
  * ⚠️ 멸균 트레이 사진(72fa74e154297)은 포장지 글자가 많아 덮어도 어지러웠다(실측). 되돌리지 말 것.
  */
@@ -140,18 +87,15 @@ export const STORY_FALLBACK_COVERS = [
  *   바탕 색은 요청서 팔레트 안에서 골랐다 — 블루그레이 / 토프 / 아이보리 / 블루그레이 딥.
  * ★ tone = 사진 윗부분(글자가 서는 자리)의 밝기. 밝은 세 장은 차콜 글자, 어두운 한 장만 흰 글자
  *   (밝은 파스텔 위 흰 글자는 대비 2:1 안팎이라 읽히지 않는다 — 더뉴처럼 전부 흰 글자로 하지 않은 이유).
- * ★ name·copy·href 는 lib/clinic.ts TREATMENT_PILLARS 원문, quote 는 위 HOME_CONCERNS 의 환자 말 그대로.
+ * ★ name·copy·href 는 lib/clinic.ts TREATMENT_PILLARS 원문.
+ * ★ 2026-10-06 오너 "문구들은 웬만하면 처음 버전 그대로" — 켜진 카드 첫 줄의 환자 말(“치아를 살릴 수 있을까요?” 등)과
+ *   자연치아 카드의 홈 전용 설명('충치치료·신경치료·잇몸치료처럼…')은 처음 판에 없던 문구라 뺐다. 설명은 원문(TREATMENT_PILLARS.copy) 그대로.
  */
-/** 고민 카드의 환자 말을 그대로 가져온다 — 같은 말을 두 곳에 적어 두면 어긋난다 */
-const quoteOf = (href: string): string => HOME_CONCERNS.find((c) => c.href === href)?.quote ?? '';
 
 export const CLINIC_CARDS = [
   {
     key: 'natural',
     en: 'Natural Tooth',
-    quote: quoteOf('/treatment/save-natural-tooth'),
-    /* 원문 '…최대한 살리는 것이 진료 철학입니다' 는 바로 위 환자 말·진료 철학 구획과 같은 말 → 홈에서만 이 카드가 무엇을 모았는지로(메뉴 이름은 lib/nav.ts 하위 메뉴 그대로). */
-    copy: '충치치료·신경치료·잇몸치료처럼 지금 있는 치아를 치료하는 진료를 모았습니다.',
     tone: 'light',
     /* 2판(2026-09-28): 옛 그림(접시 위 치아+초록 잎)이 바로 아래 보존 띠(치아+올리브 가지)와 소재가 겹쳐 유리 덮개로 — '지킨다' */
     photo: { src: `${P}/gen/care-save-2.jpg`, alt: '블루그레이 바탕에서 유리 덮개 안 돌 받침 위에 놓인 흰 치아 모형' },
@@ -159,21 +103,18 @@ export const CLINIC_CARDS = [
   {
     key: 'implant',
     en: 'Implant',
-    quote: quoteOf('/treatment/implant'),
     tone: 'light',
     photo: { src: `${P}/gen/care-implant.jpg`, alt: '토프색 바탕의 돌 받침 위에 선 임플란트 나사와 흰 크라운 모형' },
   },
   {
     key: 'aesthetic',
     en: 'Aesthetic',
-    quote: quoteOf('/treatment/aesthetic'),
     tone: 'light',
     photo: { src: `${P}/gen/care-aesthetic.jpg`, alt: '아이보리 바탕에 한 줄로 놓인 도자기 베니어와 둥근 거울' },
   },
   {
     key: 'wisdom',
     en: 'Wisdom Tooth',
-    quote: quoteOf('/treatment/wisdom-tooth'),
     tone: 'dark',
     photo: { src: `${P}/gen/care-wisdom.jpg`, alt: '어두운 슬레이트 바탕에 옆으로 누운 뿌리가 긴 사랑니 모형' },
   },
@@ -183,8 +124,10 @@ export const CLINIC_CARDS = [
  * 특별함 카드 — 세로로 긴 카드(2:3)에 맞춰 **실제 병원 사진**을 고르고 잘라 쓸 자리를 정한다.
  * ★ 글(title·body)은 lib/specials.ts 원문. 사진만 카드 비율에 맞는 것으로 고른다(원래 사진은 대부분 가로 1056px 라
  *   세로로 자르면 절반이 버려진다 → 해상도가 되는 사진은 그대로, 안 되는 자리는 같은 내용의 1920px 사진으로).
- * ★ medical-team 제목만 카드용으로 바꾼다 — 원문 '10년 이상 경력의 대학병원…' 은 우리가 확인한 사실이 아니라
- *   (lib/specials.ts 주석) 홈에서는 쓰지 않아 왔다. 홈 의료진 구획과 같은 기준('10년 이상'·'교수 출신' 안 씀)으로, 확인된 자격(lib/doctors.ts license)만 적는다.
+ * ★ 제목도 lib/specials.ts 원문 그대로다(2026-10-06 오너 "문구들은 웬만하면 처음 버전 그대로" — 홈에서만 덮어쓰던
+ *   '맞춤형 임플란트'·'소독·멸균 관리' 를 원문 '개인에 맞는 맞춤형 임플란트'·'철저한 소독과 멸균 시스템' 으로 되돌렸다).
+ * ★ 2026-10-06 사진 점검(카드 330×440 에 실제로 그려지는 크기·내용) — 맞춤형 임플란트만 바꿨다(아래 주석). 나머지는 내용이 맞고
+ *   1배 화면에서 늘려 그리지 않는다. ⚠️ 디지털 스캐너 사진은 원본이 544×439 라 2배 화면(맥북 등)에선 흐리다 — 더 큰 실사진이 없다.
  */
 export const SPECIAL_CARD_ART: Record<string, { src: string; alt: string; pos: string; title?: string; skip?: boolean }> = {
   /* 홈에서는 뺀다(2026-09-28 전문가 검토) — 바로 위 의료진 구획이 같은 말(전문의)을 머리말과 판 세 장으로 이미 한다. 상세 페이지는 그대로. */
@@ -201,12 +144,15 @@ export const SPECIAL_CARD_ART: Record<string, { src: string; alt: string; pos: s
     alt: '진료실 구강 스캐너 화면에 위아래 치열의 3차원 스캔 데이터가 표시되어 있다.',
     pos: '50% 50%',
   },
+  /*
+   * ★ 2026-10-06: 상담 사진(956b5d44b57ef)은 카드 크기에서 임플란트가 보이지 않고 '상담' 으로만 읽혔다 —
+   *   본문(맞춤형 어벗트먼트·지르코니아 크라운)과 같은 것을 보여 주는 옛 홈페이지 자산(20210923_275ac1dc0aead, 크라운·어벗트먼트·픽스처)을
+   *   세로 카드 비율로 잘라 청록을 블루그레이로 눌렀다(C:/tmp/cd-copy/grade-implant.cjs). ⚠️ 새 판은 새 파일 이름으로(next/image 캐시).
+   */
   'custom-implant': {
-    src: `${P}/20210923_956b5d44b57ef.jpg`,
-    alt: '상담실에서 파노라마 엑스레이 화면과 치아 모형으로 설명하는 모습',
-    pos: '42% 50%',
-    /* 원문 '개인에 맞는 맞춤형 임플란트' — 같은 말이 겹친다 */
-    title: '맞춤형 임플란트',
+    src: `${P}/special-card/custom-implant.jpg`,
+    alt: '핀셋에 집힌 크라운과 그 아래 어벗트먼트·임플란트 픽스처, 주변에 놓인 치아 모형',
+    pos: '50% 40%',
   },
   'low-dose-ct': {
     src: '/img/special/20210903_9e70d783f0043.jpg',
@@ -217,8 +163,6 @@ export const SPECIAL_CARD_ART: Record<string, { src: string; alt: string; pos: s
     src: `${P}/20210923_72fa74e154297.jpg`,
     alt: '멸균 포장된 진료 기구를 소독기에서 꺼내는 장면',
     pos: '50% 50%',
-    /* 원문 '철저한 소독과 멸균 시스템' — '철저한'은 근거 없는 강조(본문이 뒷받침하는 건 교육·매일 확인) */
-    title: '소독·멸균 관리',
   },
   'pain-control': {
     src: '/img/special/20210927_ab779fb49387d.jpg',
@@ -228,7 +172,8 @@ export const SPECIAL_CARD_ART: Record<string, { src: string; alt: string; pos: s
   warranty: {
     src: '/img/special/20211103_53aaffd64e862.jpg',
     alt: '임플란트 부품과 임플란트 보증서(IMPLANT WARRANTY CERTIFICATE)',
-    pos: '60% 50%',
+    /* 보증서(가로 36~65%)가 카드 한가운데 오도록 — 60% 는 보증서 왼쪽 끝이 잘렸다(2026-10-06 실측) */
+    pos: '52% 40%',
   },
 };
 

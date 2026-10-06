@@ -19,6 +19,13 @@ import { StrengthIcon } from '@/components/StrengthIcons';
  *   ⚠️ 단추를 되살리지 말 것 — 오너가 '세련되지 않다' 고 뺀 것이다. 지금 어디쯤인지는 아래 가는 선이 보여 준다.
  * ★ 키보드: 고정 무대에서 Tab 으로 화면 밖 카드에 초점이 가면 그 카드가 보이는 자리까지 페이지를 내려 준다.
  * ★ 자동 넘김이 멈추는 때(좁은 화면): 마우스·키보드 초점이 안에 있을 때 · 손으로 밀고 난 직후 · 화면 밖 · 움직임 줄이기.
+ *
+ * ★★ 2026-10-06 오너 "모션 좀 더 전문적으로 다듬어" ★★
+ *   ① 등장 — 기울어진 채 놓였다가 끝에서 툭 바로 서던 'deal'(rotate -4°→3°, 끝값이 0 이 아니라 마지막 프레임에 튀었다)을 버리고,
+ *      카드가 아래에서 막이 걷히듯 솟고 사진은 크게 들어와 제자리로 가라앉는다(app/motion.css .sp-card · .sp-img).
+ *   ② 옆으로 흐르는 동안 카드 안 사진이 반대로 조금 밀린다(시차 --sx, 카드 중심이 화면 가운데에서 떨어진 만큼 −1~1).
+ *   ③ 줄 양끝이 화면 가장자리에서 옅어진다(.sp-view 마스크) — 오른쪽 퀵메뉴 밑으로 카드가 '잘려' 들어가던 것.
+ *   ④ 카드마다 번호(01~), 올렸을 때는 토프로 덮던 것을 사진이 보이는 짙은 막 + 설명이 아래에서 열리는 것으로(모서리도 60→32px).
  */
 export interface SpecialCard {
   slug: string;
@@ -56,7 +63,11 @@ export function SpecialSlider({ cards, head }: { cards: SpecialCard[]; /** 고�
     const b = bar.current;
     if (!pinned || !box || !el || !b) return;
     let shift = 0; // 옆으로 갈 수 있는 거리(px)
+    let x = 0; // 지금 옆으로 민 거리(px)
+    let base = 0; // 민 거리가 0 일 때 줄 왼쪽 끝의 화면 좌표
+    const items = [...el.children] as HTMLElement[];
     const measure = () => {
+      base = el.getBoundingClientRect().left + x;
       const last = el.lastElementChild as HTMLElement | null;
       const pad = parseFloat(getComputedStyle(el).paddingRight) || 0;
       shift = last ? Math.max(0, last.offsetLeft + last.offsetWidth + pad - el.clientWidth) : 0;
@@ -67,8 +78,14 @@ export function SpecialSlider({ cards, head }: { cards: SpecialCard[]; /** 고�
     const frame = () => {
       raf = 0;
       const top = box.getBoundingClientRect().top;
-      const x = Math.min(shift, Math.max(0, -top));
+      x = Math.min(shift, Math.max(0, -top));
       el.style.transform = `translate3d(${-x}px, 0, 0)`;
+      /* 시차 — 카드 중심이 화면 가운데에서 얼마나 떨어졌나(반 화면 = 1). 레이아웃을 다시 읽지 않게 offsetLeft 로 계산한다 */
+      const half = window.innerWidth / 2;
+      for (const c of items) {
+        const mid = base - x + c.offsetLeft + c.offsetWidth / 2;
+        c.style.setProperty('--sx', Math.max(-1.2, Math.min(1.2, (mid - half) / half)).toFixed(3));
+      }
       const p = shift ? x / shift : 0;
       const w = parseFloat(b.style.width) || 100;
       b.style.transform = `translateX(${((100 - w) / w) * 100 * p}%)`;
@@ -108,6 +125,7 @@ export function SpecialSlider({ cards, head }: { cards: SpecialCard[]; /** 고�
       box.style.height = '';
       el.style.transform = '';
       b.style.transform = '';
+      for (const c of items) c.style.removeProperty('--sx');
     };
   }, [pinned]);
 
@@ -162,6 +180,7 @@ export function SpecialSlider({ cards, head }: { cards: SpecialCard[]; /** 고�
           onFocus={() => (hold.current = true)}
           onBlur={() => (hold.current = false)}
         >
+          <div className="sp-view">
           <ul
             ref={track}
             className="sp-track"
@@ -170,10 +189,12 @@ export function SpecialSlider({ cards, head }: { cards: SpecialCard[]; /** 고�
             onWheel={touch}
             onTouchStart={touch}
           >
-            {cards.map((c) => (
-              <li key={c.slug} className="sp-card">
+            {cards.map((c, i) => (
+              <li key={c.slug} className="sp-card" style={{ ['--i' as string]: i }}>
                 <Link href={`/about/special/${c.slug}`} className="sp-link">
                   <span className="sp-bg" aria-hidden>
+                    {/* 시차용 틀 — 카드보다 좌우로 9% 씩 넓다(사진이 밀려도 가장자리가 비지 않게) */}
+                    <span className="sp-par">
                     <Image
                       src={c.photo.src}
                       alt=""
@@ -187,6 +208,10 @@ export function SpecialSlider({ cards, head }: { cards: SpecialCard[]; /** 고�
                       className="sp-img"
                       style={{ objectPosition: c.photo.pos }}
                     />
+                    </span>
+                  </span>
+                  <span className="sp-no" aria-hidden>
+                    {String(i + 1).padStart(2, '0')}
                   </span>
                   <span className="sp-text">
                     <span className="sp-ico">
@@ -206,6 +231,7 @@ export function SpecialSlider({ cards, head }: { cards: SpecialCard[]; /** 고�
               </li>
             ))}
           </ul>
+          </div>
           {/* 지금 어디쯤인지 — 가는 선 하나. 단추는 두지 않는다(2026-09-29 오너). */}
           <div className="sp-ctrl" aria-hidden>
             <span className="sp-bar">
