@@ -36,8 +36,9 @@ import { imageMeta } from '@/lib/imageSize';
 
 export const metadata: Metadata = {
   title: `${CLINIC.name} | 고양시 덕양구 화정동 치과`,
+  /* 2026-10-06 오너 "문구들은 웬만하면 처음 버전 그대로" — 처음 판(circledental.vercel.app) 설명 원문. */
   description:
-    '고양시 덕양구 화정동 동그라미치과의원. 뽑기 전에 한 번 더 살펴보고, 자연치아를 오래 사용할 수 있도록 필요한 치료부터 함께 판단합니다. 자연치아살리기·임플란트·심미치료·사랑니치료. 화·목 야간진료 오후 8시 30분까지.',
+    '고양시 덕양구 화정동 동그라미치과의원. 10년 이상 경력의 대학병원 교수 출신 대표원장이 진료합니다. 자연치아살리기·임플란트·심미치료·사랑니 발치. 화·목 야간진료 오후 8시 30분까지.',
   alternates: { canonical: '/' },
 };
 
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
  *   · 아이보리 바탕에 충분한 여백, 블루그레이는 필요한 곳에만.
  *
  * ★ 구획 순서 (목업 순서 그대로)
- *   1 Hero        뽑기 전에, 한 번 더 살펴봅니다 — 아래에 SCROLL · FOR A LONGER HEALTHIER SMILE
+ *   1 Hero        환자 중심 진료, 소통하는 치과(처음 판 문구) — 아래에 SCROLL · BETTER CHOICES ~ A HEALTHIER TOMORROW
  *   2 Principles  동그라미가 가장 먼저 생각하는 것 — 원 안 선 아이콘 + 01~04, 그 아래 한 문장
  *   3 Clinic      주요 진료 과목 — 더뉴치과 짜임(2026-09-28): 올린 카드만 두 배로 넓어지는 네 장, 켜진 카드에 환자의 말
  *   4 Preserve    자연치아 보존 — 어두운 블루그레이 띠 (페이지에서 유일한 어두운 면)
@@ -68,7 +69,11 @@ export const metadata: Metadata = {
  *   · 목업의 이야기(SNS 피드) 타일은 갈 곳 없는 장식이라 인사이트 최신 글로 바꿨다(오너 결정).
  * ⚠️ 사진은 이 병원의 실제 사진이다(lib/homeContent.ts). 스톡을 넣지 말 것.
  *    예외는 AI 생성 정물 3장(gen/ — 보존 띠 + 표지 없는 인사이트 글의 대체 표지 둘, 2026-09-17 오너 GO)뿐이며 사물만 그렸다.
- * ⚠️ 채운 버튼은 화면당 하나 — 히어로 '진료 알아보기', 오시는 길 '네이버 예약하기'.
+ * ⚠️ 채운 버튼은 화면당 하나 — 히어로 '예약하기', 오시는 길 '예약하기'.
+ * ★★ 문구 (2026-10-06 오너: "문구들은 웬만하면 처음 버전 그대로 사용하자") ★★
+ *   처음 판(circledental.vercel.app, 6f560dd app/page.tsx)에 같은 자리가 있는 구획은 그 문구를 그대로 쓴다 —
+ *   첫 화면 · 진료 머리말 · 진료 카드 설명 · 의료진 머리말 · 경력 · 둘러보기 · 오시는 길 · 페이지 설명(meta).
+ *   처음 판에 없던 구획(진료 철학·보존 띠·특별함·인사이트)은 이 판 문구를 둔다. 특별함 카드 제목은 lib/specials.ts 원문.
  * ⚠️ FAQ 구획을 되살리려면 faqSchema 도 함께 되살릴 것(보이는 것과 알리는 것이 어긋난다).
  */
 /* 인사이트 최신 글이 홈에 실린다 — 한 시간마다 다시 그린다(인사이트 허브와 같은 주기). */
@@ -93,7 +98,7 @@ export default async function HomePage() {
       />
       <Hero />
       <PrinciplesSection />
-      <KineticBand />
+      <StatementBand />
       <ClinicSection />
       <PreserveBand />
       <DoctorsSection />
@@ -135,37 +140,45 @@ function Hero() {
       </div>
 
       <Container className="hero-lt-in">
+        {/*
+          ★★ 문구는 처음 판(circledental.vercel.app 첫 화면 = circle-dental.co.kr 1번 슬라이드) 원문 그대로 ★★
+            (2026-10-06 오너: "문구들은 웬만하면 처음 버전 그대로 사용하자")
+            윗줄 · 제목 · 아랫줄 · 버튼(예약하기 + 전화번호) · 지역 줄이 처음 판과 같다. 짜임·색·움직임만 이 판의 것이다.
+          ⚠️ 제목 줄바꿈은 쉼표 자리 하나뿐 — 처음 판은 가운데 정렬 한 줄이었고, 왼쪽 정렬 판에서 한 줄로 두면 사진을 덮는다.
+          ⚠️ 이 판에서 썼던 '뽑기 전에, 한 번 더 살펴봅니다 / 자연치아를 오래 사용할 수 있도록 필요한 치료부터 함께 판단합니다 /
+             진료 알아보기' 는 되살리려면 오너 GO.
+          ⚠️ '10년 이상 경력의 대학병원 출신 의료진' 은 병원 자기 문구다 — lib/doctors.ts 로 확인되는 범위는 전문의 3인·경희대 외래교수까지(처음 판 주석과 같다).
+        */}
         <div className="hero-lt-copy">
-          <p className="enter kicker hero-lt-kicker">
-            Preserve
-            <br />
-            your natural smile
-          </p>
-          {/* 한 글자씩 흐림 속에서 떠오르고, 마지막 글자가 서면 '한 번 더' 에 형광펜 밑줄이 그어진다(components/motion Chars). */}
+          <p className="enter hero-lt-eyebrow">10년 이상 경력의 대학병원 출신 의료진, 디지털 의료장비 활용</p>
+          {/* 한 글자씩 흐림 속에서 떠오르고, 마지막 글자가 서면 '소통하는' 에 얇은 밑줄 획이 그어진다(components/motion Chars). */}
           <h1 className="serif-head hero-lt-h1">
-            <Chars lines={['뽑기 전에,', '[[한 번 더]] 살펴봅니다.']} start={220} />
+            <Chars lines={['환자 중심 진료,', '[[소통하는]] 치과']} start={220} />
           </h1>
           <p className="enter hero-lt-lead" style={{ animationDelay: '760ms' }}>
-            자연치아를 오래 사용할 수 있도록
-            <br />{' '}
+            환자들의 치과에 대한 두려움을{' '}
             <span className="em em-mark em-now" style={{ ['--ed' as string]: '1650ms' }}>
-              필요한 치료부터
-            </span>{' '}
-            함께 판단합니다.
+              깊이 공감하며
+            </span>
+            , <br className="max-sm:hidden" />
+            최대한 아프지 않고 과잉 진료없이 편안하게 <br className="max-sm:hidden" />
+            치료를 받고 가실 수 있도록 노력합니다.
           </p>
           <div className="enter hero-lt-cta" style={{ animationDelay: '900ms' }}>
-            <FillBtn href="/treatment" className="hero-lt-fill">
-              진료 알아보기
-            </FillBtn>
-            <LineBtn href={CLINIC.booking.naver} external className="hero-lt-line">
+            <FillBtn
+              href={CLINIC.booking.naver}
+              external
+              label="예약하기 — 네이버 예약 새 창으로 열기"
+              className="hero-lt-fill"
+            >
               예약하기
+            </FillBtn>
+            <LineBtn href={CLINIC.phoneHref} className="hero-lt-line tabular-nums">
+              {CLINIC.phone}
             </LineBtn>
           </div>
           <p className="enter hero-lt-loc" style={{ animationDelay: '1000ms' }}>
-            {CLINIC.address.locality} {CLINIC.address.dong} · {CLINIC.nearestStation} 인근 ·{' '}
-            <a href={CLINIC.phoneHref} className="tabular-nums">
-              {CLINIC.phone}
-            </a>
+            {CLINIC.address.locality} {CLINIC.address.dong} · {CLINIC.nearestStation} 인근
           </p>
         </div>
 
@@ -296,23 +309,26 @@ function LeafDeco() {
  * ★★ '어떤 고민이 있으신가요?' 다섯 카드 → 더뉴치과 '주요 진료 과목' 짜임 (2026-09-28 오너) ★★
  *   네 진료(자연치아살리기·임플란트·심미치료·사랑니발치 = 헤더 메뉴 넷)가 한 줄에 서고, 마우스가 올라간 카드만
  *   두 배로 넓어지며 환자의 말·설명·'자세히 보기' 가 올라온다(components/ClinicAccordion).
- * ★ 고민 카드의 **환자의 말은 그대로 옮겼다** — 켜진 카드의 첫 줄이 그 말이다(lib/homeContent CLINIC_CARDS.quote).
- *   빠진 것은 '이가 아파요 → 충치/신경치료' 한 장뿐이고, 그 길은 '전체 보기'(/treatment)에 있다.
  * ★ 이름·설명·주소는 lib/clinic.ts TREATMENT_PILLARS 원문. 여기서 진료 문구를 새로 쓰지 않는다.
+ * ★★ 머리말도 처음 판 원문 (2026-10-06 오너 "문구들은 웬만하면 처음 버전 그대로") ★★
+ *   '동그라미치과에서는 / 어떤 진료를 받을 수 있나요?' + 한 문장 + '전체 진료과목 보기'. 이 판의 '진료 / 주요 진료 과목 / 전체 보기' 와
+ *   켜진 카드 첫 줄의 환자 말 인용은 처음 판에 없던 문구라 걷었다.
  */
 function ClinicSection() {
   const cards = CLINIC_CARDS.map((c) => {
     const p = TREATMENT_PILLARS.find((x) => x.key === c.key)!;
-    return { key: c.key, en: c.en, quote: c.quote, tone: c.tone, photo: c.photo, name: p.name, copy: 'copy' in c ? c.copy : p.copy, href: p.href };
+    return { key: c.key, en: c.en, tone: c.tone, photo: c.photo, name: p.name, copy: p.copy, href: p.href };
   });
   return (
     <section className="section-y-home border-t border-wine-line">
       <Container>
         <HomeHead
-          label="진료"
-          split={['주요 진료 과목']}
-          asideInline
-          aside={<QuietLink href="/treatment">전체 보기</QuietLink>}
+          label="동그라미치과에서는"
+          split={['어떤 진료를 받을 수 있나요?']}
+          /* '사랑니 발치' 가 두 줄로 갈리지 않게 붙여 둔다(글자는 그대로) */
+          desc={'자연치아를 살리는 치료를 중심에 두고 임플란트, 심미치료, 사랑니 발치까지 진료합니다.'}
+          /* 좁은 화면은 링크가 설명 아래로(asideInline 이면 설명이 190px 폭으로 눌렸다 — 처음 판 설명이 붙으며 생긴 것) */
+          aside={<QuietLink href="/treatment">전체 진료과목 보기</QuietLink>}
         />
         <ClinicAccordion cards={cards} />
       </Container>
@@ -379,13 +395,14 @@ function DoctorsSection() {
         {/*
           ★★ 더뉴치과 '대표원장 소개' 짜임 (2026-09-28 오너) — 가운데 머리말 + 한 사람당 가로 판(components/DoctorPanels).
              이름 탭·‹ 1/3 › 로 넘기던 DoctorShowcase 는 홈에서 걷었다(세 사람이 한 화면에 다 선다).
-          ⚠️ 문구는 lib/doctors.ts 로 확인되는 범위만 — '10년 이상 경력'·'교수 출신' 은 근거가 없어 쓰지 않는다.
-             '인정' 이 아니라 '보건복지부인증'(전 페이지 통일, lib/doctors.ts 머리말). 옛 문장은 대표원장이 전문의가 아닌 것처럼 읽혔다.
+          ★★ 머리말은 처음 판 원문 (2026-10-06 오너 "문구들은 웬만하면 처음 버전 그대로") — '의료진 / 누가 진료하나요?' + 한 문장.
+             이 판의 '동그라미치과의 의료진을 소개합니다 / 세 원장 모두 …' 는 되살리려면 오너 GO.
+          ⚠️ 처음 판 문장도 '10년 이상 경력'·'교수출신' 은 빼고 옮긴 판이다(원본 홈페이지 문장과 다르다 — 처음 판 주석).
         */}
         <CenterHead
           label="의료진"
-          split={['동그라미치과의 의료진을 소개합니다']}
-          desc="세 원장 모두 **보건복지부인증 통합치의학과 전문의**이며, 대표원장은 경희대학교 치의학전문대학원 외래교수입니다."
+          split={['누가 진료하나요?']}
+          desc="손끝의 숙련도에 따라 결과가 달라지는 치과 치료, 경희대학교 치의학전문대학원 외래교수인 대표원장과 **보건복지부인증 통합치의학과 전문의**로만 구성된 의료진이 진료합니다."
         />
         <DoctorPanels doctors={doctors} />
       </Container>
@@ -405,7 +422,16 @@ function DoctorsSection() {
         ⚠️ 논문 제목은 원문 그대로 산세리프 — 잘라낸 세리프 글꼴에 없는 글자가 섞인다(라이브 주석과 같다).
       */}
       <Container>
-        <div className="relative mt-20 overflow-hidden lg:mt-28">
+        {/*
+          ★ 처음 판의 '경력' 머리말을 되살렸다(2026-10-06 오너 "문구들은 웬만하면 처음 버전 그대로").
+            처음 판 문구 그대로 — 오너가 두 안 중 고른 첫째 안(2026-09-03). 아래 넉 장(위촉패·수료패·수료증·회원증)이 무엇인지 말해 준다.
+          ⚠️ '인증' 으로 바꾸지 말 것 — 바로 위 '보건복지부인증 전문의' 와 같은 것처럼 읽힌다(처음 판 주석).
+        */}
+        <div className="c-head c-head-sub reveal mt-24 lg:mt-32">
+          <p className="c-label">경력</p>
+          <h3 className="serif-head">더 나은 진료를 위해, 배움과 경험을 이어갑니다</h3>
+        </div>
+        <div className="relative mt-6 overflow-hidden lg:mt-8">
           <div
             aria-hidden
             className="pointer-events-none absolute top-[42%] left-1/2 z-0 w-screen -translate-x-1/2 -translate-y-1/2"
@@ -496,17 +522,18 @@ function SpecialSection() {
  * ★ 2026-09-28 전문가 검토 반영 — 머리말 한 줄(제목·설명·링크를 위에 모음, 주요 진료와 같은 짜임), 작은 사진 16:10,
  *   상담 부스 사진(접수 사진처럼 하얗고 평평했다) → 창가 진료실(창·로고 유리·화분). 문장은 사진이 보여 주는 것만.
  *   옛 문장 '편안하고 안전한 진료 환경에서 늘 같은 마음으로' 는 '안전한' 단정 + 빈말이라 뺐다.
+ * ★ 2026-10-06 머리말은 처음 판 원문 — '진료환경 / 동그라미치과 내부 둘러보기' + '둘러보기 페이지에서 전체 보기'.
+ *   이 판의 설명 한 줄('접수·대기 공간과 진료실을 미리 둘러보세요.')은 처음 판에 없던 문구라 뺐다
+ *   (처음 판도 "사진이 이미 말한다" 며 설명을 두지 않았다 — 2026-08-31 오너).
  */
 function TourSection() {
   return (
     <section className="section-y-home border-t border-wine-line">
       <Container>
         <HomeHead
-          label="공간"
-          split={['동그라미치과 둘러보기']}
-          desc="접수·대기 공간과 진료실을 미리 둘러보세요."
-          asideInline
-          aside={<QuietLink href="/about/tour">둘러보기</QuietLink>}
+          label="진료환경"
+          split={['동그라미치과 내부 둘러보기']}
+          aside={<QuietLink href="/about/tour">둘러보기 페이지에서 전체 보기</QuietLink>}
         />
         {/* 2026-09-29 모션: 사진마다 아래에서 막이 걷히며(.clip-in) 가라앉고, 스크롤에 따라 틀 안에서 천천히 흐른다(data-par). */}
         <div className="mt-12 grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
@@ -643,7 +670,8 @@ function VisitSection() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
           <div>
-            <HomeHead label="내원 안내" split={['오시는 길']} />
+            {/* 2026-10-06 머리말·버튼 문구는 처음 판 원문('오시는 길 / 오시는 길을 안내드립니다', '예약하기', '지도 · 길찾기 보기'). */}
+            <HomeHead label="오시는 길" split={['오시는 길을 안내드립니다']} />
 
             {/*
               원 안 아이콘 세 줄(목업) — 주소 · 진료시간 · 전화. 주차는 /visit 에 있다.
@@ -708,20 +736,17 @@ function VisitSection() {
               </ul>
             </Reveal>
 
-            {/* 좁은 화면에서는 두 버튼이 세로로 꽉 차고(목업), 넓은 화면에서는 나란히. */}
+            {/* 좁은 화면에서는 버튼이 세로로 꽉 차고(목업), 넓은 화면에서는 제 폭. 처음 판처럼 예약 하나 — 전화는 바로 위 번호가 링크다. */}
             <Reveal delay={100}>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <FillBtn
                   href={CLINIC.booking.naver}
                   external
-                  label="네이버 예약하기 — 새 창으로 열기"
+                  label="예약하기 — 네이버 예약 새 창으로 열기"
                   className="w-full sm:w-auto"
                 >
-                  <NaverGlyph /> 네이버 예약하기
+                  <NaverGlyph /> 예약하기
                 </FillBtn>
-                <LineBtn href={CLINIC.phoneHref} className="w-full sm:w-auto">
-                  <PhoneIcon /> 전화 상담하기
-                </LineBtn>
               </div>
             </Reveal>
           </div>
@@ -732,7 +757,7 @@ function VisitSection() {
               <ClinicMap height={520} variant="compact" />
             </div>
             <div className="mt-4">
-              <QuietLink href="/visit">지도 앱으로 길찾기</QuietLink>
+              <QuietLink href="/visit">지도 · 길찾기 보기</QuietLink>
             </div>
           </Reveal>
         </div>
@@ -751,17 +776,33 @@ function RingSvg() {
 }
 
 /*
- * 흐르는 큰 글자 — 진료 철학과 주요 진료 사이 (2026-09-29 오너: "모션그래픽 엄청").
- *   스크롤한 만큼 두 줄이 서로 반대로 흐른다(--p, ScrollMotion). 속이 빈 큰 글자 한 줄 + 옅게 채운 작은 글자 한 줄.
- * ★ 문구는 첫 화면의 영문 두 줄 그대로(새 문장 없음). 장식이라 보조기기에는 숨긴다.
+ * ★★ 한 문장 무대 — 진료 철학과 주요 진료 사이 (2026-10-06 오너: "모션 그래픽을 다시 세련되고 잘 어울리게") ★★
+ *   옛 판(KineticBand)은 속이 빈 큰 영문 두 줄이 화면 밖으로 잘린 채 서로 반대로 흘렀다 — 글자가 끝까지 안 읽히고
+ *   옅은 외곽선이 '덜 그린' 것처럼 보였다. 이제는 가운데 한 문장이 **스크롤을 따라 먹이 번지듯 채워진다**:
+ *     ① 위 머리표 양옆의 가는 선이 바깥으로 그어지고 ② 큰 두 줄이 옅은 블루그레이에서 차콜로 왼→오 차례로 채워지며
+ *     ③ 뒤의 얇은 동그라미(병원 이름의 원)가 한 바퀴 그려지고 ④ 마지막에 작은 영문 한 줄이 떠오른다.
+ *   숫자(--p)는 ScrollMotion 이 쓴다 — 화면 아래에서 들어와 위로 나갈 때까지 0→1. 움직임은 전부 app/motion.css 「한 문장 무대」.
+ * ★ 문구는 첫 화면·목업의 영문 그대로(새 문장 없음). 장식이라 보조기기에는 숨긴다.
+ * ⚠️ 자바스크립트가 없거나 움직임 줄이기면 처음부터 다 채워진 판이다(html.mo-on 일 때만 비워 둔다).
  */
-function KineticBand() {
-  const a = 'Preserve your natural smile';
-  const b = 'Better choices ~ a healthier tomorrow';
+function StatementBand() {
   return (
-    <div aria-hidden className="kin" data-scrub>
-      <p className="kin-row kin-a">{[a, a, a].join('  ·  ')}</p>
-      <p className="kin-row kin-b">{[b, b, b, b].join('  ·  ')}</p>
+    <div aria-hidden className="stm" data-scrub>
+      <svg className="stm-ring" viewBox="0 0 200 200" focusable="false">
+        <circle cx="100" cy="100" r="99" pathLength={1} />
+      </svg>
+      <Container className="stm-in">
+        <p className="stm-label">Circle Dental Clinic</p>
+        <p className="stm-line stm-1" data-t="Preserve your">
+          Preserve your
+        </p>
+        <p className="stm-line stm-2" data-t="natural smile">
+          natural smile
+        </p>
+        <p className="stm-sub">
+          Better choices ~<br className="sm:hidden" /> a healthier tomorrow
+        </p>
+      </Container>
     </div>
   );
 }

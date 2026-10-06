@@ -429,34 +429,140 @@ html.mo-on .words .w.on {
   }
 }
 
-/* ── 흐르는 큰 글자 — 스크롤한 만큼 두 줄이 서로 반대로 흐른다(--p) ── */
-.kin {
+/* ══ 한 문장 무대 — 진료 철학과 주요 진료 사이 (2026-10-06, 옛 흐르는 큰 글자 .kin 자리) ══
+ *   --p(0→1) 하나로 넷이 차례로 움직인다: 머리표 선 → 큰 두 줄 채움 → 뒤 동그라미 → 작은 영문.
+ *   채움은 같은 글자를 위에 한 겹 더 얹고(::after, data-t) 그 겹을 왼→오로 드러낸다(mask). 끝이 부드럽게 번지도록 12% 폭의 그러데이션.
+ *   ⚠️ 비우는 것은 html.mo-on 일 때만 — 스크립트가 없거나 움직임 줄이기면 처음부터 채워진 판이다.
+ *   ⚠️ 글자 폭: Marcellus 대문자는 한 자 ≈ 0.74em — 13자 × 124px ≈ 1,190px 로 본문 폭(1,320) 안에 선다. 크기를 올리면 넘친다.
+ */
+.stm {
+  --q1: clamp(0, calc((var(--p, 1) - 0.2) / 0.24), 1);
+  --q2: clamp(0, calc((var(--p, 1) - 0.32) / 0.24), 1);
+  --qr: clamp(0, calc((var(--p, 1) - 0.14) / 0.5), 1);
+  --qs: clamp(0, calc((var(--p, 1) - 0.5) / 0.12), 1);
+  --ql: clamp(0, calc((var(--p, 1) - 0.1) / 0.22), 1);
   position: relative;
+  isolation: isolate;
   overflow: hidden;
-  padding-block: clamp(20px, 3vw, 44px) clamp(36px, 5vw, 72px);
+  padding-block: clamp(80px, 10vw, 156px);
+  text-align: center;
   pointer-events: none;
   user-select: none;
 }
-.kin-row {
-  white-space: nowrap;
+.stm-in {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* 뒤의 동그라미 — 두 줄보다 크게(글자를 가로지르지 않게), 위아래는 구획 밖으로 잘려 양옆 호만 남는다. 아주 옅게, 그려지면서 4분의 1 바퀴 돈다 */
+.stm-ring {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: clamp(440px, 60vw, 1080px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  rotate: calc(-90deg + var(--qr) * 90deg);
+  overflow: visible;
+}
+.stm-ring circle {
+  fill: none;
+  stroke: rgba(83, 97, 106, 0.26);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+html.mo-on .stm-ring circle {
+  stroke-dashoffset: calc(1 - var(--qr));
+}
+/* 머리표 — 병원 영문명, 양옆 선이 바깥으로 그어진다 */
+.stm-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
   font-family: var(--font-display-en);
+  font-size: 12px;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
-  line-height: 1.02;
-  will-change: transform;
+  color: #8f8a85;
 }
-.kin-a {
-  font-size: clamp(54px, 9.4vw, 170px);
-  letter-spacing: 0.01em;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(111, 124, 133, 0.5);
-  transform: translate3d(calc(4% - var(--p, 0) * 36%), 0, 0);
+.stm-label::before,
+.stm-label::after {
+  content: '';
+  width: 56px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
 }
-.kin-b {
-  margin-top: 0.12em;
-  font-size: clamp(26px, 4.2vw, 76px);
-  letter-spacing: 0.06em;
-  color: rgba(168, 159, 147, 0.5);
-  transform: translate3d(calc(-44% + var(--p, 0) * 32%), 0, 0);
+@media (max-width: 639px) {
+  .stm-label {
+    gap: 12px;
+    font-size: 11px;
+    letter-spacing: 0.26em;
+  }
+  .stm-label::before,
+  .stm-label::after {
+    width: 24px;
+  }
+}
+.stm-label::before {
+  transform-origin: right;
+}
+.stm-label::after {
+  transform-origin: left;
+}
+html.mo-on .stm-label::before,
+html.mo-on .stm-label::after {
+  scale: var(--ql) 1;
+}
+/* 큰 두 줄 — 옅은 블루그레이 바탕 글자 위에 차콜 겹이 번진다. 두 줄은 아주 조금 서로 반대로 흐른다(±2%) */
+.stm-line {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-display-en);
+  font-size: clamp(34px, 6.6vw, 124px);
+  line-height: 1.06;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(83, 97, 106, 0.15);
+}
+.stm-1 {
+  margin-top: clamp(18px, 2.4vw, 34px);
+}
+.stm-line::after {
+  content: attr(data-t);
+  position: absolute;
+  inset: 0;
+  color: #2f3438;
+}
+html.mo-on .stm-line::after {
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--f) - 12%), transparent var(--f));
+  mask-image: linear-gradient(90deg, #000 calc(var(--f) - 12%), transparent var(--f));
+}
+html.mo-on .stm-1 {
+  --f: calc(var(--q1) * 124%);
+  translate: calc((0.5 - var(--p, 0.5)) * -4%) 0;
+}
+html.mo-on .stm-2 {
+  --f: calc(var(--q2) * 124%);
+  translate: calc((0.5 - var(--p, 0.5)) * 4%) 0;
+}
+/* 작은 영문 — 다 채워진 뒤 아래에서 떠오른다 */
+.stm-sub {
+  margin-top: clamp(22px, 2.6vw, 38px);
+  font-family: var(--font-display-en);
+  font-size: clamp(12px, 1vw, 15px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #8f8a85;
+}
+html.mo-on .stm-sub {
+  opacity: var(--qs);
+  translate: 0 calc((1 - var(--qs)) * 12px);
 }
 
 /* ══ 3) 주요 진료 카드 — 한 장씩 아래에서 솟고, 사진은 가라앉는다 ══ */
@@ -613,38 +719,48 @@ html.mo-on .words .w.on {
   }
 }
 
-/* ══ 5-1) 특별함 — 카드가 오른쪽에서 한 장씩 놓인다 ══ */
+/* ══ 5-1) 특별함 — 카드가 아래에서 막이 걷히듯 솟고, 사진은 크게 들어와 가라앉는다 (2026-10-06 다듬음) ══
+ *   옛 판 'deal' 은 rotate -4° → 3° 로 끝나 마지막 프레임에 0° 로 툭 튀었다(끝값이 제자리가 아니었다).
+ *   이제 끝값이 곧 제자리다 — 솟음(translate)·걷힘(clip-path)·가라앉음(scale) 셋 다 none 으로 끝난다.
+ *   ⚠️ 개별 속성만 쓴다 — 올렸을 때 사진은 transform: scale(1.06) 이라 fill-mode 가 그것을 덮으면 안 된다.
+ */
 .sp-wrap.late-in:not(.is-shown) .sp-card {
   opacity: 0;
 }
 .sp-wrap.late-in.is-shown .sp-card {
-  animation: deal 1.3s var(--ease-out-expo) backwards;
+  animation: sp-rise 1.3s var(--ease-out-expo) backwards;
+  animation-delay: calc(var(--i, 0) * 0.085s);
 }
-.sp-wrap.late-in.is-shown .sp-card:nth-child(2) {
-  animation-delay: 0.09s;
+.sp-wrap.late-in.is-shown .sp-img {
+  animation: sp-settle 1.9s var(--ease-out-expo) backwards;
+  animation-delay: calc(var(--i, 0) * 0.085s);
 }
-.sp-wrap.late-in.is-shown .sp-card:nth-child(3) {
-  animation-delay: 0.18s;
+.sp-wrap.late-in.is-shown .sp-text,
+.sp-wrap.late-in.is-shown .sp-no {
+  animation: sp-text 1s var(--ease-out-expo) backwards;
+  animation-delay: calc(var(--i, 0) * 0.085s + 0.38s);
 }
-.sp-wrap.late-in.is-shown .sp-card:nth-child(4) {
-  animation-delay: 0.27s;
-}
-.sp-wrap.late-in.is-shown .sp-card:nth-child(5) {
-  animation-delay: 0.36s;
-}
-.sp-wrap.late-in.is-shown .sp-card:nth-child(n + 6) {
-  animation-delay: 0.45s;
-}
-@keyframes deal {
+@keyframes sp-rise {
   from {
     opacity: 0;
-    translate: 220px 40px;
-    rotate: 5deg;
+    translate: 0 56px;
+    clip-path: inset(22% 0 0 0 round 20px);
   }
   to {
     opacity: 1;
     translate: 0 0;
-    rotate: 0deg;
+    clip-path: inset(0 0 0 0 round 20px);
+  }
+}
+@keyframes sp-settle {
+  from {
+    scale: 1.24;
+  }
+}
+@keyframes sp-text {
+  from {
+    opacity: 0;
+    translate: 0 14px;
   }
 }
 
@@ -823,7 +939,10 @@ html.mo-on .words .w.on {
   .dp-card.late-in .dp-photo,
   .dp-card.late-in .dp-img,
   .dp-card.late-in .dp-name,
-  .dp-card.late-in .dp-ring {
+  .dp-card.late-in .dp-ring,
+  .sp-wrap.late-in .sp-img,
+  .sp-wrap.late-in .sp-text,
+  .sp-wrap.late-in .sp-no {
     animation: none !important;
   }
   .cl-acc.late-in > .cl-card,
