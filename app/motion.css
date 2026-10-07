@@ -650,9 +650,12 @@ html.mo-on .stm-sub {
   background: #1f2529;
   box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.55);
 }
+/* 정사각 판(consult-xray-hd)이라 가운데 그대로. 열린 뒤 창 테두리는 clip-path 원으로 — border-radius 만 두면 영상 층의 둥근 테두리가 계단져 보였다 */
 .pv-lens .pv-video {
-  object-position: 62% 50%;
-  scale: 1.02;
+  object-position: 50% 50%;
+}
+.pv-lens.clip-in.clip-circle.is-shown {
+  clip-path: circle(50% at 50% 50%);
 }
 /* 궤도선 — 창보다 한 뼘 크게, 아주 옅게 */
 .pv-orbit {
