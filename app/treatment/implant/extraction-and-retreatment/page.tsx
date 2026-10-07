@@ -200,14 +200,17 @@ export default function ExtractionAndRetreatmentPage() {
             />
           </figure>
 
-          <div className="reveal mx-auto mt-10 max-w-[760px] text-center sm:mt-12">
-            <p className="text-[18px] leading-[1.85] text-ink [text-wrap:balance] [word-break:keep-all] sm:text-[19.5px]">
-              치아를 뽑은 그 자리에 곧바로 임플란트를 심는 방법입니다. 뽑은 자리가 아물기를 따로 기다리지 않아 수술 횟수가
-              줄고, 잇몸 모양이 중요한 앞니에서 특히 검토합니다.
+          {/* 줄은 마침표·쉼표(나열 쉼표 제외)에서만 바꾸고, 한 마디는 한 줄로(2026-10-07 오너). 좁은 화면에서만 마디 안이 접힌다. */}
+          <div className="reveal mx-auto mt-10 max-w-[900px] text-center sm:mt-12">
+            <p className="text-[18px] leading-[1.85] text-ink sm:text-[19.5px]">
+              <span className="block [text-wrap:balance] [word-break:keep-all] sm:whitespace-nowrap">치아를 뽑은 그 자리에 곧바로 임플란트를 심는 방법입니다.</span>
+              <span className="block [text-wrap:balance] [word-break:keep-all] sm:whitespace-nowrap">뽑은 자리가 아물기를 따로 기다리지 않아 수술 횟수가 줄고,</span>
+              <span className="block [text-wrap:balance] [word-break:keep-all] sm:whitespace-nowrap">잇몸 모양이 중요한 앞니에서 특히 검토합니다.</span>
             </p>
-            <p className="mt-5 text-[15.5px] leading-[1.85] text-twilight [text-wrap:balance] [word-break:keep-all] sm:text-[16.5px]">
-              다만 바로 심는 것과 바로 씹는 것은 다릅니다. 뼈와 붙는 기간은 그대로 필요하고, 뽑은 자리의 빈틈을 채우는
-              뼈이식이 함께 필요한 경우가 많습니다.
+            <p className="mt-5 text-[15.5px] leading-[1.85] text-twilight sm:text-[16.5px]">
+              <span className="block [text-wrap:balance] [word-break:keep-all] sm:whitespace-nowrap">다만 바로 심는 것과 바로 씹는 것은 다릅니다.</span>
+              <span className="block [text-wrap:balance] [word-break:keep-all] sm:whitespace-nowrap">뼈와 붙는 기간은 그대로 필요하고,</span>
+              <span className="block [text-wrap:balance] [word-break:keep-all] sm:whitespace-nowrap">뽑은 자리의 빈틈을 채우는 뼈이식이 함께 필요한 경우가 많습니다.</span>
             </p>
           </div>
         </Container>
