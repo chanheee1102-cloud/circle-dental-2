@@ -19,7 +19,7 @@ export function ComparisonTable({ data }: { data: Data }) {
       <h2 id={data.id} className="display-sm scroll-mt-28 text-[22px] text-ink sm:text-[26px]">
         {data.title}
       </h2>
-      <p className="mt-3 max-w-[64ch] text-[16.5px] leading-[1.8] text-ink-soft"><Sentences text={data.lead} /></p>
+      <p className="lead mt-3 max-w-[64ch] text-[16.5px] leading-[1.8] text-ink-soft lg:max-w-[76ch]"><Sentences text={data.lead} /></p>
 
       <div className="mt-7 overflow-x-auto rounded-2xl border border-brand-200/70">
         <table className="w-full min-w-[640px] border-collapse text-left">

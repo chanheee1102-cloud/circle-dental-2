@@ -243,6 +243,9 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   word-break: keep-all; /* 한국어 단어 중간에서 줄이 끊기지 않게. */
+  /* 붙임 덩어리(pauseGlue)가 좁은 칸보다 넓으면 가로로 넘치지 않고 꺾이게 — 꺾인 덩어리는 WrapGuard 가 풀어 준다.
+     ⚠️ anywhere 로 바꾸지 말 것 — 표·flex 칸의 최소 폭을 한 글자로 줄여 /treatment/cavity 표가 한 글자씩 세로로 섰다(2026-10-07 실측, 선치과도 표 칸에서 같은 일). break-word 는 최소 폭을 건드리지 않는다. */
+  overflow-wrap: break-word;
 }
 
 /**
@@ -2147,660 +2150,72 @@ figcaption,
 blockquote {
   text-wrap: pretty;
 }
+/*
+ * 제목·표 머리칸·질문 줄은 줄 길이를 고르게(balance), 표 본문 칸은 끝줄 한 낱말만 막는다(pretty) — 선치과 규칙 그대로(2026-10-07).
+ *   '…조정할 수 / 있나요?' 처럼 질문 끝말만 다음 줄로 떨어지던 FAQ 접이 줄(summary)·표 칸('건강보험 / 적용')을 함께 잡는다.
+ */
+h1,
+h2,
+h3,
+h4,
+th,
+summary {
+  text-wrap: balance;
+}
+td {
+  text-wrap: pretty;
+}
 
 /*
- * 쉼표 뒤에서 줄이 바뀌게 하는 마디 (components/ui.tsx 의 Clauses 가 씌운다).
- *
- * ★ inline-block 이라 마디가 **쪼개지지 않는다** — 남은 자리에 안 들어가면 통째로
- *   다음 줄로 내려가고, 그래서 앞 줄이 쉼표에서 끝난다.
- * ⚠️ 이 규칙을 지우면 쉼표 줄바꿈이 통째로 사라진다(마크업만 남는다).
- * ⚠️ nowrap 이나 &nbsp; 로 바꾸지 말 것 — 마디가 칸보다 넓으면 가로로 넘친다.
- *    inline-block 은 그럴 때 마디 안에서 알아서 줄을 바꾼다.
- * ⚠️ 마디가 두 줄이 되면 그 마디의 **마지막 줄**을 기준으로 옆 글자와 밑줄을 맞춘다.
- *    Clauses 가 짧은 마디에만 씌우는 이유다(길면 안 씌운다).
+ * ★★ 문장·마디 줄바꿈 — 광화문 선치과 규칙 그대로 (2026-10-07 오너: "선치과 줄바꿈 규칙으로 전체 점검") ★★
+ *   components/ui.tsx Sentences 가 문장(.sent / 하나뿐이면 .sent-one)과 쉼표 마디(.clause)를 씌우고,
+ *   마디 안 공백은 말 쉬는 자리만 보통 공백 · 나머지는 붙임 공백(lib/wrapKo pauseGlue)이다.
+ *   ① 폰: 문장은 채워 쓰기(pretty) — 문장마다 고르게 나누면 오른쪽이 크게 비는 들쭉날쭉한 글이 됐다(선치과 실측).
+ *   ② 768~: 마디가 inline-block 이 돼 들어가면 통째로(절 쉼표에서 먼저 갈림), 안 들어가면 안에서 쉬는 자리끼리 고르게(balance).
+ *   ③ 1024~: 가운데 정렬 글·설명 글은 문장 하나 = 한 줄 — balance 를 끄고 채워 쓰기(오너 "길이 균형을 너무 맞춰 가운데에 주르륵").
+ *   좁은 칸에서 붙임 덩어리가 칸보다 넓으면 components/WrapGuard 가 그려진 뒤 풀어 준다.
+ * ⚠️ 옛 판(.clause[data-fit] + @container 버킷 117개, 2026-09-01~04)은 걷어냈다 — 되살리지 말 것.
  */
-/*
- * ⚠️⚠️ **넉넉한 칸에서만 켠다** (2026-09-01 실측) ⚠️⚠️
- *   좁은 카드(글이 들어가는 칸 224~300px)에서는 한 줄에 열대여섯 자밖에 안 들어간다.
- *   거기서는 스물여섯 자짜리 마디가 줄 하나를 통째로 넘어가, 앞 줄에 "배열, 색상," 만
- *   덩그러니 남았다(홈 진료 카드에서 실제로 그랬다). 얻는 것보다 잃는 것이 크다.
- *
- *   실측(223곳): 마디가 든 칸은 카드 224~300px 무리와 본문 640~768px 무리로 갈린다.
- *   그 사이가 비어 있어 520px 로 자르면 두 무리가 깨끗이 나뉜다.
- *
- * ★ 기본값을 **끈 상태**로 두고 넓을 때만 켠다 — 거꾸로 하면(켜 두고 좁을 때 끄기)
- *   칸을 못 재는 자리(표 칸처럼 containment 를 걸기 곤란한 곳)에서 규칙이 남아 돈다.
- *   이렇게 두면 못 재는 자리는 저절로 안전한 쪽(원래 줄바꿈)으로 떨어진다.
- */
+.sent,
+.sent-one {
+  display: block;
+  text-wrap: pretty;
+}
+@media (min-width: 768px) {
+  .sent,
+  .sent-one {
+    text-wrap: balance;
+  }
+}
 .clause {
   display: inline;
 }
-
-/*
- * 마디를 담은 칸만 재는 대상으로 삼는다 — 사이트 전체에 containment 를 걸지 않는다.
- *
- * ⚠️⚠️ 마디(.clause)는 이 목록에 있는 태그의 **바로 밑 자식**이어야 한다 (2026-09-07 실측) ⚠️⚠️
- *   <li className="flex"><span className="min-w-0 flex-1"><Sentences …/></span></li> 처럼
- *   가운데에 평범한 span 을 한 겹 끼우면, li 는 :has(> .clause) 에 안 걸리고 그 span 도 목록에
- *   없어서 **재는 칸이 아예 사라진다**. 그러면 아래 @container 규칙이 하나도 안 맞아
- *   .clause[data-fit]{display:block} 만 남고 → 쉼표마다 **무조건** 줄이 바뀐다.
- *   증상: 넓은 칸인데도 '오래된 보철물을 바꾸거나,' 에서 줄이 꺾여 옆 칸과 행이 어긋난다.
- *   고치는 법: 그 span 에 block 을 붙여 span.block 으로 만든다(flex 자식이라 보기엔 그대로다).
- */
-:where(p, li, dd, dt, figcaption, blockquote, span.block):has(> .clause) {
-  container-type: inline-size;
-}
-
-/*
- * 마디를 통째로 다음 줄로 내리는 것은 **두 조건이 모두 맞을 때만** 이다.
- *   (data-w 는 2026-09-03 에 없앴다 — 아래 ★★ 주석.)
- *   data-x  앞 마디 기준 상한(em)   — 칸이 이보다 넓으면 앞 줄이 휑하게 남는다.
- *
- * ★ 단위가 em 인 것이 핵심이다. 컨테이너 쿼리의 em 은 **그 칸의 글꼴 크기** 기준이라,
- *   15px 카드든 46px 인용문이든 같은 규칙이 알아서 환산된다.
- *   px 로 적었을 때는 46px 인용문에서 마디 폭을 1/3 로 잘못 봐 판정이 통째로 어긋났다.
- *
- * ⚠️ 취소(data-x) 규칙은 반드시 **뒤에** 둘 것 — 특정성이 같아 나중에 온 쪽이 이긴다.
- * ⚠️ 이 목록은 components/ui.tsx 의 EM_PER_CHAR · CLAUSE_FILL · CLAUSE_STEP 과 한 쌍이다.
- *    한쪽만 고치면 data-x 값이 어느 규칙에도 안 걸려 예외(되돌리기)가 통째로 꺼진다.
- */
-/*
- * ★★ 쉼표 뒤 마디는 **새 줄에서 시작**한다 (2026-09-03) ★★
- *   기본값이 block 이다. 되돌리는 경우는 하나뿐 — **여기까지의 글이 한 줄에 다 들어갈 때.**
- *   그때는 끊어 봐야 줄 하나를 버리는 것이라 그냥 흐르게 둔다.
- *   data-fit = 여기까지의 글이 한 줄에 들어가려면 필요한 칸(em). 칸이 그보다 넓으면 되돌린다.
- * ⚠️ components/ui.tsx 의 clauseFit · EM_PER_CHAR · CLAUSE_STEP 과 한 쌍이다.
- *    한쪽만 고치면 값이 어느 규칙에도 안 걸려 되돌리기가 통째로 꺼진다(= 늘 끊긴다).
- * ⚠️ 기본값(block)은 @container 밖이다 — 칸을 못 재는 자리(표 등)에서도 쉼표 줄바꿈은 된다.
- */
-.clause[data-fit] {
-  display: block;
-}
-
-@container (min-width: 4em) {
-  .clause[data-fit='4'] {
-    display: inline;
-  }
-}
-@container (min-width: 5em) {
-  .clause[data-fit='5'] {
-    display: inline;
-  }
-}
-@container (min-width: 6em) {
-  .clause[data-fit='6'] {
-    display: inline;
-  }
-}
-@container (min-width: 7em) {
-  .clause[data-fit='7'] {
-    display: inline;
-  }
-}
-@container (min-width: 8em) {
-  .clause[data-fit='8'] {
-    display: inline;
-  }
-}
-@container (min-width: 9em) {
-  .clause[data-fit='9'] {
-    display: inline;
-  }
-}
-@container (min-width: 10em) {
-  .clause[data-fit='10'] {
-    display: inline;
-  }
-}
-@container (min-width: 11em) {
-  .clause[data-fit='11'] {
-    display: inline;
-  }
-}
-@container (min-width: 12em) {
-  .clause[data-fit='12'] {
-    display: inline;
-  }
-}
-@container (min-width: 13em) {
-  .clause[data-fit='13'] {
-    display: inline;
-  }
-}
-@container (min-width: 14em) {
-  .clause[data-fit='14'] {
-    display: inline;
-  }
-}
-@container (min-width: 15em) {
-  .clause[data-fit='15'] {
-    display: inline;
-  }
-}
-@container (min-width: 16em) {
-  .clause[data-fit='16'] {
-    display: inline;
-  }
-}
-@container (min-width: 17em) {
-  .clause[data-fit='17'] {
-    display: inline;
-  }
-}
-@container (min-width: 18em) {
-  .clause[data-fit='18'] {
-    display: inline;
-  }
-}
-@container (min-width: 19em) {
-  .clause[data-fit='19'] {
-    display: inline;
-  }
-}
-@container (min-width: 20em) {
-  .clause[data-fit='20'] {
-    display: inline;
-  }
-}
-@container (min-width: 21em) {
-  .clause[data-fit='21'] {
-    display: inline;
-  }
-}
-@container (min-width: 22em) {
-  .clause[data-fit='22'] {
-    display: inline;
-  }
-}
-@container (min-width: 23em) {
-  .clause[data-fit='23'] {
-    display: inline;
-  }
-}
-@container (min-width: 24em) {
-  .clause[data-fit='24'] {
-    display: inline;
-  }
-}
-@container (min-width: 25em) {
-  .clause[data-fit='25'] {
-    display: inline;
-  }
-}
-@container (min-width: 26em) {
-  .clause[data-fit='26'] {
-    display: inline;
-  }
-}
-@container (min-width: 27em) {
-  .clause[data-fit='27'] {
-    display: inline;
-  }
-}
-@container (min-width: 28em) {
-  .clause[data-fit='28'] {
-    display: inline;
-  }
-}
-@container (min-width: 29em) {
-  .clause[data-fit='29'] {
-    display: inline;
-  }
-}
-@container (min-width: 30em) {
-  .clause[data-fit='30'] {
-    display: inline;
-  }
-}
-@container (min-width: 31em) {
-  .clause[data-fit='31'] {
-    display: inline;
-  }
-}
-@container (min-width: 32em) {
-  .clause[data-fit='32'] {
-    display: inline;
-  }
-}
-@container (min-width: 33em) {
-  .clause[data-fit='33'] {
-    display: inline;
-  }
-}
-@container (min-width: 34em) {
-  .clause[data-fit='34'] {
-    display: inline;
-  }
-}
-@container (min-width: 35em) {
-  .clause[data-fit='35'] {
-    display: inline;
-  }
-}
-@container (min-width: 36em) {
-  .clause[data-fit='36'] {
-    display: inline;
-  }
-}
-@container (min-width: 37em) {
-  .clause[data-fit='37'] {
-    display: inline;
-  }
-}
-@container (min-width: 38em) {
-  .clause[data-fit='38'] {
-    display: inline;
-  }
-}
-@container (min-width: 39em) {
-  .clause[data-fit='39'] {
-    display: inline;
-  }
-}
-@container (min-width: 40em) {
-  .clause[data-fit='40'] {
-    display: inline;
-  }
-}
-@container (min-width: 41em) {
-  .clause[data-fit='41'] {
-    display: inline;
-  }
-}
-@container (min-width: 42em) {
-  .clause[data-fit='42'] {
-    display: inline;
-  }
-}
-@container (min-width: 43em) {
-  .clause[data-fit='43'] {
-    display: inline;
-  }
-}
-@container (min-width: 44em) {
-  .clause[data-fit='44'] {
-    display: inline;
-  }
-}
-@container (min-width: 45em) {
-  .clause[data-fit='45'] {
-    display: inline;
-  }
-}
-@container (min-width: 46em) {
-  .clause[data-fit='46'] {
-    display: inline;
-  }
-}
-@container (min-width: 47em) {
-  .clause[data-fit='47'] {
-    display: inline;
-  }
-}
-@container (min-width: 48em) {
-  .clause[data-fit='48'] {
-    display: inline;
-  }
-}
-@container (min-width: 49em) {
-  .clause[data-fit='49'] {
-    display: inline;
-  }
-}
-@container (min-width: 50em) {
-  .clause[data-fit='50'] {
-    display: inline;
-  }
-}
-@container (min-width: 51em) {
-  .clause[data-fit='51'] {
-    display: inline;
-  }
-}
-@container (min-width: 52em) {
-  .clause[data-fit='52'] {
-    display: inline;
-  }
-}
-@container (min-width: 53em) {
-  .clause[data-fit='53'] {
-    display: inline;
-  }
-}
-@container (min-width: 54em) {
-  .clause[data-fit='54'] {
-    display: inline;
-  }
-}
-@container (min-width: 55em) {
-  .clause[data-fit='55'] {
-    display: inline;
-  }
-}
-@container (min-width: 56em) {
-  .clause[data-fit='56'] {
-    display: inline;
-  }
-}
-@container (min-width: 57em) {
-  .clause[data-fit='57'] {
-    display: inline;
-  }
-}
-@container (min-width: 58em) {
-  .clause[data-fit='58'] {
-    display: inline;
-  }
-}
-@container (min-width: 59em) {
-  .clause[data-fit='59'] {
-    display: inline;
-  }
-}
-@container (min-width: 60em) {
-  .clause[data-fit='60'] {
-    display: inline;
-  }
-}
-@container (min-width: 61em) {
-  .clause[data-fit='61'] {
-    display: inline;
-  }
-}
-@container (min-width: 62em) {
-  .clause[data-fit='62'] {
-    display: inline;
-  }
-}
-@container (min-width: 63em) {
-  .clause[data-fit='63'] {
-    display: inline;
-  }
-}
-@container (min-width: 64em) {
-  .clause[data-fit='64'] {
-    display: inline;
-  }
-}
-@container (min-width: 65em) {
-  .clause[data-fit='65'] {
-    display: inline;
-  }
-}
-@container (min-width: 66em) {
-  .clause[data-fit='66'] {
-    display: inline;
-  }
-}
-@container (min-width: 67em) {
-  .clause[data-fit='67'] {
-    display: inline;
-  }
-}
-@container (min-width: 68em) {
-  .clause[data-fit='68'] {
-    display: inline;
-  }
-}
-@container (min-width: 69em) {
-  .clause[data-fit='69'] {
-    display: inline;
-  }
-}
-@container (min-width: 70em) {
-  .clause[data-fit='70'] {
-    display: inline;
-  }
-}
-@container (min-width: 71em) {
-  .clause[data-fit='71'] {
-    display: inline;
-  }
-}
-@container (min-width: 72em) {
-  .clause[data-fit='72'] {
-    display: inline;
-  }
-}
-@container (min-width: 73em) {
-  .clause[data-fit='73'] {
-    display: inline;
-  }
-}
-@container (min-width: 74em) {
-  .clause[data-fit='74'] {
-    display: inline;
-  }
-}
-@container (min-width: 75em) {
-  .clause[data-fit='75'] {
-    display: inline;
-  }
-}
-@container (min-width: 76em) {
-  .clause[data-fit='76'] {
-    display: inline;
-  }
-}
-@container (min-width: 77em) {
-  .clause[data-fit='77'] {
-    display: inline;
-  }
-}
-@container (min-width: 78em) {
-  .clause[data-fit='78'] {
-    display: inline;
-  }
-}
-@container (min-width: 79em) {
-  .clause[data-fit='79'] {
-    display: inline;
-  }
-}
-@container (min-width: 80em) {
-  .clause[data-fit='80'] {
-    display: inline;
-  }
-}
-@container (min-width: 81em) {
-  .clause[data-fit='81'] {
-    display: inline;
-  }
-}
-@container (min-width: 82em) {
-  .clause[data-fit='82'] {
-    display: inline;
-  }
-}
-@container (min-width: 83em) {
-  .clause[data-fit='83'] {
-    display: inline;
-  }
-}
-@container (min-width: 84em) {
-  .clause[data-fit='84'] {
-    display: inline;
-  }
-}
-@container (min-width: 85em) {
-  .clause[data-fit='85'] {
-    display: inline;
-  }
-}
-@container (min-width: 86em) {
-  .clause[data-fit='86'] {
-    display: inline;
-  }
-}
-@container (min-width: 87em) {
-  .clause[data-fit='87'] {
-    display: inline;
-  }
-}
-@container (min-width: 88em) {
-  .clause[data-fit='88'] {
-    display: inline;
-  }
-}
-@container (min-width: 89em) {
-  .clause[data-fit='89'] {
-    display: inline;
-  }
-}
-@container (min-width: 90em) {
-  .clause[data-fit='90'] {
-    display: inline;
-  }
-}
-@container (min-width: 91em) {
-  .clause[data-fit='91'] {
-    display: inline;
-  }
-}
-@container (min-width: 92em) {
-  .clause[data-fit='92'] {
-    display: inline;
-  }
-}
-@container (min-width: 93em) {
-  .clause[data-fit='93'] {
-    display: inline;
-  }
-}
-@container (min-width: 94em) {
-  .clause[data-fit='94'] {
-    display: inline;
-  }
-}
-@container (min-width: 95em) {
-  .clause[data-fit='95'] {
-    display: inline;
-  }
-}
-@container (min-width: 96em) {
-  .clause[data-fit='96'] {
-    display: inline;
-  }
-}
-@container (min-width: 97em) {
-  .clause[data-fit='97'] {
-    display: inline;
-  }
-}
-@container (min-width: 98em) {
-  .clause[data-fit='98'] {
-    display: inline;
-  }
-}
-@container (min-width: 99em) {
-  .clause[data-fit='99'] {
-    display: inline;
-  }
-}
-@container (min-width: 100em) {
-  .clause[data-fit='100'] {
-    display: inline;
-  }
-}
-@container (min-width: 101em) {
-  .clause[data-fit='101'] {
-    display: inline;
-  }
-}
-@container (min-width: 102em) {
-  .clause[data-fit='102'] {
-    display: inline;
-  }
-}
-@container (min-width: 103em) {
-  .clause[data-fit='103'] {
-    display: inline;
-  }
-}
-@container (min-width: 104em) {
-  .clause[data-fit='104'] {
-    display: inline;
-  }
-}
-@container (min-width: 105em) {
-  .clause[data-fit='105'] {
-    display: inline;
-  }
-}
-@container (min-width: 106em) {
-  .clause[data-fit='106'] {
-    display: inline;
-  }
-}
-@container (min-width: 107em) {
-  .clause[data-fit='107'] {
-    display: inline;
-  }
-}
-@container (min-width: 108em) {
-  .clause[data-fit='108'] {
-    display: inline;
-  }
-}
-@container (min-width: 109em) {
-  .clause[data-fit='109'] {
-    display: inline;
-  }
-}
-@container (min-width: 110em) {
-  .clause[data-fit='110'] {
-    display: inline;
-  }
-}
-@container (min-width: 111em) {
-  .clause[data-fit='111'] {
-    display: inline;
-  }
-}
-@container (min-width: 112em) {
-  .clause[data-fit='112'] {
-    display: inline;
-  }
-}
-@container (min-width: 113em) {
-  .clause[data-fit='113'] {
-    display: inline;
-  }
-}
-@container (min-width: 114em) {
-  .clause[data-fit='114'] {
-    display: inline;
-  }
-}
-@container (min-width: 115em) {
-  .clause[data-fit='115'] {
-    display: inline;
-  }
-}
-@container (min-width: 116em) {
-  .clause[data-fit='116'] {
-    display: inline;
-  }
-}
-@container (min-width: 117em) {
-  .clause[data-fit='117'] {
-    display: inline;
-  }
-}
-@container (min-width: 118em) {
-  .clause[data-fit='118'] {
-    display: inline;
-  }
-}
-@container (min-width: 119em) {
-  .clause[data-fit='119'] {
-    display: inline;
-  }
-}
-@container (min-width: 120em) {
-  .clause[data-fit='120'] {
-    display: inline;
-  }
+@media (min-width: 768px) {
+  .clause {
+    display: inline-block;
+    max-width: 100%;
+    text-wrap: balance;
+  }
+}
+@media (min-width: 1024px) {
+  .lead .sent,
+  .lead .sent-one,
+  .text-center .sent,
+  .text-center .sent-one,
+  .c-head .sent,
+  .c-head .sent-one {
+    text-wrap: pretty;
+  }
+}
+/* 제목·질문의 문장 경계(Sentences soft) — 한 줄에 들어가면 그대로, 넘치면 다음 문장이 통째로 다음 줄로 */
+.sent-soft {
+  display: inline-block;
+  max-width: 100%;
+  text-wrap: balance;
+}
+/* 본문(Prose) 안 여러 문장 단락은 문장 사이를 조금 띄운다 — 열 줄 넘는 덩어리가 한 벽처럼 읽혔다(선치과) */
+.prose-ko .sent + .sent {
+  margin-top: 0.5em;
 }
 
 /*

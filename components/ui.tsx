@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { IMG } from '@/lib/assets';
@@ -6,6 +6,7 @@ import { CLINIC, MEDICAL_DISCLAIMER } from '@/lib/clinic';
 import { headingId } from '@/components/article';
 import { BookingButtons } from '@/components/BrandIcons';
 import { Words } from '@/components/motion';
+import { HL_ON, HL_OFF, splitSentences, splitClauses, pauseGlue } from '@/lib/wrapKo';
 
 /**
  * 페이지 폭을 한 곳에서 통제한다. 페이지마다 max-w 를 따로 적으면 반드시 어긋난다.
@@ -27,7 +28,7 @@ export function Container({
 
 /** 좁은 본문 폭 — 읽기 위한 글은 한 줄이 길면 눈이 다음 줄을 놓친다. */
 export function Prose({ children }: { children: React.ReactNode }) {
-  return <div className="reveal prose-body max-w-[68ch] text-[17.5px] leading-[1.85] text-ink-soft">{children}</div>;
+  return <div className="reveal prose-body prose-ko max-w-[68ch] text-[17.5px] leading-[1.85] text-ink-soft">{children}</div>;
 }
 
 /**
@@ -85,210 +86,94 @@ export function plain(text: string) {
 }
 
 /**
- * `**핵심 구절**` 을 강조색으로 바꾼다.
- * ★ 문장을 JSX 로 다시 쓰지 않는 이유 — 그러면 화면용과 메타용으로 **같은 문장이
- *   두 벌**이 되고, 두 벌은 반드시 어긋난다. 문자열 하나에 표시만 남긴다.
- * ⚠️ 한 문단에 두 곳 넘게 강조하지 말 것. 다 강조하면 아무것도 강조가 아니다.
- * ⚠️ 밝은 면에서는 clay-600, 어두운 면에서는 ember 다 — 금색은 밝은 면에서 2.08:1 이라
- *    글자로 못 읽는다(실측). tone 을 반드시 맞춰 줄 것.
+ * `**핵심 구절**` 강조 — 줄바꿈 엔진(lib/wrapKo pauseGlue)은 낱말 끝 조사를 보고 쉼 자리를 고르므로,
+ * `**` 를 사용 영역 문자 두 개(HL_ON·HL_OFF)로 바꿔 넣고 엔진은 그 문자를 무시한다(선치과 {…} 하이라이트와 같은 방식).
+ * ★ 쉼표에서 마디가 갈려도 켜짐 상태를 이어 받는다(마디마다 strong 하나).
+ * ⚠️ 짝이 안 맞으면(표시가 홀수) 강조를 **포기한다** — 글이 잘못 강조되는 것보다 강조가 없는 편이 낫다.
+ * ⚠️ 한 문단에 두 곳 넘게 강조하지 말 것. 밝은 면 clay-600, 어두운 면 ember(tone 을 맞출 것 — 금색은 밝은 면에서 2.08:1).
  */
-function Marked({ text, tone }: { text: string; tone: 'light' | 'dark' }) {
-  // ⚠️ 관형형+의존명사 묶기는 여기 한 곳에서 한다 — Sentences 의 모든 출력이 이 함수를 지난다.
-  const bits = bindKo(text).split('**');
-  /*
-   * ⚠️ 짝이 안 맞으면(표시 개수가 홀수) 강조를 **포기한다**.
-   *   문장 단위로 쪼갠 뒤 강조를 입히는 구조라, 마침표가 표시 안에 있으면 닫는 표시가
-   *   다음 문장으로 넘어가 그 문장이 통째로 물든다. 조용히 번지는 대신 조용히 넘긴다 —
-   *   글이 잘못 강조되는 것보다 강조가 없는 편이 낫다.
-   */
-  if (bits.length % 2 === 0) return <>{plain(text)}</>;
-  return (
-    <>
-      {bits.map((b, i) =>
-        i % 2 === 1 ? (
-          <strong
-            key={`${i}-${b.slice(0, 6)}`}
-            className={`em-strong font-semibold ${tone === 'dark' ? 'text-ember' : 'text-clay-600'}`}
-          >
-            {b}
-          </strong>
-        ) : (
-          <span key={`${i}-${b.slice(0, 6)}`}>{b}</span>
-        ),
-      )}
-    </>
-  );
+function toHl(text: string): string {
+  const bits = text.split('**');
+  if (bits.length % 2 === 0) return plain(text);
+  return bits.map((b, i) => (i === 0 ? b : (i % 2 === 1 ? HL_ON : HL_OFF) + b)).join('');
 }
-/**
- * 글자당 폭 — **em** 단위.
- *
- * ⚠️⚠️ px 로 되돌리지 말 것 (2026-09-02 실측) ⚠️⚠️
- *   '글자당 13px' 은 18px 본문에서만 맞는다. 46px 인용문에서는 17자 마디가 실제로 582px
- *   인데 px 모델은 221px 로 봤다 — 판정이 통째로 어긋난다.
- *   컨테이너 쿼리의 em 은 **그 칸의 글꼴 크기** 기준이라, em 으로 적으면 어느 크기에서도 맞는다.
- * ⚠️ 실측 글자당 폭은 0.66 / 0.72 / 0.70 em 이었다(한글에 라틴·공백이 섞인 본문).
- *    가장 넓은 쪽(0.72)에 맞춘다 — 넉넉한 쪽으로 틀리면 마디가 안 내려갈 뿐이지만,
- *    모자란 쪽으로 틀리면 내려간 마디가 거기서 또 잘려 앞 줄에 구멍이 남는다.
- */
-/*
- * ★ 0.72 → 0.85 (2026-09-03). 0.72 는 라틴·숫자·공백이 섞인 본문에서 잰 평균인데,
- *   순한글 문장은 글자 하나가 거의 1em 이라 그 값으로는 폭을 **작게** 본다.
- *   새 판정("둘이 한 줄에 들어가나")에서 작게 보면 '들어간다' 고 잘못 판단해 안 끊는다 —
- *   실측: 심미보철 히어로의 45자 마디를 32em 로 봤지만 실제로는 34em 칸을 넘겼다.
- * ⚠️ 넉넉한 쪽으로 틀리면 쉼표에서 더 끊길 뿐이고, 그것이 이 규칙이 원하는 방향이다.
- * ⚠️ 이 값을 바꾸면 globals.css 의 버킷 목록도 함께 바꿀 것 — round(n × EM_PER_CHAR).
- */
-/*
- * ★★ 0.85 → 0.73 (2026-09-04, 브라우저 실측) ★★
- *   0.85 는 "순한글은 글자가 넓다" 는 짐작으로 올린 값이었다. 실제로 재 보니
- *   Pretendard 본문에서 문장 다섯 개의 글자당 폭이 0.667~0.728em, 평균 0.703em 이었다.
- *   짐작이 21% 높았고, 그만큼 **필요 폭을 크게 잡아** 되돌릴 수 있는 문장도 계속 끊겼다.
- *   (오너: "이것도 쉼표 뒤에서 안해도 될정도의 길이니깐")
- * ⚠️ 값을 다시 짐작으로 바꾸지 말 것. 바꾸려면 브라우저에서 실제 문장 폭을 재고,
- *    globals.css 의 버킷 목록도 **함께** 갱신할 것 — 한쪽만 고치면 어느 규칙에도 안 걸려
- *    되돌리기가 통째로 꺼진다(= 늘 끊긴다).
- * ⚠️ 실측 최대(0.728)보다 살짝 위인 0.73 을 쓴다. 낮게 잡으면 안 들어가는 문장을
- *    한 줄로 되돌려 문장 한가운데서 줄이 갈린다 — 이 기능이 막으려던 바로 그 모양이다.
- */
-/*
- * ⚠️ 0.71 은 **양방향을 재서 고른 값**이다 (2026-09-04 전수 실측, 마디 2,736개).
- *      0.71 → 안 끊어도 됐는데 끊긴 것 83 · 문장 중간에서 갈린 것 147
- *      0.68 → 69 / 186        0.65 → 64 / 265
- *    더 낮추면 '억지 끊김' 은 조금 줄지만 **문장 중간에서 갈리는 것이 급증**한다 —
- *    그게 이 기능이 처음부터 막으려던 모양이다. 낮추지 말 것.
- * ⚠️ 실측 평균은 0.703(0.667~0.728, Pretendard 본문)이다. 짐작으로 바꾸지 말고 다시 잴 것.
- */
-const EM_PER_CHAR = 0.71;
+function strongs(str: string, st: { on: boolean }, tone: 'light' | 'dark', keyBase = ''): ReactNode {
+  const cls = `em-strong font-semibold ${tone === 'dark' ? 'text-ember' : 'text-clay-600'}`;
+  const wrap = (s: string, k: string) => (st.on ? <strong key={k} className={cls}>{s}</strong> : <Fragment key={k}>{s}</Fragment>);
+  if (!str.includes(HL_ON) && !str.includes(HL_OFF)) return wrap(str, `${keyBase}0`);
+  const out: ReactNode[] = [];
+  let buf = '';
+  let k = 0;
+  const flush = () => {
+    if (buf) out.push(wrap(buf, `${keyBase}${k++}`));
+    buf = '';
+  };
+  for (const ch of str) {
+    if (ch === HL_ON || ch === HL_OFF) {
+      flush();
+      st.on = ch === HL_ON;
+      continue;
+    }
+    buf += ch;
+  }
+  flush();
+  return out;
+}
 
 /**
- * 버킷 간격(자). 8자마다 한 단계씩 올린다.
- * ⚠️ 이 값을 바꾸면 globals.css 의 @container 규칙 목록도 같이 바꿀 것. 둘은 한 쌍이다.
+ * ★★ 문장·마디·쉼 줄바꿈 — 광화문 선치과 규칙 그대로 (2026-10-07 오너: "선치과 줄바꿈 규칙으로 전체 점검") ★★
+ *   1) 마침표에서 줄을 바꾼다(.sent = block, 문장 하나면 .sent-one).
+ *   2) 문장 안은 절 쉼표 마디(.clause)에서 — 나열 쉼표("임플란트, 심미치료, 사랑니 발치")는 가르지 않는다.
+ *   3) 마디 안은 한 줄보다 긴 토막에만 말 쉬는 자리 하나를 열고 나머지는 붙임 공백(pauseGlue).
+ *   4) 넓은 화면(1024~)의 가운데 글·설명은 문장 하나 = 한 줄(채워 쓰기), 폰·좁은 칸만 줄 길이를 고르게(globals.css).
+ *   붙임 덩어리가 좁은 칸보다 넓으면 그려진 뒤 components/WrapGuard 가 그 덩어리만 풀어 준다.
+ * ⚠️ 옛 판(Clauses · data-fit · @container 버킷 117개, 2026-09-01~04)은 이것으로 갈아 끼웠다 — 되살리지 말 것.
+ * ⚠️ match() 로 문장을 "골라내지" 말 것 — 소수점 앞 글자가 사라졌다(2026-09-02). splitSentences 는 경계에서만 자른다.
+ *
+ * clauses=false — 좁은 카드(세 칸 이상)에서는 쉼표 마디를 가르지 않는다(두세 낱말짜리 줄 방지, 선치과 생활습관 카드 원칙).
+ * soft — 제목·질문처럼 짧은 글: 한 줄에 들어가면 그대로, 넘칠 때만 문장 경계에서.
  */
-const CLAUSE_STEP = 8;
-
-/**
- * ★★ 2026-09-03 — 물음을 바꿨다 ★★
- *   전에는 "앞 줄이 얼마나 찼나" 를 물었다(앞 마디 길이 × 비율). 그 기준으로는 심미보철
- *   히어로의 "치아 상태와 교합, 필요한 삭제량을 …" 이 안 끊겼다 — 앞 마디가 9자뿐이라
- *   '휑하다' 고 본 것인데, 안 끊으니 뒤 마디가 통째로 넘쳐 "…치료 / 방법을" 로 잘렸다.
- *   더 나빴다.
- *
- *   맞는 물음은 **"둘이 한 줄에 같이 들어가나"** 다.
- *     들어간다   → 끊지 않는다(억지로 끊으면 줄 하나를 버린다).
- *     안 들어간다 → 쉼표에서 끊는다. 그래야 앞 줄이 쉼표로 끝난다.
- *
- * ⚠️ 앞 길이는 문장 첫머리부터의 누적이다. 한 번 끊긴 뒤로는 실제보다 길게 보지만,
- *    그쪽으로 틀리면 쉼표에서 더 끊길 뿐이고 그것이 이 규칙이 원하는 방향이다.
- */
-/*
- * ★★ 8글자 단위 올림을 없앴다 (2026-09-04, 두 번째 교정) ★★
- *   예전에는 글자 수를 CLAUSE_STEP(8) 단위로 **올림**해서 버킷을 줄였다. 그 올림 하나가
- *   최대 8글자(≈5.7em)를 더 요구하게 만들어, 칸에 들어가는 문장도 계속 끊겼다.
- *   전수 실측에서 '안 끊어도 됐는데 끊긴 것' 이 233건이었다.
- *   이제 1em 단위로 그대로 쓴다 — CSS 규칙이 늘지만(약 117개) 그건 싸다.
- * ⚠️ globals.css 의 버킷 범위(4~120em)를 벗어나면 어느 규칙에도 안 걸려 **늘 끊긴다.**
- *    범위를 좁히지 말 것.
- */
-const clauseFit = (chars: number) =>
-  Math.min(120, Math.max(4, Math.round(chars * EM_PER_CHAR)));
-
-/**
- * 한 문장 안에서 **쉼표 뒤**를 줄바꿈 자리로 밀어 준다.
- *
- * ★★ 왜 (2026-09-01 운영자) ★★
- *   "최대한 마침표 뒤나 쉼표 뒤에서" — 마침표는 Sentences 가 문장마다 줄을 나눠 해결하지만,
- *   한 문장이 두 줄을 넘으면 그 안에서는 여전히 아무 데서나 끊겼다("…를 먼저 보고, 심을 /
- *   수 있는지부터"). 쉼표는 문장 안에서 숨을 쉬는 자리라 거기서 끊는 편이 읽기 쉽다.
- *
- * ★★ 어떻게 ★★
- *   짧은 마디를 inline-block 으로 만든다. 그러면 그 마디는 **쪼개지지 않고**, 남은 자리에
- *   안 들어가면 통째로 다음 줄로 내려간다 → 앞 줄이 쉼표에서 끝난다.
- *
- * ⚠️⚠️ 띄어쓰기를 &nbsp; 로 묶는 방법을 쓰지 말 것 ⚠️⚠️
- *   같은 효과를 내지만, 마디가 칸보다 넓으면 **가로로 넘쳐** 페이지에 가로 스크롤이 생긴다.
- *   inline-block 은 그럴 때 마디 안에서 알아서 줄을 바꾼다 — 넘치지 않는다.
- *
- * ⚠️ 강조 표시(**)가 든 문장은 건드리지 않는다. 쉼표가 강조 안에 있으면 여는 표시와 닫는
- *    표시가 서로 다른 마디로 갈라져, Marked 의 짝 검사에 걸려 강조가 통째로 사라진다.
- */
-function Clauses({ text, tone }: { text: string; tone: 'light' | 'dark' }) {
-  if (text.includes('**')) return <Marked text={text} tone={tone} />;
-  const parts = text.split(/(?<=,)\s+/);
-  if (parts.length < 2) return <Marked text={text} tone={tone} />;
-  return (
-    <>
-      {parts.map((c, i) => {
-        /*
-          마디마다 두 값을 붙인다 —
-            data-fit  여기까지의 글이 한 줄에 들어가려면 필요한 칸(em) → 칸이 그보다 넓으면 안 내림
-          둘 사이일 때만 마디가 통째로 다음 줄로 내려간다. 아래(위)는 '내려가도 안 들어감',
-          위는 '내려가면 앞 줄이 휑함' 이라 둘 다 쉼표 줄바꿈을 포기하는 편이 낫다.
-          ⚠️ 앞 길이(filled)는 문장 첫머리부터의 누적이다 — 앞 마디 하나만 보면 안 된다.
-             같은 줄에 이미 두 마디가 놓여 있어도 "앞 줄이 비었다" 고 잘못 본다(실측).
-        */
-        const prev = i > 0 ? parts[i - 1] : null;
-        /*
-         * ★ 나열 쉼표는 끊지 않는다 (2026-09-03 실측) — "임플란트, 심미치료, 사랑니 발치" 나
-         *   "치아 배열, 색상, 모양까지" 는 절이 아니라 목록이다. 거기서 줄을 바꾸면 낱말이
-         *   한 줄에 하나씩 서는 표가 된다(홈 진료 카드에서 실제로 그렇게 됐다).
-         *   앞뒤 마디가 **둘 다 8자 이상**일 때만 절로 본다. 짧은 쪽이 하나라도 있으면 목록이다.
-         */
-        /*
-         * ★★ 나열문은 끊지 않는다 (2026-09-04 오너: "사랑니 발치를 진료합니다. 줄바꿈 하지말고 위로") ★★
-         *   '자연치아살리기(…), 임플란트, 심미치료(…), 사랑니 발치를 진료합니다.' 처럼 쉼표가
-         *   여러 개면 그건 **절이 아니라 목록**이다. 목록을 한 줄씩 끊으면 문장이 아니라 표가 된다.
-         * ⚠️ 기준은 쉼표 셋(마디 넷) 이상이다. 둘까지는 '앞 절, 뒤 절' 인 경우가 대부분이다.
-         */
-        const isList = parts.length >= 4;
-        const isClause =
-          !isList && !!prev && prev.length >= CLAUSE_STEP && c.length >= CLAUSE_STEP;
-        /*
-         * ★★ 앞 줄이 얼마나 찼는지는 **직전 마디 하나가 아니라 지금까지 쌓인 전부**다
-         *    (2026-09-03 실측) ★★
-         *   심미보철 히어로 "치아 상태와 교합, 필요한 삭제량을 함께 고려해 자연치아를 …" 에서
-         *   셋째 마디가 안 내려갔다. 직전 마디('필요한 삭제량을 함께 고려해', 15자)만 보고
-         *   '앞 줄이 비었다' 고 판정했지만, 실제로는 그 앞에 '치아 상태와 교합,' 이 이미
-         *   같은 줄에 있어 25자가 차 있었다.
-         * ⚠️ 문장 첫머리부터의 누적이라 셋째 마디 뒤로는 실제보다 길게 본다. 그쪽으로 틀리면
-         *    쉼표에서 더 끊길 뿐이고, 그것이 이 규칙이 원하는 방향이다.
-         */
-        const filled = parts.slice(0, i).join(' ').length;
-        return (
-          <Fragment key={`${i}-${c.slice(0, 8)}`}>
-            {/* 첫 마디·목록 항목은 그대로 흐른다. 절(data-fit)만 새 줄에서 시작한다. */}
-            <span className="clause" data-fit={isClause ? clauseFit(filled + 1 + c.length) : undefined}>
-              {c}
-            </span>
-            {/* 나눌 때 없어진 띄어쓰기를 되돌린다 — 없으면 마디끼리 붙어 버린다. */}
-            {i < parts.length - 1 ? ' ' : null}
+export function Sentences({
+  text,
+  tone = 'light',
+  clauses: useClauses = true,
+  soft = false,
+}: {
+  text: string;
+  tone?: 'light' | 'dark';
+  clauses?: boolean;
+  soft?: boolean;
+}) {
+  const t = toHl(text);
+  const st = { on: false };
+  const sentences = splitSentences(t);
+  const clausesOf = (s: string) => (useClauses ? splitClauses(s) : [s]);
+  const clause = (c: string, key: string) => (
+    <Fragment key={key}>
+      <span className="clause">{strongs(pauseGlue(c), st, tone, `${key}-`)}</span>{' '}
+    </Fragment>
+  );
+  if (soft) {
+    if (sentences.length <= 1) return <>{strongs(t, st, tone)}</>;
+    return (
+      <>
+        {sentences.map((s, i) => (
+          <Fragment key={i}>
+            <span className="sent-soft">{strongs(pauseGlue(s, 11), st, tone, `${i}-`)}</span>
+            {i < sentences.length - 1 ? ' ' : ''}
           </Fragment>
-        );
-      })}
-    </>
-  );
-}
-
-export function Sentences({ text, tone = 'light' }: { text: string; tone?: 'light' | 'dark' }) {
-  /*
-   * ⚠️⚠️ match() 로 문장을 "골라내지" 말 것 — **글자가 사라진다** (2026-09-02 실측) ⚠️⚠️
-   *   전에는 /[^.!?]+[.!?]+(?=\s|$)|[^.!?]+$/g 로 문장을 뽑았다. 이 방식은 소수점처럼
-   *   **뒤에 공백이 안 오는 마침표**를 만나면 그 자리에서 매칭이 실패하고, 정규식이
-   *   다음 위치로 건너뛰면서 앞부분을 통째로 버린다.
-   *     "앞면만 0.3~0.7mm 다듬습니다. 전체를 …" → ["7mm 다듬습니다.", "5mm)의 절반 …"]
-   *     (61자가 36자로 줄었다. 화면에서도 문장 앞머리가 사라져 있었다.)
-   * ★ split 은 경계에서만 자르므로 **어떤 글자도 잃지 않는다.** 마침표 뒤에 공백이
-   *   올 때만 자르니 소수점·약어(Dr.)는 그대로 붙어 있는다.
-   */
-  const parts = text
-    .split(/(?<=[.!?])\s+(?=\S)/)
-    .map((s) => s.trim())
-    .filter(Boolean);
-  if (parts.length < 2) return <Clauses text={text} tone={tone} />;
+        ))}
+      </>
+    );
+  }
+  if (sentences.length <= 1) {
+    return <span className="sent-one">{clausesOf(t).map((c, i) => clause(c, `c${i}`))}</span>;
+  }
   return (
     <>
-      {parts.map((s, i) => (
-        <span key={`${i}-${s.slice(0, 8)}`} className="block">
-          <Clauses text={s} tone={tone} />
+      {sentences.map((s, i) => (
+        <span key={i} className="sent">
+          {clausesOf(s).map((c, j) => clause(c, `s${i}c${j}`))}
         </span>
       ))}
     </>
