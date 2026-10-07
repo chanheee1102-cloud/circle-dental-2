@@ -116,8 +116,9 @@ export function TreatmentHero({
           ))}
         </h1>
 
+          {/* 넓은 화면은 문장 하나 = 한 줄(선치과 규칙, 2026-10-07) — 34em(612px)에 갇혀 620~830px 문장이 반으로 쪼개졌다 → lg 50em(900px) */}
         <p
-          className="enter mx-auto mt-8 max-w-[34em] text-[18px] leading-[1.9] text-parchment/85"
+          className="lead enter mx-auto mt-8 max-w-[34em] text-[18px] leading-[1.9] text-parchment/85 lg:max-w-[50em]"
           style={{ animationDelay: '320ms' }}
         >
           {/* ⚠️ tone="dark" 를 빼지 말 것 — 빼면 강조가 밝은 면용 짙은 금색으로 나와 2.69:1 이 된다. */}

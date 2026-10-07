@@ -52,7 +52,7 @@ export const TRUST_STATS: TrustStat[] = [
   },
   {
     value: '1편',
-    label: '국제 학술지 발표 논문',
+    label: '국제 학술지 발표 논문', // 폰에서 '논문' 만 끝줄에 남았다(2026-10-07 점검)
     source: 'lib/doctors.ts — PUBLICATION_DETAIL',
   },
   /*
@@ -84,7 +84,7 @@ export const CREDENTIAL_ROWS: CredentialRow[] = [
   {
     name: '통합치의학과 전문의',
     issuer: '보건복지부',
-    kind: '전문의 자격',
+    kind: '전문의 자격', // 표 칸이 좁아 '자격' 만 다음 줄로 떨어졌다(2026-10-07 줄바꿈 점검)
   },
   {
     name: '연구자문치과 위촉패',
@@ -104,7 +104,7 @@ export const CREDENTIAL_ROWS: CredentialRow[] = [
   {
     name: '정회원 회원증',
     issuer: '대한치과보존학회',
-    kind: '학회 정회원',
+    kind: '학회 정회원',
   },
 ];
 

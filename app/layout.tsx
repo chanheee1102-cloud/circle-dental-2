@@ -10,6 +10,7 @@ import { QuickMenu } from '@/components/QuickMenu';
 import { RevealScript } from '@/components/RevealScript';
 import { SmoothScroll } from '@/components/SmoothScroll';
 import { ScrollMotion } from '@/components/ScrollMotion';
+import { WrapGuard } from '@/components/WrapGuard';
 import { CLINIC } from '@/lib/clinic';
 
 /**
@@ -139,6 +140,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SmoothScroll />
         {/* 스크롤 숫자(시차·첫 화면 빠짐·낱말 짙어짐·진행선) — 전 페이지 하나. components/ScrollMotion 머리말 참조. */}
         <ScrollMotion />
+        {/* 붙임 덩어리 풀기 — 좁은 칸에서 두 줄에 걸친 덩어리만 풀어 낱말 가운데 꺾임을 막는다(선치과 규칙, components/WrapGuard) */}
+        <WrapGuard />
       </body>
     </html>
   );

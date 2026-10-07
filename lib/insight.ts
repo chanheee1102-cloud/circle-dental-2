@@ -249,8 +249,8 @@ export interface CostTopic {
 }
 
 export const COST_LABEL: Record<CostTopic['covered'], string> = {
-  insurance: '건강보험 적용',
-  partial: '조건부 적용',
+  insurance: '건강보험 적용', // 좁은 표지에서 '적용' 만 다음 줄로 떨어졌다(2026-10-07)
+  partial: '조건부 적용',
   private: '비급여',
 };
 
@@ -263,7 +263,7 @@ export const COST_TOPICS: CostTopic[] = [
     covered: 'partial',
     detail:
       '보험 적용은 사전 등록 절차를 거쳐야 하며, 등록한 병원에서 치료를 마치는 것이 원칙입니다. 뼈이식 같은 부가 처치나 보험 기준을 넘어서는 재료는 별도 비급여로 계산됩니다. 이미 2개를 쓰셨다면 추가분은 비급여가 됩니다.',
-    factors: ['부분 무치악 여부', '이미 사용한 보험 임플란트 개수', '뼈이식 등 부가 처치 필요 여부'],
+    factors: ['부분 무치악 여부', '이미 사용한 보험 임플란트 개수', '뼈이식 등 부가 처치 필요 여부'], // '여부' 만 끝줄에 남지 않게(2026-10-07)
   },
   {
     slug: 'scaling',
@@ -283,7 +283,7 @@ export const COST_TOPICS: CostTopic[] = [
     covered: 'partial',
     detail:
       '어금니에 씌우는 금속 크라운은 보험이 적용되는 경우가 있고, 지르코니아나 세라믹처럼 심미적인 재료는 비급여입니다. 치료비의 큰 부분은 신경치료보다 그 뒤의 보철에서 갈립니다.',
-    factors: ['치아 위치(앞니/어금니)', '크라운 재료 선택', '재신경치료 여부'],
+    factors: ['치아 위치(앞니/어금니)', '크라운 재료 선택', '재신경치료 여부'],
   },
   {
     slug: 'wisdom-cost',
