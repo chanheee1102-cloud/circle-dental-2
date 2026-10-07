@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { CLINIC, NO_GUARANTEE_NOTE } from '@/lib/clinic';
 import { Container, MedicalNotice, Sentences } from '@/components/ui';
 import { TreatmentHero, TreatmentStrip } from '@/components/TreatmentShell';
@@ -184,6 +185,17 @@ export default function ExtractionAndRetreatmentPage() {
               <p className="reveal mt-8 max-w-[30em] text-[17.5px] leading-[1.9] text-twilight">
                 <Sentences text={IMMEDIATE.what} />
               </p>
+              {/* 2026-10-07 오너가 보낸 단계 그림(발치 → 즉시 식립 → 보철물 연결). 그림 속 글자는 오너 원본 그대로다. */}
+              <figure className="reveal mt-10 overflow-hidden rounded-2xl border border-wine-line bg-white">
+                <Image
+                  src="/img/implant-immediate-steps.webp"
+                  alt="발치 후 즉시 식립 세 단계 — 01 손상된 치아 발치, 02 즉시 임플란트 식립, 03 보철물 연결"
+                  width={1536}
+                  height={1024}
+                  sizes="(min-width: 1024px) 520px, 92vw"
+                  className="h-auto w-full"
+                />
+              </figure>
             </div>
 
             <div>

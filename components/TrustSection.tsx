@@ -7,6 +7,7 @@ import { CredentialFan } from '@/components/CredentialFan';
 import { Container, Sentences } from '@/components/ui';
 import { Reveal } from '@/components/Reveal';
 import { headingId } from '@/components/article';
+import { PublicationLightbox } from '@/components/PublicationLightbox';
 
 /**
  * 신뢰 지표 — 숫자 · 인증표 · 논문 · 언론. (/about/trust 전용)
@@ -163,18 +164,9 @@ export function TrustSection() {
                  썸네일보다 커진다(2026-09-04 오너: "왼쪽 논문 사진 오른쪽이랑 높이 맞춰").
                  여백은 바깥 껍데기가 지고, 테두리 상자는 사진 비율만 갖는다.
             */}
+            {/* 2026-10-07 오너: 사진은 원내 진열 사진으로, 누르면 발표논문 배너가 열린다(버튼 없이) — components/PublicationLightbox */}
             <div className="mt-auto w-full max-w-[420px] pt-7">
-            <div className="overflow-hidden rounded-xl border border-brand-200/70 bg-brand-100">
-              <div className="relative aspect-[6/5]">
-                <Image
-                  src={PUBLICATION_DETAIL.image}
-                  alt="국제 학술지에 실린 발표 논문 지면"
-                  fill
-                  sizes="(min-width: 1024px) 420px, 80vw"
-                  className="object-contain"
-                />
-              </div>
-            </div>
+              <PublicationLightbox />
             </div>
           </div>
 

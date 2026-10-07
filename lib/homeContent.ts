@@ -12,16 +12,18 @@
 const P = '/img';
 
 /** 첫 화면 — 파노라마 화면을 짚으며 설명하는 장면. 목업 히어로와 같은 구도다. */
+/* 2026-10-07 오너가 보낸 진료 장면 사진으로 교체(옛 사진: 20210923_217b53ad1570b — 태블릿으로 설명하는 상담 장면) */
 export const HERO_PHOTO = {
-  src: `${P}/20210923_217b53ad1570b.jpg`,
-  alt: '진료실에서 의료진이 모니터의 파노라마 엑스레이와 태블릿의 구강 사진을 나란히 놓고 환자에게 설명하는 모습',
+  src: `${P}/hero-treatment.jpg`,
+  alt: '진료실에서 원장이 환자를 진료하고 진료 보조 직원이 조명을 맞추는 모습, 뒤 모니터에 파노라마 방사선 사진',
 };
 
 /**
  * 첫 화면에 실제로 깔리는 판 — HERO_PHOTO 와 **같은 사진**을 따뜻한 아이보리 결로 다듬고 왼쪽 앞(환자)만 흐리게 한 것(2026-09-28).
  * 만든 법: C:/tmp/cd-new/hero-grade2.cjs(sharp). ★ 2판(2026-09-28 색 검토): 벽이 푸른 회색이라 아이보리 바탕과 섞이는 가운데가 탁했다 → 채널별로 파랑을 눌러 벽을 따뜻하게(#e1e2e2 → #eadfc9). 구조화 데이터·공유 이미지는 원본(HERO_PHOTO)을 그대로 쓴다.
  */
-export const HERO_WARM_SRC = `${P}/hero-warm-2.jpg`;
+/* 2026-10-07 판 — 오너 사진(hero-treatment)을 같은 결로(C:/tmp/cd-copy/hero3.cjs). ⚠️ 새 판은 새 파일 이름으로(next/image 캐시) */
+export const HERO_WARM_SRC = `${P}/hero-warm-3.jpg`;
 
 /** 동그라미가 가장 먼저 생각하는 것 — 진료 전에 스스로 묻는 네 가지. 순서가 곧 순위다. */
 export const PRINCIPLES = [
