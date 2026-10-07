@@ -171,56 +171,44 @@ export default function ExtractionAndRetreatmentPage() {
       <TreatmentStrip items={STRIP} />
 
       {/* ── 01 발치 즉시 식립 ──────────────────────────────────────── */}
-      <section className="py-16 sm:py-24 lg:py-32">
+      {/*
+        ★★ 그림이 주인공 (2026-10-07 오너: "조그맣게 넣는 게 아니라, 내용 지우고 차라리 크게 넣고 밑에 서브 문구만") ★★
+          글 두 단(설명 · 검토 조건 · 알아 두실 점)을 걷고, 제목 → 큰 단계 그림 → 그 아래 두 문장(무엇인가 / 다만)으로.
+          그림은 오너 원본을 아래 여백만 잘라 썼다(implant-immediate-steps-wide.webp). 그림 속 글자는 원본 그대로.
+        ⚠️ '다만 …' 문장은 남긴다 — 장점만 적으면 광고문이 된다(의료법 제56조). 검토 조건·알아 둘 점 원문은 IMMEDIATE 에 그대로 있다.
+      */}
+      <section className="py-16 sm:py-24 lg:py-28">
         <Container>
-          <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
-            <div className="lg:sticky lg:top-32 lg:self-start">
-              <p className="eyebrow-chip text-clay-700">01 · 뽑은 자리에 바로</p>
-              <h2
-                id={headingId('발치 즉시 식립은 어떤 방법인가요')}
-                className="display-sm reveal mt-5 scroll-mt-28 max-w-[13em] text-[clamp(26px,3.6vw,42px)] leading-[1.15] tracking-[-0.02em] text-ink"
-              >
-                발치 즉시 식립은 어떤 방법인가요?
-              </h2>
-              <p className="reveal mt-8 max-w-[30em] text-[17.5px] leading-[1.9] text-twilight">
-                <Sentences text={IMMEDIATE.what} />
-              </p>
-              {/* 2026-10-07 오너가 보낸 단계 그림(발치 → 즉시 식립 → 보철물 연결). 그림 속 글자는 오너 원본 그대로다. */}
-              <figure className="reveal mt-10 overflow-hidden rounded-2xl border border-wine-line bg-white">
-                <Image
-                  src="/img/implant-immediate-steps.webp"
-                  alt="발치 후 즉시 식립 세 단계 — 01 손상된 치아 발치, 02 즉시 임플란트 식립, 03 보철물 연결"
-                  width={1536}
-                  height={1024}
-                  sizes="(min-width: 1024px) 520px, 92vw"
-                  className="h-auto w-full"
-                />
-              </figure>
-            </div>
+          <div className="mx-auto max-w-[1080px] text-center">
+            <p className="eyebrow-chip justify-center text-clay-700">01 · 뽑은 자리에 바로</p>
+            <h2
+              id={headingId('발치 즉시 식립은 어떤 방법인가요')}
+              className="display-sm reveal mt-5 scroll-mt-28 text-[clamp(26px,3.6vw,42px)] leading-[1.2] tracking-[-0.02em] text-ink"
+            >
+              발치 즉시 식립은 어떤 방법인가요?
+            </h2>
+          </div>
 
-            <div>
-              <div className="border-t border-wine-line pt-7 lg:border-t-0 lg:pt-0">
-                <p className={SUB}>이런 경우에 검토합니다</p>
-                <ul className="reveal-stack mt-4 divide-y divide-wine-line">
-                  {IMMEDIATE.yes.map((v) => (
-                    <li key={v} className="reveal py-4 text-[16.5px] leading-[1.85] text-twilight">
-                      <Sentences text={v} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              {/* ⚠️ 알아 두실 점을 지우지 말 것 — 장점만 적으면 광고문이 된다(의료법 제56조). */}
-              <div className="mt-8 rounded-2xl border border-clay-600/40 bg-clay-400/[0.07] p-6 ring-1 ring-clay-400/10 ring-inset">
-                <p className={SUB}>알아 두실 점</p>
-                <ul className="mt-4 divide-y divide-clay-600/20">
-                  {IMMEDIATE.care.map((v) => (
-                    <li key={v} className="py-4 text-[16.5px] leading-[1.85] text-ink">
-                      <Sentences text={v} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+          <figure className="reveal mx-auto mt-10 max-w-[1080px] overflow-hidden rounded-[28px] bg-white px-2 py-4 shadow-[0_24px_60px_-36px_rgba(36,37,33,0.35)] ring-1 ring-wine-line sm:mt-14 sm:px-6 sm:py-8">
+            <Image
+              src="/img/implant-immediate-steps-wide.webp"
+              alt="발치 후 즉시 식립 세 단계 — 01 손상된 치아 발치, 02 즉시 임플란트 식립, 03 보철물 연결"
+              width={1536}
+              height={830}
+              sizes="(min-width: 1140px) 1080px, 96vw"
+              className="h-auto w-full"
+            />
+          </figure>
+
+          <div className="reveal mx-auto mt-10 max-w-[760px] text-center sm:mt-12">
+            <p className="text-[18px] leading-[1.85] text-ink [text-wrap:balance] [word-break:keep-all] sm:text-[19.5px]">
+              치아를 뽑은 그 자리에 곧바로 임플란트를 심는 방법입니다. 뽑은 자리가 아물기를 따로 기다리지 않아 수술 횟수가
+              줄고, 잇몸 모양이 중요한 앞니에서 특히 검토합니다.
+            </p>
+            <p className="mt-5 text-[15.5px] leading-[1.85] text-twilight [text-wrap:balance] [word-break:keep-all] sm:text-[16.5px]">
+              다만 바로 심는 것과 바로 씹는 것은 다릅니다. 뼈와 붙는 기간은 그대로 필요하고, 뽑은 자리의 빈틈을 채우는
+              뼈이식이 함께 필요한 경우가 많습니다.
+            </p>
           </div>
         </Container>
       </section>
