@@ -30,7 +30,7 @@ import { ClinicMap } from '@/components/ClinicMap';
 import { Reveal } from '@/components/Reveal';
 import { Chars, Em, SplitLines } from '@/components/motion';
 import { JsonLd } from '@/components/JsonLd';
-import { Clip, ClipStill } from '@/components/Clip';
+import { LazyClip } from '@/components/LazyClip';
 import { medicalWebPageSchema, imageObjectSchema } from '@/lib/seo';
 import { imageMeta } from '@/lib/imageSize';
 
@@ -345,7 +345,7 @@ function ClinicSection() {
  * ★ 문구는 처음 판 원문(lib/concerns.ts '꼭 치료해야 하는지 몰라서'·'과잉진료가 걱정돼서' 답)에서 가져왔다 —
  *   제목 '살릴 수 있는지부터, 솔직하게 말씀드립니다.' 만 새로 세웠고, 아래 두 문장과 링크 이름('살릴 수 있는지 보기')은 원문 그대로다.
  *   '뽑기 전에' 는 일부러 쓰지 않았다(요청서 목업 첫 화면 문구와 겹친다).
- * ★ 영상: 소리 없음·반복·인라인(components/Clip). 움직임 줄이기면 첫 장면 사진(ClipStill)만.
+ * ★ 영상: 소리 없음·반복·인라인, 화면 가까이 와야 받는다(components/LazyClip). 움직임 줄이기면 첫 장면 사진만.
  * ⚠️ 옛 AI 정물(gen/preserve.jpg)은 홈에서 걷었다 — 파일은 남겨 둔다.
  */
 function PreserveBand() {
@@ -377,8 +377,12 @@ function PreserveBand() {
           </svg>
           <span aria-hidden className="pv-dot" />
           <div className="pv-lens clip-in clip-circle">
-            <Clip base="consult-xray" label="원장이 모니터의 파노라마 방사선 사진을 짚으며 환자에게 설명하는 상담 장면" className="pv-video" />
-            <ClipStill base="consult-xray" alt="원장이 모니터의 파노라마 방사선 사진을 짚으며 환자에게 설명하는 상담 장면" className="pv-video" />
+            {/*
+              2026-10-07 오너 "노트북에서 영상이 깨진다" — 원본(780×434·10fps, GIF 에서 바꾼 것)을 창 크기 그대로 늘려 그려
+              디더 얼룩·계단이 보였다. 창에 맞는 정사각(가운데 434px)만 잘라 얼룩을 걷고 960px 로 키운 뒤 20fps 로 채운 판
+              (consult-xray-hd, C:/tmp/cd-copy/vid 명령) + 화면 가까이 와서야 받는 LazyClip.
+            */}
+            <LazyClip base="consult-xray-hd" label="원장이 모니터의 파노라마 방사선 사진을 짚으며 환자에게 설명하는 상담 장면" className="pv-video" />
           </div>
         </div>
       </Container>

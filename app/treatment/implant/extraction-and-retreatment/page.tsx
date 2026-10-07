@@ -174,7 +174,7 @@ export default function ExtractionAndRetreatmentPage() {
       {/*
         ★★ 그림이 주인공 (2026-10-07 오너: "조그맣게 넣는 게 아니라, 내용 지우고 차라리 크게 넣고 밑에 서브 문구만") ★★
           글 두 단(설명 · 검토 조건 · 알아 두실 점)을 걷고, 제목 → 큰 단계 그림 → 그 아래 두 문장(무엇인가 / 다만)으로.
-          그림은 오너 원본을 아래 여백만 잘라 썼다(implant-immediate-steps-wide.webp). 그림 속 글자는 원본 그대로.
+          그림은 오너 원본에서 그림 속 제목('발치 후 즉시 식립')과 아래 여백을 잘라 썼다(implant-steps-notitle.webp, 2026-10-07 오너 — 위 h2 와 겹친다). 그림 속 나머지 글자는 원본 그대로.
         ⚠️ '다만 …' 문장은 남긴다 — 장점만 적으면 광고문이 된다(의료법 제56조). 검토 조건·알아 둘 점 원문은 IMMEDIATE 에 그대로 있다.
       */}
       <section className="py-16 sm:py-24 lg:py-28">
@@ -191,10 +191,10 @@ export default function ExtractionAndRetreatmentPage() {
 
           <figure className="reveal mx-auto mt-10 max-w-[1080px] overflow-hidden rounded-[28px] bg-white px-2 py-4 shadow-[0_24px_60px_-36px_rgba(36,37,33,0.35)] ring-1 ring-wine-line sm:mt-14 sm:px-6 sm:py-8">
             <Image
-              src="/img/implant-immediate-steps-wide.webp"
+              src="/img/implant-steps-notitle.webp"
               alt="발치 후 즉시 식립 세 단계 — 01 손상된 치아 발치, 02 즉시 임플란트 식립, 03 보철물 연결"
               width={1536}
-              height={830}
+              height={650}
               sizes="(min-width: 1140px) 1080px, 96vw"
               className="h-auto w-full"
             />
