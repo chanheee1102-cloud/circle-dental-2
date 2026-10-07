@@ -22,8 +22,9 @@ export const HERO_PHOTO = {
  * 첫 화면에 실제로 깔리는 판 — HERO_PHOTO 와 **같은 사진**을 따뜻한 아이보리 결로 다듬고 왼쪽 앞(환자)만 흐리게 한 것(2026-09-28).
  * 만든 법: C:/tmp/cd-new/hero-grade2.cjs(sharp). ★ 2판(2026-09-28 색 검토): 벽이 푸른 회색이라 아이보리 바탕과 섞이는 가운데가 탁했다 → 채널별로 파랑을 눌러 벽을 따뜻하게(#e1e2e2 → #eadfc9). 구조화 데이터·공유 이미지는 원본(HERO_PHOTO)을 그대로 쓴다.
  */
-/* 2026-10-07 판 — 오너 사진(hero-treatment)을 같은 결로(C:/tmp/cd-copy/hero3.cjs). ⚠️ 새 판은 새 파일 이름으로(next/image 캐시) */
-export const HERO_WARM_SRC = `${P}/hero-warm-3.jpg`;
+/* 2026-10-07 4판 — 3판(hero-warm-3)은 원장 얼굴·가운이 누렇게 떴다(오너 "노란끼 조금 덜") → 따뜻한 겹을 줄였다(C:/tmp/cd-copy/hero4.cjs, 원장 자리 R−B 28→12).
+   ⚠️ 새 판은 새 파일 이름으로(next/image 캐시) */
+export const HERO_WARM_SRC = `${P}/hero-warm-4.jpg`;
 
 /** 동그라미가 가장 먼저 생각하는 것 — 진료 전에 스스로 묻는 네 가지. 순서가 곧 순위다. */
 export const PRINCIPLES = [
